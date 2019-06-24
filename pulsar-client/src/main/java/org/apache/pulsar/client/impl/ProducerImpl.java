@@ -112,6 +112,8 @@ public class ProducerImpl<T> extends ProducerBase<T> implements TimerTask, Conne
 
     private final ConnectionHandler connectionHandler;
 
+    private int maxMessageSize;
+
     @SuppressWarnings("rawtypes")
     private static final AtomicLongFieldUpdater<ProducerImpl> msgIdGeneratorUpdater = AtomicLongFieldUpdater
             .newUpdater(ProducerImpl.class, "msgIdGenerator");
@@ -311,14 +313,14 @@ public class ProducerImpl<T> extends ProducerBase<T> implements TimerTask, Conne
 
             // validate msg-size (For batching this will be check at the batch completion size)
             int compressedSize = compressedPayload.readableBytes();
-            if (compressedSize > ClientCnx.getMaxMessageSize()) {
+            if (compressedSize >= this.maxMessageSize){
                 compressedPayload.release();
                 String compressedStr = (!isBatchMessagingEnabled() && conf.getCompressionType() != CompressionType.NONE)
                                            ? "Compressed"
                                            : "";
                 PulsarClientException.InvalidMessageException invalidMessageException = new PulsarClientException.InvalidMessageException(
                     format("%s Message payload size %d cannot exceed %d bytes", compressedStr, compressedSize,
-                           ClientCnx.getMaxMessageSize()));
+                           this.maxMessageSize));
                 callback.sendComplete(invalidMessageException);
                 return;
             }
@@ -961,6 +963,7 @@ public class ProducerImpl<T> extends ProducerBase<T> implements TimerTask, Conne
                             client.timer().newTimeout(batchMessageAndSendTask, conf.getBatchingMaxPublishDelayMicros(),
                                     TimeUnit.MICROSECONDS);
                         }
+                        this.maxMessageSize = cnx.getMaxMessageSize();
                         resendMessages(cnx);
                     }
                 }).exceptionally((e) -> {
@@ -1304,12 +1307,12 @@ public class ProducerImpl<T> extends ProducerBase<T> implements TimerTask, Conne
                 op = OpSendMsg.create(batchMessageContainer.messages, cmd, sequenceId,
                         batchMessageContainer.firstCallback);
 
-                if (encryptedPayload.readableBytes() > ClientCnx.getMaxMessageSize()) {
+                if (encryptedPayload.readableBytes() > this.maxMessageSize){
                     cmd.release();
                     semaphore.release(numMessagesInBatch);
                     if (op != null) {
                         op.callback.sendComplete(new PulsarClientException.InvalidMessageException(
-                            "Message size is bigger than " + ClientCnx.getMaxMessageSize() + " bytes"));
+                            "Message size is bigger than " + this.maxMessageSize + " bytes"));
                     }
                     return;
                 }

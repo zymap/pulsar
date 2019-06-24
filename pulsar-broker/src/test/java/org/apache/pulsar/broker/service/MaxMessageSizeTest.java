@@ -54,7 +54,7 @@ public class MaxMessageSizeTest {
         try {
             bkEnsemble = new LocalBookkeeperEnsemble(3, ZOOKEEPER_PORT, PortManager::nextFreePort);
             ServerConfiguration conf = new ServerConfiguration();
-            conf.setNettyMaxFrameSizeBytes(10 * 1024 * 1024);
+            conf.setNettyMaxFrameSizeBytes(10 * 1024 * 1024 + 10 * 1024);
             bkEnsemble.startStandalone(conf, false);
 
             configuration = new ServiceConfiguration();
@@ -150,5 +150,63 @@ public class MaxMessageSizeTest {
         producer.close();
         client.close();
 
+    }
+
+    @Test
+    public void testUnableBatch() throws PulsarClientException {
+        PulsarClient client = PulsarClient.builder().serviceUrl("pulsar://127.0.0.1:" + BROKER_SERVICE_PORT).build();
+        String topicName = "persistent://test/message/topic1";
+        Producer producer =
+            client.newProducer().topic(topicName).enableBatching(false).sendTimeout(60, TimeUnit.SECONDS).create();
+        Consumer consumer = client.newConsumer().topic(topicName).subscriptionName("test1").subscribe();
+
+        // less than 5MB message
+
+        byte[] normalMsg = new byte[2 * 1024 * 1024];
+
+        try {
+            producer.send(normalMsg);
+        } catch (PulsarClientException e) {
+            Assert.fail("Shouldn't have exception at here", e);
+        }
+
+        byte[] consumerNormalMsg = consumer.receive().getData();
+        Assert.assertEquals(normalMsg, consumerNormalMsg);
+
+        // equal 5MB message
+        byte[] limitMsg = new byte[5 * 1024 * 1024];
+        try {
+            producer.send(limitMsg);
+        } catch (PulsarClientException e) {
+            Assert.fail("Shouldn't have exception at here", e);
+        }
+
+        byte[] consumerLimitMsg = consumer.receive().getData();
+        Assert.assertEquals(limitMsg, consumerLimitMsg);
+
+        // less than 10MB message
+        byte[] newNormalMsg = new byte[8 * 1024 * 1024];
+        try {
+            producer.send(newNormalMsg);
+        } catch (PulsarClientException e) {
+            Assert.fail("Shouldn't have exception at here", e);
+        }
+
+        byte[] consumerNewNormalMsg = consumer.receive().getData();
+        Assert.assertEquals(newNormalMsg, consumerNewNormalMsg);
+
+        // equals 10MB message
+        byte[] newLimitMsg = new byte[10 * 1024 * 1024];
+        try {
+            producer.send(newLimitMsg);
+            Assert.fail("Shouldn't send out this message");
+        } catch (PulsarClientException e) {
+            // no-op
+        }
+
+        consumer.unsubscribe();
+        consumer.close();
+        producer.close();
+        client.close();
     }
 }
