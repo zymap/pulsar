@@ -111,7 +111,8 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
             @ApiResponse(code = 404, message = "Tenant or cluster doesn't exist"),
             @ApiResponse(code = 409, message = "Namespace already exists"),
-            @ApiResponse(code = 412, message = "Namespace name is not valid") })
+            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+            @ApiResponse(code = 500, message = "Broker internal error")})
     public void createNamespace(@PathParam("tenant") String tenant, @PathParam("namespace") String namespace,
             Policies policies) {
         validateNamespaceName(tenant, namespace);
@@ -640,8 +641,11 @@ public class Namespaces extends NamespacesBase {
     @GET
     @Path("/{tenant}/{namespace}/maxProducersPerTopic")
     @ApiOperation(value = "Get maxProducersPerTopic config on a namespace.")
-    @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-            @ApiResponse(code = 404, message = "Namespace does not exist") })
+    @ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Don't have admin permission"),
+        @ApiResponse(code = 404, message = "Namespace does not exist"),
+        @ApiResponse(code = 412, message = "Namespace name is not valid"),
+        @ApiResponse(code = 500, message = "Internal server error")})
     public int getMaxProducersPerTopic(@PathParam("tenant") String tenant,
             @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -654,7 +658,8 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
             @ApiResponse(code = 404, message = "Namespace does not exist"),
             @ApiResponse(code = 409, message = "Concurrent modification"),
-            @ApiResponse(code = 412, message = "maxProducersPerTopic value is not valid") })
+            @ApiResponse(code = 412, message = "maxProducersPerTopic value is not valid"),
+            @ApiResponse(code = 500, message = "Internal server error")})
     public void setMaxProducersPerTopic(@PathParam("tenant") String tenant, @PathParam("namespace") String namespace,
             int maxProducersPerTopic) {
         validateNamespaceName(tenant, namespace);
@@ -665,7 +670,9 @@ public class Namespaces extends NamespacesBase {
     @Path("/{tenant}/{namespace}/maxConsumersPerTopic")
     @ApiOperation(value = "Get maxConsumersPerTopic config on a namespace.")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-            @ApiResponse(code = 404, message = "Namespace does not exist") })
+            @ApiResponse(code = 404, message = "Namespace does not exist"),
+            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+            @ApiResponse(code = 500, message = "Internal server error")})
     public int getMaxConsumersPerTopic(@PathParam("tenant") String tenant,
             @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -678,7 +685,8 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
             @ApiResponse(code = 404, message = "Namespace does not exist"),
             @ApiResponse(code = 409, message = "Concurrent modification"),
-            @ApiResponse(code = 412, message = "maxConsumersPerTopic value is not valid") })
+            @ApiResponse(code = 412, message = "maxConsumersPerTopic value is not valid"),
+            @ApiResponse(code = 500, message = "Internal server error")})
     public void setMaxConsumersPerTopic(@PathParam("tenant") String tenant, @PathParam("namespace") String namespace,
             int maxConsumersPerTopic) {
         validateNamespaceName(tenant, namespace);
@@ -773,8 +781,14 @@ public class Namespaces extends NamespacesBase {
     @ApiOperation(value = "Maximum number of uncompacted bytes in topics before compaction is triggered.",
                   notes = "The backlog size is compared to the threshold periodically. "
                           + "A threshold of 0 disabled automatic compaction")
-    @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-                            @ApiResponse(code = 404, message = "Namespace doesn't exist") })
+    @ApiResponses(
+        value = {
+            @ApiResponse(code = 401, message = "Proxy not authorized"),
+            @ApiResponse(code = 403, message = "Don't have admin permission"),
+            @ApiResponse(code = 404, message = "Namespace doesn't exist"),
+            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+            @ApiResponse(code = 500, message = "Internal server error")
+        })
     public long getCompactionThreshold(@PathParam("tenant") String tenant,
                                        @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -789,10 +803,11 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
                             @ApiResponse(code = 409, message = "Concurrent modification"),
-                            @ApiResponse(code = 412, message = "compactionThreshold value is not valid") })
+                            @ApiResponse(code = 412, message = "compactionThreshold value is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public void setCompactionThreshold(@PathParam("tenant") String tenant,
                                        @PathParam("namespace") String namespace,
-                                       long newThreshold) {
+                                       @PathParam("threshold") long newThreshold) {
         validateNamespaceName(tenant, namespace);
         internalSetCompactionThreshold(newThreshold);
     }
@@ -803,7 +818,9 @@ public class Namespaces extends NamespacesBase {
                           + " before the broker will start offloading to longterm storage",
                   notes = "A negative value disables automatic offloading")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-                            @ApiResponse(code = 404, message = "Namespace doesn't exist") })
+                            @ApiResponse(code = 404, message = "Namespace doesn't exist"),
+                            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public long getOffloadThreshold(@PathParam("tenant") String tenant,
                                        @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -818,10 +835,11 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
                             @ApiResponse(code = 409, message = "Concurrent modification"),
-                            @ApiResponse(code = 412, message = "offloadThreshold value is not valid") })
+                            @ApiResponse(code = 412, message = "offloadThreshold value is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public void setOffloadThreshold(@PathParam("tenant") String tenant,
                                     @PathParam("namespace") String namespace,
-                                    long newThreshold) {
+                                    @PathParam("threshold") long newThreshold) {
         validateNamespaceName(tenant, namespace);
         internalSetOffloadThreshold(newThreshold);
     }
@@ -834,7 +852,9 @@ public class Namespaces extends NamespacesBase {
                           + " 'null' denotes that the topics in the namespace will fall back to the"
                           + " broker default for deletion lag.")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-                            @ApiResponse(code = 404, message = "Namespace doesn't exist") })
+                            @ApiResponse(code = 404, message = "Namespace doesn't exist"),
+                            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public Long getOffloadDeletionLag(@PathParam("tenant") String tenant,
                                       @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -849,10 +869,11 @@ public class Namespaces extends NamespacesBase {
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
                             @ApiResponse(code = 409, message = "Concurrent modification"),
-                            @ApiResponse(code = 412, message = "offloadDeletionLagMs value is not valid") })
+                            @ApiResponse(code = 412, message = "offloadDeletionLagMs value is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public void setOffloadDeletionLag(@PathParam("tenant") String tenant,
                                       @PathParam("namespace") String namespace,
-                                      long newDeletionLagMs) {
+                                      @PathParam("deletionLagMs") long newDeletionLagMs) {
         validateNamespaceName(tenant, namespace);
         internalSetOffloadDeletionLag(newDeletionLagMs);
     }
@@ -863,7 +884,9 @@ public class Namespaces extends NamespacesBase {
                           + " will fallback to using the default configured deletion lag for the broker")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
-                            @ApiResponse(code = 409, message = "Concurrent modification") })
+                            @ApiResponse(code = 409, message = "Concurrent modification"),
+                            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public void clearOffloadDeletionLag(@PathParam("tenant") String tenant,
                                         @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -878,7 +901,9 @@ public class Namespaces extends NamespacesBase {
                           + " If set to AutoUpdateDisabled, schemas must be updated through the REST api")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
-                            @ApiResponse(code = 409, message = "Concurrent modification") })
+                            @ApiResponse(code = 409, message = "Concurrent modification"),
+                            @ApiResponse(code = 412, message = "Namespace is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public SchemaAutoUpdateCompatibilityStrategy getSchemaAutoUpdateCompatibilityStrategy(
             @PathParam("tenant") String tenant,
             @PathParam("namespace") String namespace) {
@@ -894,10 +919,12 @@ public class Namespaces extends NamespacesBase {
                           + " If set to AutoUpdateDisabled, schemas must be updated through the REST api")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Namespace doesn't exist"),
-                            @ApiResponse(code = 409, message = "Concurrent modification") })
+                            @ApiResponse(code = 409, message = "Concurrent modification"),
+                            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public void setSchemaAutoUpdateCompatibilityStrategy(@PathParam("tenant") String tenant,
                                                          @PathParam("namespace") String namespace,
-                                                         SchemaAutoUpdateCompatibilityStrategy strategy) {
+                                                         @PathParam("schema-auto-update-compatibility-strategy") SchemaAutoUpdateCompatibilityStrategy strategy) {
         validateNamespaceName(tenant, namespace);
         internalSetSchemaAutoUpdateCompatibilityStrategy(strategy);
     }
@@ -910,7 +937,9 @@ public class Namespaces extends NamespacesBase {
                           + " carefully on using this, since non-java clients don't support schema.if you enable"
                           + " this setting, it will cause non-java clients failed to produce.")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
-                            @ApiResponse(code = 404, message = "Tenants or Namespace doesn't exist") })
+                            @ApiResponse(code = 404, message = "Tenants or Namespace doesn't exist"),
+                            @ApiResponse(code = 412, message = "Namespace name is not valid"),
+                            @ApiResponse(code = 500, message = "Internal server error")})
     public boolean getSchemaValidtionEnforced(@PathParam("tenant") String tenant,
                                            @PathParam("namespace") String namespace) {
         validateNamespaceName(tenant, namespace);
@@ -929,7 +958,7 @@ public class Namespaces extends NamespacesBase {
                             @ApiResponse(code = 412, message = "schemaValidationEnforced value is not valid") })
     public void setSchemaValidtionEnforced(@PathParam("tenant") String tenant,
                                              @PathParam("namespace") String namespace,
-                                             boolean schemaValidationEnforced) {
+                                             @PathParam("validation-enforc") boolean schemaValidationEnforced) {
         validateNamespaceName(tenant, namespace);
         internalSetSchemaValidationEnforced(schemaValidationEnforced);
     }
