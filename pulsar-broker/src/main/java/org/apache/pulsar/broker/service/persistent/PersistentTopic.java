@@ -128,7 +128,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 public class PersistentTopic extends AbstractTopic implements Topic, AddEntryCallback {
 
     // Managed ledger associated with the topic
-    private final ManagedLedger ledger;
+    protected final ManagedLedger ledger;
 
     // Subscriptions to this topic
     private final ConcurrentOpenHashMap<String, PersistentSubscription> subscriptions;
