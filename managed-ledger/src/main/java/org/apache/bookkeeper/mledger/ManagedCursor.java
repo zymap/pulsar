@@ -587,4 +587,14 @@ public interface ManagedCursor {
      */
     void setThrottleMarkDelete(double throttleMarkDelete);
 
+    /**
+     * A
+     *
+     * @param entry
+     * @param callback
+     * @param ctx
+     */
+    void asyncAddEntry(byte[] entry, AsyncCallbacks.AddEntryCallback callback, Object ctx);
+
+    ManagedLedger getCurrentCursorLedger();
 }
