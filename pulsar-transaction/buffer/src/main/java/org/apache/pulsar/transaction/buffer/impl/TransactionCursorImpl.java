@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.transaction.buffer.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ import org.apache.bookkeeper.mledger.impl.PositionImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.pulsar.common.api.proto.PulsarMarkers;
 import org.apache.pulsar.common.protocol.Commands;
+import org.apache.pulsar.common.protocol.Markers;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.transaction.buffer.TransactionCursor;
 import org.apache.pulsar.transaction.buffer.TransactionMeta;
@@ -455,23 +457,35 @@ public class TransactionCursorImpl implements TransactionCursor {
 
     // Replay all messages from the previous snapshot position on the transaction log.
     private CompletableFuture<Void> replayTxnLogEntries(Position position) {
-        // TODO: replay all entry as normal publish message
         return readEntryFromLedger(position, txnLog).thenAccept(entries -> entries.forEach(this::replayEntry));
     }
 
-    private void replayEntry(Entry entry) {
+    private CompletableFuture<Void> replayEntry(Entry entry) {
         PulsarApi.MessageMetadata messageMetadata = Commands.parseMessageMetadata(entry.getDataBuffer());
+
+        TxnID txnID = new TxnID(messageMetadata.getTxnidMostBits(), messageMetadata.getTxnidLeastBits());
+        long sequenceId = messageMetadata.getSequenceId();
 
         switch (messageMetadata.getMarkerType()) {
             case PulsarMarkers.MarkerType.TXN_COMMIT_VALUE:
-                // TODO: replay commit message
-                break;
+                return replayCommitMarker(txnID, entry);
             case PulsarMarkers.MarkerType.TXN_ABORT_VALUE:
-                // TODO: replay abort message
-                break;
+                return abortTxn(txnID);
             default:
-                // TODO: replay normal data message
+                return getTxnMeta(txnID, true)
+                           .thenCompose(meta -> meta.appendEntry(sequenceId, entry.getPosition()));
         }
+    }
 
+    private CompletableFuture<Void> replayCommitMarker(TxnID txnID, Entry entry) {
+        try {
+            PulsarMarkers.TxnCommitMarker marker = Markers.parseCommitMarker(entry.getDataBuffer());
+            long committedLedger = marker.getMessageId().getLedgerId();
+            long committedEntry = marker.getMessageId().getEntryId();
+
+            return commitTxn(committedLedger, committedEntry, txnID, entry.getPosition());
+        } catch (IOException e) {
+            return FutureUtil.failedFuture(e);
+        }
     }
 }
