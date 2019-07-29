@@ -18,27 +18,36 @@
  */
 package org.apache.pulsar.transaction.buffer.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.bookkeeper.client.BKException;
+import org.apache.bookkeeper.client.LedgerEntry;
+import org.apache.bookkeeper.client.LedgerHandle;
 import org.apache.bookkeeper.mledger.AsyncCallbacks;
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedger;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.Position;
-import org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl;
+import org.apache.bookkeeper.mledger.impl.EntryImpl;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.pulsar.common.api.proto.PulsarMarkers;
@@ -57,32 +66,61 @@ import org.apache.pulsar.transaction.proto.TransactionBufferDataFormats.StoredTx
 public class TransactionCursorImpl implements TransactionCursor {
 
     private final ManagedLedger txnLog;
-    private ManagedCursor indexCursor;
+    private volatile AtomicReference<ManagedCursor> indexCursor = new AtomicReference<>();
 
     private final ConcurrentMap<TxnID, TransactionMetaImpl> txnIndex;
     private final Map<Long, Set<TxnID>> committedLedgerTxnIndex;
 
-    TransactionCursorImpl(ManagedLedger ledger) {
+    TransactionCursorImpl(ManagedLedger ledger) throws InterruptedException {
         this.txnIndex = new ConcurrentHashMap<>();
         this.committedLedgerTxnIndex = new TreeMap<>();
         this.txnLog = ledger;
         initializeTransactionCursor();
     }
 
-    private void initializeTransactionCursor() {
+    @VisibleForTesting
+    void addToTxnIndex(TransactionMetaImpl meta) {
+        txnIndex.putIfAbsent(meta.id(), meta);
+    }
+
+    @VisibleForTesting
+    void addToCommittedLedgerTxnIndex(long ledgerId, TxnID txnID) {
+        committedLedgerTxnIndex.computeIfAbsent(ledgerId, ledger -> new HashSet<>()).add(txnID);
+    }
+
+//    @VisibleForTesting
+//    boolean exsi
+
+    @VisibleForTesting
+    LedgerHandle getCursorLedger() {
+        return indexCursor.get().getCurrentCursorLedger();
+    }
+
+    private void initializeTransactionCursor() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         txnLog.asyncOpenCursor(PersistentTransactionBuffer.TXN_CURSOR_NAME, new AsyncCallbacks.OpenCursorCallback() {
             @Override
             public void openCursorComplete(ManagedCursor cursor, Object ctx) {
                 cursor.setAlwaysInactive();
-                indexCursor = cursor;
-                // TODO recover index
+                indexCursor.compareAndSet(null, cursor);
+                recover().whenComplete((ignore, error) -> {
+                    if (error != null) {
+                        log.error("Failed to recover the transaction index");
+                    } else {
+                        log.info("Succeed to recover the transaction index.");
+                    }
+                    latch.countDown();
+                });
             }
 
             @Override
             public void openCursorFailed(ManagedLedgerException exception, Object ctx) {
                 log.error("Failed to open the transaction index cursor to recover transaction index", exception);
+                latch.countDown();
             }
         }, null);
+
+        latch.await();
     }
 
     @Override
@@ -97,10 +135,7 @@ public class TransactionCursorImpl implements TransactionCursor {
             }
 
             TransactionMetaImpl newMeta = new TransactionMetaImpl(txnID);
-            TransactionMeta oldMeta = txnIndex.putIfAbsent(txnID, newMeta);
-            if (null != oldMeta) {
-                meta = oldMeta;
-            } else {
+            TransactionMeta oldMeta = txnIndex.putIfAbsent(txnID, newMeta); if (null != oldMeta) { meta = oldMeta; } else {
                 meta = newMeta;
             }
         }
@@ -198,14 +233,24 @@ public class TransactionCursorImpl implements TransactionCursor {
     private CompletableFuture<Position> record(StoredTxn storedTxn) {
         CompletableFuture<Position> recordFuture = new CompletableFuture<>();
 
-        indexCursor.asyncAddEntry(storedTxn.toByteArray(), new AsyncCallbacks.AddEntryCallback() {
+        indexCursor.get().asyncAddEntry(storedTxn.toByteArray(), new AsyncCallbacks.AddEntryCallback() {
             @Override
             public void addComplete(Position position, Object ctx) {
+                if (log.isDebugEnabled()) {
+                    log.info("Success to record the txn [{} - {}:{}] at [{}]", storedTxn.getStoredStatus(),
+                             storedTxn.getTxnMeta().getTxnId().getMostSigBits(),
+                             storedTxn.getTxnMeta().getTxnId().getLeastSigBits(), position);
+                }
                 recordFuture.complete(position);
             }
 
             @Override
             public void addFailed(ManagedLedgerException exception, Object ctx) {
+                if (log.isDebugEnabled()) {
+                    log.info("Failed to record the txn [{} : {}:{}]", storedTxn.getStoredStatus(),
+                             storedTxn.getTxnMeta().getTxnId().getMostSigBits(),
+                             storedTxn.getTxnMeta().getTxnId().getLeastSigBits());
+                }
                 recordFuture.completeExceptionally(exception);
             }
         }, null);
@@ -223,7 +268,10 @@ public class TransactionCursorImpl implements TransactionCursor {
     public CompletableFuture<Void> recover() {
         CompletableFuture<Void> recoverFuture = new CompletableFuture<>();
 
-        Position currentPosition = indexCursor.getCurrentCursorLedger().getLastConfirmedEntry();
+        LedgerHandle lh = indexCursor.get().getCurrentCursorLedger();
+        long ledgerId = lh.getId();
+        long entryId = lh.getLastAddConfirmed();
+        PositionImpl currentPosition = PositionImpl.get(ledgerId, entryId);
 
         readSpecifiedPosEntry(currentPosition)
             .thenApply(entry -> new PersistentTxnIndexSnapshot(entry.getData()))
@@ -231,22 +279,25 @@ public class TransactionCursorImpl implements TransactionCursor {
                 if (throwable != null) {
                     recoverFuture.completeExceptionally(throwable);
                 } else {
-                    switch (snapshot.status) {
-                        case START:
-                            recoverFromStart(currentPosition).whenComplete((ignore, error) -> {
-                                checkComplete(error, recoverFuture);
-                            });
-                            break;
-                        case MIDDLE:
-                            recoverFromMiddle(snapshot).whenComplete((ignore, error) -> {
-                                checkComplete(error, recoverFuture);
-                            });
-                            break;
-                        case END:
-                            recoverFromEnd(snapshot).whenComplete((ignore, error) -> {
-                                checkComplete(error, recoverFuture);
-                            });
-                            break;
+                    if (snapshot.status == null) {
+                        recoverFuture.complete(null);
+                    }else {
+                        switch (snapshot.status) {
+                            case START:
+                                recoverFromStart(currentPosition).whenComplete((ignore, error) -> {
+                                    checkComplete(error, recoverFuture);
+                                });
+                                break;
+                            case MIDDLE:
+                                recoverFromMiddle(snapshot).whenComplete((ignore, error) -> {
+                                    checkComplete(error, recoverFuture);
+                                });
+                                break;
+                            case END:
+                                recoverFromEnd(snapshot).whenComplete((ignore, error) -> {
+                                    checkComplete(error, recoverFuture);
+                                });
+                        }
                     }
                 }
             });
@@ -323,17 +374,23 @@ public class TransactionCursorImpl implements TransactionCursor {
     private CompletableFuture<Entry> readSpecifiedPosEntry(Position position) {
         CompletableFuture<Entry> readFuture = new CompletableFuture<>();
 
-        ManagedLedgerImpl ledger = (ManagedLedgerImpl) indexCursor.getCurrentCursorLedger();
+        PositionImpl readPos = (PositionImpl) position;
+        LedgerHandle ledger = indexCursor.get().getCurrentCursorLedger();
 
-        ledger.asyncReadEntry((PositionImpl) position, new AsyncCallbacks.ReadEntryCallback() {
-            @Override
-            public void readEntryComplete(Entry entry, Object ctx) {
-                readFuture.complete(entry);
-            }
+        ledger.asyncReadEntries(readPos.getEntryId(), readPos.getEntryId(), (rc, handle, entries, ctx) -> {
+            if (rc != BKException.Code.OK) {
+                readFuture.completeExceptionally(BKException.create(rc));
+            } else {
+                if (entries.hasMoreElements()) {
+                    LedgerEntry ledgerEntry = entries.nextElement();
+                    EntryImpl entry = EntryImpl.create(ledgerEntry.getLedgerId(), ledgerEntry.getEntryId(),
+                                                       ledgerEntry.getEntry());
 
-            @Override
-            public void readEntryFailed(ManagedLedgerException exception, Object ctx) {
-                readFuture.completeExceptionally(exception);
+                    readFuture.complete(entry);
+                } else {
+                    readFuture.completeExceptionally(new NoSuchElementException(
+                        "No such entry " + readPos.getEntryId() + " in ledger " + handle.getId()));
+                }
             }
         }, null);
 
@@ -345,7 +402,7 @@ public class TransactionCursorImpl implements TransactionCursor {
     }
 
     private CompletableFuture<Void> recoverFromLedger(PersistentTxnIndexSnapshot snapshot) {
-        return readEntryFromLedger(snapshot.position, indexCursor.getCurrentCursorLedger())
+        return readEntryFromCursorLedger(snapshot.position, indexCursor.get().getCurrentCursorLedger())
             .thenApply(entries ->
                            entries.stream()
                                   .map(entry -> new PersistentTxnIndexSnapshot(entry.getData()))
@@ -376,7 +433,7 @@ public class TransactionCursorImpl implements TransactionCursor {
         if (beginning.size() != 1 || beginning.get(0) == null) {
             return FutureUtil.failedFuture(new TransactionIndexRecoveringError(
                 "Found more than one START when recovering transaction index on cursor ledger: "
-                + indexCursor.getCurrentCursorLedger().getName()));
+                + indexCursor.get().getCurrentCursorLedger().getId()));
         }
 
         return CompletableFuture.completedFuture(beginning.get(0));
@@ -394,6 +451,34 @@ public class TransactionCursorImpl implements TransactionCursor {
         }
 
         return CompletableFuture.completedFuture(null);
+    }
+
+    private CompletableFuture<List<Entry>> readEntryFromCursorLedger(Position startSnapshotPos,
+                                                                     LedgerHandle cursorLedger) {
+        CompletableFuture<List<Entry>> readFuture = new CompletableFuture<>();
+        PositionImpl startPos = (PositionImpl) startSnapshotPos;
+        long startEntryId = startPos.getEntryId();
+        long endEntryId = cursorLedger.getLastAddConfirmed();
+
+        cursorLedger.asyncReadEntries(startEntryId, endEntryId, (rc, handle, entries, ctx) -> {
+            if (rc != BKException.Code.OK) {
+                readFuture.completeExceptionally(BKException.create(rc));
+            } else {
+                if (entries.hasMoreElements()) {
+                    List<Entry> entryList = Collections.list(entries)
+                                                       .stream()
+                                                       .map(ledgerEntry -> EntryImpl.create(ledgerEntry.getLedgerId()
+                                                           , ledgerEntry.getEntryId(), ledgerEntry.getEntry()))
+                                                       .collect(Collectors.toList());
+                    readFuture.complete(entryList);
+                } else {
+                    readFuture.completeExceptionally(new NoSuchElementException(
+                        "No more entry can read from ledger: " + handle.getId() + ", entry: " + startEntryId));
+                }
+            }
+        }, null);
+
+        return readFuture;
     }
 
     private CompletableFuture<List<Entry>> readEntryFromLedger(Position startSnapshotPos, ManagedLedger managedLedger) {

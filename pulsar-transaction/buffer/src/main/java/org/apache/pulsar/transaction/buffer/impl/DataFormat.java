@@ -89,10 +89,9 @@ public class DataFormat {
     }
 
     static TransactionMetaImpl recoverMeta(StoredTxnMeta meta) {
-        return TransactionMetaImpl.builder().committedAtLedgerId(meta.getCommittedLedger())
-                                  .committedAtEntryId(meta.getCommittedEntry()).txnID(recoverTxnId(meta.getTxnId()))
-                                  .entries(recoverEntries(meta.getEntryInfoList()))
-                                  .txnStatus(recoverStatus(meta.getStatus())).build();
+        return new TransactionMetaImpl(recoverTxnId(meta.getTxnId()), recoverEntries(meta.getEntryInfoList()),
+                                       recoverStatus(meta.getStatus()), meta.getCommittedLedger(),
+                                       meta.getCommittedEntry());
     }
 
     private static StoredTxnID buildTxnId(TxnID txnID) {

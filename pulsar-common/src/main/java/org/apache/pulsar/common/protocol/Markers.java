@@ -302,7 +302,6 @@ public class Markers {
         msgMetadataBuilder.setMarkerType(markerType.getNumber());
         msgMetadataBuilder.setTxnidMostBits(txnMostBits);
         msgMetadataBuilder.setTxnidLeastBits(txnLeastBits);
-        msgMetadataBuilder.set
 
         MessageMetadata msgMetadata = msgMetadataBuilder.build();
 
