@@ -106,6 +106,7 @@ import org.apache.pulsar.common.protocol.schema.SchemaVersion;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.collections.ConcurrentLongHashMap;
 import org.apache.pulsar.shaded.com.google.protobuf.v241.GeneratedMessageLite;
+import org.apache.pulsar.transaction.impl.common.TxnID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1019,6 +1020,12 @@ public class ServerCnx extends PulsarHandler {
     protected void handleSend(CommandSend send, ByteBuf headersAndPayload) {
         checkArgument(state == State.Connected);
 
+        boolean isTxn = send.hasTxnidMostBits() && send.hasTxnidLeastBits();
+        TxnID txnID = null;
+        if (isTxn) {
+            txnID = new TxnID(send.getTxnidMostBits(), send.getTxnidLeastBits());
+        }
+
         CompletableFuture<Producer> producerFuture = producers.get(send.getProducerId());
 
         if (producerFuture == null || !producerFuture.isDone() || producerFuture.isCompletedExceptionally()) {
@@ -1048,8 +1055,24 @@ public class ServerCnx extends PulsarHandler {
 
         startSendOperation();
 
-        // Persist the message
-        producer.publishMessage(send.getProducerId(), send.getSequenceId(), headersAndPayload, send.getNumMessages());
+        if (isTxn) {
+            TxnID finalTxnID = txnID;
+            producer.getTopic().getTxnBuffer(true).whenComplete((buffer, err) -> {
+                if (err != null) {
+                    ctx.writeAndFlush(Commands.newSendError(producer.getProducerId(), producer.getLastSequenceId(),
+                                                            ServerError.UnknownError, err.getMessage()));
+                } else {
+                    buffer.appendBufferToTxn(finalTxnID, send.getSequenceId(), headersAndPayload);
+                }
+            }).exceptionally(err -> {
+                ctx.writeAndFlush(Commands.newSendError(producer.getProducerId(), producer.getLastSequenceId(),
+                                                        ServerError.UnknownError, err.getMessage()));
+                return null;
+            });
+        } else {
+            // Persist the message
+            producer.publishMessage(send.getProducerId(), send.getSequenceId(), headersAndPayload, send.getNumMessages());
+        }
     }
 
     private void printSendCommandDebug(CommandSend send, ByteBuf headersAndPayload) {

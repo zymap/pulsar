@@ -23,10 +23,12 @@ import org.apache.bookkeeper.mledger.util.StatsBuckets;
 import org.apache.pulsar.broker.admin.AdminResource;
 import org.apache.pulsar.broker.service.schema.SchemaCompatibilityStrategy;
 import org.apache.pulsar.broker.service.schema.SchemaRegistryService;
+import org.apache.pulsar.broker.transaction.buffer.TransactionBuffer;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.protocol.schema.SchemaData;
 import org.apache.pulsar.common.protocol.schema.SchemaVersion;
+import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.collections.ConcurrentOpenHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,6 +196,11 @@ public abstract class AbstractTopic implements Topic {
         return brokerService.pulsar()
                 .getSchemaRegistryService()
                 .isCompatible(id, schema, schemaCompatibilityStrategy);
+    }
+
+    @Override
+    public CompletableFuture<TransactionBuffer> getTxnBuffer(boolean createIfAbsent) {
+        return FutureUtil.failedFuture(new UnsupportedOperationException());
     }
 
     @Override
