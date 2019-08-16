@@ -1207,7 +1207,7 @@ public class ConsumerImpl<T> extends ConsumerBase<T> implements ConnectionHandle
     }
 
     @Override
-    String getHandlerName() {
+    protected String getHandlerName() {
         return subscription;
     }
 
