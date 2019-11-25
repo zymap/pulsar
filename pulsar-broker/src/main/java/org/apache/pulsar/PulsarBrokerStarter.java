@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.apache.bookkeeper.conf.ClientConfiguration;
 import org.apache.bookkeeper.conf.ServerConfiguration;
 import org.apache.bookkeeper.proto.BookieServer;
 import org.apache.bookkeeper.replication.AutoRecoveryMain;
@@ -54,6 +55,8 @@ import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
 import org.apache.pulsar.common.protocol.Commands;
 import org.apache.pulsar.functions.worker.WorkerConfig;
 import org.apache.pulsar.functions.worker.WorkerService;
+import org.apache.pulsar.packages.manager.PackageStorageConfig;
+import org.apache.pulsar.packages.manager.service.PackageManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -126,6 +129,7 @@ public class PulsarBrokerStarter {
         private final StatsProvider bookieStatsProvider;
         private final ServerConfiguration bookieConfig;
         private final WorkerService functionsWorkerService;
+        private final PackageManagerService packageManagerService;
 
         BrokerStarter(String[] args) throws Exception{
             StarterArguments starterArguments = new StarterArguments();
@@ -196,8 +200,20 @@ public class PulsarBrokerStarter {
                 functionsWorkerService = null;
             }
 
+
+            if (brokerConfig.isPackageManagerEnabled()) {
+                PackageStorageConfig packageStorageConfig = new PackageStorageConfig();
+                packageStorageConfig.setZkServers(brokerConfig.getZookeeperServers());
+                packageStorageConfig.setLedgersRootPath(new ClientConfiguration().getZkLedgersRootPath());
+                packageManagerService = new PackageManagerService(packageStorageConfig);
+            } else {
+                packageManagerService = null;
+            }
+
             // init pulsar service
-            pulsarService = new PulsarService(brokerConfig, Optional.ofNullable(functionsWorkerService));
+            pulsarService = new PulsarService(brokerConfig,
+                Optional.ofNullable(functionsWorkerService),
+                Optional.ofNullable(packageManagerService));
 
             // if no argument to run bookie in cmd line, read from pulsar config
             if (!argsContains(args, "-rb") && !argsContains(args, "--run-bookie")) {

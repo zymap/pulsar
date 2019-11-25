@@ -80,6 +80,9 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- package manager related dependencies (begin) -->
+    <!-- package manager related dependencies (end) -->
+
   </dependencies>
 
   <build>

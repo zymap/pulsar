@@ -26,6 +26,8 @@ import com.google.common.cache.LoadingCache;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.common.naming.NamespaceName;
 
 /**
@@ -52,13 +54,18 @@ public class PackageName {
             });
 
     public static PackageName get(String type, String tenant, String namespace, String name, String version) {
-        String pkgName = type + "://" + tenant + "/" + namespace + "/" + name + "@" + version;
-        return get(pkgName);
+        String packageName = type + "://" + tenant + "/" + namespace + "/" + name + "@" + version;
+        return get(packageName);
     }
 
     public static PackageName get(String type, String name, String version) {
-        String pkgName = type + "://" + name + "@" + version;
-        return get(pkgName);
+        String packageName = type + "://" + name + "@" + version;
+        return get(packageName);
+    }
+
+    public static PackageName get(String type, String tenant, String namespace, String name) {
+        String packageName = type + "://" + tenant + "/" + namespace + "/" + name;
+        return get(packageName);
     }
 
     public static PackageName get(String packageName) {
@@ -85,11 +92,16 @@ public class PackageName {
         this.namespaceName = NamespaceName.get(parts.get(0), parts.get(1));
 
         rest = parts.get(2);
-        parts = Splitter.on("@").splitToList(rest);
-        this.name = parts.get(0);
-        this.version = parts.get(1);
-
-        this.completeName = String.format("%s://%s/%s@%s", type.toString(), namespaceName.toString(), name, version);
+        if (rest.contains("@")) {
+            parts = Splitter.on("@").splitToList(rest);
+            this.name = parts.get(0);
+            this.version = parts.get(1);
+            this.completeName = String.format("%s://%s/%s@%s", type.toString(), namespaceName.toString(), name, version);
+        } else {
+            this.name = rest;
+            this.version = "";
+            this.completeName = String.format("%s://%s/%s", type.toString(), namespaceName.toString(), name);
+        }
     }
 
     public PackageType getPkgType() {
@@ -98,6 +110,10 @@ public class PackageName {
 
     public NamespaceName getNamespaceName() {
         return this.namespaceName;
+    }
+
+    public boolean hasVersion() {
+        return !this.version.equals("");
     }
 
     public String getVersion() {

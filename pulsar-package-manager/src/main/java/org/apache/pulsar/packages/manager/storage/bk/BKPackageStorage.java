@@ -46,7 +46,7 @@ public class BKPackageStorage implements PackageStorage {
     private Namespace namespace;
     private BKPackageStorageConfig config;
 
-    BKPackageStorage(PackageStorageConfig config) {
+    BKPackageStorage(BKPackageStorageConfig config) {
         this.config = (BKPackageStorageConfig) config;
         setup();
     }

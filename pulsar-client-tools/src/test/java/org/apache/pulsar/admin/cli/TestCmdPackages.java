@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,28 +15,10 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
 
-package org.apache.pulsar.packages.manager;
+package org.apache.pulsar.admin.cli;
 
-import java.util.Map;
-
-import com.google.gson.Gson;
-import lombok.Data;
-import lombok.ToString;
-
-/**
- * Package metadata.
- */
-@Data
-public class PackageMetadata {
-    String description;
-    String contact;
-    long createTime;
-    long modificationTime;
-    Map<String, String> properties;
-
-    public String toJSON() {
-        return new Gson().toJson(this);
-    }
+public class TestCmdPackages {
 }

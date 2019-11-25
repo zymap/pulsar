@@ -19,8 +19,25 @@
 
 package org.apache.pulsar.packages.manager;
 
+import lombok.Data;
+
+import java.net.URI;
+
 /**
  * An interface of package storage config.
  */
-public interface PackageStorageConfig {
+@Data
+public class PackageStorageConfig {
+
+    String storageProviderClassName;
+
+    String zkServers;
+    String ledgersRootPath;
+
+    // BookKeeper storage related configuration
+    URI dlogUrl;
+    int numReplicas;
+    String bookkeeperClientAuthenticationPlugin;
+    String bookkeeperClientAuthenticationParametersName;
+    String bookkeeperClientAuthenticationParameters;
 }

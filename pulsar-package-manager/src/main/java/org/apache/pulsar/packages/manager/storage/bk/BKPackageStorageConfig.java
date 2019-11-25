@@ -31,7 +31,7 @@ import org.apache.pulsar.packages.manager.PackageStorageConfig;
 @Data
 @Setter
 @Getter
-public class BKPackageStorageConfig implements PackageStorageConfig {
+public class BKPackageStorageConfig {
     URI url;
     int numReplicas;
     String bookkeeperClientAuthenticationPlugin;

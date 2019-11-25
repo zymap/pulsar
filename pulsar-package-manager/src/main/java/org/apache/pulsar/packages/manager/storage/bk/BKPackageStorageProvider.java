@@ -31,6 +31,15 @@ import java.util.concurrent.CompletableFuture;
 public class BKPackageStorageProvider implements PackageStorageProvider {
     @Override
     public CompletableFuture<PackageStorage> getStorage(PackageStorageConfig config) {
-        return CompletableFuture.completedFuture(new BKPackageStorage(config));
+        BKPackageStorageConfig bkPackageStorageConfig = new BKPackageStorageConfig();
+        bkPackageStorageConfig.setUrl(config.getDlogUrl());
+        bkPackageStorageConfig.setNumReplicas(config.getNumReplicas());
+        bkPackageStorageConfig.setBookkeeperClientAuthenticationParameters(
+            config.getBookkeeperClientAuthenticationParameters());
+        bkPackageStorageConfig.setBookkeeperClientAuthenticationParametersName(
+            config.getBookkeeperClientAuthenticationParametersName());
+        bkPackageStorageConfig.setBookkeeperClientAuthenticationPlugin(
+            config.getBookkeeperClientAuthenticationPlugin());
+        return CompletableFuture.completedFuture(new BKPackageStorage(bkPackageStorageConfig));
     }
 }

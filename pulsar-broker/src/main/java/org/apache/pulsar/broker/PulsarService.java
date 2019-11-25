@@ -108,6 +108,7 @@ import org.apache.pulsar.compaction.TwoPhaseCompactor;
 import org.apache.pulsar.functions.worker.WorkerConfig;
 import org.apache.pulsar.functions.worker.WorkerService;
 import org.apache.pulsar.functions.worker.WorkerUtils;
+import org.apache.pulsar.packages.manager.service.PackageManagerService;
 import org.apache.pulsar.transaction.coordinator.TransactionMetadataStoreProvider;
 import org.apache.pulsar.transaction.coordinator.impl.InMemTransactionMetadataStoreProvider;
 import org.apache.pulsar.websocket.WebSocketConsumerServlet;
@@ -179,6 +180,7 @@ public class PulsarService implements AutoCloseable {
     private final String brokerVersion;
     private SchemaRegistryService schemaRegistryService = null;
     private final Optional<WorkerService> functionWorkerService;
+    private final Optional<PackageManagerService> packageManagerService;
     private ProtocolHandlers protocolHandlers = null;
 
     private ShutdownService shutdownService;
@@ -196,10 +198,15 @@ public class PulsarService implements AutoCloseable {
     private final Condition isClosedCondition = mutex.newCondition();
 
     public PulsarService(ServiceConfiguration config) {
-        this(config, Optional.empty());
+        this(config, Optional.empty(), Optional.empty());
     }
 
-    public PulsarService(ServiceConfiguration config, Optional<WorkerService> functionWorkerService) {
+    public PulsarService(ServiceConfiguration config, Optional<WorkerService> workerService) {
+        this(config, workerService, Optional.empty());
+    }
+
+    public PulsarService(ServiceConfiguration config, Optional<WorkerService> functionWorkerService,
+                         Optional<PackageManagerService> packageManagerService) {
         // Validate correctness of configuration
         PulsarConfigurationLoader.isComplete(config);
 
@@ -212,6 +219,7 @@ public class PulsarService implements AutoCloseable {
         this.loadManagerExecutor = Executors
                 .newSingleThreadScheduledExecutor(new DefaultThreadFactory("pulsar-load-manager"));
         this.functionWorkerService = functionWorkerService;
+        this.packageManagerService = packageManagerService;
     }
 
     /**
@@ -510,6 +518,9 @@ public class PulsarService implements AutoCloseable {
             // start function worker service if necessary
             this.startWorkerService(brokerService.getAuthenticationService(), brokerService.getAuthorizationService());
 
+            // start package service if necessary
+            this.startPackageService();
+
             final String bootstrapMessage = "bootstrap service "
                     + (config.getWebServicePort().isPresent() ? "port = " + config.getWebServicePort().get() : "")
                     + (config.getWebServicePortTls().isPresent() ? "tls-port = " + config.getWebServicePortTls() : "")
@@ -742,6 +753,10 @@ public class PulsarService implements AutoCloseable {
 
     public WorkerService getWorkerService() {
         return functionWorkerService.orElse(null);
+    }
+
+    public PackageManagerService getPackageManagerService() {
+        return packageManagerService.orElse(null);
     }
 
     /**
@@ -1002,6 +1017,13 @@ public class PulsarService implements AutoCloseable {
 
     public String getSafeBrokerServiceUrl() {
         return brokerServiceUrl != null ? brokerServiceUrl : brokerServiceUrlTls;
+    }
+
+    private void startPackageService() throws InterruptedException {
+        if (packageManagerService.isPresent()) {
+            LOG.info("Starting package service");
+            packageManagerService.get().start();
+        }
     }
 
     private void startWorkerService(AuthenticationService authenticationService,

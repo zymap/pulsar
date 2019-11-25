@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import org.apache.pulsar.packages.manager.naming.PackageName;
 
 abstract class CliCommand {
 
@@ -68,6 +69,11 @@ abstract class CliCommand {
             throw new ParameterException("Need to provide a non-persistent topic name");
         }
         return topicName.toString();
+    }
+
+    static String validatePackageName(List<String> params) {
+        String packageName = checkArgument(params);
+        return PackageName.get(packageName).toString();
     }
 
     static void validateLatencySampleRate(int sampleRate) {

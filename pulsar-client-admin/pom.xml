@@ -95,5 +95,15 @@
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
+
+    <!-- package manager related dependencies (begin) -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pulsar-package-manager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- package manager related dependencies (end) -->
+
   </dependencies>
+
 </project>

@@ -101,7 +101,7 @@ public class PackageImpl implements Package {
             .thenCompose(ignore -> packageStorage.existAsync(packagePath))
             .thenCompose(dataExists -> dataExists
                 ? packageStorage.deleteAsync(packagePath)
-                : FutureUtil.failedFuture(new PackageNotFoundException("Package does not existAsync")));
+                : FutureUtil.failedFuture(new PackageNotFoundException("Package does not exists")));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class PackageImpl implements Package {
         return packageStorage.existAsync(packageWithoutVersionPath)
             .thenCompose(exists -> exists
                 ? packageStorage.listAsync(packageWithoutVersionPath)
-                : FutureUtil.failedFuture(new PackageNotFoundException("Package does not existAsync")))
+                : FutureUtil.failedFuture(new PackageNotFoundException("Package does not exists")))
             .thenApply(names -> names.stream().map(PackageName::get).collect(Collectors.toList()));
     }
 

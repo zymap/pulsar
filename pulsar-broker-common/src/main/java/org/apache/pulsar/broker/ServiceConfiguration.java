@@ -85,6 +85,8 @@ public class ServiceConfiguration implements PulsarConfiguration {
     private static final String CATEGORY_HTTP = "HTTP";
     @Category
     private static final String CATEGORY_TRANSACTION = "Transaction";
+    @Category
+    private static final String CATEGORY_PACKAGE_MANAGER = "Package Manager";
 
     /***** --- pulsar configuration --- ****/
     @FieldContext(
@@ -1335,6 +1337,20 @@ public class ServiceConfiguration implements PulsarConfiguration {
     )
     private String transactionMetadataStoreProviderClassName =
             "org.apache.pulsar.transaction.coordinator.impl.InMemTransactionMetadataStoreProvider";
+
+    /**** --- Package manager config variables --- ****/
+    @FieldContext(
+        category = CATEGORY_PACKAGE_MANAGER,
+        doc = "Enable package manager service"
+    )
+    private boolean packageManagerEnabled = true;
+
+    @FieldContext(
+        category = CATEGORY_PACKAGE_MANAGER,
+        doc = "Class name for package manager store provider"
+    )
+    private String packageManagerStoreProviderClassName =
+        "org.apache.pulsar.packages.manager.storage.bk.BKPackageStorageProvider";
 
     /**
      * @deprecated See {@link #getConfigurationStoreServers}

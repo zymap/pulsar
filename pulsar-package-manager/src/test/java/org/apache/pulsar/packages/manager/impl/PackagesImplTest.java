@@ -65,4 +65,10 @@ public class PackagesImplTest {
             }
         }
     }
+
+    @Test
+    public void toStringTests() {
+        PackageMetadata metadata = new PackageMetadata();
+        System.out.println(metadata.toJSON());
+    }
 }
