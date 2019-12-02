@@ -328,7 +328,6 @@ public class PulsarStandalone implements AutoCloseable {
 
         final String cluster = config.getClusterName();
 
-        createSampleNameSpace(webServiceUrl, brokerServiceUrl, cluster);
         createDefaultNameSpace(cluster);
 
         log.debug("--- setup completed ---");
@@ -346,38 +345,6 @@ public class PulsarStandalone implements AutoCloseable {
             if (!admin.namespaces().getNamespaces(publicTenant).contains(defaultNamespace)) {
                 admin.namespaces().createNamespace(defaultNamespace);
                 admin.namespaces().setNamespaceReplicationClusters(defaultNamespace, Sets.newHashSet(config.getClusterName()));
-            }
-        } catch (PulsarAdminException e) {
-            log.info(e.getMessage());
-        }
-    }
-
-    private void createSampleNameSpace(URL webServiceUrl, String brokerServiceUrl, String cluster) {
-        // Create a sample namespace
-        final String property = "sample";
-        final String globalCluster = "global";
-        final String namespace = property + "/" + cluster + "/ns1";
-        try {
-            ClusterData clusterData = new ClusterData(webServiceUrl.toString(), null /* serviceUrlTls */,
-                    brokerServiceUrl, null /* brokerServiceUrlTls */);
-            if (!admin.clusters().getClusters().contains(cluster)) {
-                admin.clusters().createCluster(cluster, clusterData);
-            } else {
-                admin.clusters().updateCluster(cluster, clusterData);
-            }
-
-            // Create marker for "global" cluster
-            if (!admin.clusters().getClusters().contains(globalCluster)) {
-                admin.clusters().createCluster(globalCluster, new ClusterData(null, null));
-            }
-
-            if (!admin.tenants().getTenants().contains(property)) {
-                admin.tenants().createTenant(property,
-                        new TenantInfo(Sets.newHashSet(config.getSuperUserRoles()), Sets.newHashSet(cluster)));
-            }
-
-            if (!admin.namespaces().getNamespaces(property).contains(namespace)) {
-                admin.namespaces().createNamespace(namespace);
             }
         } catch (PulsarAdminException e) {
             log.info(e.getMessage());
