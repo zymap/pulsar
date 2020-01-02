@@ -47,8 +47,14 @@ jobs:
       - name: run compatibility 2-2
         run: mvn -B -f tests/pom.xml test -DintegrationTestSuiteFile=pulsar-backwards-compatibility-2-2.xml -DintegrationTests -DredirectTestOutputToFile=false
 
+      - name: clean up
+        run: docker system prune -f
+
       - name: run compatibility 2-3
         run: mvn -B -f tests/pom.xml test -DintegrationTestSuiteFile=pulsar-backwards-compatibility-2-3.xml -DintegrationTests -DredirectTestOutputToFile=false
+
+      - name: clean up
+        run : docker system prune -f
 
       - name: run compatibility 2-4
         run: mvn -B -f tests/pom.xml test -DintegrationTestSuiteFile=pulsar-backwards-compatibility-2-4.xml -DintegrationTests -DredirectTestOutputToFile=false
