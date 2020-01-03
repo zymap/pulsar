@@ -46,9 +46,9 @@ jobs:
         with:
           maven-version: 3.6.1
 
-      - name: run unit tests
-        run: mvn -B -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR install '-Dtest=PersistentTransactionBufferTest,PulsarFunctionE2ESecurityTest,ServerCnxTest,AdminApiOffloadTest,AdminApiSchemaValidationEnforced,V1_AdminApiTest2,ProxyPublishConsumeTlsTest,PulsarFunctionE2ETest,MessageIdSerialization,AdminApiTest2,PulsarFunctionLocalRunTest,PartitionedProducerConsumerTest,KafkaProducerSimpleConsumerTest,ProxyTest' -DfailIfNoTests=false
-          
+      - name: run unit pulsar MessagePublishThrottlingTest
+        run: mvn -B clean install -DfailIfNoTests=false -Dtest=MessagePublishThrottlingTest -am -pl pulsar-broker
+
       - name: package surefire artifacts
         if: failure()
         run: |
