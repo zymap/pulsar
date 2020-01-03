@@ -58,18 +58,20 @@ jobs:
         run: mvn -B -am -pl pulsar-broker -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=ServerCnxTest -DfailIfNoTests=false
 
       - name: check dir
-          run: |
-            ls data
-            ls /tmp
+        run: |
+          ls
+          ls data
+          ls /tmp
 
       - name: run MessagePublishThrottling test
         run: mvn -B -am -pl pulsar-broker -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=MessagePublishThrottlingTest -DfailIfNoTests=false
 
       - name: check dir
-          run: |
-            ls data
-            ls /tmp
-      
+        run: |
+          ls
+          ls data
+          ls /tmp
+
       - name: run PrimitiveSchema test
         run: mvn -B -am -pl pulsar-client -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=PrimitiveSchemaTest -DfailIfNoTests=false
 
