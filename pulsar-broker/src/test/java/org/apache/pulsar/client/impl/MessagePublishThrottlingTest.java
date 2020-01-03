@@ -478,6 +478,7 @@ public class MessagePublishThrottlingTest extends ProducerConsumerBase {
         executor.invokeAll(topicRatesCounter);
         latch.await(2, TimeUnit.SECONDS);
         log.info("2-nd rate in: {}, total: {} ", topicsRateIn.get(), topicNumber * numMessage * msgBytes);
+        System.out.printf("2-nd rate in: %f, total: %d ", topicsRateIn.get(), topicNumber * numMessage * msgBytes);
         assertTrue(rateIn < topicsRateIn.get());
         assertTrue(rateIn < topicNumber * numMessage * msgBytes);
 
