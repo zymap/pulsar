@@ -51,7 +51,7 @@ jobs:
 
       - name: check dir
         run: |
-          ls data
+          ls
           ls /tmp
 
       - name: run ServerCnx test
@@ -60,7 +60,6 @@ jobs:
       - name: check dir
         run: |
           ls
-          ls data
           ls /tmp
 
       - name: run MessagePublishThrottling test
@@ -69,7 +68,6 @@ jobs:
       - name: check dir
         run: |
           ls
-          ls data
           ls /tmp
 
       - name: run PrimitiveSchema test
