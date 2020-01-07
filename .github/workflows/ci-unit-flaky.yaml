@@ -50,7 +50,7 @@ jobs:
         run: mvn -B -am -pl pulsar-broker -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=PersistentTransactionBufferTest -DfailIfNoTests=false
 
       - name: run ServerCnx test
-        run: mvn -B -am -pl pulsar-broker -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=ServerCnxTest -DfailIfNoTests=false
+        run: mvn -B -am -pl pulsar-broker clean install -Dtest=ServerCnxTest -DfailIfNoTests=false
 
       - name: run MessagePublishThrottling test
         run: mvn -B -am -pl pulsar-broker -Dorg.slf4j.simpleLogger.defaultLogLevel=ERROR clean install -Dtest=MessagePublishThrottlingTest -DfailIfNoTests=false
