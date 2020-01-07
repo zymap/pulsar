@@ -909,7 +909,7 @@ public class MessageDispatchThrottlingTest extends ProducerConsumerBase {
 
     /**
      * It verifies that relative throttling at least dispatch messages as publish-rate.
-     * 
+     *
      * @param subscription
      * @throws Exception
      */
@@ -918,7 +918,7 @@ public class MessageDispatchThrottlingTest extends ProducerConsumerBase {
         log.info("-- Starting {} test --", methodName);
 
         final String namespace = "my-property/relative_throttling_ns";
-        final String topicName = "persistent://" + namespace + "/relative-throttle";
+        final String topicName = "persistent://" + namespace + "/relative-throttle-" + subscription.name();
 
         final int messageRate = 1;
         DispatchRate dispatchRate = new DispatchRate(messageRate, -1, 1, true);
