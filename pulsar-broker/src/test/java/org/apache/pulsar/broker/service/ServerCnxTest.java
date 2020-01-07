@@ -748,6 +748,7 @@ public class ServerCnxTest {
         channel.writeInbound(clientCommand);
 
         Object response = getResponse();
+        System.out.println(response.getClass().getName());
         assertTrue(response instanceof CommandError);
         CommandError error = (CommandError) response;
         assertEquals(error.getError(), ServerError.ServiceNotReady);

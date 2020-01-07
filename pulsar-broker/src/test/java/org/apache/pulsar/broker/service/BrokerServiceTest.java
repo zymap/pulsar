@@ -47,6 +47,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
@@ -946,9 +947,10 @@ public class BrokerServiceTest extends BrokerTestBase {
                 .get(mlFactory);
         assertNotNull(ledgers.get(topicMlName));
 
-        org.apache.pulsar.broker.service.Producer prod = spy(topic.producers.values().get(0));
+        List<org.apache.pulsar.broker.service.Producer> producers = topic.producers.values().stream().collect(Collectors.toList());
+        org.apache.pulsar.broker.service.Producer prod = spy(producers.get(0));
         topic.producers.clear();
-        topic.producers.add(prod);
+        topic.producers.put(prod.getProducerName(), prod);
         CompletableFuture<Void> waitFuture = new CompletableFuture<Void>();
         doReturn(waitFuture).when(prod).disconnect();
         Set<NamespaceBundle> bundles = pulsar.getNamespaceService().getOwnedServiceUnits();
