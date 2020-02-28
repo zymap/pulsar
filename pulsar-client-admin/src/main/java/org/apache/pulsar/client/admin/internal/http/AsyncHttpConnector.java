@@ -31,8 +31,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -65,11 +63,13 @@ import org.glassfish.jersey.client.spi.AsyncConnectorCallback;
 import org.glassfish.jersey.client.spi.Connector;
 
 @Slf4j
-public class AsyncHttpConnector implements Connector {
+public class AsyncHttpConnector implements Connector, AsyncConnectorCallback {
 
     @Getter
     private final AsyncHttpClient httpClient;
     private final PulsarServiceNameResolver serviceNameResolver;
+
+    private Set<InetSocketAddress> triedAddressees;
 
     public AsyncHttpConnector(Client client, ClientConfigurationData conf) {
         this((int) client.getConfiguration().getProperty(ClientProperties.CONNECT_TIMEOUT),
@@ -120,48 +120,25 @@ public class AsyncHttpConnector implements Connector {
     }
 
     public ClientResponse apply(ClientRequest jerseyRequest) {
+        final CompletableFuture<ClientResponse> resp = new CompletableFuture<>();
 
-        CompletableFuture<ClientResponse> future = new CompletableFuture<>();
-        long startTime = System.currentTimeMillis();
-        Throwable lastException = null;
-        Set<InetSocketAddress> triedAddresses = new HashSet<>();
-
-        while (true) {
-            InetSocketAddress address = serviceNameResolver.resolveHost();
-            if (triedAddresses.contains(address)) {
-                // We already tried all available addresses
-                throw new ProcessingException((lastException.getMessage()), lastException);
+        apply(jerseyRequest, new AsyncConnectorCallback() {
+            @Override
+            public void response(ClientResponse clientResponse) {
+                resp.complete(clientResponse);
             }
 
-            triedAddresses.add(address);
-            URI requestUri = replaceWithNew(address, jerseyRequest.getUri());
-            jerseyRequest.setUri(requestUri);
-            CompletableFuture<ClientResponse> tempFuture = new CompletableFuture<>();
-            try {
-                resolveRequest(tempFuture, jerseyRequest);
-                if (System.currentTimeMillis() - startTime > httpClient.getConfig().getRequestTimeout()) {
-                    throw new ProcessingException(
-                        "Request timeout, the last try service url is : " + jerseyRequest.getUri().toString());
-                }
-            } catch (ExecutionException ex) {
-                Throwable e = ex.getCause() == null ? ex : ex.getCause();
-                if (System.currentTimeMillis() - startTime > httpClient.getConfig().getRequestTimeout()) {
-                    throw new ProcessingException((e.getMessage()), e);
-                }
-                lastException = e;
-                continue;
-            } catch (Exception e) {
-                if (System.currentTimeMillis() - startTime > httpClient.getConfig().getRequestTimeout()) {
-                    throw new ProcessingException(e.getMessage(), e);
-                }
-                lastException = e;
-                continue;
+            @Override
+            public void failure(Throwable throwable) {
+                resp.completeExceptionally(throwable);
             }
-            future = tempFuture;
-            break;
+        });
+
+        try {
+            return resp.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new ProcessingException(e);
         }
-
-        return future.join();
     }
 
     private URI replaceWithNew(InetSocketAddress address, URI uri) {
@@ -176,39 +153,39 @@ public class AsyncHttpConnector implements Connector {
         return URI.create(newUri);
     }
 
-
-
-    private void resolveRequest(CompletableFuture<ClientResponse> future,
-                                ClientRequest jerseyRequest)
-        throws InterruptedException, ExecutionException, TimeoutException {
-        Future<?> resultFuture = apply(jerseyRequest, new AsyncConnectorCallback() {
-            @Override
-            public void response(ClientResponse response) {
-                future.complete(response);
-            }
-            @Override
-            public void failure(Throwable failure) {
-                future.completeExceptionally(failure);
-            }
-        });
-
-        Integer timeout = httpClient.getConfig().getRequestTimeout() / 3;
-
-        Object result = null;
-        if (timeout != null && timeout > 0) {
-            result = resultFuture.get(timeout, TimeUnit.MILLISECONDS);
-        } else {
-            result = resultFuture.get();
-        }
-
-        if (result != null && result instanceof Throwable) {
-            throw new ExecutionException((Throwable) result);
-        }
-    }
-
     @Override
     public Future<?> apply(ClientRequest jerseyRequest, AsyncConnectorCallback callback) {
-        final CompletableFuture<Object> future = new CompletableFuture<>();
+        final CompletableFuture<ClientResponse> respFuture = new CompletableFuture<>();
+        triedAddressees = new HashSet<>();
+        doNextRetry(jerseyRequest, callback, respFuture);
+        return respFuture;
+    }
+
+    private void doNextRetry(ClientRequest jerseyRequest, AsyncConnectorCallback callback, CompletableFuture<ClientResponse> respFuture) {
+        InetSocketAddress nextTriedAddress = serviceNameResolver.resolveHost();
+        log.info("Trying to use address [{}] to send request.", nextTriedAddress.toString());
+        if (triedAddressees.contains(nextTriedAddress)) {
+            Exception triedAllException = new ProcessingException("All addresses are tried and failed");
+            callback.failure(triedAllException);
+            respFuture.completeExceptionally(triedAllException);
+            return;
+        }
+        triedAddressees.add(nextTriedAddress);
+        URI requestUri = replaceWithNew(nextTriedAddress, jerseyRequest.getUri());
+        ClientRequest req = new ClientRequest(jerseyRequest);
+        req.setUri(requestUri);
+        doRequestAsync(req, this).whenComplete(((clientResponse, throwable) -> {
+            if (throwable != null) {
+                doNextRetry(jerseyRequest, callback, respFuture);
+            } else {
+                callback.response(clientResponse);
+                respFuture.complete(clientResponse);
+            }
+        }));
+    }
+
+    private CompletableFuture<ClientResponse> doRequestAsync(ClientRequest jerseyRequest, AsyncConnectorCallback callback) {
+        final CompletableFuture<ClientResponse> future = new CompletableFuture<>();
 
         BoundRequestBuilder builder = httpClient.prepare(jerseyRequest.getMethod(), jerseyRequest.getUri().toString());
 
@@ -235,7 +212,7 @@ public class AsyncHttpConnector implements Connector {
             @Override
             public Response onCompleted(Response response) throws Exception {
                 ClientResponse jerseyResponse = new ClientResponse(Status.fromStatusCode(response.getStatusCode()),
-                        jerseyRequest);
+                    jerseyRequest);
                 response.getHeaders().forEach(e -> jerseyResponse.header(e.getKey(), e.getValue()));
                 if (response.hasResponseBody()) {
                     jerseyResponse.setEntityStream(response.getResponseBodyAsStream());
@@ -269,4 +246,13 @@ public class AsyncHttpConnector implements Connector {
         }
     }
 
+    @Override
+    public void response(ClientResponse clientResponse) {
+        // do nothing
+    }
+
+    @Override
+    public void failure(Throwable throwable) {
+        // do nothing
+    }
 }
