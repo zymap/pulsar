@@ -46,6 +46,7 @@ public class AuthorizationTest extends MockedPulsarServiceBaseTest {
     @Override
     public void setup() throws Exception {
         conf.setClusterName("c1");
+        conf.setClusterName("c1");
         conf.setAuthorizationEnabled(true);
         conf.setAuthorizationAllowWildcardsMatching(true);
         conf.setSuperUserRoles(Sets.newHashSet("pulsar.super_user"));
