@@ -40,7 +40,7 @@ jobs:
 
       - name: Execute pulsarbot command
         id:   pulsarbot
-        if: github.event_name == 'issue_comment'
+        if: github.event_name == 'issue_comment' && startWith(github.event.comment.body, '/pulsarbot')
         env:
           GITHUB_TOKEN: ${{ secrets.PULSARBOT_TOKEN }}
         uses: apache/pulsar-test-infra/pulsarbot@master
@@ -57,7 +57,7 @@ jobs:
           github_repos: 'zymap/pulsar'
 
       - name: Cherry-pick
-        if: always()
+        if: github.event_name == 'issue_comment' && startWith(github.event.comment.body, '/pulsarbot, please cherry-pick')
         uses: ./.github/cherry-pick
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
