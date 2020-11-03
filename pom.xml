@@ -36,7 +36,7 @@
 
   <name>Pulsar</name>
   <description>Pulsar is a distributed pub-sub messaging platform with a very
-flexible messaging model and an intuitive client API. Test</description>
+flexible messaging model and an intuitive client API.</description>
   <url>https://github.com/apache/pulsar</url>
 
   <organization>
