@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.policies.data.loadbalancer;
 
+<<<<<<< HEAD
 import java.util.Map;
 
 
@@ -25,10 +26,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * This class represents the overall load of the broker - it includes overall SystemResourceUsage and Bundle-usage
+=======
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.Map;
+
+/**
+ * This class represents the overall load of the broker - it includes overall SystemResourceUsage and Bundle-usage.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 @JsonDeserialize(using = LoadReportDeserializer.class)
 public interface LoadManagerReport extends ServiceLookupData {
 
+<<<<<<< HEAD
     public ResourceUsage getCpu();
 
     public ResourceUsage getMemory();
@@ -65,4 +74,41 @@ public interface LoadManagerReport extends ServiceLookupData {
 
     public boolean isNonPersistentTopicsEnabled();
 
+=======
+    ResourceUsage getCpu();
+
+    ResourceUsage getMemory();
+
+    ResourceUsage getDirectMemory();
+
+    ResourceUsage getBandwidthIn();
+
+    ResourceUsage getBandwidthOut();
+
+    long getLastUpdate();
+
+    Map<String, NamespaceBundleStats> getBundleStats();
+
+    int getNumTopics();
+
+    int getNumBundles();
+
+    int getNumConsumers();
+
+    int getNumProducers();
+
+    double getMsgThroughputIn();
+
+    double getMsgThroughputOut();
+
+    double getMsgRateIn();
+
+    double getMsgRateOut();
+
+    String getBrokerVersionString();
+
+    boolean isPersistentTopicsEnabled();
+
+    boolean isNonPersistentTopicsEnabled();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -29,6 +29,10 @@ package org.apache.pulsar.functions.api;
 public interface Function<I, O> {
     /**
      * Process the input.
+<<<<<<< HEAD
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return the output
      */
     O process(I input, Context context) throws Exception;

@@ -4,6 +4,7 @@ title: Metrics for Pulsar Functions
 sidebar_label: Metrics
 ---
 
+<<<<<<< HEAD
 Pulsar Functions can publish arbitrary metrics to the metrics interface which can then be queried. This doc contains instructions for publishing metrics using the [Java](#java-sdk) and [Python](#python-sdk) Pulsar Functions SDKs.
 
 > #### Metrics and stats not available through language-native interfaces
@@ -41,3 +42,5 @@ This function counts the length of each incoming message (of type `String`) and 
 ## Python SDK
 
 Documentation for the [Python SDK](functions-api.md#python-sdk-functions) is coming soon.
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

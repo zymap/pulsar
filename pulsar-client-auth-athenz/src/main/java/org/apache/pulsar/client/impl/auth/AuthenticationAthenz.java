@@ -59,6 +59,14 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
     private String providerDomain;
     private PrivateKey privateKey;
     private String keyId = "0";
+<<<<<<< HEAD
+=======
+    private String roleHeader = null;
+    // If auto prefetching is enabled, application will not complete until the static method
+    // ZTSClient.cancelPrefetch() is called.
+    // cf. https://github.com/yahoo/athenz/issues/544
+    private boolean autoPrefetchEnabled = false;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private long cachedRoleTokenTimestamp;
     private String roleToken;
     private final int minValidity = 2 * 60 * 60; // athenz will only give this token if it's at least valid for 2hrs
@@ -76,7 +84,11 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
     @Override
     synchronized public AuthenticationDataProvider getAuthData() throws PulsarClientException {
         if (cachedRoleTokenIsValid()) {
+<<<<<<< HEAD
             return new AuthenticationDataAthenz(roleToken, ZTSClient.getHeader());
+=======
+            return new AuthenticationDataAthenz(roleToken, isNotBlank(roleHeader) ? roleHeader : ZTSClient.getHeader());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         try {
             // the following would set up the API call that requests tokens from the server
@@ -85,7 +97,11 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
             RoleToken token = getZtsClient().getRoleToken(providerDomain, null, minValidity, maxValidity, false);
             roleToken = token.getToken();
             cachedRoleTokenTimestamp = System.nanoTime();
+<<<<<<< HEAD
             return new AuthenticationDataAthenz(roleToken, ZTSClient.getHeader());
+=======
+            return new AuthenticationDataAthenz(roleToken, isNotBlank(roleHeader) ? roleHeader : ZTSClient.getHeader());
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Throwable t) {
             throw new GettingAuthenticationDataException(t);
         }
@@ -136,6 +152,7 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
         }
 
         this.keyId = authParams.getOrDefault("keyId", "0");
+<<<<<<< HEAD
         if (authParams.containsKey("athenzConfPath")) {
             System.setProperty("athenz.athenz_conf", authParams.get("athenzConfPath"));
         }
@@ -146,6 +163,21 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
             System.setProperty("athenz.auth.role.header", authParams.get("roleHeader"));
         }
         if (authParams.containsKey("ztsUrl")) {
+=======
+        this.autoPrefetchEnabled = Boolean.valueOf(authParams.getOrDefault("autoPrefetchEnabled", "false"));
+
+        if (isNotBlank(authParams.get("athenzConfPath"))) {
+            System.setProperty("athenz.athenz_conf", authParams.get("athenzConfPath"));
+        }
+        if (isNotBlank(authParams.get("principalHeader"))) {
+            System.setProperty("athenz.auth.principal.header", authParams.get("principalHeader"));
+        }
+        if (isNotBlank(authParams.get("roleHeader"))) {
+            this.roleHeader = authParams.get("roleHeader");
+            System.setProperty("athenz.auth.role.header", this.roleHeader);
+        }
+        if (isNotBlank(authParams.get("ztsUrl"))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             this.ztsUrl = authParams.get("ztsUrl");
         }
     }
@@ -156,6 +188,12 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
 
     @Override
     public void close() throws IOException {
+<<<<<<< HEAD
+=======
+        if (ztsClient != null) {
+            ztsClient.close();
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private ZTSClient getZtsClient() {
@@ -163,6 +201,10 @@ public class AuthenticationAthenz implements Authentication, EncodedAuthenticati
             ServiceIdentityProvider siaProvider = new SimpleServiceIdentityProvider(tenantDomain, tenantService,
                     privateKey, keyId);
             ztsClient = new ZTSClient(ztsUrl, tenantDomain, tenantService, siaProvider);
+<<<<<<< HEAD
+=======
+            ztsClient.setPrefetchAutoEnable(this.autoPrefetchEnabled);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         return ztsClient;
     }

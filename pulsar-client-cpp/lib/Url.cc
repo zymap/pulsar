@@ -19,7 +19,11 @@
 #include "Url.h"
 
 #include <boost/regex.hpp>
+<<<<<<< HEAD
 #include <iostream>
+=======
+#include <sstream>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 

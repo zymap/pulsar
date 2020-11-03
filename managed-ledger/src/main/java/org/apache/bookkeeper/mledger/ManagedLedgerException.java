@@ -39,8 +39,17 @@ public class ManagedLedgerException extends Exception {
     }
 
     public static class MetaStoreException extends ManagedLedgerException {
+<<<<<<< HEAD
         public MetaStoreException(Exception e) {
             super(e);
+=======
+        public MetaStoreException(Throwable t) {
+            super(t);
+        }
+
+        public MetaStoreException(String msg) {
+            super(msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -48,12 +57,26 @@ public class ManagedLedgerException extends Exception {
         public BadVersionException(Exception e) {
             super(e);
         }
+<<<<<<< HEAD
+=======
+
+        public BadVersionException(String msg) {
+            super(msg);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static class MetadataNotFoundException extends MetaStoreException {
         public MetadataNotFoundException(Exception e) {
             super(e);
         }
+<<<<<<< HEAD
+=======
+
+        public MetadataNotFoundException(String msg) {
+            super(msg);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 
@@ -71,6 +94,13 @@ public class ManagedLedgerException extends Exception {
         public ManagedLedgerNotFoundException(Exception e) {
             super(e);
         }
+<<<<<<< HEAD
+=======
+
+        public ManagedLedgerNotFoundException(String message) {
+            super(message);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static class ManagedLedgerTerminatedException extends ManagedLedgerException {
@@ -133,6 +163,15 @@ public class ManagedLedgerException extends Exception {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public static class CursorNotFoundException extends ManagedLedgerException {
+        public CursorNotFoundException(String msg) {
+            super(msg);
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public synchronized Throwable fillInStackTrace() {
         // Disable stack traces to be filled in

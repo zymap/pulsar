@@ -42,6 +42,22 @@ ConnectionPool::ConnectionPool(const ClientConfiguration& conf, ExecutorServiceP
       poolConnections_(poolConnections),
       mutex_() {}
 
+<<<<<<< HEAD
+=======
+void ConnectionPool::close() {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (poolConnections_) {
+        for (auto cnxIt = pool_.begin(); cnxIt != pool_.end(); cnxIt++) {
+            ClientConnectionPtr cnx = cnxIt->second.lock();
+            if (cnx && !cnx->isClosed()) {
+                cnx->close();
+            }
+        }
+        pool_.clear();
+    }
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 Future<Result, ClientConnectionWeakPtr> ConnectionPool::getConnectionAsync(
     const std::string& logicalAddress, const std::string& physicalAddress) {
     std::unique_lock<std::mutex> lock(mutex_);

@@ -18,10 +18,19 @@
  */
 package org.apache.pulsar.common.compression;
 
+<<<<<<< HEAD
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
+=======
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+
+/**
+ * No compression.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class CompressionCodecNone implements CompressionCodec {
 
     @Override

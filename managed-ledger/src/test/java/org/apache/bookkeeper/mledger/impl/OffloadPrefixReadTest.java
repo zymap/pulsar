@@ -18,10 +18,17 @@
  */
 package org.apache.bookkeeper.mledger.impl;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +39,10 @@ import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -49,23 +59,33 @@ import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.api.ReadHandle;
 import org.apache.bookkeeper.client.impl.LedgerEntriesImpl;
 import org.apache.bookkeeper.client.impl.LedgerEntryImpl;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.LedgerOffloader;
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
 import org.apache.bookkeeper.net.BookieSocketAddress;
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
+<<<<<<< HEAD
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+=======
+import org.apache.pulsar.common.policies.data.OffloadPolicies;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
+<<<<<<< HEAD
     private static final Logger log = LoggerFactory.getLogger(OffloadPrefixReadTest.class);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Test
     public void testOffloadRead() throws Exception {
         MockLedgerOffloader offloader = spy(new MockLedgerOffloader());
@@ -73,6 +93,10 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -101,21 +125,33 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
             Assert.assertEquals(new String(e.getData()), "entry-" + i++);
         }
         verify(offloader, times(1))
+<<<<<<< HEAD
             .readOffloaded(anyLong(), anyObject(), anyMap());
+=======
+            .readOffloaded(anyLong(), any(), anyMap());
+>>>>>>> f773c602c... Test pr 10 (#27)
         verify(offloader).readOffloaded(anyLong(), eq(firstLedgerUUID), anyMap());
 
         for (Entry e : cursor.readEntries(10)) {
             Assert.assertEquals(new String(e.getData()), "entry-" + i++);
         }
         verify(offloader, times(2))
+<<<<<<< HEAD
             .readOffloaded(anyLong(), anyObject(), anyMap());
+=======
+            .readOffloaded(anyLong(), any(), anyMap());
+>>>>>>> f773c602c... Test pr 10 (#27)
         verify(offloader).readOffloaded(anyLong(), eq(secondLedgerUUID), anyMap());
 
         for (Entry e : cursor.readEntries(5)) {
             Assert.assertEquals(new String(e.getData()), "entry-" + i++);
         }
         verify(offloader, times(2))
+<<<<<<< HEAD
             .readOffloaded(anyLong(), anyObject(), anyMap());
+=======
+            .readOffloaded(anyLong(), any(), anyMap());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     static class MockLedgerOffloader implements LedgerOffloader {
@@ -152,6 +188,19 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
             offloads.remove(uuid);
             return CompletableFuture.completedFuture(null);
         };
+<<<<<<< HEAD
+=======
+
+        @Override
+        public OffloadPolicies getOffloadPolicies() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     static class MockOffloadReadHandle implements ReadHandle {
@@ -276,6 +325,14 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
         public int getMetadataFormatVersion() { return metadataFormatVersion; }
 
         @Override
+<<<<<<< HEAD
+=======
+        public long getCToken() {
+            return 0;
+        }
+
+        @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
         public int getEnsembleSize() { return ensembleSize; }
 
         @Override

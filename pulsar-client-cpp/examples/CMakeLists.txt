@@ -17,7 +17,13 @@
 # under the License.
 #
 
+<<<<<<< HEAD
 set(CMAKE_C_FLAGS " -std=c99 ${CMAKE_C_FLAGS}")
+=======
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS " -std=c99 ${CMAKE_C_FLAGS}")
+endif()
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 set(SAMPLE_ASYNC_PRODUCER_SOURCES
   SampleAsyncProducer.cc

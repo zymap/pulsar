@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import io.airlift.log.Logger;
 
 import org.apache.pulsar.shade.io.netty.buffer.ByteBuf;
@@ -47,11 +48,54 @@ public class AvroSchemaHandler implements SchemaHandler {
 
     public AvroSchemaHandler(Schema schema, List<PulsarColumnHandle> columnHandles) {
         this.datumReader = new GenericDatumReader<>(schema);
+=======
+import com.google.common.annotations.VisibleForTesting;
+
+import io.airlift.log.Logger;
+import io.netty.buffer.ByteBuf;
+
+import java.util.List;
+
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.impl.schema.generic.GenericAvroRecord;
+import org.apache.pulsar.client.impl.schema.generic.GenericAvroSchema;
+import org.apache.pulsar.common.naming.TopicName;
+import org.apache.pulsar.common.schema.SchemaInfo;
+
+
+/**
+ * Schema handler for payload in the Avro format.
+ */
+public class AvroSchemaHandler implements SchemaHandler {
+
+    private final List<PulsarColumnHandle> columnHandles;
+
+    private final GenericAvroSchema genericAvroSchema;
+
+    private final SchemaInfo schemaInfo;
+
+    private static final Logger log = Logger.get(AvroSchemaHandler.class);
+
+    AvroSchemaHandler(TopicName topicName,
+                      PulsarConnectorConfig pulsarConnectorConfig,
+                      SchemaInfo schemaInfo,
+                      List<PulsarColumnHandle> columnHandles) throws PulsarClientException {
+        this(new PulsarSqlSchemaInfoProvider(topicName,
+                                pulsarConnectorConfig.getPulsarAdmin()), schemaInfo, columnHandles);
+    }
+
+    AvroSchemaHandler(PulsarSqlSchemaInfoProvider pulsarSqlSchemaInfoProvider,
+                      SchemaInfo schemaInfo, List<PulsarColumnHandle> columnHandles) {
+        this.schemaInfo = schemaInfo;
+        this.genericAvroSchema = new GenericAvroSchema(schemaInfo);
+        this.genericAvroSchema.setSchemaInfoProvider(pulsarSqlSchemaInfoProvider);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.columnHandles = columnHandles;
     }
 
     @Override
     public Object deserialize(ByteBuf payload) {
+<<<<<<< HEAD
 
         ByteBuf heapBuffer = null;
         try {
@@ -74,11 +118,20 @@ public class AvroSchemaHandler implements SchemaHandler {
             ReferenceCountUtil.safeRelease(heapBuffer);
         }
         return null;
+=======
+        return genericAvroSchema.decode(payload);
+    }
+
+    @Override
+    public Object deserialize(ByteBuf payload, byte[] schemaVersion) {
+        return genericAvroSchema.decode(payload, schemaVersion);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public Object extractField(int index, Object currentRecord) {
         try {
+<<<<<<< HEAD
             GenericRecord record = (GenericRecord) currentRecord;
             PulsarColumnHandle pulsarColumnHandle = this.columnHandles.get(index);
             Integer[] positionIndices = pulsarColumnHandle.getPositionIndices();
@@ -100,4 +153,33 @@ public class AvroSchemaHandler implements SchemaHandler {
         }
         return null;
     }
+=======
+            GenericAvroRecord record = (GenericAvroRecord) currentRecord;
+            PulsarColumnHandle pulsarColumnHandle = this.columnHandles.get(index);
+            String[] names = pulsarColumnHandle.getFieldNames();
+
+            if (names.length == 1) {
+                return record.getField(pulsarColumnHandle.getFieldNames()[0]);
+            } else {
+                for (int i = 0; i < names.length - 1; i++) {
+                    record = (GenericAvroRecord) record.getField(names[i]);
+                }
+                return record.getField(names[names.length - 1]);
+            }
+        } catch (Exception ex) {
+            log.debug(ex, "%s", ex);
+        }
+        return null;
+    }
+
+    @VisibleForTesting
+    GenericAvroSchema getSchema() {
+        return this.genericAvroSchema;
+    }
+
+    @VisibleForTesting
+    SchemaInfo getSchemaInfo() {
+        return schemaInfo;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

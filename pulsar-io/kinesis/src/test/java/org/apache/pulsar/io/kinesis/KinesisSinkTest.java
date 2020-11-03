@@ -21,6 +21,10 @@ package org.apache.pulsar.io.kinesis;
 import java.io.IOException;
 import java.util.Map;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.io.aws.AwsCredentialProviderPlugin;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.collections.Maps;
@@ -52,7 +56,12 @@ public class KinesisSinkTest {
         credentialParam.put(KinesisSink.ACCESS_KEY_NAME, accesKey);
         credentialParam.put(KinesisSink.SECRET_KEY_NAME, secretKey);
         awsCredentialPluginParam = new Gson().toJson(credentialParam);
+<<<<<<< HEAD
         AWSCredentialsProvider credentialProvider = sink.defaultCredentialProvider(awsCredentialPluginParam);
+=======
+        AWSCredentialsProvider credentialProvider = sink.defaultCredentialProvider(awsCredentialPluginParam)
+                .getCredentialProvider();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertNotNull(credentialProvider);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSAccessKeyId(), accesKey);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSSecretKey(), secretKey);
@@ -70,11 +79,21 @@ public class KinesisSinkTest {
         credentialParam.put(KinesisSink.ACCESS_KEY_NAME, accesKey);
         credentialParam.put(KinesisSink.SECRET_KEY_NAME, secretKey);
         String awsCredentialPluginParam = new Gson().toJson(credentialParam);
+<<<<<<< HEAD
         AWSCredentialsProvider credentialProvider = sink.createCredentialProvider(null, awsCredentialPluginParam);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSAccessKeyId(), accesKey);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSSecretKey(), secretKey);
 
         credentialProvider = sink.createCredentialProvider(AwsCredentialProviderPluginImpl.class.getName(), "{}");
+=======
+        AWSCredentialsProvider credentialProvider = sink.createCredentialProvider(null, awsCredentialPluginParam)
+                .getCredentialProvider();
+        Assert.assertEquals(credentialProvider.getCredentials().getAWSAccessKeyId(), accesKey);
+        Assert.assertEquals(credentialProvider.getCredentials().getAWSSecretKey(), secretKey);
+
+        credentialProvider = sink.createCredentialProvider(AwsCredentialProviderPluginImpl.class.getName(), "{}")
+                .getCredentialProvider();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertNotNull(credentialProvider);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSAccessKeyId(),
                 AwsCredentialProviderPluginImpl.accessKey);
@@ -91,7 +110,12 @@ public class KinesisSinkTest {
         KinesisSink sink = new KinesisSink();
 
         AWSCredentialsProvider credentialProvider = sink
+<<<<<<< HEAD
                 .createCredentialProviderWithPlugin(AwsCredentialProviderPluginImpl.class.getName(), "{}");
+=======
+                .createCredentialProviderWithPlugin(AwsCredentialProviderPluginImpl.class.getName(), "{}")
+                .getCredentialProvider();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertNotNull(credentialProvider);
         Assert.assertEquals(credentialProvider.getCredentials().getAWSAccessKeyId(),
                 AwsCredentialProviderPluginImpl.accessKey);

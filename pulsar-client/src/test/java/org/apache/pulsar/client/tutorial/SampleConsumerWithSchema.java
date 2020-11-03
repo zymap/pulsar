@@ -23,6 +23,10 @@ import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.schema.JSONSchema;
 
 public class SampleConsumerWithSchema {
@@ -30,7 +34,12 @@ public class SampleConsumerWithSchema {
 
         PulsarClient pulsarClient = PulsarClient.builder().serviceUrl("http://localhost:8080").build();
 
+<<<<<<< HEAD
         Consumer<JsonPojo> consumer = pulsarClient.newConsumer(JSONSchema.of(JsonPojo.class)) //
+=======
+        Consumer<JsonPojo> consumer = pulsarClient.newConsumer(JSONSchema.of
+                (SchemaDefinition.<JsonPojo>builder().withPojo(JsonPojo.class).build())) //
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .topic("persistent://my-property/use/my-ns/my-topic") //
                 .subscriptionName("my-subscription-name").subscribe();
 

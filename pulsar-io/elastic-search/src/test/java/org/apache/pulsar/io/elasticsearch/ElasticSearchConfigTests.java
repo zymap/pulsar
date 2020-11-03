@@ -20,9 +20,17 @@ package org.apache.pulsar.io.elasticsearch;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+<<<<<<< HEAD
 
 import java.io.File;
 import java.io.IOException;
+=======
+import static org.testng.Assert.assertNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +45,14 @@ public class ElasticSearchConfigTests {
         assertNotNull(config);
         assertEquals(config.getElasticSearchUrl(), "http://localhost:90902");
         assertEquals(config.getIndexName(), "myIndex");
+<<<<<<< HEAD
         assertEquals(config.getUsername(), "scooby");
         assertEquals(config.getPassword(), "doobie");               
+=======
+        assertEquals(config.getTypeName(), "doc");
+        assertEquals(config.getUsername(), "scooby");
+        assertEquals(config.getPassword(), "doobie");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     
     @Test
@@ -46,6 +60,10 @@ public class ElasticSearchConfigTests {
         Map<String, Object> map = new HashMap<String, Object> ();
         map.put("elasticSearchUrl", "http://localhost:90902");
         map.put("indexName", "myIndex");
+<<<<<<< HEAD
+=======
+        map.put("typeName", "doc");
+>>>>>>> f773c602c... Test pr 10 (#27)
         map.put("username", "racerX");
         map.put("password", "go-speedie-go");
         
@@ -53,9 +71,29 @@ public class ElasticSearchConfigTests {
         assertNotNull(config);
         assertEquals(config.getElasticSearchUrl(), "http://localhost:90902");
         assertEquals(config.getIndexName(), "myIndex");
+<<<<<<< HEAD
         assertEquals(config.getUsername(), "racerX");
         assertEquals(config.getPassword(), "go-speedie-go");  
     }
+=======
+        assertEquals(config.getTypeName(), "doc");
+        assertEquals(config.getUsername(), "racerX");
+        assertEquals(config.getPassword(), "go-speedie-go");  
+    }
+
+    @Test
+    public final void defaultValueTest() throws IOException {
+        ElasticSearchConfig config = ElasticSearchConfig.load(Collections.emptyMap());
+
+        assertNull(config.getElasticSearchUrl());
+        assertNull(config.getIndexName());
+        assertEquals(config.getTypeName(), "_doc");
+        assertNull(config.getUsername());
+        assertNull(config.getPassword());
+        assertEquals(config.getIndexNumberOfReplicas(), 1);
+        assertEquals(config.getIndexNumberOfShards(), 1);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
     
     @Test
     public final void validValidateTest() throws IOException {
@@ -70,6 +108,22 @@ public class ElasticSearchConfigTests {
         config.validate();
     }
     
+<<<<<<< HEAD
+=======
+    @Test
+    public final void zeroReplicasValidateTest() throws IOException {
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("elasticSearchUrl", "http://localhost:90902");
+        map.put("indexName", "myIndex");
+        map.put("username", "racerX");
+        map.put("password", "go-speedie-go");
+        map.put("indexNumberOfReplicas", "0");
+        
+        ElasticSearchConfig config = ElasticSearchConfig.load(map);
+        config.validate();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Test(expectedExceptions = IllegalArgumentException.class, 
             expectedExceptionsMessageRegExp = "Required property not set.")
     public final void missingRequiredPropertiesTest() throws IOException {
@@ -81,7 +135,11 @@ public class ElasticSearchConfigTests {
     }
     
     @Test(expectedExceptions = IllegalArgumentException.class, 
+<<<<<<< HEAD
             expectedExceptionsMessageRegExp = "indexNumberOfShards must be a positive integer")
+=======
+            expectedExceptionsMessageRegExp = "indexNumberOfShards must be a strictly positive integer")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public final void invalidPropertyValueTest() throws IOException {
         Map<String, Object> map = new HashMap<String, Object> ();
         map.put("elasticSearchUrl", "http://localhost:90902");

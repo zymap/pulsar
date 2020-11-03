@@ -60,13 +60,21 @@ public class PersistentQueueE2ETest extends BrokerTestBase {
 
     @BeforeClass
     @Override
+<<<<<<< HEAD
     protected void setup() throws Exception {
+=======
+    public void setup() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super.baseSetup();
     }
 
     @AfterClass
     @Override
+<<<<<<< HEAD
     protected void cleanup() throws Exception {
+=======
+    public void cleanup() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super.internalCleanup();
     }
 
@@ -117,7 +125,11 @@ public class PersistentQueueE2ETest extends BrokerTestBase {
 
         rolloverPerIntervalStats();
 
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs * 2);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs * 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
 
         // both consumers will together consumer all messages
@@ -141,7 +153,11 @@ public class PersistentQueueE2ETest extends BrokerTestBase {
 
         // 3. messages deleted on individual acks
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), 0);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 4. shared consumer unsubscribe not allowed
         try {

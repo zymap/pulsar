@@ -3,6 +3,7 @@ id: io-hbase
 title: hbase Connector
 sidebar_label: hbase Connector
 ---
+<<<<<<< HEAD
 
 ## Sink
 
@@ -25,3 +26,5 @@ All the Hbase sink settings are listed as below. All the settings are required t
 | `qualifierNames` | `null` | `true` | hbase table column qualifier names. |
 | `timeoutMs` | `1000l` | `false` | hbase table operation timeout in milliseconds. |
 | `batchSize` | `200` | `false` | The batch size of updates made to the hbase table. |
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

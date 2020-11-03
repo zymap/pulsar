@@ -20,6 +20,7 @@ package org.apache.pulsar.common.policies.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,20 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
+=======
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Statistics for a Pulsar topic.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class TopicStats {
     private int count;
 
+<<<<<<< HEAD
     /** Total rate of messages published on the topic. msg/s */
     public double msgRateIn;
 
@@ -56,6 +67,51 @@ public class TopicStats {
     public Map<String, SubscriptionStats> subscriptions;
 
     /** Map of replication statistics by remote cluster context */
+=======
+    /** Total rate of messages published on the topic (msg/s). */
+    public double msgRateIn;
+
+    /** Total throughput of messages published on the topic (byte/s). */
+    public double msgThroughputIn;
+
+    /** Total rate of messages dispatched for the topic (msg/s). */
+    public double msgRateOut;
+
+    /** Total throughput of messages dispatched for the topic (byte/s). */
+    public double msgThroughputOut;
+
+    /** Total bytes published to the topic (bytes). */
+    public long bytesInCounter;
+
+    /** Total messages published to the topic (msg). */
+    public long msgInCounter;
+
+    /** Total bytes delivered to consumer (bytes). */
+    public long bytesOutCounter;
+
+    /** Total messages delivered to consumer (msg). */
+    public long msgOutCounter;
+
+    /** Average size of published messages (bytes). */
+    public double averageMsgSize;
+
+    /** Topic has chunked message published on it. */
+    public boolean msgChunkPublished;
+
+    /** Space used to store the messages for the topic (bytes). */
+    public long storageSize;
+
+    /** Get estimated total unconsumed or backlog size in bytes. */
+    public long backlogSize;
+
+    /** List of connected publishers on this topic w/ their stats. */
+    public List<PublisherStats> publishers;
+
+    /** Map of subscriptions with their individual statistics. */
+    public Map<String, SubscriptionStats> subscriptions;
+
+    /** Map of replication statistics by remote cluster context. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Map<String, ReplicatorStats> replication;
 
     public String deduplicationStatus;
@@ -74,6 +130,14 @@ public class TopicStats {
         this.msgThroughputOut = 0;
         this.averageMsgSize = 0;
         this.storageSize = 0;
+<<<<<<< HEAD
+=======
+        this.backlogSize = 0;
+        this.bytesInCounter = 0;
+        this.msgInCounter = 0;
+        this.bytesOutCounter = 0;
+        this.msgOutCounter = 0;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.publishers.clear();
         this.subscriptions.clear();
         this.replication.clear();
@@ -81,7 +145,11 @@ public class TopicStats {
     }
 
     // if the stats are added for the 1st time, we will need to make a copy of these stats and add it to the current
+<<<<<<< HEAD
     // stats
+=======
+    // stats.
+>>>>>>> f773c602c... Test pr 10 (#27)
     public TopicStats add(TopicStats stats) {
         checkNotNull(stats);
         this.count++;
@@ -89,9 +157,20 @@ public class TopicStats {
         this.msgThroughputIn += stats.msgThroughputIn;
         this.msgRateOut += stats.msgRateOut;
         this.msgThroughputOut += stats.msgThroughputOut;
+<<<<<<< HEAD
         double newAverageMsgSize = (this.averageMsgSize * (this.count - 1) + stats.averageMsgSize) / this.count;
         this.averageMsgSize = newAverageMsgSize;
         this.storageSize += stats.storageSize;
+=======
+        this.bytesInCounter += stats.bytesInCounter;
+        this.msgInCounter += stats.msgInCounter;
+        this.bytesOutCounter += stats.bytesOutCounter;
+        this.msgOutCounter += stats.msgOutCounter;
+        double newAverageMsgSize = (this.averageMsgSize * (this.count - 1) + stats.averageMsgSize) / this.count;
+        this.averageMsgSize = newAverageMsgSize;
+        this.storageSize += stats.storageSize;
+        this.backlogSize += stats.backlogSize;
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (this.publishers.size() != stats.publishers.size()) {
             for (int i = 0; i < stats.publishers.size(); i++) {
                 PublisherStats publisherStats = new PublisherStats();
@@ -109,7 +188,16 @@ public class TopicStats {
             }
         } else {
             for (String subscription : stats.subscriptions.keySet()) {
+<<<<<<< HEAD
                 this.subscriptions.get(subscription).add(stats.subscriptions.get(subscription));
+=======
+                if (this.subscriptions.get(subscription) != null) {
+                    this.subscriptions.get(subscription).add(stats.subscriptions.get(subscription));
+                } else {
+                    SubscriptionStats subscriptionStats = new SubscriptionStats();
+                    this.subscriptions.put(subscription, subscriptionStats.add(stats.subscriptions.get(subscription)));
+                }
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
         if (this.replication.size() != stats.replication.size()) {
@@ -119,9 +207,22 @@ public class TopicStats {
             }
         } else {
             for (String repl : stats.replication.keySet()) {
+<<<<<<< HEAD
                 this.replication.get(repl).add(stats.replication.get(repl));
+=======
+                if (this.replication.get(repl) != null) {
+                    this.replication.get(repl).add(stats.replication.get(repl));
+                } else {
+                    ReplicatorStats replStats = new ReplicatorStats();
+                    this.replication.put(repl, replStats.add(stats.replication.get(repl)));
+                }
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
         return this;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

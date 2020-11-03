@@ -18,6 +18,11 @@
  */
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,8 +32,11 @@ extern "C" {
 
 #include <stdint.h>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 typedef struct _pulsar_consumer pulsar_consumer_t;
 
 typedef void (*pulsar_result_callback)(pulsar_result, void *);
@@ -36,12 +44,20 @@ typedef void (*pulsar_result_callback)(pulsar_result, void *);
 /**
  * @return the topic this consumer is subscribed to
  */
+<<<<<<< HEAD
 const char *pulsar_consumer_get_topic(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC const char *pulsar_consumer_get_topic(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * @return the consumer name
  */
+<<<<<<< HEAD
 const char *pulsar_consumer_get_subscription_name(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC const char *pulsar_consumer_get_subscription_name(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Unsubscribe the current consumer from the topic.
@@ -56,7 +72,11 @@ const char *pulsar_consumer_get_subscription_name(pulsar_consumer_t *consumer);
  * @return Result::ResultOk if the unsubscribe operation completed successfully
  * @return Result::ResultError if the unsubscribe operation failed
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_unsubscribe(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_unsubscribe(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Asynchronously unsubscribe the current consumer from the topic.
@@ -69,8 +89,13 @@ pulsar_result pulsar_consumer_unsubscribe(pulsar_consumer_t *consumer);
  *
  * @param callback the callback to get notified when the operation is complete
  */
+<<<<<<< HEAD
 void pulsar_consumer_unsubscribe_async(pulsar_consumer_t *consumer, pulsar_result_callback callback,
                                        void *ctx);
+=======
+PULSAR_PUBLIC void pulsar_consumer_unsubscribe_async(pulsar_consumer_t *consumer,
+                                                     pulsar_result_callback callback, void *ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Receive a single message.
@@ -82,7 +107,11 @@ void pulsar_consumer_unsubscribe_async(pulsar_consumer_t *consumer, pulsar_resul
  * @return ResultOk when a message is received
  * @return ResultInvalidConfiguration if a message listener had been set in the configuration
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_receive(pulsar_consumer_t *consumer, pulsar_message_t **msg);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_receive(pulsar_consumer_t *consumer, pulsar_message_t **msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  *
@@ -92,8 +121,13 @@ pulsar_result pulsar_consumer_receive(pulsar_consumer_t *consumer, pulsar_messag
  * @return ResultTimeout if the receive timeout was triggered
  * @return ResultInvalidConfiguration if a message listener had been set in the configuration
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_receive_with_timeout(pulsar_consumer_t *consumer, pulsar_message_t **msg,
                                                    int timeoutMs);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_receive_with_timeout(pulsar_consumer_t *consumer,
+                                                                 pulsar_message_t **msg, int timeoutMs);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Acknowledge the reception of a single message.
@@ -106,9 +140,17 @@ pulsar_result pulsar_consumer_receive_with_timeout(pulsar_consumer_t *consumer, 
  * @return ResultOk if the message was successfully acknowledged
  * @return ResultError if there was a failure
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_acknowledge(pulsar_consumer_t *consumer, pulsar_message_t *message);
 
 pulsar_result pulsar_consumer_acknowledge_id(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_acknowledge(pulsar_consumer_t *consumer,
+                                                        pulsar_message_t *message);
+
+PULSAR_PUBLIC pulsar_result pulsar_consumer_acknowledge_id(pulsar_consumer_t *consumer,
+                                                           pulsar_message_id_t *messageId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Asynchronously acknowledge the reception of a single message.
@@ -119,11 +161,20 @@ pulsar_result pulsar_consumer_acknowledge_id(pulsar_consumer_t *consumer, pulsar
  * @param message the message to acknowledge
  * @param callback callback that will be triggered when the message has been acknowledged
  */
+<<<<<<< HEAD
 void pulsar_consumer_acknowledge_async(pulsar_consumer_t *consumer, pulsar_message_t *message,
                                        pulsar_result_callback callback, void *ctx);
 
 void pulsar_consumer_acknowledge_async_id(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId,
                                           pulsar_result_callback callback, void *ctx);
+=======
+PULSAR_PUBLIC void pulsar_consumer_acknowledge_async(pulsar_consumer_t *consumer, pulsar_message_t *message,
+                                                     pulsar_result_callback callback, void *ctx);
+
+PULSAR_PUBLIC void pulsar_consumer_acknowledge_async_id(pulsar_consumer_t *consumer,
+                                                        pulsar_message_id_t *messageId,
+                                                        pulsar_result_callback callback, void *ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Acknowledge the reception of all the messages in the stream up to (and including)
@@ -142,10 +193,18 @@ void pulsar_consumer_acknowledge_async_id(pulsar_consumer_t *consumer, pulsar_me
  * this topic are also acknowledged.
  * @return ResultError if there was a failure
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_acknowledge_cumulative(pulsar_consumer_t *consumer, pulsar_message_t *message);
 
 pulsar_result pulsar_consumer_acknowledge_cumulative_id(pulsar_consumer_t *consumer,
                                                         pulsar_message_id_t *messageId);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_acknowledge_cumulative(pulsar_consumer_t *consumer,
+                                                                   pulsar_message_t *message);
+
+PULSAR_PUBLIC pulsar_result pulsar_consumer_acknowledge_cumulative_id(pulsar_consumer_t *consumer,
+                                                                      pulsar_message_id_t *messageId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Asynchronously acknowledge the reception of all the messages in the stream up to (and
@@ -157,6 +216,7 @@ pulsar_result pulsar_consumer_acknowledge_cumulative_id(pulsar_consumer_t *consu
  * @param message the message to acknowledge
  * @param callback callback that will be triggered when the message has been acknowledged
  */
+<<<<<<< HEAD
 void pulsar_consumer_acknowledge_cumulative_async(pulsar_consumer_t *consumer, pulsar_message_t *message,
                                                   pulsar_result_callback callback, void *ctx);
 
@@ -169,17 +229,72 @@ pulsar_result pulsar_consumer_close(pulsar_consumer_t *consumer);
 void pulsar_consumer_close_async(pulsar_consumer_t *consumer, pulsar_result_callback callback, void *ctx);
 
 void pulsar_consumer_free(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC void pulsar_consumer_acknowledge_cumulative_async(pulsar_consumer_t *consumer,
+                                                                pulsar_message_t *message,
+                                                                pulsar_result_callback callback, void *ctx);
+
+PULSAR_PUBLIC void pulsar_consumer_acknowledge_cumulative_async_id(pulsar_consumer_t *consumer,
+                                                                   pulsar_message_id_t *messageId,
+                                                                   pulsar_result_callback callback,
+                                                                   void *ctx);
+
+/**
+ * Acknowledge the failure to process a single message.
+ * <p>
+ * When a message is "negatively acked" it will be marked for redelivery after
+ * some fixed delay. The delay is configurable when constructing the consumer
+ * with {@link ConsumerConfiguration#setNegativeAckRedeliveryDelayMs}.
+ * <p>
+ * This call is not blocking.
+ *
+ * @param message
+ *            The {@code Message} to be acknowledged
+ */
+PULSAR_PUBLIC void pulsar_consumer_negative_acknowledge(pulsar_consumer_t *consumer,
+                                                        pulsar_message_t *message);
+
+/**
+ * Acknowledge the failure to process a single message through its message id
+ * <p>
+ * When a message is "negatively acked" it will be marked for redelivery after
+ * some fixed delay. The delay is configurable when constructing the consumer
+ * with {@link ConsumerConfiguration#setNegativeAckRedeliveryDelayMs}.
+ * <p>
+ * This call is not blocking.
+ *
+ * @param message
+ *            The message id to be acknowledged
+ */
+PULSAR_PUBLIC void pulsar_consumer_negative_acknowledge_id(pulsar_consumer_t *consumer,
+                                                           pulsar_message_id_t *messageId);
+
+PULSAR_PUBLIC pulsar_result pulsar_consumer_close(pulsar_consumer_t *consumer);
+
+PULSAR_PUBLIC void pulsar_consumer_close_async(pulsar_consumer_t *consumer, pulsar_result_callback callback,
+                                               void *ctx);
+
+PULSAR_PUBLIC void pulsar_consumer_free(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /*
  * Pause receiving messages via the messageListener, till resumeMessageListener() is called.
  */
+<<<<<<< HEAD
 pulsar_result pulsar_consumer_pause_message_listener(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC pulsar_result pulsar_consumer_pause_message_listener(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /*
  * Resume receiving the messages via the messageListener.
  * Asynchronously receive all the messages enqueued from time pauseMessageListener() was called.
  */
+<<<<<<< HEAD
 pulsar_result resume_message_listener(pulsar_consumer_t *consumer);
+=======
+PULSAR_PUBLIC pulsar_result resume_message_listener(pulsar_consumer_t *consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Redelivers all the unacknowledged messages. In Failover mode, the request is ignored if the consumer is
@@ -190,6 +305,7 @@ pulsar_result resume_message_listener(pulsar_consumer_t *consumer);
  * connection
  * breaks, the messages are redelivered after reconnect.
  */
+<<<<<<< HEAD
 void pulsar_consumer_redeliver_unacknowledged_messages(pulsar_consumer_t *consumer);
 
 void pulsar_consumer_seek_async(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId,
@@ -198,6 +314,14 @@ void pulsar_consumer_seek_async(pulsar_consumer_t *consumer, pulsar_message_id_t
 pulsar_result pulsar_consumer_seek(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId);
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC void pulsar_consumer_redeliver_unacknowledged_messages(pulsar_consumer_t *consumer);
+
+PULSAR_PUBLIC void pulsar_consumer_seek_async(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId,
+                                              pulsar_result_callback callback, void *ctx);
+
+PULSAR_PUBLIC pulsar_result pulsar_consumer_seek(pulsar_consumer_t *consumer, pulsar_message_id_t *messageId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #ifdef __cplusplus
 }

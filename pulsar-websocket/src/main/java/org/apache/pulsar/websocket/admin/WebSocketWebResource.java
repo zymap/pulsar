@@ -29,6 +29,10 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.pulsar.broker.authentication.AuthenticationDataHttps;
 import org.apache.pulsar.common.naming.TopicName;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.util.RestException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.websocket.WebSocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,16 +20,35 @@ package org.apache.pulsar.proxy.server;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.util.Objects;
+=======
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.Executor;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+<<<<<<< HEAD
+=======
+import javax.servlet.http.HttpServletResponse;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.broker.web.AuthenticationFilter;
 import org.apache.pulsar.client.api.Authentication;
@@ -39,9 +58,18 @@ import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.common.util.SecurityUtility;
 import org.apache.pulsar.policies.data.loadbalancer.ServiceLookupData;
 import org.eclipse.jetty.client.HttpClient;
+<<<<<<< HEAD
 import org.eclipse.jetty.client.ProtocolHandlers;
 import org.eclipse.jetty.client.RedirectProtocolHandler;
 import org.eclipse.jetty.client.api.Request;
+=======
+import org.eclipse.jetty.client.HttpRequest;
+import org.eclipse.jetty.client.ProtocolHandlers;
+import org.eclipse.jetty.client.RedirectProtocolHandler;
+import org.eclipse.jetty.client.api.ContentProvider;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.http.HttpHeader;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.util.HttpCookieStore;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -50,8 +78,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class AdminProxyHandler extends ProxyServlet {
+<<<<<<< HEAD
     private static final Logger LOG = LoggerFactory.getLogger(AdminProxyHandler.class);
 
+=======
+
+    private static final Logger LOG = LoggerFactory.getLogger(AdminProxyHandler.class);
+
+    private static final String ORIGINAL_PRINCIPAL_HEADER = "X-Original-Principal";
+
+    private static final Set<String> functionRoutes = new HashSet<>(Arrays.asList(
+        "/admin/v3/function",
+        "/admin/v2/function",
+        "/admin/function",
+        "/admin/v3/source",
+        "/admin/v2/source",
+        "/admin/source",
+        "/admin/v3/sink",
+        "/admin/v2/sink",
+        "/admin/sink",
+        "/admin/v2/worker",
+        "/admin/v2/worker-stats",
+        "/admin/worker",
+        "/admin/worker-stats"
+    ));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final ProxyConfiguration config;
     private final BrokerDiscoveryProvider discoveryProvider;
     private final String brokerWebServiceUrl;
@@ -130,6 +182,69 @@ class AdminProxyHandler extends ProxyServlet {
         }
     }
 
+<<<<<<< HEAD
+=======
+
+    // This class allows the request body to be replayed, the default implementation
+    // does not
+    protected class ReplayableProxyContentProvider extends ProxyInputStreamContentProvider {
+        private Boolean firstIteratorCalled = false;
+        private final ByteArrayOutputStream bodyBuffer;
+        protected ReplayableProxyContentProvider(HttpServletRequest request, HttpServletResponse response, Request proxyRequest, InputStream input) {
+            super(request, response, proxyRequest, input);
+            bodyBuffer = new ByteArrayOutputStream(request.getContentLength());
+        }
+
+        @Override
+        public Iterator<ByteBuffer> iterator() {
+            if (firstIteratorCalled) {
+                return Collections.singleton(ByteBuffer.wrap(bodyBuffer.toByteArray())).iterator();
+            } else {
+                firstIteratorCalled = true;
+                return super.iterator();
+            }
+        }
+
+        @Override
+        protected ByteBuffer onRead(byte[] buffer, int offset, int length) {
+            bodyBuffer.write(buffer, offset, length);
+            return super.onRead(buffer, offset, length);
+        }
+    }
+
+    private static class JettyHttpClient extends HttpClient {
+        public JettyHttpClient() {
+            super();
+        }
+
+        public JettyHttpClient(SslContextFactory sslContextFactory) {
+            super(sslContextFactory);
+        }
+
+        /**
+         * Ensure the Authorization header is carried over after a 307 redirect
+         * from brokers.
+         */
+        @Override
+        protected Request copyRequest(HttpRequest oldRequest, URI newURI) {
+            String authorization = oldRequest.getHeaders().get(HttpHeader.AUTHORIZATION);
+            Request newRequest = super.copyRequest(oldRequest, newURI);
+            if (authorization != null) {
+                newRequest.header(HttpHeader.AUTHORIZATION, authorization);
+            }
+
+            return newRequest;
+        }
+
+    }
+
+    @Override
+    protected ContentProvider proxyRequestContent(HttpServletRequest request,
+                                                  HttpServletResponse response, Request proxyRequest) throws IOException {
+        return new ReplayableProxyContentProvider(request, response, proxyRequest, request.getInputStream());
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     protected HttpClient newHttpClient() {
         try {
@@ -145,7 +260,11 @@ class AdminProxyHandler extends ProxyServlet {
             if (config.isTlsEnabledWithBroker()) {
                 try {
                     X509Certificate trustCertificates[] = SecurityUtility
+<<<<<<< HEAD
                         .loadCertificatesFromPemFile(config.getTlsTrustCertsFilePath());
+=======
+                        .loadCertificatesFromPemFile(config.getBrokerClientTrustCertsFilePath());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
                     SSLContext sslCtx;
                     AuthenticationDataProvider authData = auth.getAuthData();
@@ -163,10 +282,18 @@ class AdminProxyHandler extends ProxyServlet {
                         );
                     }
 
+<<<<<<< HEAD
                     SslContextFactory contextFactory = new SslContextFactory();
                     contextFactory.setSslContext(sslCtx);
 
                     return new HttpClient(contextFactory);
+=======
+
+                    SslContextFactory contextFactory = new SslContextFactory.Client(true);
+                    contextFactory.setSslContext(sslCtx);
+
+                    return new JettyHttpClient(contextFactory);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (Exception e) {
                     try {
                         auth.close();
@@ -181,7 +308,11 @@ class AdminProxyHandler extends ProxyServlet {
         }
 
         // return an unauthenticated client, every request will fail.
+<<<<<<< HEAD
         return new HttpClient();
+=======
+        return new JettyHttpClient();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -190,9 +321,17 @@ class AdminProxyHandler extends ProxyServlet {
 
         boolean isFunctionsRestRequest = false;
         String requestUri = request.getRequestURI();
+<<<<<<< HEAD
         if (requestUri.startsWith("/admin/v2/functions")
             || requestUri.startsWith("/admin/functions")) {
             isFunctionsRestRequest = true;
+=======
+        for (String routePrefix: functionRoutes) {
+            if (requestUri.startsWith(routePrefix)) {
+                isFunctionsRestRequest = true;
+                break;
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         if (isFunctionsRestRequest && !isBlank(functionWorkerWebServiceUrl)) {
@@ -244,7 +383,11 @@ class AdminProxyHandler extends ProxyServlet {
         super.addProxyHeaders(clientRequest, proxyRequest);
         String user = (String) clientRequest.getAttribute(AuthenticationFilter.AuthenticatedRoleAttributeName);
         if (user != null) {
+<<<<<<< HEAD
             proxyRequest.header("X-Original-Principal", user);
+=======
+            proxyRequest.header(ORIGINAL_PRINCIPAL_HEADER, user);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 }

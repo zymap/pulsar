@@ -65,4 +65,13 @@ pulsar_authentication_t *pulsar_authentication_token_create_with_supplier(token_
     pulsar_authentication_t *authentication = new pulsar_authentication_t;
     authentication->auth = pulsar::AuthToken::create(std::bind(&tokenSupplierWrapper, tokenSupplier, ctx));
     return authentication;
+<<<<<<< HEAD
+=======
+}
+
+pulsar_authentication_t *pulsar_authentication_oauth2_create(const char *authParamsString) {
+    pulsar_authentication_t *authentication = new pulsar_authentication_t;
+    authentication->auth = pulsar::AuthOauth2::create(authParamsString);
+    return authentication;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -53,6 +53,19 @@ public abstract class PulsarStandaloneTestBase extends PulsarTestBase {
         };
     }
 
+<<<<<<< HEAD
+=======
+    @DataProvider(name = "StandaloneServiceUrlAndHttpUrl")
+    public static Object[][] serviceUrlAndHttpUrl() {
+        return new Object[][] {
+                {
+                        container.getPlainTextServiceUrl(),
+                        container.getHttpServiceUrl(),
+                }
+        };
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected static Network network;
     protected static StandaloneContainer container;
 

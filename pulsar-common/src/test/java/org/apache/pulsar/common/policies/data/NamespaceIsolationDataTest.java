@@ -18,16 +18,24 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyData;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyType;
 import org.apache.pulsar.common.policies.data.NamespaceIsolationData;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 public class NamespaceIsolationDataTest {
@@ -36,7 +44,11 @@ public class NamespaceIsolationDataTest {
     public void testNamespaceIsolationData() {
         NamespaceIsolationData n0 = new NamespaceIsolationData();
         NamespaceIsolationData n1 = new NamespaceIsolationData();
+<<<<<<< HEAD
         assertFalse(n0.equals(new OldPolicies()));
+=======
+        assertNotEquals(new OldPolicies(), n0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         n0.namespaces = new ArrayList<>();
         n0.primary = new ArrayList<>();
         n0.secondary = new ArrayList<>();
@@ -47,12 +59,20 @@ public class NamespaceIsolationDataTest {
             n0.secondary.add(String.format("s%d", i));
         }
 
+<<<<<<< HEAD
         assertFalse(n0.equals(new NamespaceIsolationData()));
+=======
+        assertNotEquals(new NamespaceIsolationData(), n0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         n1.namespaces = n0.namespaces;
         n1.primary = n0.primary;
         n1.secondary = n0.secondary;
+<<<<<<< HEAD
         assertTrue(n0.equals(n1));
+=======
+        assertEquals(n1, n0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         try {
             n0.validate();

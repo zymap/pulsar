@@ -25,8 +25,13 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
 import org.apache.pulsar.broker.service.persistent.DispatchRateLimiter;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.utils.CopyOnWriteArrayList;
+=======
+import org.apache.pulsar.common.api.proto.PulsarApi.MessageMetadata;
+import org.apache.pulsar.common.policies.data.Policies;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public interface Dispatcher {
     void addConsumer(Consumer consumer) throws BrokerServiceException;
@@ -42,7 +47,11 @@ public interface Dispatcher {
 
     boolean isConsumerConnected();
 
+<<<<<<< HEAD
     CopyOnWriteArrayList<Consumer> getConsumers();
+=======
+    List<Consumer> getConsumers();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     boolean canUnsubscribe(Consumer consumer);
 
@@ -53,12 +62,32 @@ public interface Dispatcher {
      */
     CompletableFuture<Void> close();
 
+<<<<<<< HEAD
+=======
+    boolean isClosed();
+
+    /**
+     * Disconnect active consumers
+     */
+    CompletableFuture<Void> disconnectActiveConsumers(boolean isResetCursor);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * disconnect all consumers
      *
      * @return
      */
+<<<<<<< HEAD
     CompletableFuture<Void> disconnectAllConsumers();
+=======
+    CompletableFuture<Void> disconnectAllConsumers(boolean isResetCursor);
+
+    default CompletableFuture<Void> disconnectAllConsumers() {
+        return disconnectAllConsumers(false);
+    }
+
+    void resetCloseFuture();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * mark dispatcher open to serve new incoming requests
@@ -82,4 +111,28 @@ public interface Dispatcher {
     default void initializeDispatchRateLimiterIfNeeded(Optional<Policies> policies) {
         //No-op
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Check with dispatcher if the message should be added to the delayed delivery tracker.
+     * Return true if the message should be delayed and ignored at this point.
+     */
+    default boolean trackDelayedDelivery(long ledgerId, long entryId, MessageMetadata msgMetadata) {
+        return false;
+    }
+
+    default long getNumberOfDelayedMessages() {
+        return 0;
+    }
+
+    default void cursorIsReset() {
+        //No-op
+    }
+
+    default void acknowledgementWasProcessed() {
+        // No-op
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

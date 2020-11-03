@@ -18,6 +18,11 @@
  */
 package org.apache.pulsar.client.tutorial;
 
+<<<<<<< HEAD
+=======
+import java.util.concurrent.TimeUnit;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -41,7 +46,16 @@ public class SampleConsumer {
         }
 
         // Acknowledge the consumption of all messages at once
+<<<<<<< HEAD
         consumer.acknowledgeCumulative(msg);
+=======
+        try {
+            consumer.acknowledgeCumulative(msg);
+        } catch (Exception e) {
+            consumer.reconsumeLater(msg, 10, TimeUnit.SECONDS);
+        }
+       
+>>>>>>> f773c602c... Test pr 10 (#27)
         pulsarClient.close();
     }
 }

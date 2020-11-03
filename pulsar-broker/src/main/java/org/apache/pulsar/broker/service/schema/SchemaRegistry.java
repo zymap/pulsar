@@ -19,10 +19,21 @@
 package org.apache.pulsar.broker.service.schema;
 
 import com.google.common.base.MoreObjects;
+<<<<<<< HEAD
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import org.apache.pulsar.common.schema.SchemaData;
 import org.apache.pulsar.common.schema.SchemaVersion;
+=======
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.pulsar.common.policies.data.SchemaCompatibilityStrategy;
+import org.apache.pulsar.common.protocol.schema.SchemaData;
+import org.apache.pulsar.common.protocol.schema.SchemaVersion;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public interface SchemaRegistry extends AutoCloseable {
 
@@ -30,14 +41,40 @@ public interface SchemaRegistry extends AutoCloseable {
 
     CompletableFuture<SchemaAndMetadata> getSchema(String schemaId, SchemaVersion version);
 
+<<<<<<< HEAD
+=======
+    CompletableFuture<List<CompletableFuture<SchemaAndMetadata>>> getAllSchemas(String schemaId);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     CompletableFuture<SchemaVersion> putSchemaIfAbsent(String schemaId, SchemaData schema,
                                                        SchemaCompatibilityStrategy strategy);
 
     CompletableFuture<SchemaVersion> deleteSchema(String schemaId, String user);
 
+<<<<<<< HEAD
     CompletableFuture<Boolean> isCompatibleWithLatestVersion(String schemaId, SchemaData schema,
                                                              SchemaCompatibilityStrategy strategy);
 
+=======
+    CompletableFuture<SchemaVersion> deleteSchemaStorage(String schemaId);
+
+    CompletableFuture<Boolean> isCompatible(String schemaId, SchemaData schema,
+                                            SchemaCompatibilityStrategy strategy);
+
+    CompletableFuture<Void> checkCompatible(String schemaId, SchemaData schema,
+                                                             SchemaCompatibilityStrategy strategy);
+
+    CompletableFuture<List<SchemaAndMetadata>> trimDeletedSchemaAndGetList(String schemaId);
+
+    CompletableFuture<Long> findSchemaVersion(String schemaId, SchemaData schemaData);
+
+    CompletableFuture<Void> checkConsumerCompatibility(String schemaId, SchemaData schemaData,
+                                                       SchemaCompatibilityStrategy strategy);
+
+    CompletableFuture<SchemaVersion> getSchemaVersionBySchemaData(List<SchemaAndMetadata> schemaAndMetadataList,
+                                                                  SchemaData schemaData);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     SchemaVersion versionFromBytes(byte[] version);
 
     class SchemaAndMetadata {

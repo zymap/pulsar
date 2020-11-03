@@ -18,15 +18,27 @@
  */
 package org.apache.flink.batch.connectors.pulsar;
 
+<<<<<<< HEAD
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
+=======
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertNotNull;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Tests for Pulsar Avro Output Format
  */
 public class PulsarAvroOutputFormatTest {
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
     public void testPulsarAvroOutputFormatConstructorWhenServiceUrlIsNull() {
         new PulsarAvroOutputFormat(null, "testTopic");
@@ -45,12 +57,92 @@ public class PulsarAvroOutputFormatTest {
     @Test(expected = IllegalArgumentException.class)
     public void testPulsarAvroOutputFormatConstructorWhenServiceUrlIsBlank() {
         new PulsarAvroOutputFormat(" ", "testTopic");
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorWhenServiceUrlIsNull() {
+        new PulsarAvroOutputFormat(null, "testTopic", new AuthenticationDisabled());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorWhenTopicNameIsNull() {
+        new PulsarAvroOutputFormat("testServiceUrl", null, new AuthenticationDisabled());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorWhenTopicNameIsBlank() {
+        new PulsarAvroOutputFormat("testServiceUrl", " ", new AuthenticationDisabled());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorWhenServiceUrlIsBlank() {
+        new PulsarAvroOutputFormat(" ", "testTopic", new AuthenticationDisabled());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
     public void testPulsarAvroOutputFormatConstructor() {
         PulsarAvroOutputFormat pulsarAvroOutputFormat =
+<<<<<<< HEAD
                 new PulsarAvroOutputFormat("testServiceUrl", "testTopic");
+=======
+                new PulsarAvroOutputFormat("testServiceUrl", "testTopic", new AuthenticationDisabled());
+        assertNotNull(pulsarAvroOutputFormat);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorV2WhenServiceUrlIsNull() {
+        ClientConfigurationData clientConf = new ClientConfigurationData();
+        clientConf.setServiceUrl(null);
+
+        ProducerConfigurationData producerConf = new ProducerConfigurationData();
+        producerConf.setTopicName("testTopic");
+
+        new PulsarAvroOutputFormat(clientConf, producerConf);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorV2WhenTopicNameIsNull() {
+        ClientConfigurationData clientConf = new ClientConfigurationData();
+        clientConf.setServiceUrl("testServiceUrl");
+
+        ProducerConfigurationData producerConf = new ProducerConfigurationData();
+        producerConf.setTopicName(null);
+
+        new PulsarAvroOutputFormat(clientConf, producerConf);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorV2WhenTopicNameIsBlank() {
+        ClientConfigurationData clientConf = new ClientConfigurationData();
+        clientConf.setServiceUrl("testServiceUrl");
+
+        ProducerConfigurationData producerConf = new ProducerConfigurationData();
+        producerConf.setTopicName(StringUtils.EMPTY);
+
+        new PulsarAvroOutputFormat(clientConf, producerConf);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPulsarAvroOutputFormatConstructorV2WhenServiceUrlIsBlank() {
+        ClientConfigurationData clientConf = new ClientConfigurationData();
+        clientConf.setServiceUrl(StringUtils.EMPTY);
+
+        ProducerConfigurationData producerConf = new ProducerConfigurationData();
+        producerConf.setTopicName(StringUtils.EMPTY);
+
+        new PulsarAvroOutputFormat(clientConf, producerConf);
+    }
+
+    @Test
+    public void testPulsarAvroOutputFormatConstructorV2() {
+        ClientConfigurationData clientConf = new ClientConfigurationData();
+        clientConf.setServiceUrl("testServiceUrl");
+
+        ProducerConfigurationData producerConf = new ProducerConfigurationData();
+        producerConf.setTopicName("testTopic");
+
+        PulsarAvroOutputFormat pulsarAvroOutputFormat = new PulsarAvroOutputFormat(clientConf, producerConf);
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertNotNull(pulsarAvroOutputFormat);
     }
 }

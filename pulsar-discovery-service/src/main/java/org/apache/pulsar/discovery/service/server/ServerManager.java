@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.discovery.service.server;
 
+<<<<<<< HEAD
 import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.util.List;
@@ -28,6 +29,18 @@ import javax.servlet.Servlet;
 
 import org.apache.pulsar.common.util.SecurityUtility;
 import org.apache.pulsar.discovery.service.web.RestException;
+=======
+import com.google.common.collect.Lists;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TimeZone;
+import javax.servlet.Servlet;
+import org.apache.pulsar.common.util.RestException;
+import org.apache.pulsar.common.util.SecurityUtility;
+import org.apache.pulsar.common.util.keystoretls.KeyStoreSSLContext;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -43,8 +56,11 @@ import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Manages web-service startup/stop on jetty server.
  *
@@ -54,6 +70,12 @@ public class ServerManager {
     private final ExecutorThreadPool webServiceExecutor;
     private final List<Handler> handlers = Lists.newArrayList();
 
+<<<<<<< HEAD
+=======
+    private final ServerConnector connector;
+    private final ServerConnector connectorTls;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ServerManager(ServiceConfig config) {
         this.webServiceExecutor = new ExecutorThreadPool();
         this.webServiceExecutor.setName("pulsar-external-web");
@@ -62,13 +84,22 @@ public class ServerManager {
         List<ServerConnector> connectors = Lists.newArrayList();
 
         if (config.getWebServicePort().isPresent()) {
+<<<<<<< HEAD
             ServerConnector connector = new ServerConnector(server, 1, 1);
             connector.setPort(config.getWebServicePort().get());
             connectors.add(connector);
+=======
+            connector = new ServerConnector(server, 1, 1);
+            connector.setPort(config.getWebServicePort().get());
+            connectors.add(connector);
+        } else {
+            connector = null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         if (config.getWebServicePortTls().isPresent()) {
             try {
+<<<<<<< HEAD
                 SslContextFactory sslCtxFactory = SecurityUtility.createSslContextFactory(
                         config.isTlsAllowInsecureConnection(),
                         config.getTlsTrustCertsFilePath(),
@@ -81,6 +112,40 @@ public class ServerManager {
             } catch (GeneralSecurityException e) {
                 throw new RestException(e);
             }            
+=======
+                SslContextFactory sslCtxFactory;
+                if (config.isTlsEnabledWithKeyStore()) {
+                    sslCtxFactory = KeyStoreSSLContext.createSslContextFactory(
+                            config.getTlsProvider(),
+                            config.getTlsKeyStoreType(),
+                            config.getTlsKeyStore(),
+                            config.getTlsKeyStorePassword(),
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustStoreType(),
+                            config.getTlsTrustStore(),
+                            config.getTlsTrustStorePassword(),
+                            config.isTlsRequireTrustedClientCertOnConnect(),
+                            config.getTlsCertRefreshCheckDurationSec()
+                    );
+                } else {
+                    sslCtxFactory = SecurityUtility.createSslContextFactory(
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustCertsFilePath(),
+                            config.getTlsCertificateFilePath(),
+                            config.getTlsKeyFilePath(),
+                            config.isTlsRequireTrustedClientCertOnConnect(),
+                            true,
+                            config.getTlsCertRefreshCheckDurationSec());
+                }
+                connectorTls = new ServerConnector(server, 1, 1, sslCtxFactory);
+                connectorTls.setPort(config.getWebServicePortTls().get());
+                connectors.add(connectorTls);
+            } catch (Exception e) {
+                throw new RestException(e);
+            }
+        } else {
+            connectorTls = null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         // Limit number of concurrent HTTP connections to avoid getting out of file descriptors
@@ -129,10 +194,33 @@ public class ServerManager {
         webServiceExecutor.stop();
         log.info("Server stopped successfully");
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	public boolean isStarted() {
 		return server.isStarted();
 	}
 
+<<<<<<< HEAD
+=======
+	public Optional<Integer> getListenPortHTTP() {
+	    if (connector != null) {
+	        return Optional.of(connector.getLocalPort());
+	    } else {
+	        return Optional.empty();
+	    }
+	}
+
+	public Optional<Integer> getListenPortHTTPS() {
+        if (connectorTls != null) {
+            return Optional.of(connectorTls.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(ServerManager.class);
 }

@@ -32,6 +32,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+<<<<<<< HEAD
+=======
+import java.lang.reflect.Method;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
@@ -40,6 +44,10 @@ import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+<<<<<<< HEAD
+=======
+import java.util.stream.StreamSupport;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.bookkeeper.bookie.BookieException.InvalidCookieException;
 import org.apache.bookkeeper.bookie.storage.ldb.DbLedgerStorage;
@@ -48,10 +56,18 @@ import org.apache.bookkeeper.clients.admin.StorageAdminClient;
 import org.apache.bookkeeper.clients.config.StorageClientSettings;
 import org.apache.bookkeeper.clients.exceptions.NamespaceExistsException;
 import org.apache.bookkeeper.clients.exceptions.NamespaceNotFoundException;
+<<<<<<< HEAD
+=======
+import org.apache.bookkeeper.common.allocator.PoolingPolicy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.common.concurrent.FutureUtils;
 import org.apache.bookkeeper.common.util.Backoff;
 import org.apache.bookkeeper.common.util.Backoff.Jitter.Type;
 import org.apache.bookkeeper.conf.ServerConfiguration;
+<<<<<<< HEAD
+=======
+import org.apache.bookkeeper.discover.BookieServiceInfo;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.proto.BookieServer;
 import org.apache.bookkeeper.server.conf.BookieConfiguration;
 import org.apache.bookkeeper.stats.NullStatsLogger;
@@ -69,7 +85,13 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
+<<<<<<< HEAD
 import org.apache.zookeeper.server.NIOServerCnxnFactory;
+=======
+import org.apache.zookeeper.server.DatadirCleanupManager;
+import org.apache.zookeeper.server.NIOServerCnxnFactory;
+import org.apache.zookeeper.server.ServerCnxn;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,23 +155,42 @@ public class LocalBookkeeperEnsemble {
             String advertisedAddress,
             Supplier<Integer> portManager) {
         this.numberOfBookies = numberOfBookies;
+<<<<<<< HEAD
         this.HOSTPORT = "127.0.0.1:" + zkPort;
         this.ZooKeeperDefaultPort = zkPort;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.portManager = portManager;
         this.streamStoragePort = streamStoragePort;
         this.zkDataDirName = zkDataDirName;
         this.bkDataDirName = bkDataDirName;
         this.clearOldData = clearOldData;
+<<<<<<< HEAD
+=======
+        this.zkPort = zkPort;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.advertisedAddress = null == advertisedAddress ? "127.0.0.1" : advertisedAddress;
         LOG.info("Running {} bookie(s) and advertised them at {}.", this.numberOfBookies, advertisedAddress);
     }
 
+<<<<<<< HEAD
     private final String HOSTPORT;
     private final String advertisedAddress;
     NIOServerCnxnFactory serverFactory;
     ZooKeeperServer zks;
     ZooKeeper zkc;
     final int ZooKeeperDefaultPort;
+=======
+    private String HOSTPORT;
+    private String advertisedAddress;
+    private int zkPort;
+
+    NIOServerCnxnFactory serverFactory;
+    ZooKeeperServer zks;
+    DatadirCleanupManager zkDataCleanupManager;
+    ZooKeeper zkc;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static int zkSessionTimeOut = 5000;
     String zkDataDirName;
 
@@ -162,10 +203,13 @@ public class LocalBookkeeperEnsemble {
     StreamStorageLifecycleComponent streamStorage;
     Integer streamStoragePort = 4181;
 
+<<<<<<< HEAD
     /**
      * @param args
      */
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private void runZookeeper(int maxCC) throws IOException {
         // create a ZooKeeper server(dataDir, dataLogDir, port)
         LOG.info("Starting ZK server");
@@ -185,8 +229,16 @@ public class LocalBookkeeperEnsemble {
             zks = new ZooKeeperServer(zkDataDir, zkDataDir, ZooKeeperServer.DEFAULT_TICK_TIME);
 
             serverFactory = new NIOServerCnxnFactory();
+<<<<<<< HEAD
             serverFactory.configure(new InetSocketAddress(ZooKeeperDefaultPort), maxCC);
             serverFactory.startup(zks);
+=======
+            serverFactory.configure(new InetSocketAddress(zkPort), maxCC);
+            serverFactory.startup(zks);
+
+            zkDataCleanupManager = new DatadirCleanupManager(zkDataDir, zkDataDir, 0, 1 /* hour */);
+            zkDataCleanupManager.start();
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Exception e) {
             LOG.error("Exception while instantiating ZooKeeper", e);
 
@@ -196,9 +248,36 @@ public class LocalBookkeeperEnsemble {
             throw new IOException(e);
         }
 
+<<<<<<< HEAD
         boolean b = waitForServerUp(HOSTPORT, CONNECTION_TIMEOUT);
         LOG.info("ZooKeeper server up: {}", b);
         LOG.debug("Local ZK started (port: {}, data_directory: {})", ZooKeeperDefaultPort, zkDataDir.getAbsolutePath());
+=======
+        this.zkPort = serverFactory.getLocalPort();
+        this.HOSTPORT = "127.0.0.1:" + zkPort;
+
+        boolean b = waitForServerUp(HOSTPORT, CONNECTION_TIMEOUT);
+
+        LOG.info("ZooKeeper server up: {}", b);
+        LOG.debug("Local ZK started (port: {}, data_directory: {})", zkPort, zkDataDir.getAbsolutePath());
+    }
+
+    public void disconnectZookeeper(ZooKeeper zooKeeper) {
+        ServerCnxn serverCnxn = getZookeeperServerConnection(zooKeeper);
+        try {
+            Method method = serverCnxn.getClass().getMethod("close");
+            method.invoke(serverCnxn);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public ServerCnxn getZookeeperServerConnection(ZooKeeper zooKeeper) {
+        return StreamSupport.stream(serverFactory.getConnections().spliterator(), false)
+            .filter((cnxn) -> cnxn.getSessionId() == zooKeeper.getSessionId())
+            .findFirst()
+            .orElse(null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private void initializeZookeper() throws IOException {
@@ -264,12 +343,23 @@ public class LocalBookkeeperEnsemble {
             bsConfs[i] = new ServerConfiguration(baseConf);
             // override settings
             bsConfs[i].setBookiePort(bookiePort);
+<<<<<<< HEAD
             bsConfs[i].setZkServers("127.0.0.1:" + ZooKeeperDefaultPort);
             bsConfs[i].setJournalDirName(bkDataDir.getPath());
             bsConfs[i].setLedgerDirNames(new String[] { bkDataDir.getPath() });
 
             try {
                 bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE);
+=======
+            bsConfs[i].setZkServers("127.0.0.1:" + zkPort);
+            bsConfs[i].setJournalDirName(bkDataDir.getPath());
+            bsConfs[i].setLedgerDirNames(new String[] { bkDataDir.getPath() });
+            bsConfs[i].setAllocatorPoolingPolicy(PoolingPolicy.UnpooledHeap);
+            bsConfs[i].setAllowEphemeralPorts(true);
+
+            try {
+                bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE, BookieServiceInfo.NO_INFO);
+>>>>>>> f773c602c... Test pr 10 (#27)
             } catch (InvalidCookieException e) {
                 // InvalidCookieException can happen if the machine IP has changed
                 // Since we are running here a local bookie that is always accessed
@@ -282,7 +372,11 @@ public class LocalBookkeeperEnsemble {
                 new File(new File(bkDataDir, "current"), "VERSION").delete();
 
                 // Retry to start the bookie after cleaning the old left cookie
+<<<<<<< HEAD
                 bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE);
+=======
+                bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE, BookieServiceInfo.NO_INFO);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             bs[i].start();
             LOG.debug("Local BK[{}] started (port: {}, data_directory: {})", i, bookiePort,
@@ -290,8 +384,13 @@ public class LocalBookkeeperEnsemble {
         }
     }
 
+<<<<<<< HEAD
     private void runStreamStorage(CompositeConfiguration conf) throws Exception {
         String zkServers = "127.0.0.1:" + ZooKeeperDefaultPort;
+=======
+    public void runStreamStorage(CompositeConfiguration conf) throws Exception {
+        String zkServers = "127.0.0.1:" + zkPort;
+>>>>>>> f773c602c... Test pr 10 (#27)
         String metadataServiceUriStr = "zk://" + zkServers + "/ledgers";
         URI metadataServiceUri = URI.create(metadataServiceUriStr);
 
@@ -304,6 +403,12 @@ public class LocalBookkeeperEnsemble {
         // stream storage port
         conf.setProperty("storageserver.grpc.port", streamStoragePort);
 
+<<<<<<< HEAD
+=======
+        // storage server settings
+        conf.setProperty("storage.range.store.dirs", bkDataDirName + "/ranges/data");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         // initialize the stream storage metadata
         ClusterInitializer initializer = new ZkClusterInitializer(zkServers);
         initializer.initializeCluster(metadataServiceUri, 2);
@@ -349,7 +454,11 @@ public class LocalBookkeeperEnsemble {
         }
     }
 
+<<<<<<< HEAD
     public void start() throws Exception {
+=======
+    public void start(boolean enableStreamStorage) throws  Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         LOG.debug("Local ZK/BK starting ...");
         ServerConfiguration conf = new ServerConfiguration();
         // Use minimal configuration requiring less memory for unit tests
@@ -363,10 +472,31 @@ public class LocalBookkeeperEnsemble {
         conf.setProperty("journalMaxGroupWaitMSec", 0L);
         conf.setAllowLoopback(true);
         conf.setGcWaitTime(60000);
+<<<<<<< HEAD
+=======
+        conf.setNumAddWorkerThreads(0);
+        conf.setNumReadWorkerThreads(0);
+        conf.setNumHighPriorityWorkerThreads(0);
+        conf.setNumJournalCallbackThreads(0);
+        conf.setServerNumIOThreads(1);
+        conf.setNumLongPollWorkerThreads(1);
+        conf.setAllocatorPoolingPolicy(PoolingPolicy.UnpooledHeap);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         runZookeeper(1000);
         initializeZookeper();
         runBookies(conf);
+<<<<<<< HEAD
+=======
+
+        if (enableStreamStorage) {
+            runStreamStorage(new CompositeConfiguration());
+        }
+    }
+
+    public void start() throws Exception {
+        start(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void startStandalone() throws Exception {
@@ -385,6 +515,47 @@ public class LocalBookkeeperEnsemble {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public void stopBK(int i) {
+        bs[i].shutdown();
+    }
+
+    public void stopBK() {
+        LOG.debug("Local ZK/BK stopping ...");
+        for (BookieServer bookie : bs) {
+            bookie.shutdown();
+        }
+    }
+
+    public void startBK(int i) throws Exception {
+        try {
+            bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE, BookieServiceInfo.NO_INFO);
+        } catch (InvalidCookieException e) {
+            // InvalidCookieException can happen if the machine IP has changed
+            // Since we are running here a local bookie that is always accessed
+            // from localhost, we can ignore the error
+            for (String path : zkc.getChildren("/ledgers/cookies", false)) {
+                zkc.delete("/ledgers/cookies/" + path, -1);
+            }
+
+            // Also clean the on-disk cookie
+            new File(new File(bsConfs[i].getJournalDirNames()[0], "current"), "VERSION").delete();
+
+            // Retry to start the bookie after cleaning the old left cookie
+            bs[i] = new BookieServer(bsConfs[i], NullStatsLogger.INSTANCE, BookieServiceInfo.NO_INFO);
+
+        }
+        bs[i].start();
+    }
+
+    public void startBK() throws Exception {
+        for (int i = 0; i < numberOfBookies; i++) {
+            startBK(i);
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void stop() throws Exception {
         if (null != streamStorage) {
             LOG.debug("Local bk stream storage stopping ...");
@@ -399,6 +570,13 @@ public class LocalBookkeeperEnsemble {
         zkc.close();
         zks.shutdown();
         serverFactory.shutdown();
+<<<<<<< HEAD
+=======
+
+        if (zkDataCleanupManager != null) {
+            zkDataCleanupManager.shutdown();
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         LOG.debug("Local ZK/BK stopped");
     }
 
@@ -479,4 +657,11 @@ public class LocalBookkeeperEnsemble {
     public BookieServer[] getBookies() {
         return bs;
     }
+<<<<<<< HEAD
+=======
+
+    public int getZookeeperPort() {
+        return zkPort;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

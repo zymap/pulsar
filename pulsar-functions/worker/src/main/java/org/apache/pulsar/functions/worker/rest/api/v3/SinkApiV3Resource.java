@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.functions.worker.rest.api.v3;
 
+<<<<<<< HEAD
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -234,4 +235,22 @@ public class SinkApiV3Resource extends FunctionApiResource {
         }
         return retVal;
     }
+=======
+import io.swagger.annotations.Api;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Api(value = "/sink", description = "Sink admin apis", tags = "sink")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@Path("/sink")
+@Deprecated
+/**
+ * @deprecated in favor of {@link SinksApiV3Resource}
+ */
+public class SinkApiV3Resource extends SinksApiV3Resource {
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

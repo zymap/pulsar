@@ -22,8 +22,12 @@
 #include <memory>
 #include <iostream>
 #include <map>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
@@ -32,7 +36,11 @@ class PulsarWrapper;
 
 typedef std::shared_ptr<EncryptionKeyInfoImpl> EncryptionKeyInfoImplPtr;
 
+<<<<<<< HEAD
 class EncryptionKeyInfo {
+=======
+class PULSAR_PUBLIC EncryptionKeyInfo {
+>>>>>>> f773c602c... Test pr 10 (#27)
     /*
      * This object contains the encryption key and corresponding metadata which contains
      * additional information about the key such as version, timestammp
@@ -63,6 +71,9 @@ class EncryptionKeyInfo {
 
 } /* namespace pulsar */
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* ENCRYPTIONKEYINFO_H_ */

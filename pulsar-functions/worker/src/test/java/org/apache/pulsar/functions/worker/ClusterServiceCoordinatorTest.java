@@ -18,8 +18,13 @@
  */
 package org.apache.pulsar.functions.worker;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,7 +57,11 @@ public class ClusterServiceCoordinatorTest {
         return new org.powermock.modules.testng.PowerMockObjectFactory();
     }
 
+<<<<<<< HEAD
     private MembershipManager membershipManager;
+=======
+    private LeaderService leaderService;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ClusterServiceCoordinator coordinator;
     private ScheduledExecutorService mockExecutor;
     private MockExecutorController mockExecutorController;
@@ -70,8 +79,13 @@ public class ClusterServiceCoordinatorTest {
                 any(ThreadFactory.class))
         ).thenReturn(mockExecutor);
 
+<<<<<<< HEAD
         this.membershipManager = mock(MembershipManager.class);
         this.coordinator = new ClusterServiceCoordinator("test-coordinator", membershipManager);
+=======
+        this.leaderService = mock(LeaderService.class);
+        this.coordinator = new ClusterServiceCoordinator("test-coordinator", leaderService);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 
@@ -94,6 +108,7 @@ public class ClusterServiceCoordinatorTest {
             .scheduleAtFixedRate(any(Runnable.class), eq(interval), eq(interval), eq(TimeUnit.MILLISECONDS));
 
         // when task is executed, it is the leader
+<<<<<<< HEAD
         when(membershipManager.isLeader()).thenReturn(true);
         mockExecutorController.advance(Duration.ofMillis(interval));
 
@@ -106,6 +121,20 @@ public class ClusterServiceCoordinatorTest {
 
         // `isLeader` is called twice, however the task is only executed once (when it was leader)
         verify(membershipManager, times(2)).isLeader();
+=======
+        when(leaderService.isLeader()).thenReturn(true);
+        mockExecutorController.advance(Duration.ofMillis(interval));
+
+        verify(leaderService, times(1)).isLeader();
+        verify(mockTask, times(1)).run();
+
+        // when task is executed, it is not the leader
+        when(leaderService.isLeader()).thenReturn(false);
+        mockExecutorController.advance(Duration.ofMillis(interval));
+
+        // `isLeader` is called twice, however the task is only executed once (when it was leader)
+        verify(leaderService, times(2)).isLeader();
+>>>>>>> f773c602c... Test pr 10 (#27)
         verify(mockTask, times(1)).run();
     }
 

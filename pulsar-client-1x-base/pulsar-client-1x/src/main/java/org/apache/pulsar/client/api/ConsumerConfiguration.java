@@ -46,8 +46,11 @@ public class ConsumerConfiguration implements Serializable {
 
     private final ConsumerConfigurationData<byte[]> conf = new ConsumerConfigurationData<>();
 
+<<<<<<< HEAD
     private boolean initializeSubscriptionOnLatest = true;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private MessageListener<byte[]> messageListener;
 
     public ConsumerConfiguration() {
@@ -372,7 +375,11 @@ public class ConsumerConfiguration implements Serializable {
     }
 
     /**
+<<<<<<< HEAD
      * @return the configured {@link subscriptionInitailPosition} for the consumer
+=======
+     * @return the configured {@link subscriptionInitialPosition} for the consumer
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public SubscriptionInitialPosition getSubscriptionInitialPosition(){
         return conf.getSubscriptionInitialPosition();

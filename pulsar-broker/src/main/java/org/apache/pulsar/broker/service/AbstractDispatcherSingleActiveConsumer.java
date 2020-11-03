@@ -20,6 +20,7 @@ package org.apache.pulsar.broker.service;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+<<<<<<< HEAD
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -35,12 +36,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDispatcherSingleActiveConsumer {
+=======
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+
+import org.apache.pulsar.broker.service.BrokerServiceException.ConsumerBusyException;
+import org.apache.pulsar.broker.service.BrokerServiceException.ServerMetadataException;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class AbstractDispatcherSingleActiveConsumer extends AbstractBaseDispatcher {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     protected final String topicName;
     protected static final AtomicReferenceFieldUpdater<AbstractDispatcherSingleActiveConsumer, Consumer> ACTIVE_CONSUMER_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(AbstractDispatcherSingleActiveConsumer.class, Consumer.class, "activeConsumer");
     private volatile Consumer activeConsumer = null;
     protected final CopyOnWriteArrayList<Consumer> consumers;
+<<<<<<< HEAD
+=======
+    protected StickyKeyConsumerSelector stickyKeyConsumerSelector;
+    protected boolean isKeyHashRangeFiltered = false;
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected CompletableFuture<Void> closeFuture = null;
     protected final int partitionIndex;
 
@@ -54,7 +77,12 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
     private volatile int isClosed = FALSE;
 
     public AbstractDispatcherSingleActiveConsumer(SubType subscriptionType, int partitionIndex,
+<<<<<<< HEAD
             String topicName) {
+=======
+            String topicName, Subscription subscription) {
+        super(subscription);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.topicName = topicName;
         this.consumers = new CopyOnWriteArrayList<>();
         this.partitionIndex = partitionIndex;
@@ -68,8 +96,11 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
 
     protected abstract void cancelPendingRead();
 
+<<<<<<< HEAD
     protected abstract boolean isConsumersExceededOnTopic();
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected abstract boolean isConsumersExceededOnSubscription();
 
     protected void notifyActiveConsumerChanged(Consumer activeConsumer) {
@@ -80,6 +111,7 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
     }
 
     /**
+<<<<<<< HEAD
      * @return the previous active consumer if the consumer is changed, otherwise null.
      */
     protected boolean pickAndScheduleActiveConsumer() {
@@ -88,6 +120,47 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
         consumers.sort((c1, c2) -> c1.consumerName().compareTo(c2.consumerName()));
 
         int index = partitionIndex % consumers.size();
+=======
+     * Pick active consumer for a topic for {@link SubType#Failover} subscription.
+     * If it's a non-partitioned topic then it'll pick consumer based on order they subscribe to the topic.
+     * If is's a partitioned topic, first sort consumers based on their priority level and consumer name then
+     * distributed partitions evenly across consumers with highest priority level.
+     *
+     * @return the true consumer if the consumer is changed, otherwise false.
+     */
+    protected boolean pickAndScheduleActiveConsumer() {
+        checkArgument(!consumers.isEmpty());
+        // By default always pick the first connected consumer for non partitioned topic.
+        int index = 0;
+
+        // If it's a partitioned topic, sort consumers based on priority level then consumer name.
+        if (partitionIndex >= 0) {
+            AtomicBoolean hasPriorityConsumer = new AtomicBoolean(false);
+            consumers.sort((c1, c2) -> {
+                int priority = c1.getPriorityLevel() - c2.getPriorityLevel();
+                if (priority != 0) {
+                    hasPriorityConsumer.set(true);
+                    return priority;
+                }
+                return c1.consumerName().compareTo(c2.consumerName());
+            });
+
+            int consumersSize = consumers.size();
+            // find number of consumers which are having the highest priorities. so partitioned-topic assignment happens
+            // evenly across highest priority consumers
+            if (hasPriorityConsumer.get()) {
+                int highestPriorityLevel = consumers.get(0).getPriorityLevel();
+                for (int i = 0; i < consumers.size(); i++) {
+                    if (highestPriorityLevel != consumers.get(i).getPriorityLevel()) {
+                        consumersSize = i;
+                        break;
+                    }
+                }
+            }
+            index = partitionIndex % consumersSize;
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         Consumer prevConsumer = ACTIVE_CONSUMER_UPDATER.getAndSet(this, consumers.get(index));
 
         Consumer activeConsumer = ACTIVE_CONSUMER_UPDATER.get(this);
@@ -103,23 +176,47 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
 
     public synchronized void addConsumer(Consumer consumer) throws BrokerServiceException {
         if (IS_CLOSED_UPDATER.get(this) == TRUE) {
+<<<<<<< HEAD
             log.warn("[{}] Dispatcher is already closed. Closing consumer ", this.topicName, consumer);
             consumer.disconnect();
         }
+=======
+            log.warn("[{}] Dispatcher is already closed. Closing consumer {}", this.topicName, consumer);
+            consumer.disconnect();
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (subscriptionType == SubType.Exclusive && !consumers.isEmpty()) {
             throw new ConsumerBusyException("Exclusive consumer is already connected");
         }
 
+<<<<<<< HEAD
         if (isConsumersExceededOnTopic()) {
             log.warn("[{}] Attempting to add consumer to topic which reached max consumers limit", this.topicName);
             throw new ConsumerBusyException("Topic reached max consumers limit");
         }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (subscriptionType == SubType.Failover && isConsumersExceededOnSubscription()) {
             log.warn("[{}] Attempting to add consumer to subscription which reached max consumers limit", this.topicName);
             throw new ConsumerBusyException("Subscription reached max consumers limit");
         }
 
+<<<<<<< HEAD
+=======
+        if (subscriptionType == SubType.Exclusive
+                && consumer.getKeySharedMeta() != null
+                && consumer.getKeySharedMeta().getHashRangesList() != null
+                && consumer.getKeySharedMeta().getHashRangesList().size() > 0) {
+            stickyKeyConsumerSelector = new HashRangeExclusiveStickyKeyConsumerSelector();
+            stickyKeyConsumerSelector.addConsumer(consumer);
+            isKeyHashRangeFiltered = true;
+        } else {
+            isKeyHashRangeFiltered = false;
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         consumers.add(consumer);
 
         if (!pickAndScheduleActiveConsumer()) {
@@ -176,17 +273,32 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
         return disconnectAllConsumers();
     }
 
+<<<<<<< HEAD
+=======
+    public boolean isClosed() {
+        return isClosed == TRUE;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Disconnect all consumers on this dispatcher (server side close). This triggers channelInactive on the inbound
      * handler which calls dispatcher.removeConsumer(), where the closeFuture is completed
      *
      * @return
      */
+<<<<<<< HEAD
     public synchronized CompletableFuture<Void> disconnectAllConsumers() {
         closeFuture = new CompletableFuture<>();
 
         if (!consumers.isEmpty()) {
             consumers.forEach(Consumer::disconnect);
+=======
+    public synchronized CompletableFuture<Void> disconnectAllConsumers(boolean isResetCursor) {
+        closeFuture = new CompletableFuture<>();
+
+        if (!consumers.isEmpty()) {
+            consumers.forEach(consumer -> consumer.disconnect(isResetCursor));
+>>>>>>> f773c602c... Test pr 10 (#27)
             cancelPendingRead();
         } else {
             // no consumer connected, complete disconnect immediately
@@ -195,7 +307,26 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
         return closeFuture;
     }
 
+<<<<<<< HEAD
     public void reset() {
+=======
+    public synchronized CompletableFuture<Void> disconnectActiveConsumers(boolean isResetCursor) {
+        closeFuture = new CompletableFuture<>();
+        if (activeConsumer != null) {
+            activeConsumer.disconnect(isResetCursor);
+        }
+        closeFuture.complete(null);
+        return closeFuture;
+    }
+
+    @Override
+    public synchronized void resetCloseFuture() {
+        closeFuture = null;
+    }
+
+    public void reset() {
+        resetCloseFuture();
+>>>>>>> f773c602c... Test pr 10 (#27)
         IS_CLOSED_UPDATER.set(this, FALSE);
     }
 
@@ -207,7 +338,12 @@ public abstract class AbstractDispatcherSingleActiveConsumer {
         return ACTIVE_CONSUMER_UPDATER.get(this);
     }
 
+<<<<<<< HEAD
     public CopyOnWriteArrayList<Consumer> getConsumers() {
+=======
+    @Override
+    public List<Consumer> getConsumers() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return consumers;
     }
 

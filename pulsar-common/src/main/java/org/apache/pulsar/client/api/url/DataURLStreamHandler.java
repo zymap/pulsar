@@ -31,8 +31,19 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+<<<<<<< HEAD
 public class DataURLStreamHandler extends URLStreamHandler {
 
+=======
+/**
+ * Extension of the {@code URLStreamHandler} class to handle all stream protocol handlers.
+ */
+public class DataURLStreamHandler extends URLStreamHandler {
+
+    /**
+     * Representation of a communications link between the application and a URL.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     static class DataURLConnection extends URLConnection {
         private boolean parsed = false;
         private String contentType;

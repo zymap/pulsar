@@ -24,6 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.ProxyProtocol;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.FailureDomain;
 
@@ -69,10 +73,24 @@ public class CmdClusters extends CmdBase {
         @Parameter(names = "--broker-url-secure", description = "broker-service-url for secure connection", required = false)
         private String brokerServiceUrlTls;
 
+<<<<<<< HEAD
         void run() throws PulsarAdminException {
             String cluster = getOneArgument(params);
             admin.clusters().createCluster(cluster,
                     new ClusterData(serviceUrl, serviceUrlTls, brokerServiceUrl, brokerServiceUrlTls));
+=======
+        @Parameter(names = "--proxy-url", description = "Proxy-service url when client would like to connect to broker via proxy.", required = false)
+        private String proxyServiceUrl;
+
+        @Parameter(names = "--proxy-protocol", description = "protocol to decide type of proxy routing eg: SNI", required = false)
+        private ProxyProtocol proxyProtocol;
+
+        void run() throws PulsarAdminException {
+            String cluster = getOneArgument(params);
+            admin.clusters().createCluster(cluster,
+                    new ClusterData(serviceUrl, serviceUrlTls, brokerServiceUrl, brokerServiceUrlTls, proxyServiceUrl,
+                            proxyProtocol));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -93,10 +111,23 @@ public class CmdClusters extends CmdBase {
         @Parameter(names = "--broker-url-secure", description = "broker-service-url for secure connection", required = false)
         private String brokerServiceUrlTls;
 
+<<<<<<< HEAD
         void run() throws PulsarAdminException {
             String cluster = getOneArgument(params);
             admin.clusters().updateCluster(cluster,
                     new ClusterData(serviceUrl, serviceUrlTls, brokerServiceUrl, brokerServiceUrlTls));
+=======
+        @Parameter(names = "--proxy-url", description = "Proxy-service url when client would like to connect to broker via proxy.", required = false)
+        private String proxyServiceUrl;
+
+        @Parameter(names = "--proxy-protocol", description = "protocol to decide type of proxy routing eg: SNI", required = false)
+        private ProxyProtocol proxyProtocol;
+
+        void run() throws PulsarAdminException {
+            String cluster = getOneArgument(params);
+            admin.clusters().updateCluster(cluster, new ClusterData(serviceUrl, serviceUrlTls, brokerServiceUrl,
+                    brokerServiceUrlTls, proxyServiceUrl, proxyProtocol));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -105,8 +136,33 @@ public class CmdClusters extends CmdBase {
         @Parameter(description = "cluster-name\n", required = true)
         private java.util.List<String> params;
 
+<<<<<<< HEAD
         void run() throws PulsarAdminException {
             String cluster = getOneArgument(params);
+=======
+        @Parameter(names = { "-a", "--all" }, description = "Delete all data (tenants) of the cluster\n", required = false)
+        private boolean deleteAll = false;
+
+        void run() throws PulsarAdminException {
+            String cluster = getOneArgument(params);
+
+            if (deleteAll) {
+                for (String tenant : admin.tenants().getTenants()) {
+                    for (String namespace : admin.namespaces().getNamespaces(tenant)) {
+                        // Partitioned topic's schema must be deleted by deletePartitionedTopic() but not delete() for each partition
+                        for (String topic : admin.topics().getPartitionedTopicList(namespace)) {
+                            admin.topics().deletePartitionedTopic(topic, true, true);
+                        }
+                        for (String topic : admin.topics().getList(namespace)) {
+                            admin.topics().delete(topic, true, true);
+                        }
+                        admin.namespaces().deleteNamespace(namespace, true);
+                    }
+                    admin.tenants().deleteTenant(tenant);
+                }
+            }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             admin.clusters().deleteCluster(cluster);
         }
     }

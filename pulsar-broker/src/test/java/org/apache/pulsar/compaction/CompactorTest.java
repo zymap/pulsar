@@ -31,6 +31,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -44,7 +48,11 @@ import org.apache.pulsar.client.api.MessageRoutingMode;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.RawMessage;
 import org.apache.pulsar.client.impl.RawMessageImpl;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.Commands;
+=======
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.TenantInfo;
 import org.testng.Assert;
@@ -62,7 +70,11 @@ public class CompactorTest extends MockedPulsarServiceBaseTest {
         super.internalSetup();
 
         admin.clusters().createCluster("use",
+<<<<<<< HEAD
                 new ClusterData("http://127.0.0.1:" + BROKER_WEBSERVICE_PORT));
+=======
+                new ClusterData(pulsar.getWebServiceAddress()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("use")));
         admin.namespaces().createNamespace("my-property/use/my-ns");
@@ -81,7 +93,11 @@ public class CompactorTest extends MockedPulsarServiceBaseTest {
 
     private List<String> compactAndVerify(String topic, Map<String, byte[]> expected) throws Exception {
         BookKeeper bk = pulsar.getBookKeeperClientFactory().create(
+<<<<<<< HEAD
                 this.conf, null);
+=======
+                this.conf, null, Optional.empty(), null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         Compactor compactor = new TwoPhaseCompactor(conf, pulsarClient, bk, compactionScheduler);
         long compactedLedgerId = compactor.compact(topic).get();
 
@@ -206,7 +222,11 @@ public class CompactorTest extends MockedPulsarServiceBaseTest {
         Assert.assertEquals(keyOrder, Lists.newArrayList("c", "b", "a"));
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = ExecutionException.class)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testCompactEmptyTopic() throws Exception {
         String topic = "persistent://my-property/use/my-ns/my-topic1";
 
@@ -214,7 +234,11 @@ public class CompactorTest extends MockedPulsarServiceBaseTest {
         pulsarClient.newConsumer().topic(topic).subscriptionName("sub1").subscribe().close();
 
         BookKeeper bk = pulsar.getBookKeeperClientFactory().create(
+<<<<<<< HEAD
                 this.conf, null);
+=======
+                this.conf, null, Optional.empty(), null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         Compactor compactor = new TwoPhaseCompactor(conf, pulsarClient, bk, compactionScheduler);
         compactor.compact(topic).get();
     }

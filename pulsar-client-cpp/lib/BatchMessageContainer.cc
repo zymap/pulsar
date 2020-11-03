@@ -17,6 +17,7 @@
  * under the License.
  */
 #include "BatchMessageContainer.h"
+<<<<<<< HEAD
 #include <memory>
 #include <functional>
 
@@ -162,4 +163,65 @@ BatchMessageContainer::~BatchMessageContainer() {
     LOG_INFO("[numberOfBatchesSent = " << numberOfBatchesSent_
                                        << "] [averageBatchSize = " << averageBatchSize_ << "]");
 }
+=======
+#include "ClientConnection.h"
+#include "Commands.h"
+#include "LogUtils.h"
+#include "MessageImpl.h"
+#include "ProducerImpl.h"
+#include "TimeUtils.h"
+#include <stdexcept>
+
+DECLARE_LOG_OBJECT()
+
+namespace pulsar {
+
+BatchMessageContainer::BatchMessageContainer(const ProducerImpl& producer)
+    : BatchMessageContainerBase(producer) {}
+
+BatchMessageContainer::~BatchMessageContainer() {
+    LOG_DEBUG(*this << " destructed");
+    LOG_INFO("[numberOfBatchesSent = " << numberOfBatchesSent_
+                                       << "] [averageBatchSize_ = " << averageBatchSize_ << "]");
+}
+
+bool BatchMessageContainer::add(const Message& msg, const SendCallback& callback) {
+    LOG_DEBUG("Before add: " << *this << " [message = " << msg << "]");
+    batch_.add(msg, callback);
+    updateStats(msg);
+    LOG_DEBUG("After add: " << *this);
+    return isFull();
+}
+
+void BatchMessageContainer::clear() {
+    averageBatchSize_ =
+        (batch_.size() + averageBatchSize_ * numberOfBatchesSent_) / (numberOfBatchesSent_ + 1);
+    numberOfBatchesSent_++;
+    batch_.clear();
+    resetStats();
+    LOG_DEBUG(*this << " clear() called");
+}
+
+Result BatchMessageContainer::createOpSendMsg(OpSendMsg& opSendMsg,
+                                              const FlushCallback& flushCallback) const {
+    return createOpSendMsgHelper(opSendMsg, flushCallback, batch_);
+}
+
+std::vector<Result> BatchMessageContainer::createOpSendMsgs(std::vector<OpSendMsg>& opSendMsgs,
+                                                            const FlushCallback& flushCallback) const {
+    throw std::runtime_error("createOpSendMsgs is not supported for BatchMessageContainer");
+}
+
+void BatchMessageContainer::serialize(std::ostream& os) const {
+    os << "{ BatchMessageContainer [size = " << numMessages_    //
+       << "] [bytes = " << sizeInBytes_                         //
+       << "] [maxSize = " << getMaxNumMessages()                //
+       << "] [maxBytes = " << getMaxSizeInBytes()               //
+       << "] [topicName = " << topicName_                       //
+       << "] [numberOfBatchesSent_ = " << numberOfBatchesSent_  //
+       << "] [averageBatchSize_ = " << averageBatchSize_        //
+       << "] }";
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

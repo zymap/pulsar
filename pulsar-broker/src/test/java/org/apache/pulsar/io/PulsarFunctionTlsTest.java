@@ -18,24 +18,44 @@
  */
 package org.apache.pulsar.io;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
+=======
+import static org.mockito.ArgumentMatchers.any;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Sets;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+<<<<<<< HEAD
 import java.util.*;
 
 import org.apache.bookkeeper.test.PortManager;
+=======
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.ServiceConfigurationUtils;
 import org.apache.pulsar.broker.authentication.AuthenticationProviderTls;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.Namespaces;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.Tenants;
@@ -47,6 +67,25 @@ import org.apache.pulsar.functions.sink.PulsarSink;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.functions.utils.Utils;
 import org.apache.pulsar.functions.worker.FunctionMetaDataManager;
+=======
+import org.apache.pulsar.broker.authorization.AuthorizationService;
+import org.apache.pulsar.broker.cache.ConfigurationCacheService;
+import org.apache.pulsar.client.admin.Namespaces;
+import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.client.admin.PulsarAdminException;
+import org.apache.pulsar.client.admin.Tenants;
+import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.auth.AuthenticationTls;
+import org.apache.pulsar.common.functions.FunctionConfig;
+import org.apache.pulsar.common.policies.data.TenantInfo;
+import org.apache.pulsar.common.util.ClassLoaderUtils;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+import org.apache.pulsar.functions.api.utils.IdentityFunction;
+import org.apache.pulsar.functions.runtime.thread.ThreadRuntimeFactory;
+import org.apache.pulsar.functions.sink.PulsarSink;
+import org.apache.pulsar.functions.worker.FunctionMetaDataManager;
+import org.apache.pulsar.functions.runtime.thread.ThreadRuntimeFactoryConfig;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.worker.WorkerConfig;
 import org.apache.pulsar.functions.worker.WorkerService;
 import org.apache.pulsar.functions.worker.rest.WorkerServer;
@@ -56,9 +95,12 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.PulsarAdminException;
 
 import com.google.common.collect.Sets;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Test Pulsar function TLS authentication
@@ -77,9 +119,12 @@ public class PulsarFunctionTlsTest {
     WorkerServer workerServer;
     PulsarAdmin functionAdmin;
     private List<String> namespaceList = new LinkedList<>();
+<<<<<<< HEAD
     private final int ZOOKEEPER_PORT = PortManager.nextFreePort();
     private final int workerServicePort = PortManager.nextFreePort();
     private final int workerServicePortTls = PortManager.nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final String TLS_SERVER_CERT_FILE_PATH = "./src/test/resources/authentication/tls/broker-cert.pem";
     private final String TLS_SERVER_KEY_FILE_PATH = "./src/test/resources/authentication/tls/broker-key.pem";
@@ -94,24 +139,45 @@ public class PulsarFunctionTlsTest {
         log.info("--- Setting up method {} ---", method.getName());
 
         // Start local bookkeeper ensemble
+<<<<<<< HEAD
         bkEnsemble = new LocalBookkeeperEnsemble(3, ZOOKEEPER_PORT, () -> PortManager.nextFreePort());
+=======
+        bkEnsemble = new LocalBookkeeperEnsemble(3, 0, () -> 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         bkEnsemble.start();
 
         config = spy(new ServiceConfiguration());
         config.setClusterName("use");
         Set<String> superUsers = Sets.newHashSet("superUser");
         config.setSuperUserRoles(superUsers);
+<<<<<<< HEAD
         config.setZookeeperServers("127.0.0.1" + ":" + ZOOKEEPER_PORT);
         Set<String> providers = new HashSet<>();
         providers.add(AuthenticationProviderTls.class.getName());
         config.setAuthenticationEnabled(true);
+=======
+        config.setZookeeperServers("127.0.0.1" + ":" + bkEnsemble.getZookeeperPort());
+        Set<String> providers = new HashSet<>();
+        providers.add(AuthenticationProviderTls.class.getName());
+        config.setAuthenticationEnabled(true);
+        config.setAuthorizationEnabled(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setAuthenticationProviders(providers);
         config.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         config.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
         config.setTlsAllowInsecureConnection(true);
+<<<<<<< HEAD
         functionsWorkerService = spy(createPulsarFunctionWorker(config));
         AuthenticationService authenticationService = new AuthenticationService(config);
         when(functionsWorkerService.getAuthenticationService()).thenReturn(authenticationService);
+=======
+        config.setAdvertisedAddress("localhost");
+        functionsWorkerService = spy(createPulsarFunctionWorker(config));
+        AuthenticationService authenticationService = new AuthenticationService(config);
+        AuthorizationService authorizationService = new AuthorizationService(config, mock(ConfigurationCacheService.class));
+        when(functionsWorkerService.getAuthenticationService()).thenReturn(authenticationService);
+        when(functionsWorkerService.getAuthorizationService()).thenReturn(authorizationService);
+>>>>>>> f773c602c... Test pr 10 (#27)
         when(functionsWorkerService.isInitialized()).thenReturn(true);
 
         PulsarAdmin admin = mock(PulsarAdmin.class);
@@ -134,7 +200,11 @@ public class PulsarFunctionTlsTest {
         workerServer.start();
         Thread.sleep(2000);
         String functionTlsUrl = String.format("https://%s:%s",
+<<<<<<< HEAD
                 functionsWorkerService.getWorkerConfig().getWorkerHostname(), workerServicePortTls);
+=======
+                functionsWorkerService.getWorkerConfig().getWorkerHostname(), workerServer.getListenPortHTTPS().get());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Map<String, String> authParams = new HashMap<>();
         authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
@@ -163,7 +233,13 @@ public class PulsarFunctionTlsTest {
         workerConfig.setPulsarFunctionsNamespace(pulsarFunctionsNamespace);
         workerConfig.setSchedulerClassName(
                 org.apache.pulsar.functions.worker.scheduler.RoundRobinScheduler.class.getName());
+<<<<<<< HEAD
         workerConfig.setThreadContainerFactory(new WorkerConfig.ThreadContainerFactory().setThreadGroupName("use"));
+=======
+        workerConfig.setFunctionRuntimeFactoryClassName(ThreadRuntimeFactory.class.getName());
+        workerConfig.setFunctionRuntimeFactoryConfigs(
+                ObjectMapperFactory.getThreadLocal().convertValue(new ThreadRuntimeFactoryConfig().setThreadGroupName("use"), Map.class));
+>>>>>>> f773c602c... Test pr 10 (#27)
         // worker talks to local broker
         workerConfig.setPulsarServiceUrl("pulsar://127.0.0.1:" + config.getBrokerServicePort().get());
         workerConfig.setPulsarWebServiceUrl("https://127.0.0.1:" + config.getWebServicePort().get());
@@ -173,21 +249,34 @@ public class PulsarFunctionTlsTest {
         workerConfig.setFunctionAssignmentTopicName("assignment");
         workerConfig.setFunctionMetadataTopicName("metadata");
         workerConfig.setInstanceLivenessCheckFreqMs(100);
+<<<<<<< HEAD
         workerConfig.setWorkerPort(workerServicePort);
+=======
+        workerConfig.setWorkerPort(0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         workerConfig.setPulsarFunctionsCluster(config.getClusterName());
         String hostname = ServiceConfigurationUtils.getDefaultOrConfiguredAddress(config.getAdvertisedAddress());
         this.workerId = "c-" + config.getClusterName() + "-fw-" + hostname + "-" + workerConfig.getWorkerPort();
         workerConfig.setWorkerHostname(hostname);
         workerConfig.setWorkerId(workerId);
 
+<<<<<<< HEAD
         workerConfig.setClientAuthenticationPlugin(AuthenticationTls.class.getName());
         workerConfig.setClientAuthenticationParameters(
+=======
+        workerConfig.setBrokerClientAuthenticationPlugin(AuthenticationTls.class.getName());
+        workerConfig.setBrokerClientAuthenticationParameters(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 String.format("tlsCertFile:%s,tlsKeyFile:%s", TLS_CLIENT_CERT_FILE_PATH, TLS_CLIENT_KEY_FILE_PATH));
         workerConfig.setUseTls(true);
         workerConfig.setTlsAllowInsecureConnection(true);
         workerConfig.setTlsTrustCertsFilePath(TLS_CLIENT_CERT_FILE_PATH);
 
+<<<<<<< HEAD
         workerConfig.setWorkerPortTls(workerServicePortTls);
+=======
+        workerConfig.setWorkerPortTls(0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         workerConfig.setTlsEnabled(true);
         workerConfig.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         workerConfig.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
@@ -226,7 +315,11 @@ public class PulsarFunctionTlsTest {
 
         File file = new File(jarFile);
         try {
+<<<<<<< HEAD
             Utils.loadJar(file);
+=======
+            ClassLoaderUtils.loadJar(file);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (MalformedURLException e) {
             throw new RuntimeException("Failed to load user jar " + file, e);
         }
@@ -249,4 +342,8 @@ public class PulsarFunctionTlsTest {
         return functionConfig;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

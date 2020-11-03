@@ -3,6 +3,7 @@ id: io-cassandra
 title: Cassandra Sink Connector
 sidebar_label: Cassandra Sink Connector
 ---
+<<<<<<< HEAD
 
 The Cassandra Sink connector is used to write messages to a Cassandra Cluster.
 
@@ -20,3 +21,5 @@ All the Cassandra sink settings are listed as below. All the settings are requir
 | `columnFamily` | `null` | `true` | Cassandra ColumnFamily name. The column family should be created prior to creating the sink. |
 | `keyname` | `null` | `true` | Key column name. The key column is used for storing Pulsar message keys. If a Pulsar message doesn't have any key associated, the message value will be used as the key. |
 | `columnName` | `null` | `true` | Value column name. The value column is used for storing Pulsar message values. |
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

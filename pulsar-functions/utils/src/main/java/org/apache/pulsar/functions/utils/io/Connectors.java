@@ -26,11 +26,21 @@ import java.util.TreeMap;
 
 import lombok.Data;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.io.ConfigFieldDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.io.ConnectorDefinition;
 
 @Data
 public class Connectors {
     final List<ConnectorDefinition> connectors = new ArrayList<>();
     final Map<String, Path> sources = new TreeMap<>();
+<<<<<<< HEAD
     final Map<String, Path> sinks = new TreeMap<>();
+=======
+    final Map<String, List<ConfigFieldDefinition>> sourceConfigDefinitions = new TreeMap<>();
+    final Map<String, Path> sinks = new TreeMap<>();
+    final Map<String, List<ConfigFieldDefinition>> sinkConfigDefinitions = new TreeMap<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

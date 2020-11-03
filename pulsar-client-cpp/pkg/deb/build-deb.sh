@@ -38,7 +38,11 @@ tar xfz $SRC_ROOT_DIR/distribution/server/target/apache-pulsar-$POM_VERSION-src.
 pushd $CPP_DIR
 
 cmake . -DBUILD_TESTS=OFF -DLINK_STATIC=ON
+<<<<<<< HEAD
 make pulsarShared pulsarStatic -j 3
+=======
+make pulsarShared pulsarSharedNossl pulsarStatic pulsarStaticWithDeps  -j 3
+>>>>>>> f773c602c... Test pr 10 (#27)
 popd
 
 DEST_DIR=apache-pulsar-client
@@ -68,11 +72,25 @@ mkdir -p $DEVEL_DEST_DIR/usr/include
 mkdir -p $DEST_DIR/usr/share/doc/pulsar-client-$VERSION
 mkdir -p $DEVEL_DEST_DIR/usr/share/doc/pulsar-client-dev-$VERSION
 
+<<<<<<< HEAD
 cp -ar $CPP_DIR/include/pulsar $DEVEL_DEST_DIR/usr/include/
 cp $CPP_DIR/lib/libpulsar.a $DEVEL_DEST_DIR/usr/lib
 cp $CPP_DIR/lib/libpulsar.so.$POM_VERSION $DEST_DIR/usr/lib
 pushd $DEST_DIR/usr/lib
 ln -s libpulsar.so.$POM_VERSION libpulsar.so
+=======
+ls $CPP_DIR/lib/libpulsar*
+
+cp -ar $CPP_DIR/include/pulsar $DEVEL_DEST_DIR/usr/include/
+cp $CPP_DIR/lib/libpulsar.a $DEVEL_DEST_DIR/usr/lib
+cp $CPP_DIR/lib/libpulsarwithdeps.a $DEVEL_DEST_DIR/usr/lib
+cp $CPP_DIR/lib/libpulsar.so.$POM_VERSION $DEST_DIR/usr/lib
+cp $CPP_DIR/lib/libpulsarnossl.so.$POM_VERSION $DEST_DIR/usr/lib
+
+pushd $DEST_DIR/usr/lib
+ln -s libpulsar.so.$POM_VERSION libpulsar.so
+ln -s libpulsarnossl.so.$POM_VERSION libpulsarnossl.so
+>>>>>>> f773c602c... Test pr 10 (#27)
 popd
 
 cp $ROOT_DIR/NOTICE $DEST_DIR/usr/share/doc/pulsar-client-$VERSION

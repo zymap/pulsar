@@ -18,12 +18,38 @@
  */
 package org.apache.pulsar.client.api;
 
+<<<<<<< HEAD
 public class SchemaSerializationException extends RuntimeException {
 
+=======
+/**
+ * Schema serialization exception.
+ */
+public class SchemaSerializationException extends RuntimeException {
+
+    /**
+     * Constructs an {@code SchemaSerializationException} with the specified detail message.
+     *
+     * @param message
+     *        The detail message (which is saved for later retrieval
+     *        by the {@link #getMessage()} method)
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaSerializationException(String message) {
         super(message);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Constructs an {@code SchemaSerializationException} with the specified cause.
+     *
+     * @param cause
+     *        The cause (which is saved for later retrieval by the
+     *        {@link #getCause()} method).  (A null value is permitted,
+     *        and indicates that the cause is nonexistent or unknown.)
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaSerializationException(Throwable cause) {
         super(cause);
     }

@@ -19,6 +19,10 @@
 
 #include "ClientImpl.h"
 #include "ReaderImpl.h"
+<<<<<<< HEAD
+=======
+#include "TopicName.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
@@ -54,6 +58,10 @@ void ReaderImpl::start(const MessageId& startMessageId) {
     consumer_ = std::make_shared<ConsumerImpl>(
         client_.lock(), topic_, subscription, consumerConf, ExecutorServicePtr(), NonPartitioned,
         Commands::SubscriptionModeNonDurable, Optional<MessageId>::of(startMessageId));
+<<<<<<< HEAD
+=======
+    consumer_->setPartitionIndex(TopicName::getPartitionIndex(topic_));
+>>>>>>> f773c602c... Test pr 10 (#27)
     consumer_->getConsumerCreatedFuture().addListener(std::bind(&ReaderImpl::handleConsumerCreated,
                                                                 shared_from_this(), std::placeholders::_1,
                                                                 std::placeholders::_2));
@@ -63,7 +71,13 @@ void ReaderImpl::start(const MessageId& startMessageId) {
 const std::string& ReaderImpl::getTopic() const { return consumer_->getTopic(); }
 
 void ReaderImpl::handleConsumerCreated(Result result, ConsumerImplBaseWeakPtr consumer) {
+<<<<<<< HEAD
     readerCreatedCallback_(result, Reader(shared_from_this()));
+=======
+    auto self = shared_from_this();
+    readerCreatedCallback_(result, Reader(self));
+    readerImplWeakPtr_ = self;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 ConsumerImplPtr ReaderImpl::getConsumer() { return consumer_; }
@@ -104,4 +118,16 @@ void ReaderImpl::hasMessageAvailableAsync(HasMessageAvailableCallback callback) 
     consumer_->hasMessageAvailableAsync(callback);
 }
 
+<<<<<<< HEAD
+=======
+void ReaderImpl::seekAsync(const MessageId& msgId, ResultCallback callback) {
+    consumer_->seekAsync(msgId, callback);
+}
+void ReaderImpl::seekAsync(uint64_t timestamp, ResultCallback callback) {
+    consumer_->seekAsync(timestamp, callback);
+}
+
+ReaderImplWeakPtr ReaderImpl::getReaderImplWeakPtr() { return readerImplWeakPtr_; }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

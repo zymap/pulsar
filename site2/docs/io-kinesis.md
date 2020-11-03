@@ -3,6 +3,7 @@ id: io-kinesis
 title: AWS Kinesis Connector
 sidebar_label: AWS Kinesis Connector
 ---
+<<<<<<< HEAD
 
 ## Sink
 
@@ -34,3 +35,5 @@ Kinesis sink creates a json payload with pulsar message payload, properties and 
 #### **FULL_MESSAGE_IN_FB**
 
 Kinesis sink creates a flatbuffer serialized paylaod with pulsar message payload, properties and encryptionCtx, and publishes flatbuffer payload into the configured kinesis stream.
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

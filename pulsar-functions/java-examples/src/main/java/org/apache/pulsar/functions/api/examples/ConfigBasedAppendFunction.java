@@ -24,7 +24,11 @@ import org.apache.pulsar.functions.api.Function;
 import java.util.Optional;
 
 /**
+<<<<<<< HEAD
  * Function that appends something to incoming input based on config supplied
+=======
+ * Function that appends something to incoming input based on config supplied.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class ConfigBasedAppendFunction implements Function<String, String> {
     @Override
@@ -32,10 +36,14 @@ public class ConfigBasedAppendFunction implements Function<String, String> {
         String key = "config-key";
         Optional<Object> appendValue = context.getUserConfigValue(key);
 
+<<<<<<< HEAD
         if (appendValue.isPresent()) {
             return input + (String) appendValue.get();
         } else {
             return input + "!";
         }
+=======
+        return appendValue.map(o -> input + (String) o).orElseGet(() -> input + "!");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

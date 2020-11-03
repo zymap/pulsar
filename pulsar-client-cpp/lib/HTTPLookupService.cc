@@ -54,7 +54,12 @@ HTTPLookupService::HTTPLookupService(const std::string &lookupUrl,
       lookupTimeoutInSeconds_(clientConfiguration.getOperationTimeoutSeconds()),
       isUseTls_(clientConfiguration.isUseTls()),
       tlsAllowInsecure_(clientConfiguration.isTlsAllowInsecureConnection()),
+<<<<<<< HEAD
       tlsTrustCertsFilePath_(clientConfiguration.getTlsTrustCertsFilePath()) {
+=======
+      tlsTrustCertsFilePath_(clientConfiguration.getTlsTrustCertsFilePath()),
+      tlsValidateHostname_(clientConfiguration.isValidateHostName()) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     if (lookupUrl[lookupUrl.length() - 1] == '/') {
         // Remove trailing '/'
         adminUrl_ = lookupUrl.substr(0, lookupUrl.length() - 1);
@@ -225,6 +230,11 @@ Result HTTPLookupService::sendHTTPRequest(const std::string completeUrl, std::st
             curl_easy_setopt(handle, CURLOPT_CAINFO, tlsTrustCertsFilePath_.c_str());
         }
 
+<<<<<<< HEAD
+=======
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, tlsValidateHostname_ ? 1L : 0L);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (authDataContent->hasDataForTls()) {
             curl_easy_setopt(handle, CURLOPT_SSLCERT, authDataContent->getTlsCertificates().c_str());
             curl_easy_setopt(handle, CURLOPT_SSLKEY, authDataContent->getTlsPrivateKey().c_str());
@@ -311,10 +321,20 @@ LookupDataResultPtr HTTPLookupService::parseLookupData(const std::string &json) 
         return LookupDataResultPtr();
     }
 
+<<<<<<< HEAD
     const std::string brokerUrlTls = root.get<std::string>("brokerUrlTls", defaultNotFoundString);
     if (brokerUrlTls == defaultNotFoundString) {
         LOG_ERROR("malformed json! - brokerUrlTls not present" << json);
         return LookupDataResultPtr();
+=======
+    std::string brokerUrlTls = root.get<std::string>("brokerUrlTls", defaultNotFoundString);
+    if (brokerUrlTls == defaultNotFoundString) {
+        brokerUrlTls = root.get<std::string>("brokerUrlSsl", defaultNotFoundString);
+        if (brokerUrlTls == defaultNotFoundString) {
+            LOG_ERROR("malformed json! - brokerUrlTls not present" << json);
+            return LookupDataResultPtr();
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     LookupDataResultPtr lookupDataResultPtr = std::make_shared<LookupDataResult>();

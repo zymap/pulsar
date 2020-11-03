@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.io.file;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
+=======
+import static org.mockito.Mockito.any;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,6 +49,7 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
 
     @Test
     public final void singleFileTest() throws IOException {
+<<<<<<< HEAD
         
         consumer = Mockito.mock(PushSource.class);
         Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
@@ -53,6 +58,16 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
         map.put("inputDirectory", TMP_DIR);
         map.put("keepFile", Boolean.FALSE);
         
+=======
+
+        consumer = Mockito.mock(PushSource.class);
+        Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
+
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("inputDirectory", directory.toString());
+        map.put("keepFile", Boolean.FALSE);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             generateFiles(1);
             fileConfig = FileSourceConfig.load(map);
@@ -63,19 +78,28 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             executor.execute(consumerThread);
             executor.execute(cleanupThread);
             Thread.sleep(2000);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             for (File produced : producedFiles) {
                 verify(workQueue, times(1)).offer(produced);
                 verify(inProcess, times(1)).add(produced);
                 verify(inProcess, times(1)).remove(produced);
                 verify(recentlyProcessed, times(1)).add(produced);
             }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             verify(workQueue, times(1)).offer(any(File.class));
             verify(workQueue, atLeast(1)).take();
             verify(inProcess, times(1)).add(any(File.class));
             verify(inProcess, times(1)).remove(any(File.class));
             verify(recentlyProcessed, times(1)).add(any(File.class));
+<<<<<<< HEAD
             verify(recentlyProcessed, times(2)).take(); 
         } catch (InterruptedException | ExecutionException e) {
             fail("Unable to generate files" + e.getLocalizedMessage());
@@ -92,6 +116,24 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
         map.put("inputDirectory", TMP_DIR);
         map.put("keepFile", Boolean.FALSE);
         
+=======
+            verify(recentlyProcessed, times(2)).take();
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Unable to generate files" + e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public final void mulitpleFileTest() throws IOException {
+
+        consumer = Mockito.mock(PushSource.class);
+        Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
+
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("inputDirectory", directory.toString());
+        map.put("keepFile", Boolean.FALSE);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             generateFiles(50);
             fileConfig = FileSourceConfig.load(map);
@@ -102,20 +144,29 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             executor.execute(consumerThread);
             executor.execute(cleanupThread);
             Thread.sleep(2000);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             for (File produced : producedFiles) {
                 verify(workQueue, times(1)).offer(produced);
                 verify(inProcess, times(1)).add(produced);
                 verify(inProcess, times(1)).remove(produced);
                 verify(recentlyProcessed, times(1)).add(produced);
             }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             verify(workQueue, times(50)).offer(any(File.class));
             verify(workQueue, atLeast(50)).take();
             verify(inProcess, times(50)).add(any(File.class));
             verify(inProcess, times(50)).remove(any(File.class));
             verify(recentlyProcessed, times(50)).add(any(File.class));
             verify(recentlyProcessed, times(50)).add(any(File.class));
+<<<<<<< HEAD
             verify(recentlyProcessed, times(51)).take(); 
         } catch (InterruptedException | ExecutionException e) {
             fail("Unable to generate files" + e.getLocalizedMessage());
@@ -133,6 +184,25 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
         map.put("keepFile", Boolean.TRUE);
         map.put("pollingInterval", 1000L);
         
+=======
+            verify(recentlyProcessed, times(51)).take();
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Unable to generate files" + e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public final void keepFileTest() throws IOException {
+
+        consumer = Mockito.mock(PushSource.class);
+        Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
+
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("inputDirectory", directory.toString());
+        map.put("keepFile", Boolean.TRUE);
+        map.put("pollingInterval", 1000L);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             generateFiles(1);
             fileConfig = FileSourceConfig.load(map);
@@ -143,13 +213,18 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             executor.execute(consumerThread);
             executor.execute(cleanupThread);
             Thread.sleep(7900);  // Should pull the same file 5 times?
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             for (File produced : producedFiles) {
                 verify(workQueue, atLeast(4)).offer(produced);
                 verify(inProcess, atLeast(4)).add(produced);
                 verify(inProcess, atLeast(4)).remove(produced);
                 verify(recentlyProcessed, atLeast(4)).add(produced);
             }
+<<<<<<< HEAD
             
             verify(recentlyProcessed, atLeast(5)).take(); 
         } catch (InterruptedException | ExecutionException e) {
@@ -174,12 +249,39 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             generatorThread = new TestFileGenerator(producedFiles, 5000, 100, 1, TMP_DIR, "continuous", ".txt", getPermissions());
             executor.execute(generatorThread);
             
+=======
+
+            verify(recentlyProcessed, atLeast(5)).take();
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Unable to generate files" + e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public final void continuousRunTest() throws IOException {
+
+        consumer = Mockito.mock(PushSource.class);
+        Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
+
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("inputDirectory", directory.toString());
+        map.put("keepFile", Boolean.FALSE);
+        map.put("pollingInterval", 100);
+        fileConfig = FileSourceConfig.load(map);
+
+        try {
+            // Start producing files, with a .1 sec delay between
+            generatorThread = new TestFileGenerator(producedFiles, 5000, 100, 1, directory.toString(), "continuous", ".txt", getPermissions());
+            executor.execute(generatorThread);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             listingThread = new FileListingThread(fileConfig, workQueue, inProcess, recentlyProcessed);
             consumerThread = new FileConsumerThread(consumer, workQueue, inProcess, recentlyProcessed);
             cleanupThread = new ProcessedFileThread(fileConfig, recentlyProcessed);
             executor.execute(listingThread);
             executor.execute(consumerThread);
             executor.execute(cleanupThread);
+<<<<<<< HEAD
             
             // Run for 30 seconds
             Thread.sleep(30000);
@@ -187,11 +289,24 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             // Stop producing files
             generatorThread.halt();
             
+=======
+
+            // Run for 30 seconds
+            Thread.sleep(30000);
+
+            // Stop producing files
+            generatorThread.halt();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Let the consumer catch up
             while (!workQueue.isEmpty() && !inProcess.isEmpty() && !recentlyProcessed.isEmpty()) {
                 Thread.sleep(2000);
             }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Make sure every single file was processed.
             for (File produced : producedFiles) {
                 verify(workQueue, times(1)).offer(produced);
@@ -199,6 +314,7 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
                 verify(inProcess, times(1)).remove(produced);
                 verify(recentlyProcessed, times(1)).add(produced);
             }
+<<<<<<< HEAD
             
         } catch (InterruptedException e) {
             fail("Unable to generate files" + e.getLocalizedMessage());
@@ -222,6 +338,31 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             generatorThread = new TestFileGenerator(producedFiles, 5000, 100, 1, TMP_DIR, "continuous", ".txt", getPermissions());
             executor.execute(generatorThread);
             
+=======
+
+        } catch (InterruptedException e) {
+            fail("Unable to generate files" + e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public final void multipleConsumerTest() throws IOException {
+
+        consumer = Mockito.mock(PushSource.class);
+        Mockito.doNothing().when(consumer).consume((Record<byte[]>) any(Record.class));
+
+        Map<String, Object> map = new HashMap<String, Object> ();
+        map.put("inputDirectory", directory.toString());
+        map.put("keepFile", Boolean.FALSE);
+        map.put("pollingInterval", 100);
+        fileConfig = FileSourceConfig.load(map);
+
+        try {
+            // Start producing files, with a .1 sec delay between
+            generatorThread = new TestFileGenerator(producedFiles, 5000, 100, 1, directory.toString(), "continuous", ".txt", getPermissions());
+            executor.execute(generatorThread);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             listingThread = new FileListingThread(fileConfig, workQueue, inProcess, recentlyProcessed);
             consumerThread = new FileConsumerThread(consumer, workQueue, inProcess, recentlyProcessed);
             FileConsumerThread consumerThread2 = new FileConsumerThread(consumer, workQueue, inProcess, recentlyProcessed);
@@ -232,6 +373,7 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             executor.execute(consumerThread2);
             executor.execute(consumerThread3);
             executor.execute(cleanupThread);
+<<<<<<< HEAD
             
             // Run for 30 seconds
             Thread.sleep(30000);
@@ -239,11 +381,24 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
             // Stop producing files
             generatorThread.halt();
             
+=======
+
+            // Run for 30 seconds
+            Thread.sleep(30000);
+
+            // Stop producing files
+            generatorThread.halt();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Let the consumer catch up
             while (!workQueue.isEmpty() && !inProcess.isEmpty() && !recentlyProcessed.isEmpty()) {
                 Thread.sleep(2000);
             }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Make sure every single file was processed exactly once.
             for (File produced : producedFiles) {
                 verify(workQueue, times(1)).offer(produced);
@@ -251,9 +406,16 @@ public class ProcessedFileThreadTests extends AbstractFileTests {
                 verify(inProcess, times(1)).remove(produced);
                 verify(recentlyProcessed, times(1)).add(produced);
             }
+<<<<<<< HEAD
             
         } catch (InterruptedException e) {
             fail("Unable to generate files" + e.getLocalizedMessage());
         } 
+=======
+
+        } catch (InterruptedException e) {
+            fail("Unable to generate files" + e.getLocalizedMessage());
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

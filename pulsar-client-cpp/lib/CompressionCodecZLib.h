@@ -19,15 +19,26 @@
 #ifndef LIB_COMPRESSIONCODECZLIB_H_
 #define LIB_COMPRESSIONCODECZLIB_H_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include "CompressionCodec.h"
 #include <zlib.h>
 
 // Make symbol visible to unit tests
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 namespace pulsar {
 
 class CompressionCodecZLib : public CompressionCodec {
+=======
+
+namespace pulsar {
+
+class PULSAR_PUBLIC CompressionCodecZLib : public CompressionCodec {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     SharedBuffer encode(const SharedBuffer& raw);
 
@@ -36,6 +47,9 @@ class CompressionCodecZLib : public CompressionCodec {
 
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* LIB_COMPRESSIONCODECZLIB_H_ */

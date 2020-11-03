@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.functions.worker;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -51,6 +52,44 @@ public class FunctionMetaDataManagerTest {
         when(builder.topic(anyString())).thenReturn(builder);
 
         when(builder.create()).thenReturn(mock(Producer.class));
+=======
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.functions.proto.Function;
+import org.apache.pulsar.functions.proto.Request;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+public class FunctionMetaDataManagerTest {
+
+    static byte[] producerByteArray;
+
+    private static PulsarClient mockPulsarClient() throws PulsarClientException {
+        ProducerBuilder<byte[]> builder = mock(ProducerBuilder.class);
+        when(builder.topic(anyString())).thenReturn(builder);
+        when(builder.producerName(anyString())).thenReturn(builder);
+
+        Producer producer = mock(Producer.class);
+        TypedMessageBuilder messageBuilder = mock(TypedMessageBuilder.class);
+        when(messageBuilder.key(anyString())).thenReturn(messageBuilder);
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+            FunctionMetaDataManagerTest.producerByteArray = (byte[])arg0;
+            return messageBuilder;
+        }).when(messageBuilder).value(any());
+        when(messageBuilder.property(anyString(), anyString())).thenReturn(messageBuilder);
+        when(producer.newMessage()).thenReturn(messageBuilder);
+
+        when(builder.create()).thenReturn(producer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         PulsarClient client = mock(PulsarClient.class);
         when(client.newProducer()).thenReturn(builder);
@@ -63,7 +102,11 @@ public class FunctionMetaDataManagerTest {
         FunctionMetaDataManager functionMetaDataManager = spy(
                 new FunctionMetaDataManager(new WorkerConfig(),
                         mock(SchedulerManager.class),
+<<<<<<< HEAD
                         mockPulsarClient()));
+=======
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Map<String, Function.FunctionMetaData> functionMetaDataMap1 = new HashMap<>();
         Function.FunctionMetaData f1 = Function.FunctionMetaData.newBuilder().setFunctionDetails(
@@ -97,6 +140,7 @@ public class FunctionMetaDataManagerTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void updateFunction() throws PulsarClientException {
 
         WorkerConfig workerConfig = new WorkerConfig();
@@ -284,41 +328,198 @@ public class FunctionMetaDataManagerTest {
 
     @Test
     public void testProcessRequest() throws PulsarClientException {
+=======
+    public void testUpdateIfLeaderFunctionWithoutCompaction() throws PulsarClientException {
+        testUpdateIfLeaderFunction(false);
+    }
+
+    @Test
+    public void testUpdateIfLeaderFunctionWithCompaction() throws PulsarClientException {
+        testUpdateIfLeaderFunction(true);
+    }
+
+    private void testUpdateIfLeaderFunction(boolean compact) throws PulsarClientException {
+
+        WorkerConfig workerConfig = new WorkerConfig();
+        workerConfig.setWorkerId("worker-1");
+        workerConfig.setUseCompactedMetadataTopic(compact);
+        FunctionMetaDataManager functionMetaDataManager = spy(
+                new FunctionMetaDataManager(workerConfig,
+                        mock(SchedulerManager.class),
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+        Function.FunctionMetaData m1 = Function.FunctionMetaData.newBuilder()
+                .setVersion(1)
+                .setFunctionDetails(Function.FunctionDetails.newBuilder().setName("func-1")).build();
+
+        // update when you are not the leader
+        try {
+            functionMetaDataManager.updateFunctionOnLeader(m1, false);
+            Assert.assertTrue(false);
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "Not the leader");
+        }
+
+        // become leader
+        functionMetaDataManager.acquireLeadership();
+        // Now w should be able to really update
+        functionMetaDataManager.updateFunctionOnLeader(m1, false);
+        if (compact) {
+            Assert.assertTrue(Arrays.equals(m1.toByteArray(), producerByteArray));
+        } else {
+            Assert.assertFalse(Arrays.equals(m1.toByteArray(), producerByteArray));
+        }
+
+        // outdated request
+        try {
+            functionMetaDataManager.updateFunctionOnLeader(m1, false);
+            Assert.assertTrue(false);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "Update request ignored because it is out of date. Please try again.");
+        }
+        // udpate with new version
+        Function.FunctionMetaData m2 = m1.toBuilder().setVersion(2).build();
+        functionMetaDataManager.updateFunctionOnLeader(m2, false);
+        if (compact) {
+            Assert.assertTrue(Arrays.equals(m2.toByteArray(), producerByteArray));
+        } else {
+            Assert.assertFalse(Arrays.equals(m2.toByteArray(), producerByteArray));
+        }
+    }
+
+    @Test
+    public void deregisterFunctionWithoutCompaction() throws PulsarClientException {
+        deregisterFunction(false);
+    }
+
+    @Test
+    public void deregisterFunctionWithCompaction() throws PulsarClientException {
+        deregisterFunction(true);
+    }
+
+    private void deregisterFunction(boolean compact) throws PulsarClientException {
+        SchedulerManager mockedScheduler = mock(SchedulerManager.class);
+        WorkerConfig workerConfig = new WorkerConfig();
+        workerConfig.setWorkerId("worker-1");
+        workerConfig.setUseCompactedMetadataTopic(compact);
+        FunctionMetaDataManager functionMetaDataManager = spy(
+                new FunctionMetaDataManager(workerConfig,
+                        mockedScheduler,
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+        Function.FunctionMetaData m1 = Function.FunctionMetaData.newBuilder()
+                .setVersion(1)
+                .setFunctionDetails(Function.FunctionDetails.newBuilder().setName("func-1")
+                        .setNamespace("namespace-1").setTenant("tenant-1")).build();
+
+        // Try deleting when you are not the leader
+        try {
+            functionMetaDataManager.updateFunctionOnLeader(m1, true);
+            Assert.assertTrue(false);
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "Not the leader");
+        }
+
+        // become leader
+        functionMetaDataManager.acquireLeadership();
+        verify(mockedScheduler, times(0)).schedule();
+        // Now try deleting
+        functionMetaDataManager.updateFunctionOnLeader(m1, true);
+        // make sure schedule was not called because function didn't exist.
+        verify(mockedScheduler, times(0)).schedule();
+
+        // insert function
+        functionMetaDataManager.updateFunctionOnLeader(m1, false);
+        verify(mockedScheduler, times(1)).schedule();
+
+        // outdated request
+        try {
+            functionMetaDataManager.updateFunctionOnLeader(m1, true);
+            Assert.assertTrue(false);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "Delete request ignored because it is out of date. Please try again.");
+        }
+        verify(mockedScheduler, times(1)).schedule();
+
+        // udpate with new version
+        m1 = m1.toBuilder().setVersion(2).build();
+        functionMetaDataManager.updateFunctionOnLeader(m1, true);
+        verify(mockedScheduler, times(2)).schedule();
+        if (compact) {
+            Assert.assertTrue(Arrays.equals("".getBytes(), producerByteArray));
+        } else {
+            Assert.assertFalse(Arrays.equals(m1.toByteArray(), producerByteArray));
+        }
+    }
+
+    @Test
+    public void testProcessRequest() throws PulsarClientException, IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         WorkerConfig workerConfig = new WorkerConfig();
         FunctionMetaDataManager functionMetaDataManager = spy(
                 new FunctionMetaDataManager(workerConfig,
                         mock(SchedulerManager.class),
+<<<<<<< HEAD
                         mockPulsarClient()));
 
         Mockito.doNothing().when(functionMetaDataManager).processUpdate(any(Request.ServiceRequest.class));
         Mockito.doNothing().when(functionMetaDataManager).proccessDeregister(any(Request.ServiceRequest.class));
+=======
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+
+        doReturn(true).when(functionMetaDataManager).processUpdate(any(Function.FunctionMetaData.class));
+        doReturn(true).when(functionMetaDataManager).proccessDeregister(any(Function.FunctionMetaData.class));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Request.ServiceRequest serviceRequest
                 = Request.ServiceRequest.newBuilder().setServiceRequestType(
                         Request.ServiceRequest.ServiceRequestType.UPDATE).build();
+<<<<<<< HEAD
         functionMetaDataManager.processRequest(MessageId.earliest, serviceRequest);
 
         verify(functionMetaDataManager, times(1)).processUpdate
                 (any(Request.ServiceRequest.class));
         verify(functionMetaDataManager).processUpdate(serviceRequest);
+=======
+        Message msg = mock(Message.class);
+        doReturn(serviceRequest.toByteArray()).when(msg).getData();
+        functionMetaDataManager.processMetaDataTopicMessage(msg);
+
+        verify(functionMetaDataManager, times(1)).processUpdate
+                (any(Function.FunctionMetaData.class));
+        verify(functionMetaDataManager).processUpdate(serviceRequest.getFunctionMetaData());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         serviceRequest
                 = Request.ServiceRequest.newBuilder().setServiceRequestType(
                 Request.ServiceRequest.ServiceRequestType.INITIALIZE).build();
+<<<<<<< HEAD
         functionMetaDataManager.processRequest(MessageId.earliest, serviceRequest);
+=======
+        doReturn(serviceRequest.toByteArray()).when(msg).getData();
+        functionMetaDataManager.processMetaDataTopicMessage(msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         serviceRequest
                 = Request.ServiceRequest.newBuilder().setServiceRequestType(
                 Request.ServiceRequest.ServiceRequestType.DELETE).build();
+<<<<<<< HEAD
         functionMetaDataManager.processRequest(MessageId.earliest, serviceRequest);
 
         verify(functionMetaDataManager, times(1)).proccessDeregister(
                 any(Request.ServiceRequest.class));
         verify(functionMetaDataManager).proccessDeregister(serviceRequest);
+=======
+        doReturn(serviceRequest.toByteArray()).when(msg).getData();
+        functionMetaDataManager.processMetaDataTopicMessage(msg);
+
+        verify(functionMetaDataManager, times(1)).proccessDeregister(
+                any(Function.FunctionMetaData.class));
+        verify(functionMetaDataManager).proccessDeregister(serviceRequest.getFunctionMetaData());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
     public void processUpdateTest() throws PulsarClientException {
+<<<<<<< HEAD
         long version = 5;
         WorkerConfig workerConfig = new WorkerConfig();
         workerConfig.setWorkerId("worker-1");
@@ -342,11 +543,30 @@ public class FunctionMetaDataManagerTest {
         verify(functionMetaDataManager, times(1))
                 .setFunctionMetaData(any(Function.FunctionMetaData.class));
         verify(schedulerManager, times(1)).schedule();
+=======
+        SchedulerManager schedulerManager = mock(SchedulerManager.class);
+        WorkerConfig workerConfig = new WorkerConfig();
+        workerConfig.setWorkerId("worker-1");
+        FunctionMetaDataManager functionMetaDataManager = spy(
+                new FunctionMetaDataManager(workerConfig,
+                        schedulerManager,
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+        Function.FunctionMetaData m1 = Function.FunctionMetaData.newBuilder()
+                .setVersion(1)
+                .setFunctionDetails(Function.FunctionDetails.newBuilder().setName("func-1")
+                .setNamespace("namespace-1").setTenant("tenant-1")).build();
+
+        Assert.assertTrue(functionMetaDataManager.processUpdate(m1));
+        verify(functionMetaDataManager, times(1))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(m1, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").get("func-1"));
         Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").size());
 
+<<<<<<< HEAD
         // worker has record of function
 
         // request is oudated
@@ -393,11 +613,24 @@ public class FunctionMetaDataManagerTest {
                 .setFunctionMetaData(any(Function.FunctionMetaData.class));
         verify(schedulerManager, times(0)).schedule();
 
+=======
+        // outdated request
+        try {
+            functionMetaDataManager.processUpdate(m1);
+            Assert.assertTrue(false);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "Update request ignored because it is out of date. Please try again.");
+        }
+        verify(functionMetaDataManager, times(1))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(m1, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").get("func-1"));
         Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").size());
 
+<<<<<<< HEAD
         // schedule
         schedulerManager = mock(SchedulerManager.class);
         functionMetaDataManager = spy(
@@ -426,6 +659,15 @@ public class FunctionMetaDataManagerTest {
 
         Assert.assertEquals(m1.toBuilder().setVersion(version + 1).build(),
                 functionMetaDataManager.functionMetaDataMap.get(
+=======
+        // udpate with new version
+        m1 = m1.toBuilder().setVersion(2).build();
+        Assert.assertTrue(functionMetaDataManager.processUpdate(m1));
+        verify(functionMetaDataManager, times(2))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+        Assert.assertEquals(m1, functionMetaDataManager.functionMetaDataMap.get(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 "tenant-1").get("namespace-1").get("func-1"));
         Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").size());
@@ -433,6 +675,7 @@ public class FunctionMetaDataManagerTest {
 
     @Test
     public void processDeregister() throws PulsarClientException {
+<<<<<<< HEAD
         long version = 5;
         WorkerConfig workerConfig = new WorkerConfig();
         workerConfig.setWorkerId("worker-1");
@@ -517,6 +760,58 @@ public class FunctionMetaDataManagerTest {
         Assert.assertEquals(test, functionMetaDataManager.functionMetaDataMap.get(
                 "tenant-1").get("namespace-1").get("func-2"));
         Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
+=======
+        SchedulerManager schedulerManager = mock(SchedulerManager.class);
+        WorkerConfig workerConfig = new WorkerConfig();
+        workerConfig.setWorkerId("worker-1");
+        FunctionMetaDataManager functionMetaDataManager = spy(
+                new FunctionMetaDataManager(workerConfig,
+                        schedulerManager,
+                        mockPulsarClient(), ErrorNotifier.getDefaultImpl()));
+        Function.FunctionMetaData m1 = Function.FunctionMetaData.newBuilder()
+                .setVersion(1)
+                .setFunctionDetails(Function.FunctionDetails.newBuilder().setName("func-1")
+                        .setNamespace("namespace-1").setTenant("tenant-1")).build();
+
+        Assert.assertFalse(functionMetaDataManager.proccessDeregister(m1));
+        verify(functionMetaDataManager, times(0))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+        Assert.assertEquals(0, functionMetaDataManager.functionMetaDataMap.size());
+
+        // insert something
+        Assert.assertTrue(functionMetaDataManager.processUpdate(m1));
+        verify(functionMetaDataManager, times(1))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+        Assert.assertEquals(m1, functionMetaDataManager.functionMetaDataMap.get(
+                "tenant-1").get("namespace-1").get("func-1"));
+        Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
+                "tenant-1").get("namespace-1").size());
+
+        // outdated delete request
+        try {
+            functionMetaDataManager.proccessDeregister(m1);
+            Assert.assertTrue(false);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "Delete request ignored because it is out of date. Please try again.");
+        }
+        verify(functionMetaDataManager, times(1))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+        Assert.assertEquals(m1, functionMetaDataManager.functionMetaDataMap.get(
+                "tenant-1").get("namespace-1").get("func-1"));
+        Assert.assertEquals(1, functionMetaDataManager.functionMetaDataMap.get(
+                "tenant-1").get("namespace-1").size());
+
+        // delete now
+        m1 = m1.toBuilder().setVersion(2).build();
+        Assert.assertTrue(functionMetaDataManager.proccessDeregister(m1));
+        verify(functionMetaDataManager, times(1))
+                .setFunctionMetaData(any(Function.FunctionMetaData.class));
+        verify(schedulerManager, times(0)).schedule();
+        Assert.assertEquals(0, functionMetaDataManager.functionMetaDataMap.get(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 "tenant-1").get("namespace-1").size());
     }
 }

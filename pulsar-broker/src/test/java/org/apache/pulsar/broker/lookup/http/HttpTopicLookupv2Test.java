@@ -59,7 +59,10 @@ import org.mockito.ArgumentCaptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.google.common.collect.Sets;
 
 /**

@@ -27,6 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.zookeeper.CreateMode;
+<<<<<<< HEAD
+=======
+import org.apache.zookeeper.KeeperException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.WatchedEvent;
@@ -53,6 +57,11 @@ public class LeaderElectionService {
 
     private boolean stopped = true;
 
+<<<<<<< HEAD
+=======
+    private boolean elected = false;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final ZooKeeper zkClient;
 
     private final AtomicReference<LeaderBroker> currentLeader = new AtomicReference<LeaderBroker>();
@@ -98,6 +107,7 @@ public class LeaderElectionService {
                         log.warn("Election node {} is deleted, attempting re-election...", event.getPath());
                         if (event.getPath().equals(ELECTION_ROOT)) {
                             log.info("This should call elect again...");
+<<<<<<< HEAD
                             executor.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -106,6 +116,13 @@ public class LeaderElectionService {
                                             pulsar.getWebServiceAddress());
                                     elect();
                                 }
+=======
+                            executor.execute(() -> {
+                                // If the node is deleted, attempt the re-election
+                                log.info("Broker [{}] is calling re-election from the thread",
+                                        pulsar.getSafeWebServiceAddress());
+                                elect();
+>>>>>>> f773c602c... Test pr 10 (#27)
                             });
                         }
                         break;
@@ -120,39 +137,63 @@ public class LeaderElectionService {
             LeaderBroker leaderBroker = jsonMapper.readValue(data, LeaderBroker.class);
             currentLeader.set(leaderBroker);
             isLeader.set(false);
+<<<<<<< HEAD
+=======
+            elected = true;
+>>>>>>> f773c602c... Test pr 10 (#27)
             leaderListener.brokerIsAFollowerNow();
 
             // If broker comes here it is a follower. Do nothing, wait for the watch to trigger
             log.info("Broker [{}] is the follower now. Waiting for the watch to trigger...",
+<<<<<<< HEAD
                     pulsar.getWebServiceAddress());
+=======
+                    pulsar.getSafeWebServiceAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         } catch (NoNodeException nne) {
             // There's no leader yet... try to become the leader
             try {
                 // Create the root node and add current broker's URL as its contents
+<<<<<<< HEAD
                 LeaderBroker leaderBroker = new LeaderBroker(pulsar.getWebServiceAddress());
+=======
+                LeaderBroker leaderBroker = new LeaderBroker(pulsar.getSafeWebServiceAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ZkUtils.createFullPathOptimistic(pulsar.getLocalZkCache().getZooKeeper(), ELECTION_ROOT,
                         jsonMapper.writeValueAsBytes(leaderBroker), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 
                 // Update the current leader and set the flag to true
                 currentLeader.set(new LeaderBroker(leaderBroker.getServiceUrl()));
                 isLeader.set(true);
+<<<<<<< HEAD
 
                 // Notify the listener that this broker is now the leader so that it can collect usage and start load
                 // manager.
                 log.info("Broker [{}] is the leader now, notifying the listener...", pulsar.getWebServiceAddress());
+=======
+                elected = true;
+
+                // Notify the listener that this broker is now the leader so that it can collect usage and start load
+                // manager.
+                log.info("Broker [{}] is the leader now, notifying the listener...", pulsar.getSafeWebServiceAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
                 leaderListener.brokerIsTheLeaderNow();
             } catch (NodeExistsException nee) {
                 // Re-elect the new leader
                 log.warn(
                         "Got exception [{}] while creating election node because it already exists. Attempting re-election...",
                         nee.getMessage());
+<<<<<<< HEAD
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
                         elect();
                     }
                 });
+=======
+                executor.execute(this::elect);
+>>>>>>> f773c602c... Test pr 10 (#27)
             } catch (Exception e) {
                 // Kill the broker because this broker's session with zookeeper might be stale. Killing the broker will
                 // make sure that we get the fresh zookeeper session.
@@ -179,6 +220,25 @@ public class LeaderElectionService {
         if (stopped) {
             return;
         }
+<<<<<<< HEAD
+=======
+
+        if (isLeader()) {
+            // Make sure to remove the leader election z-node in case the session doesn't
+            // get closed properly. This is to avoid having to wait the session timeout
+            // to elect a new one.
+            // This delete operation is safe to do here (with version=-1) because either:
+            //  1. The ZK session is still valid, in which case this broker is still
+            //     the "leader" and we have to remove the z-node
+            //  2. The session has already expired, in which case this delete operation
+            //     will not go through
+            try {
+                pulsar.getLocalZkCache().getZooKeeper().delete(ELECTION_ROOT, -1);
+            } catch (Throwable t) {
+                log.warn("Failed to cleanup election root znode", t);
+            }
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         stopped = true;
         log.info("LeaderElectionService stopped");
     }
@@ -191,4 +251,11 @@ public class LeaderElectionService {
         return isLeader.get();
     }
 
+<<<<<<< HEAD
+=======
+    public boolean isElected() {
+        return elected;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

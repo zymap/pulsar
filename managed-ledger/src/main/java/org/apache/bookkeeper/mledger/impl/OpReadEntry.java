@@ -24,7 +24,10 @@ import com.google.common.collect.Lists;
 import io.netty.util.Recycler;
 import io.netty.util.Recycler.Handle;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntriesCallback;
 import org.apache.bookkeeper.mledger.Entry;
@@ -34,8 +37,11 @@ import org.apache.bookkeeper.mledger.ManagedLedgerException.TooManyRequestsExcep
 import org.apache.bookkeeper.mledger.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+<<<<<<< HEAD
 import static org.apache.bookkeeper.mledger.impl.ManagedCursorImpl.TRUE;
 import static org.apache.bookkeeper.mledger.impl.ManagedCursorImpl.FALSE;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 class OpReadEntry implements ReadEntriesCallback {
 
@@ -52,7 +58,11 @@ class OpReadEntry implements ReadEntriesCallback {
     public static OpReadEntry create(ManagedCursorImpl cursor, PositionImpl readPositionRef, int count,
             ReadEntriesCallback callback, Object ctx) {
         OpReadEntry op = RECYCLER.get();
+<<<<<<< HEAD
         op.readPosition = cursor.ledger.startReadOperationOnLedger(readPositionRef);
+=======
+        op.readPosition = cursor.ledger.startReadOperationOnLedger(readPositionRef, op);
+>>>>>>> f773c602c... Test pr 10 (#27)
         op.cursor = cursor;
         op.count = count;
         op.callback = callback;
@@ -65,8 +75,19 @@ class OpReadEntry implements ReadEntriesCallback {
     @Override
     public void readEntriesComplete(List<Entry> returnedEntries, Object ctx) {
         // Filter the returned entries for individual deleted messages
+<<<<<<< HEAD
         int entriesSize = returnedEntries.size();
         final PositionImpl lastPosition = (PositionImpl) returnedEntries.get(entriesSize - 1).getPosition();
+=======
+        int entriesCount = returnedEntries.size();
+        long entriesSize = 0;
+        for (int i = 0; i < entriesCount; i++) {
+            entriesSize += returnedEntries.get(i).getLength();
+        }
+        cursor.updateReadStats(entriesCount, entriesSize);
+
+        final PositionImpl lastPosition = (PositionImpl) returnedEntries.get(entriesCount - 1).getPosition();
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (log.isDebugEnabled()) {
             log.debug("[{}][{}] Read entries succeeded batch_size={} cumulative_size={} requested_count={}",
                     cursor.ledger.getName(), cursor.getName(), returnedEntries.size(), entries.size(), count);
@@ -75,7 +96,11 @@ class OpReadEntry implements ReadEntriesCallback {
         entries.addAll(filteredEntries);
 
         // if entries have been filtered out then try to skip reading of already deletedMessages in that range
+<<<<<<< HEAD
         final Position nexReadPosition = entriesSize != filteredEntries.size()
+=======
+        final Position nexReadPosition = entriesCount != filteredEntries.size()
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ? cursor.getNextAvailablePosition(lastPosition) : lastPosition.getNext();
         updateReadPosition(nexReadPosition);
         checkReadCompletion();
@@ -131,12 +156,20 @@ class OpReadEntry implements ReadEntriesCallback {
         if (entries.size() < count && cursor.hasMoreEntries()) {
             // We still have more entries to read from the next ledger, schedule a new async operation
             if (nextReadPosition.getLedgerId() != readPosition.getLedgerId()) {
+<<<<<<< HEAD
                 cursor.ledger.startReadOperationOnLedger(nextReadPosition);
+=======
+                cursor.ledger.startReadOperationOnLedger(nextReadPosition, OpReadEntry.this);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
 
             // Schedule next read in a different thread
             cursor.ledger.getExecutor().execute(safeRun(() -> {
+<<<<<<< HEAD
                 readPosition = cursor.ledger.startReadOperationOnLedger(nextReadPosition);
+=======
+                readPosition = cursor.ledger.startReadOperationOnLedger(nextReadPosition, OpReadEntry.this);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 cursor.ledger.asyncReadEntries(OpReadEntry.this);
             }));
         } else {
@@ -168,6 +201,10 @@ class OpReadEntry implements ReadEntriesCallback {
     }
 
     private static final Recycler<OpReadEntry> RECYCLER = new Recycler<OpReadEntry>() {
+<<<<<<< HEAD
+=======
+        @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
         protected OpReadEntry newObject(Recycler.Handle<OpReadEntry> recyclerHandle) {
             return new OpReadEntry(recyclerHandle);
         }

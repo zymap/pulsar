@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.policies.data.loadbalancer;
 
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +32,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.Maps;
 
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.collect.Maps;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import org.apache.pulsar.common.util.NamespaceBundleStatsComparator;
+import org.apache.pulsar.policies.data.loadbalancer.SystemResourceUsage.ResourceType;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * This class represents the overall load of the broker - it includes overall {@link SystemResourceUsage} and
  * {@link NamespaceUsage} for all the namespaces hosted by this broker.
@@ -56,9 +71,17 @@ public class LoadReport implements LoadManagerReport {
     private int numConsumers;
     private int numProducers;
     private int numBundles;
+<<<<<<< HEAD
     // This place-holder requires to identify correct LoadManagerReport type while deserializing
     public static final String loadReportType = LoadReport.class.getSimpleName();
     
+=======
+    private Map<String, String> protocols;
+    // This place-holder requires to identify correct LoadManagerReport type while deserializing
+    @SuppressWarnings("checkstyle:ConstantName")
+    public static final String loadReportType = LoadReport.class.getSimpleName();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public LoadReport() {
         this(null, null, null, null);
     }
@@ -69,6 +92,10 @@ public class LoadReport implements LoadManagerReport {
         this.webServiceUrlTls = webServiceUrlTls;
         this.pulsarServiceUrl = pulsarServiceUrl;
         this.pulsarServiceUrlTls = pulsarServiceUrlTls;
+<<<<<<< HEAD
+=======
+        this.protocols = new HashMap<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
         bundleLosses = new HashSet<>();
         bundleGains = new HashSet<>();
         isUnderLoaded = false;
@@ -83,7 +110,11 @@ public class LoadReport implements LoadManagerReport {
     }
 
     /**
+<<<<<<< HEAD
      * overall machine resource used, not just by broker process
+=======
+     * Overall machine resource used, not just by broker process.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private SystemResourceUsage systemResourceUsage;
 
@@ -459,4 +490,21 @@ public class LoadReport implements LoadManagerReport {
     public double getMsgThroughputOut() {
         return msgRateOut;
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public Map<String, String> getProtocols() {
+        return protocols;
+    }
+
+    public void setProtocols(Map<String, String> protocols) {
+        this.protocols = protocols;
+    }
+
+    @Override
+    public Optional<String> getProtocol(String protocol) {
+        return Optional.ofNullable(protocols.get(protocol));
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

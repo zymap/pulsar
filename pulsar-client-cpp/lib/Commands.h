@@ -20,6 +20,10 @@
 #define LIB_COMMANDS_H_
 
 #include <pulsar/Authentication.h>
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Message.h>
 #include <pulsar/Schema.h>
 
@@ -27,6 +31,11 @@
 #include "SharedBuffer.h"
 #include "Utils.h"
 
+<<<<<<< HEAD
+=======
+#include <set>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 using namespace pulsar;
 
 namespace pulsar {
@@ -47,7 +56,11 @@ class Commands {
     };
     enum WireFormatConstant
     {
+<<<<<<< HEAD
         MaxMessageSize = (5 * 1024 * 1024 - (10 * 1024)),
+=======
+        DefaultMaxMessageSize = (5 * 1024 * 1024 - (10 * 1024)),
+>>>>>>> f773c602c... Test pr 10 (#27)
         MaxFrameSize = (5 * 1024 * 1024)
     };
 
@@ -68,6 +81,11 @@ class Commands {
     static SharedBuffer newConnect(const AuthenticationPtr& authentication, const std::string& logicalAddress,
                                    bool connectingThroughProxy);
 
+<<<<<<< HEAD
+=======
+    static SharedBuffer newAuthResponse(const AuthenticationPtr& authentication);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static SharedBuffer newPartitionMetadataRequest(const std::string& topic, uint64_t requestId);
 
     static SharedBuffer newLookup(const std::string& topic, const bool authoritative, uint64_t requestId);
@@ -88,10 +106,19 @@ class Commands {
     static SharedBuffer newProducer(const std::string& topic, uint64_t producerId,
                                     const std::string& producerName, uint64_t requestId,
                                     const std::map<std::string, std::string>& metadata,
+<<<<<<< HEAD
                                     const SchemaInfo& schemaInfo);
 
     static SharedBuffer newAck(uint64_t consumerId, const proto::MessageIdData& messageId,
                                proto::CommandAck_AckType ackType, int validationError);
+=======
+                                    const SchemaInfo& schemaInfo, uint64_t epoch,
+                                    bool userProvidedProducerName);
+
+    static SharedBuffer newAck(uint64_t consumerId, const proto::MessageIdData& messageId,
+                               proto::CommandAck_AckType ackType, int validationError);
+    static SharedBuffer newMultiMessageAck(uint64_t consumerId, const std::set<MessageId>& msgIds);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     static SharedBuffer newFlow(uint64_t consumerId, uint32_t messagePermits);
 
@@ -102,23 +129,46 @@ class Commands {
     static SharedBuffer newPing();
     static SharedBuffer newPong();
 
+<<<<<<< HEAD
     static SharedBuffer newRedeliverUnacknowledgedMessages(uint64_t consumerId);
+=======
+    static SharedBuffer newRedeliverUnacknowledgedMessages(uint64_t consumerId,
+                                                           const std::set<MessageId>& messageIds);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     static std::string messageType(proto::BaseCommand::Type type);
 
     static void initBatchMessageMetadata(const Message& msg, pulsar::proto::MessageMetadata& batchMetadata);
 
+<<<<<<< HEAD
     static void serializeSingleMessageInBatchWithPayload(const Message& msg, SharedBuffer& batchPayLoad,
                                                          const unsigned long& maxMessageSizeInBytes);
+=======
+    static PULSAR_PUBLIC uint64_t serializeSingleMessageInBatchWithPayload(
+        const Message& msg, SharedBuffer& batchPayLoad, unsigned long maxMessageSizeInBytes);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     static Message deSerializeSingleMessageInBatch(Message& batchedMessage, int32_t batchIndex);
 
     static SharedBuffer newConsumerStats(uint64_t consumerId, uint64_t requestId);
 
     static SharedBuffer newSeek(uint64_t consumerId, uint64_t requestId, const MessageId& messageId);
+<<<<<<< HEAD
     static SharedBuffer newGetLastMessageId(uint64_t consumerId, uint64_t requestId);
     static SharedBuffer newGetTopicsOfNamespace(const std::string& nsName, uint64_t requestId);
 
+=======
+    static SharedBuffer newSeek(uint64_t consumerId, uint64_t requestId, uint64_t timestamp);
+    static SharedBuffer newGetLastMessageId(uint64_t consumerId, uint64_t requestId);
+    static SharedBuffer newGetTopicsOfNamespace(const std::string& nsName, uint64_t requestId);
+
+    static bool peerSupportsGetLastMessageId(int32_t peerVersion);
+    static bool peerSupportsActiveConsumerListener(int32_t peerVersion);
+    static bool peerSupportsMultiMessageAcknowledgement(int32_t peerVersion);
+    static bool peerSupportsJsonSchemaAvroFormat(int32_t peerVersion);
+    static bool peerSupportsGetOrCreateSchema(int32_t peerVersion);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     Commands();
 

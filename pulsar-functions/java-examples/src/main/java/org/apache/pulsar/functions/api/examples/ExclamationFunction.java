@@ -23,7 +23,11 @@ import org.apache.pulsar.functions.api.Function;
 
 /**
  * The classic Exclamation Function that appends an exclamation at the end
+<<<<<<< HEAD
  * of the input
+=======
+ * of the input.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class ExclamationFunction implements Function<String, String> {
     @Override

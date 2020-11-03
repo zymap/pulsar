@@ -48,6 +48,11 @@ public class PulsarClientKafkaConfig {
     public static final String CONCURRENT_LOOKUP_REQUESTS = "pulsar.concurrent.lookup.requests";
     public static final String MAX_NUMBER_OF_REJECTED_REQUESTS_PER_CONNECTION = "pulsar.max.number.rejected.request.per.connection";
 
+<<<<<<< HEAD
+=======
+    public static final String KEEPALIVE_INTERVAL_MS = "pulsar.keepalive.interval.ms";
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static ClientBuilder getClientBuilder(Properties properties) {
         ClientBuilder clientBuilder = PulsarClient.builder();
 
@@ -112,6 +117,14 @@ public class PulsarClientKafkaConfig {
                     Integer.parseInt(properties.getProperty(MAX_NUMBER_OF_REJECTED_REQUESTS_PER_CONNECTION)));
         }
 
+<<<<<<< HEAD
+=======
+        if (properties.containsKey(KEEPALIVE_INTERVAL_MS)) {
+            clientBuilder.keepAliveInterval(Integer.parseInt(properties.getProperty(KEEPALIVE_INTERVAL_MS)),
+                    TimeUnit.MILLISECONDS);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         return clientBuilder;
     }
 }

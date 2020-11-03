@@ -44,6 +44,15 @@ public class PulsarKafkaWorkerConfig extends WorkerConfig {
     public static final String PULSAR_SERVICE_URL_CONFIG = "pulsar.service.url";
     private static final String PULSAR_SERVICE_URL_CONFIG_DOC = "pulsar service url";
 
+<<<<<<< HEAD
+=======
+    /**
+     * <code>topic.namespace</code>
+     */
+    public static final String TOPIC_NAMESPACE_CONFIG = "topic.namespace";
+    private static final String TOPIC_NAMESPACE_CONFIG_DOC = "namespace of topic name to store the output topics";
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static {
         CONFIG = new ConfigDef()
             .define(OFFSET_STORAGE_TOPIC_CONFIG,
@@ -53,10 +62,21 @@ public class PulsarKafkaWorkerConfig extends WorkerConfig {
             .define(PULSAR_SERVICE_URL_CONFIG,
                 Type.STRING,
                 Importance.HIGH,
+<<<<<<< HEAD
                 PULSAR_SERVICE_URL_CONFIG_DOC);
     }
 
 
+=======
+                PULSAR_SERVICE_URL_CONFIG_DOC)
+            .define(TOPIC_NAMESPACE_CONFIG,
+                Type.STRING,
+                "public/default",
+                Importance.HIGH,
+                TOPIC_NAMESPACE_CONFIG_DOC);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public PulsarKafkaWorkerConfig(Map<String, String> props) {
         super(CONFIG, props);
     }

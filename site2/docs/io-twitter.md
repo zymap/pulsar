@@ -4,6 +4,7 @@ title: Twitter Firehose Connector
 sidebar_label: Twitter Firehose Connector
 ---
 
+<<<<<<< HEAD
 The Twitter Firehose connector is used for receiving tweets from Twitter Firehose and writing
 the tweets to Pulsar topics.
 
@@ -22,3 +23,5 @@ You can get the OAuth credentials from [Twitter Developers Portal](https://devel
 | clientBufferSize | false | `50000` | The buffer size for buffering tweets fetched from Twitter Firehose |
 
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

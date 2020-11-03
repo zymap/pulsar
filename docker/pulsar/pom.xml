@@ -23,19 +23,31 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
     <artifactId>docker-images</artifactId>
+<<<<<<< HEAD
     <version>2.3.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.pulsar</groupId>
+=======
+    <version>2.7.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+>>>>>>> f773c602c... Test pr 10 (#27)
   <artifactId>pulsar-docker-image</artifactId>
   <name>Apache Pulsar :: Docker Images :: Pulsar Latest Version</name>
   <packaging>pom</packaging>
 
   <dependencies>
     <dependency>
+<<<<<<< HEAD
       <groupId>org.apache.pulsar</groupId>
       <artifactId>pulsar-server-distribution</artifactId>
       <version>${project.parent.version}</version>
+=======
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pulsar-server-distribution</artifactId>
+      <version>${project.version}</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
       <classifier>bin</classifier>
       <type>tar.gz</type>
       <scope>provided</scope>
@@ -54,7 +66,11 @@
             <version>${exec-maven-plugin.version}</version>
             <executions>
               <execution>
+<<<<<<< HEAD
                 <id>build-pulsar-clients-python-27</id>
+=======
+                <id>build-pulsar-clients-python-35</id>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 <phase>compile</phase>
                 <goals>
                   <goal>exec</goal>
@@ -64,18 +80,28 @@
                   <workingDirectory>${project.basedir}/target</workingDirectory>
                   <executable>${project.basedir}/../../pulsar-client-cpp/docker/build-wheels.sh</executable>
                   <arguments>
+<<<<<<< HEAD
                     <!-- build python 2.7 -->
                     <argument>2.7 cp27-cp27mu</argument>
+=======
+                    <!-- build python 3.7 -->
+                    <argument>3.7 cp37-cp37m</argument>
+>>>>>>> f773c602c... Test pr 10 (#27)
                   </arguments>
                 </configuration>
               </execution>
               <execution>
+<<<<<<< HEAD
                 <id>build-pulsar-clients-python-37</id>
+=======
+                <id>build-pulsar-cpp-client-deb</id>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 <phase>compile</phase>
                 <goals>
                   <goal>exec</goal>
                 </goals>
                 <configuration>
+<<<<<<< HEAD
                   <skip>${skipBuildPythonClient}</skip>
                   <workingDirectory>${project.basedir}/target</workingDirectory>
                   <executable>${project.basedir}/../../pulsar-client-cpp/docker/build-wheels.sh</executable>
@@ -83,6 +109,11 @@
                     <!-- build python 3.7 -->
                     <argument>3.7 cp37-cp37m</argument>
                   </arguments>
+=======
+                  <skip>${skipBuildCppClient}</skip>
+                  <workingDirectory>${project.basedir}/target</workingDirectory>
+                  <executable>${project.basedir}/../../pulsar-client-cpp/pkg/deb/docker-build-deb.sh</executable>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 </configuration>
               </execution>
             </executions>
@@ -92,12 +123,20 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
+<<<<<<< HEAD
+=======
+                <id>copy-pulsar-clients-python</id>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 <phase>compile</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
+<<<<<<< HEAD
                   <skip>${skipBuildPythonClient}</skip>
+=======
+                  <skip>${skipCopyPythonClients}</skip>
+>>>>>>> f773c602c... Test pr 10 (#27)
                   <tasks>
                     <echo>copy python wheel file</echo>
                     <mkdir dir="${basedir}/target/python-client"/>
@@ -105,6 +144,24 @@
                   </tasks>
                 </configuration>
               </execution>
+<<<<<<< HEAD
+=======
+              <execution>
+                <id>copy-pulsar-cpp-client</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <skip>${skipCopyCppClient}</skip>
+                  <tasks>
+                    <echo>copy cpp client deb file</echo>
+                    <mkdir dir="${basedir}/target/cpp-client"/>
+                    <copydir src="${basedir}/../../pulsar-client-cpp/pkg/deb/BUILD/DEB" dest="${basedir}/target/cpp-client"/>
+                  </tasks>
+                </configuration>
+              </execution>
+>>>>>>> f773c602c... Test pr 10 (#27)
             </executions>
           </plugin>
           <plugin>

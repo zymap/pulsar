@@ -20,6 +20,12 @@ package org.apache.pulsar.sql.presto;
 
 import static java.util.Objects.requireNonNull;
 
+<<<<<<< HEAD
+=======
+/**
+ * Unique identifier of a connector.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarConnectorId {
     private final String id;
 
@@ -34,8 +40,17 @@ public class PulsarConnectorId {
 
     @Override
     public boolean equals(Object o) {
+<<<<<<< HEAD
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+=======
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         PulsarConnectorId that = (PulsarConnectorId) o;
 

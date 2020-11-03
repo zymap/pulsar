@@ -45,6 +45,10 @@ public class ProducerExample {
             log.info("Message {} sent successfully", i);
         }
 
+<<<<<<< HEAD
+=======
+        producer.flush();
+>>>>>>> f773c602c... Test pr 10 (#27)
         producer.close();
     }
 

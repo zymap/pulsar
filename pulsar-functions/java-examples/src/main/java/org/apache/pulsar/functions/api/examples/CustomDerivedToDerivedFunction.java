@@ -22,7 +22,11 @@ import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
 
 /**
+<<<<<<< HEAD
  * Example of 2nd order conversion from a base object for composition pipelines
+=======
+ * Example of 2nd order conversion from a base object for composition pipelines.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class CustomDerivedToDerivedFunction implements Function<CustomDerivedObject, CustomDerivedObject> {
 

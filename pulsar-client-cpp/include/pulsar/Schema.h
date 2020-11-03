@@ -22,8 +22,13 @@
 
 #include <iosfwd>
 #include <memory>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
+=======
+#include <string>
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
@@ -40,6 +45,7 @@ enum SchemaType
     STRING = 1,
 
     /**
+<<<<<<< HEAD
      * A 8-byte integer.
      */
     INT8 = 2,
@@ -107,6 +113,75 @@ enum SchemaType
 
 // Return string representation of result code
 const char *strSchemaType(SchemaType schemaType);
+=======
+     * JSON object encoding and validation
+     */
+    JSON = 2,
+
+    /**
+     * Protobuf message encoding and decoding
+     */
+    PROTOBUF = 3,
+
+    /**
+     * Serialize and deserialize via Avro
+     */
+    AVRO = 4,
+
+    /**
+     * A 8-byte integer.
+     */
+    INT8 = 6,
+
+    /**
+     * A 16-byte integer.
+     */
+    INT16 = 7,
+
+    /**
+     * A 32-byte integer.
+     */
+    INT32 = 8,
+
+    /**
+     * A 64-byte integer.
+     */
+    INT64 = 9,
+
+    /**
+     * A float number.
+     */
+    FLOAT = 10,
+
+    /**
+     * A double number
+     */
+    DOUBLE = 11,
+
+    /**
+     * A Schema that contains Key Schema and Value Schema.
+     */
+    KEY_VALUE = 15,
+
+    /**
+     * A bytes array.
+     */
+    BYTES = -1,
+
+    /**
+     * Auto Consume Type.
+     */
+    AUTO_CONSUME = -3,
+
+    /**
+     * Auto Publish Type.
+     */
+    AUTO_PUBLISH = -4,
+};
+
+// Return string representation of result code
+PULSAR_PUBLIC const char *strSchemaType(SchemaType schemaType);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 class SchemaInfoImpl;
 
@@ -115,7 +190,11 @@ typedef std::map<std::string, std::string> StringMap;
 /**
  * Encapsulates data around the schema definition
  */
+<<<<<<< HEAD
 class SchemaInfo {
+=======
+class PULSAR_PUBLIC SchemaInfo {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     SchemaInfo();
 
@@ -155,6 +234,10 @@ class SchemaInfo {
 
 }  // namespace pulsar
 
+<<<<<<< HEAD
 std::ostream &operator<<(std::ostream &s, pulsar::SchemaType schemaType);
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC std::ostream &operator<<(std::ostream &s, pulsar::SchemaType schemaType);
+>>>>>>> f773c602c... Test pr 10 (#27)

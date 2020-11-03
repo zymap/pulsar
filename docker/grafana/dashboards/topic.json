@@ -1059,7 +1059,13 @@
   "refresh": "5s",
   "schemaVersion": 16,
   "style": "dark",
+<<<<<<< HEAD
   "tags": [],
+=======
+  "tags": [
+    "pulsar"
+  ],
+>>>>>>> f773c602c... Test pr 10 (#27)
   "templating": {
     "list": [
       {

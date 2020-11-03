@@ -18,7 +18,10 @@
  */
 package org.apache.pulsar.client.api;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.ByteBufPair;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.proto.PulsarApi.MessageIdData;
 
 import io.netty.buffer.ByteBuf;

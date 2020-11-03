@@ -34,8 +34,14 @@ struct ClientConfigurationImpl {
     std::string tlsTrustCertsFilePath;
     bool tlsAllowInsecureConnection;
     unsigned int statsIntervalInSeconds;
+<<<<<<< HEAD
     LoggerFactoryPtr loggerFactory;
     bool validateHostName;
+=======
+    std::unique_ptr<LoggerFactory> loggerFactory;
+    bool validateHostName;
+    unsigned int partitionsUpdateInterval;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     ClientConfigurationImpl()
         : authenticationPtr(AuthFactory::Disabled()),
@@ -48,7 +54,15 @@ struct ClientConfigurationImpl {
           tlsAllowInsecureConnection(false),
           statsIntervalInSeconds(600),  // 10 minutes
           loggerFactory(),
+<<<<<<< HEAD
           validateHostName(false) {}
+=======
+          validateHostName(false),
+          partitionsUpdateInterval(60)  // 1 minute
+    {}
+
+    std::unique_ptr<LoggerFactory> takeLogger() { return std::move(loggerFactory); }
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 }  // namespace pulsar
 

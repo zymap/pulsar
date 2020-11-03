@@ -18,15 +18,28 @@
  */
 package org.apache.pulsar.common.naming;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+=======
+import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.common.util.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
@@ -34,6 +47,8 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Encapsulate the parsing of the completeTopicName name.
  */
@@ -66,6 +81,12 @@ public class TopicName implements ServiceUnitId {
                 }
             });
 
+<<<<<<< HEAD
+=======
+    public static final TopicName TRANSACTION_COORDINATOR_ASSIGN = TopicName.get(TopicDomain.persistent.value(),
+            NamespaceName.SYSTEM_NAMESPACE, "transaction_coordinator_assign");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static TopicName get(String domain, NamespaceName namespaceName, String topic) {
         String name = domain + "://" + namespaceName.toString() + '/' + topic;
         return TopicName.get(name);
@@ -85,9 +106,13 @@ public class TopicName implements ServiceUnitId {
     public static TopicName get(String topic) {
         try {
             return cache.get(topic);
+<<<<<<< HEAD
         } catch (ExecutionException e) {
             throw (RuntimeException) e.getCause();
         } catch (UncheckedExecutionException e) {
+=======
+        } catch (ExecutionException | UncheckedExecutionException e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             throw (RuntimeException) e.getCause();
         }
     }
@@ -113,7 +138,12 @@ public class TopicName implements ServiceUnitId {
                 if (parts.length == 3) {
                     completeTopicName = TopicDomain.persistent.name() + "://" + completeTopicName;
                 } else if (parts.length == 1) {
+<<<<<<< HEAD
                     completeTopicName = TopicDomain.persistent.name() + "://" + PUBLIC_TENANT + "/" + DEFAULT_NAMESPACE + "/" + parts[0];
+=======
+                    completeTopicName = TopicDomain.persistent.name() + "://"
+                        + PUBLIC_TENANT + "/" + DEFAULT_NAMESPACE + "/" + parts[0];
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } else {
                     throw new IllegalArgumentException(
                         "Invalid short topic name '" + completeTopicName + "', it should be in the format of "
@@ -134,8 +164,13 @@ public class TopicName implements ServiceUnitId {
             // new:    tenant/namespace/<localName>
             // legacy: tenant/cluster/namespace/<localName>
             // Examples of localName:
+<<<<<<< HEAD
             // 1. some/name/xyz//
             // 2. /xyz-123/feeder-2
+=======
+            // 1. some, name, xyz
+            // 2. xyz-123, feeder-2
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 
             parts = Splitter.on("/").limit(4).splitToList(rest);
@@ -184,7 +219,11 @@ public class TopicName implements ServiceUnitId {
     /**
      * Extract the namespace portion out of a completeTopicName name.
      *
+<<<<<<< HEAD
      * Works both with old & new convention.
+=======
+     * <p>Works both with old & new convention.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the namespace
      */
@@ -193,7 +232,11 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Get the namespace object that this completeTopicName belongs to
+=======
+     * Get the namespace object that this completeTopicName belongs to.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return namespace object
      */
@@ -236,7 +279,12 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * @return partition index of the completeTopicName. It returns -1 if the completeTopicName (topic) is not partitioned.
+=======
+     * @return partition index of the completeTopicName.
+     * It returns -1 if the completeTopicName (topic) is not partitioned.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public int getPartitionIndex() {
         return partitionIndex;
@@ -247,10 +295,18 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * For partitions in a topic, return the base partitioned topic name
      * Eg:
      * <ul>
      *  <li><code>persistent://prop/cluster/ns/my-topic-partition-1</code> --> <code>persistent://prop/cluster/ns/my-topic</code>
+=======
+     * For partitions in a topic, return the base partitioned topic name.
+     * Eg:
+     * <ul>
+     *  <li><code>persistent://prop/cluster/ns/my-topic-partition-1</code> -->
+     *  <code>persistent://prop/cluster/ns/my-topic</code>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *  <li><code>persistent://prop/cluster/ns/my-topic</code> --> <code>persistent://prop/cluster/ns/my-topic</code>
      * </ul>
      */
@@ -263,7 +319,12 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * @return partition index of the completeTopicName. It returns -1 if the completeTopicName (topic) is not partitioned.
+=======
+     * @return partition index of the completeTopicName.
+     * It returns -1 if the completeTopicName (topic) is not partitioned.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public static int getPartitionIndex(String topic) {
         int partitionIndex = -1;
@@ -279,9 +340,14 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Returns the http rest path for use in the admin web service
      * Eg:
      *
+=======
+     * Returns the http rest path for use in the admin web service.
+     * Eg:
+>>>>>>> f773c602c... Test pr 10 (#27)
      *   * "persistent/my-tenant/my-namespace/my-topic"
      *   * "non-persistent/my-tenant/my-namespace/my-topic"
      *
@@ -314,11 +380,20 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Get a string suitable for completeTopicName lookup
      * <p>
      * Example:
      * <p>
      * persistent://tenant/cluster/namespace/completeTopicName -> persistent/tenant/cluster/namespace/completeTopicName
+=======
+     * Get a string suitable for completeTopicName lookup.
+     *
+     * <p>Example:
+     *
+     * <p>persistent://tenant/cluster/namespace/completeTopicName ->
+     *   persistent/tenant/cluster/namespace/completeTopicName
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return
      */
@@ -337,7 +412,11 @@ public class TopicName implements ServiceUnitId {
     public String getSchemaName() {
         return getTenant()
             + "/" + getNamespacePortion()
+<<<<<<< HEAD
             + "/" + getEncodedLocalName();
+=======
+            + "/" + TopicName.get(getPartitionedTopicName()).getEncodedLocalName();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -366,7 +445,11 @@ public class TopicName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Returns true if this a V2 topic name prop/ns/topic-name
+=======
+     * Returns true if this a V2 topic name prop/ns/topic-name.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return true if V2
      */
     public boolean isV2() {

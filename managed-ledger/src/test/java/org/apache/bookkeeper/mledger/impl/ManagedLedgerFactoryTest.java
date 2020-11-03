@@ -20,14 +20,32 @@ package org.apache.bookkeeper.mledger.impl;
 
 import static org.testng.Assert.assertEquals;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
+=======
+import org.apache.bookkeeper.conf.ClientConfiguration;
+import org.apache.bookkeeper.mledger.Entry;
+import org.apache.bookkeeper.mledger.ManagedCursor;
+import org.apache.bookkeeper.mledger.ManagedLedger;
+import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
+import org.apache.bookkeeper.mledger.ManagedLedgerFactory;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.mledger.ManagedLedgerInfo;
 import org.apache.bookkeeper.mledger.ManagedLedgerInfo.CursorInfo;
 import org.apache.bookkeeper.mledger.ManagedLedgerInfo.MessageRangeInfo;
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
+<<<<<<< HEAD
 import org.testng.annotations.Test;
 
+=======
+import org.apache.bookkeeper.test.ZooKeeperUtil;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ManagedLedgerFactoryTest extends MockedBookKeeperTestCase {
 
     @Test(timeOut = 20000)
@@ -62,6 +80,7 @@ public class ManagedLedgerFactoryTest extends MockedBookKeeperTestCase {
         assertEquals(cursorInfo.markDelete.ledgerId, 3);
         assertEquals(cursorInfo.markDelete.entryId, -1);
 
+<<<<<<< HEAD
         assertEquals(cursorInfo.individualDeletedMessages.size(), 1);
 
         MessageRangeInfo mri = cursorInfo.individualDeletedMessages.get(0);
@@ -69,6 +88,15 @@ public class ManagedLedgerFactoryTest extends MockedBookKeeperTestCase {
         assertEquals(mri.from.entryId, p1.getEntryId());
         assertEquals(mri.to.ledgerId, p3.getLedgerId());
         assertEquals(mri.to.entryId, p3.getEntryId());
+=======
+        assertEquals(cursorInfo.individualDeletedMessages.size(), 2);
+
+        MessageRangeInfo mri = cursorInfo.individualDeletedMessages.get(0);
+        assertEquals(mri.from.ledgerId, p2.getLedgerId());
+        assertEquals(mri.from.entryId, -1);
+        assertEquals(mri.to.ledgerId, p2.getLedgerId());
+        assertEquals(mri.to.entryId, 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 }

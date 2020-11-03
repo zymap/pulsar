@@ -20,10 +20,27 @@ persistent://tenant/namespace/topic
 Partitioned topics in Pulsar must be explicitly created. When creating a new partitioned topic you
 need to provide a name for the topic as well as the desired number of partitions.
 
+<<<<<<< HEAD
+=======
+> #### Note
+>
+> By default, after 60 seconds of creation, topics are considered inactive and deleted automatically to prevent from generating trash data.
+>
+> To disable this feature, set `brokerDeleteInactiveTopicsEnabled`  to `false`.
+>
+> To change the frequency of checking inactive topics, set `brokerDeleteInactiveTopicsFrequencySeconds` to your desired value.
+>
+> For more information about these two parameters, see [here](reference-configuration.md#broker).
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #### pulsar-admin
 
 You can create partitioned topics using the [`create-partitioned-topic`](reference-pulsar-admin.md#create-partitioned-topic)
 command and specifying the topic name as an argument and the number of partitions using the `-p` or `--partitions` flag.
+<<<<<<< HEAD
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 Here's an example:
 
 ```shell
@@ -32,6 +49,16 @@ $ bin/pulsar-admin topics create-partitioned-topic \
   --partitions 4
 ```
 
+<<<<<<< HEAD
+=======
+> #### Note
+>
+> If there already exists a non-partitioned topic with the suffix '-partition-' followed by numeric value like
+> 'xyz-topic-partition-10', then you can not create a partitioned topic with name 'xyz-topic' as the partitions
+> of the partitioned topic could override the existing non partitioned topic. You have to delete that non
+> partitioned topic first then create the partitioned topic.
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #### REST API
 
 {@inject: endpoint|PUT|/admin/v2/persistent/:tenant/:namespace/:topic/partitions|operation/createPartitionedTopic}
@@ -44,6 +71,37 @@ int numPartitions = 4;
 admin.persistentTopics().createPartitionedTopic(topicName, numPartitions);
 ```
 
+<<<<<<< HEAD
+=======
+### Create missed partitions
+
+Try to create partitions for partitioned topic. The partitions of partition topic have to be created, 
+can be used by repair partitions when topic auto creation is disabled
+
+#### pulsar-admin
+
+You can create missed partitions using the [`create-missed-partitions`](reference-pulsar-admin.md#create-missed-partitions)
+command and specifying the topic name as an argument.
+
+Here's an example:
+
+```shell
+$ bin/pulsar-admin topics create-missed-partitions \
+  persistent://my-tenant/my-namespace/my-topic \
+```
+
+#### REST API
+
+{@inject: endpoint|POST|/admin/v2/persistent/:tenant/:namespace/:topic|operation/createMissedPartitions}
+
+#### Java
+
+```java
+String topicName = "persistent://my-tenant/my-namespace/my-topic";
+admin.persistentTopics().createMissedPartitions(topicName);
+```
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 ### Get metadata
 
 Partitioned topics have metadata associated with them that you can fetch as a JSON object.
@@ -86,10 +144,14 @@ than the existing number.
 
 Decrementing the number of partitions would deleting the topic, which is not supported in Pulsar.
 
+<<<<<<< HEAD
 Already created partitioned producers and consumers can’t see newly created partitions and
 it requires to recreate them at application so, newly created producers and consumers can connect
 to newly added partitions as well. Therefore, it can violate partition ordering at producers until
 all producers are restarted at application.
+=======
+Already created partitioned producers and consumers will automatically find the newly created partitions.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #### pulsar-admin
 
@@ -158,7 +220,11 @@ admin.persistentTopics().getList(namespace);
 
 ### Stats
 
+<<<<<<< HEAD
 It shows current statistics of a given partitioned topic. Here's an example payload:
+=======
+It shows the current statistics of a given partitioned topic. Here is an example payload:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ```json
 {
@@ -211,6 +277,10 @@ The following stats are available:
 |subscriptions|The list of all local subscriptions to the topic|
 |my-subscription|The name of this subscription (client defined)|
 |msgBacklog|The count of messages in backlog for this subscription|
+<<<<<<< HEAD
+=======
+|msgBacklogNoDelayed|The count of messages in backlog without delayed messages for this subscription|
+>>>>>>> f773c602c... Test pr 10 (#27)
 |type|This subscription type|
 |msgRateExpired|The rate at which messages were discarded instead of dispatched from this subscription due to TTL|
 |consumers|The list of connected consumers for this subscription|
@@ -231,7 +301,11 @@ The stats for the partitioned topic and its connected producers and consumers ca
 ```shell
 $ pulsar-admin topics partitioned-stats \
   persistent://test-tenant/namespace/topic \
+<<<<<<< HEAD
   --per-partition        
+=======
+  --per-partition
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 #### REST API
@@ -241,7 +315,11 @@ $ pulsar-admin topics partitioned-stats \
 #### Java
 
 ```java
+<<<<<<< HEAD
 admin.persistentTopics().getStats(persistentTopic);
+=======
+admin.topics().getPartitionedStats(persistentTopic, true /* per partition */, false /* is precise backlog */);
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 ### Internal stats

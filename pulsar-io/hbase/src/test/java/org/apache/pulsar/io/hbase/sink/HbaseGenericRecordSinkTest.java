@@ -18,11 +18,15 @@
  */
 package org.apache.pulsar.io.hbase.sink;
 
+<<<<<<< HEAD
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
@@ -31,10 +35,20 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.schema.GenericRecord;
+<<<<<<< HEAD
 import org.apache.pulsar.client.impl.MessageImpl;
 import org.apache.pulsar.client.impl.schema.AutoConsumeSchema;
 import org.apache.pulsar.client.impl.schema.AvroSchema;
 import org.apache.pulsar.client.impl.schema.generic.GenericSchema;
+=======
+import org.apache.pulsar.client.api.schema.GenericSchema;
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.impl.MessageImpl;
+import org.apache.pulsar.client.impl.schema.AutoConsumeSchema;
+import org.apache.pulsar.client.impl.schema.AvroSchema;
+import org.apache.pulsar.client.impl.schema.generic.GenericAvroSchema;
+import org.apache.pulsar.client.impl.schema.generic.GenericSchemaImpl;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.functions.api.Record;
 import org.apache.pulsar.functions.source.PulsarRecord;
@@ -51,19 +65,31 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.mock;
+<<<<<<< HEAD
+=======
+import static org.mockito.Mockito.when;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * hbase Sink test
  */
 @Slf4j
 public class HbaseGenericRecordSinkTest {
+<<<<<<< HEAD
+=======
+    private Message<GenericRecord> message;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * A Simple class to test hbase class
      */
     @Data
+<<<<<<< HEAD
     @ToString
     @EqualsAndHashCode
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class Foo {
         private String rowKey;
         private String name;
@@ -83,6 +109,12 @@ public class HbaseGenericRecordSinkTest {
 
     @Test(enabled = false)
     public void TestOpenAndWriteSink() throws Exception {
+<<<<<<< HEAD
+=======
+        message = mock(MessageImpl.class);
+        GenericSchema<GenericRecord> genericAvroSchema;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         Map<String, Object> map = new HashMap<>();
         map.put("zookeeperQuorum", "localhost");
         map.put("zookeeperClientPort", "2181");
@@ -108,6 +140,7 @@ public class HbaseGenericRecordSinkTest {
         obj.setAddress("address_value");
         obj.setAge(30);
         obj.setFlag(true);
+<<<<<<< HEAD
         AvroSchema<Foo> schema = AvroSchema.of(Foo.class);
 
         byte[] bytes = schema.encode(obj);
@@ -118,6 +151,17 @@ public class HbaseGenericRecordSinkTest {
         PulsarSourceConfig pulsarSourceConfig = new PulsarSourceConfig();
         Consumer consumer = mock(Consumer.class);
         Message<GenericRecord> message = new MessageImpl("fake_topic_name", "11:111", map, payload, autoConsumeSchema);
+=======
+        AvroSchema<Foo> schema = AvroSchema.of(SchemaDefinition.<Foo>builder().withPojo(Foo.class).build());
+
+        byte[] bytes = schema.encode(obj);
+        AutoConsumeSchema autoConsumeSchema = new AutoConsumeSchema();
+        autoConsumeSchema.setSchema(GenericSchemaImpl.of(schema.getSchemaInfo()));
+
+        PulsarSourceConfig pulsarSourceConfig = new PulsarSourceConfig();
+        Consumer consumer = mock(Consumer.class);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         Record<GenericRecord> record = PulsarRecord.<GenericRecord>builder()
             .message(message)
             .topicName("fake_topic_name")
@@ -135,6 +179,14 @@ public class HbaseGenericRecordSinkTest {
             })
             .build();
 
+<<<<<<< HEAD
+=======
+        genericAvroSchema = new GenericAvroSchema(schema.getSchemaInfo());
+
+        when(message.getValue())
+                .thenReturn(genericAvroSchema.decode(bytes));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         log.info("foo:{}, Message.getValue: {}, record.getValue: {}",
                 obj.toString(),
                 message.getValue().toString(),

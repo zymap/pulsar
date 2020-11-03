@@ -23,5 +23,9 @@
 
 int makePutRequest(const std::string& url, const std::string& body);
 int makePostRequest(const std::string& url, const std::string& body);
+<<<<<<< HEAD
+=======
+int makeDeleteRequest(const std::string& url);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #endif /* end of include guard: HTTP_HELPER */

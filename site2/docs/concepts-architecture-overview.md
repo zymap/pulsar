@@ -10,7 +10,11 @@ In a Pulsar cluster:
 
 * One or more brokers handles and load balances incoming messages from producers, dispatches messages to consumers, communicates with the Pulsar configuration store to handle various coordination tasks, stores messages in BookKeeper instances (aka bookies), relies on a cluster-specific ZooKeeper cluster for certain tasks, and more.
 * A BookKeeper cluster consisting of one or more bookies handles [persistent storage](#persistent-storage) of messages.
+<<<<<<< HEAD
 * A ZooKeeper cluster specific to that cluster handles
+=======
+* A ZooKeeper cluster specific to that cluster handles coordination tasks between Pulsar clusters.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 The diagram below provides an illustration of a Pulsar cluster:
 
@@ -48,7 +52,11 @@ Clusters can replicate amongst themselves using [geo-replication](concepts-repli
 Pulsar uses [Apache Zookeeper](https://zookeeper.apache.org/) for metadata storage, cluster configuration, and coordination. In a Pulsar instance:
 
 * A configuration store quorum stores configuration for tenants, namespaces, and other entities that need to be globally consistent.
+<<<<<<< HEAD
 * Each cluster has its own local ZooKeeper ensemble that stores cluster-specific configuration and coordination such as ownership metadata, broker load reports, BookKeeper ledger metadata, and more.
+=======
+* Each cluster has its own local ZooKeeper ensemble that stores cluster-specific configuration and coordination such as which brokers are responsible for which topics as well as ownership metadata, broker load reports, BookKeeper ledger metadata, and more.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ## Persistent storage
 
@@ -69,7 +77,11 @@ Pulsar uses a system called [Apache BookKeeper](http://bookkeeper.apache.org/) f
 
 In addition to message data, *cursors* are also persistently stored in BookKeeper. Cursors are [subscription](reference-terminology.md#subscription) positions for [consumers](reference-terminology.md#consumer). BookKeeper enables Pulsar to store consumer position in a scalable fashion.
 
+<<<<<<< HEAD
 At the moment, Pulsar only supports persistent message storage. This accounts for the `persistent` in all topic names. Here's an example:
+=======
+At the moment, Pulsar supports persistent message storage. This accounts for the `persistent` in all topic names. Here's an example:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ```http
 persistent://my-tenant/my-namespace/my-topic
@@ -150,3 +162,9 @@ from pulsar import Client
 
 client = Client('pulsar://pulsar-cluster.acme.com:6650')
 ```
+<<<<<<< HEAD
+=======
+
+> **Note**
+> In Pulsar, each topic is handled by only one broker. Initial requests from a client to read, update or delete a topic are sent to a broker that may not be the topic owner. If the broker cannot handle the request for this topic, it redirects the request to the appropriate broker.
+>>>>>>> f773c602c... Test pr 10 (#27)

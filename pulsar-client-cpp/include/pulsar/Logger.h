@@ -19,6 +19,7 @@
 #pragma once
 
 #include <memory>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
 
@@ -32,6 +33,21 @@ class Logger {
         INFO = 1,
         WARN = 2,
         ERROR = 3
+=======
+#include <string>
+#include <pulsar/defines.h>
+
+namespace pulsar {
+
+class PULSAR_PUBLIC Logger {
+   public:
+    enum Level
+    {
+        LEVEL_DEBUG = 0,
+        LEVEL_INFO = 1,
+        LEVEL_WARN = 2,
+        LEVEL_ERROR = 3
+>>>>>>> f773c602c... Test pr 10 (#27)
     };
 
     virtual ~Logger() {}
@@ -41,13 +57,21 @@ class Logger {
     virtual void log(Level level, int line, const std::string& message) = 0;
 };
 
+<<<<<<< HEAD
 class LoggerFactory {
+=======
+class PULSAR_PUBLIC LoggerFactory {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~LoggerFactory() {}
 
     virtual Logger* getLogger(const std::string& fileName) = 0;
 };
 
+<<<<<<< HEAD
 typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
 }  // namespace pulsar
 #pragma GCC visibility pop
+=======
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)

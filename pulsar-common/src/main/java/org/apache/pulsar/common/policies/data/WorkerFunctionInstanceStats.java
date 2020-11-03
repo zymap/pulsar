@@ -19,11 +19,23 @@
 package org.apache.pulsar.common.policies.data;
 
 import lombok.Data;
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.FunctionStats;
 
 @Data
 public class WorkerFunctionInstanceStats {
     /** fully qualified function instance name **/
+=======
+
+/**
+ * Data class holding statistics about a function.
+ */
+@Data
+public class WorkerFunctionInstanceStats {
+    /**
+     * Fully qualified function instance name.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String name;
     public FunctionStats.FunctionInstanceStats.FunctionInstanceStatsData metrics;
 }

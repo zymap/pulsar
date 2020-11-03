@@ -18,28 +18,46 @@
  */
 package org.apache.pulsar.common.stats;
 
+<<<<<<< HEAD
 import java.util.Collections;
 import java.util.Map;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
+<<<<<<< HEAD
+=======
+import java.util.Collections;
+import java.util.Map;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * WARNING : do not add any getters as the Jackson parser will output that getter.
  *
+<<<<<<< HEAD
  * You may want to use the ignore annotation provided by jackson parser if you need some getters.
  *
  * Dimensions map should be unmodifiable and immutable
  *
  *
+=======
+ * <p>You may want to use the ignore annotation provided by jackson parser if you need some getters.
+ *
+ * <p>Dimensions map should be unmodifiable and immutable
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class Metrics {
 
     final Map<String, Object> metrics;
 
+<<<<<<< HEAD
     @JsonInclude(content=Include.NON_EMPTY)
+=======
+    @JsonInclude(content = Include.NON_EMPTY)
+>>>>>>> f773c602c... Test pr 10 (#27)
     final Map<String, String> dimensions;
 
     public Metrics() {
@@ -54,11 +72,17 @@ public class Metrics {
     }
 
     /**
+<<<<<<< HEAD
      * Creates a metrics object with the dimensions map immutable
      *
      * @param application
      * @param timestamp
      * @param dimensionsMap
+=======
+     * Creates a metrics object with the dimensions map immutable.
+     *
+     * @param dimensionMap
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      */
     public static Metrics create(Map<String, String> dimensionMap) {

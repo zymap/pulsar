@@ -24,7 +24,11 @@ import org.apache.pulsar.functions.api.Function;
 import java.util.Optional;
 
 /**
+<<<<<<< HEAD
  * An example demonstrate retrieving user config value from Context
+=======
+ * An example demonstrate retrieving user config value from Context.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class UserConfigFunction implements Function<String, String> {
 

@@ -49,4 +49,11 @@ public class SerDeSchema<T> implements Schema<T> {
         return null;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public Schema<T> clone() {
+        return this;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

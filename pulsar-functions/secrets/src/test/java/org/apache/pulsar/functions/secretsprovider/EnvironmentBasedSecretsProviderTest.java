@@ -19,27 +19,43 @@
 
 package org.apache.pulsar.functions.secretsprovider;
 
+<<<<<<< HEAD
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.lang.reflect.Field;
 import java.util.Map;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyString;
 
 /**
  * Unit test of {@link Exceptions}.
  */
+=======
+import org.testng.annotations.Test;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class EnvironmentBasedSecretsProviderTest {
     @Test
     public void testConfigValidation() throws Exception {
         EnvironmentBasedSecretsProvider provider = new EnvironmentBasedSecretsProvider();
+<<<<<<< HEAD
         Assert.assertEquals(provider.provideSecret("mySecretName", "Ignored"), null);
         injectEnvironmentVariable("mySecretName", "SecretValue");
         Assert.assertEquals(provider.provideSecret("mySecretName", "Ignored"), "SecretValue");
+=======
+        assertNull(provider.provideSecret("mySecretName", "Ignored"));
+        injectEnvironmentVariable("mySecretName", "SecretValue");
+        assertEquals(provider.provideSecret("mySecretName", "Ignored"), "SecretValue");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private static void injectEnvironmentVariable(String key, String value)

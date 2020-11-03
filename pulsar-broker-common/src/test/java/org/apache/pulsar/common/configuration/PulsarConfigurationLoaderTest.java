@@ -20,18 +20,29 @@ package org.apache.pulsar.common.configuration;
 
 import static org.apache.pulsar.common.configuration.PulsarConfigurationLoader.isComplete;
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertFalse;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+<<<<<<< HEAD
 import io.netty.util.internal.PlatformDependent;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Properties;
 
 import org.apache.bookkeeper.client.api.DigestType;
@@ -44,10 +55,17 @@ public class PulsarConfigurationLoaderTest {
 
         private String zookeeperServers = "localhost:2181";
         private String configurationStoreServers = "localhost:2184";
+<<<<<<< HEAD
         private int brokerServicePort = 7650;
         private int brokerServicePortTls = 7651;
         private int webServicePort = 9080;
         private int webServicePortTls = 9443;
+=======
+        private Optional<Integer> brokerServicePort = Optional.of(7650);
+        private Optional<Integer> brokerServicePortTls = Optional.of(7651);
+        private Optional<Integer> webServicePort = Optional.of(9080);
+        private Optional<Integer> webServicePortTls = Optional.of(9443);
+>>>>>>> f773c602c... Test pr 10 (#27)
         private int notExistFieldInServiceConfig = 0;
 
         @Override
@@ -102,9 +120,19 @@ public class PulsarConfigurationLoaderTest {
         printWriter.println("brokerClientAuthenticationParameters=role:my-role");
         printWriter.println("superUserRoles=appid1,appid2");
         printWriter.println("brokerServicePort=7777");
+<<<<<<< HEAD
         printWriter.println("managedLedgerDefaultMarkDeleteRateLimit=5.0");
         printWriter.println("managedLedgerDigestType=CRC32C");
         printWriter.println("managedLedgerCacheSizeMB=");
+=======
+        printWriter.println("brokerServicePortTls=8777");
+        printWriter.println("webServicePort=");
+        printWriter.println("webServicePortTls=");
+        printWriter.println("managedLedgerDefaultMarkDeleteRateLimit=5.0");
+        printWriter.println("managedLedgerDigestType=CRC32C");
+        printWriter.println("managedLedgerCacheSizeMB=");
+        printWriter.println("bookkeeperDiskWeightBasedPlacementEnabled=true");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter.close();
         testConfigFile.deleteOnExit();
         InputStream stream = new FileInputStream(testConfigFile);
@@ -116,8 +144,17 @@ public class PulsarConfigurationLoaderTest {
         assertEquals(serviceConfig.getClusterName(), "usc");
         assertEquals(serviceConfig.getBrokerClientAuthenticationParameters(), "role:my-role");
         assertEquals(serviceConfig.getBrokerServicePort().get(), new Integer(7777));
+<<<<<<< HEAD
         assertEquals(serviceConfig.getManagedLedgerDigestType(), DigestType.CRC32C);
         assertTrue(serviceConfig.getManagedLedgerCacheSizeMB() > 0);
+=======
+        assertEquals(serviceConfig.getBrokerServicePortTls().get(), new Integer(8777));
+        assertFalse(serviceConfig.getWebServicePort().isPresent());
+        assertFalse(serviceConfig.getWebServicePortTls().isPresent());
+        assertEquals(serviceConfig.getManagedLedgerDigestType(), DigestType.CRC32C);
+        assertTrue(serviceConfig.getManagedLedgerCacheSizeMB() > 0);
+        assertTrue(serviceConfig.isBookkeeperDiskWeightBasedPlacementEnabled());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -219,4 +256,8 @@ public class PulsarConfigurationLoaderTest {
         @FieldContext(minValue = 1, maxValue = 3)
         long inValidMax = 4;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

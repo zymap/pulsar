@@ -17,6 +17,7 @@
 # under the License.
 #
 
+<<<<<<< HEAD
 FROM python:2.7
 
 MAINTAINER Pulsar
@@ -29,6 +30,20 @@ RUN pip install uwsgi 'Django<2.0' psycopg2 pytz requests
 
 # Postgres configuration
 COPY conf/postgresql.conf /etc/postgresql/9.6/main/
+=======
+FROM python:3.7-stretch
+
+LABEL maintainer="Apache Pulsar <dev@pulsar.apache.org>"
+
+RUN bash -c "echo deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main >> /etc/apt/sources.list.d/pgdg.list"
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+RUN apt-get update
+RUN apt-get -y install postgresql-11 postgresql-contrib libpq-dev sudo nginx supervisor
+
+# Postgres configuration
+COPY conf/postgresql.conf /etc/postgresql/11/main/
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Configure nginx and supervisor
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
@@ -39,6 +54,7 @@ COPY conf/supervisor-app.conf /etc/supervisor/conf.d/
 RUN mkdir /pulsar
 COPY . /pulsar/
 
+<<<<<<< HEAD
 # Setup database and create tables
 RUN sudo -u postgres /etc/init.d/postgresql start && \
     sudo -u postgres psql --command "CREATE USER docker WITH PASSWORD 'docker';" && \
@@ -46,12 +62,24 @@ RUN sudo -u postgres /etc/init.d/postgresql start && \
     cd /pulsar/django && \
     ./manage.py migrate && \
     sudo -u postgres /etc/init.d/postgresql stop
+=======
+# Python dependencies
+RUN pip install -r /pulsar/requirements.txt
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Collect all static files needed by Django in a
 # single place. Needed to run the app outside the
 # Django test web server
 RUN cd /pulsar/django && ./manage.py collectstatic --no-input
 
+<<<<<<< HEAD
 EXPOSE 80
 
 CMD ["supervisord", "-n"]
+=======
+RUN mkdir /data
+
+EXPOSE 80
+
+CMD ["/pulsar/start.sh"]
+>>>>>>> f773c602c... Test pr 10 (#27)

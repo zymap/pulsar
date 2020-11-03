@@ -19,7 +19,11 @@
 package org.apache.bookkeeper.mledger.impl;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.testng.Assert.assertFalse;
+=======
+import static org.testng.Assert.assertNotEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.PositionInfo;
 import org.testng.annotations.Test;
@@ -37,9 +41,15 @@ public class PositionTest {
         assertEquals(pos.getEntryId(), 2);
         assertEquals(pos, new PositionImpl(1, 2));
 
+<<<<<<< HEAD
         assertFalse(pos.equals(new PositionImpl(1, 3)));
         assertFalse(pos.equals(new PositionImpl(3, 2)));
         assertFalse(pos.equals("1:2"));
+=======
+        assertNotEquals(new PositionImpl(1, 3), pos);
+        assertNotEquals(new PositionImpl(3, 2), pos);
+        assertNotEquals(pos, "1:2");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test

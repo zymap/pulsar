@@ -19,7 +19,15 @@
 #include "ZTSClient.h"
 #include <sstream>
 
+<<<<<<< HEAD
 #include <unistd.h>
+=======
+#ifndef _MSC_VER
+#include <unistd.h>
+#else
+#include <stdio.h>
+#endif
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <string.h>
 #include <time.h>
 

@@ -19,6 +19,7 @@
 package org.apache.pulsar.common.naming;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.fail;
 
@@ -31,6 +32,19 @@ public class NamespaceNameTest {
 
     @Test
     void namespace() {
+=======
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
+import org.testng.annotations.Test;
+
+public class NamespaceNameTest {
+
+    @Test
+    public void namespace() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             NamespaceName.get("namespace");
             fail("Should have caused exception");
@@ -92,7 +106,11 @@ public class NamespaceNameTest {
                 "persistent://prop/cluster/ns/ds");
         assertEquals(NamespaceName.get("prop/cluster/ns"), NamespaceName.get("prop/cluster/ns"));
         assertEquals(NamespaceName.get("prop/cluster/ns").toString(), "prop/cluster/ns");
+<<<<<<< HEAD
         assertFalse(NamespaceName.get("prop/cluster/ns").equals("prop/cluster/ns"));
+=======
+        assertNotEquals(NamespaceName.get("prop/cluster/ns"), "prop/cluster/ns");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertEquals(NamespaceName.get("prop", "cluster", "ns"), NamespaceName.get("prop/cluster/ns"));
         assertEquals(NamespaceName.get("prop/cluster/ns").getTenant(), "prop");
@@ -187,8 +205,13 @@ public class NamespaceNameTest {
         NamespaceName ns = NamespaceName.get("my-tenant/my-namespace");
         assertEquals(ns.getTenant(), "my-tenant");
         assertEquals(ns.getLocalName(), "my-namespace");
+<<<<<<< HEAD
         assertEquals(ns.isGlobal(), true);
         assertEquals(ns.getCluster(), null);
+=======
+        assertTrue(ns.isGlobal());
+        assertNull(ns.getCluster());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(ns.getPersistentTopicName("my-topic"), "persistent://my-tenant/my-namespace/my-topic");
     }
 }

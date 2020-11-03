@@ -19,6 +19,7 @@
 #ifndef PULSAR_CLIENTCONFIGURATION_H_
 #define PULSAR_CLIENTCONFIGURATION_H_
 
+<<<<<<< HEAD
 #include <pulsar/Authentication.h>
 #include <pulsar/Logger.h>
 
@@ -27,6 +28,16 @@ namespace pulsar {
 class PulsarWrapper;
 class ClientConfigurationImpl;
 class ClientConfiguration {
+=======
+#include <pulsar/defines.h>
+#include <pulsar/Authentication.h>
+#include <pulsar/Logger.h>
+
+namespace pulsar {
+class PulsarWrapper;
+struct ClientConfigurationImpl;
+class PULSAR_PUBLIC ClientConfiguration {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     ClientConfiguration();
     ~ClientConfiguration();
@@ -43,7 +54,11 @@ class ClientConfiguration {
     /**
      * @return the authentication data
      */
+<<<<<<< HEAD
     const Authentication& getAuth() const;
+=======
+    Authentication& getAuth() const;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Set timeout on client operations (subscribe, create producer, close, unsubscribe)
@@ -121,10 +136,20 @@ class ClientConfiguration {
      * to a different logger implementation.
      *
      * By default, log messages are printed on standard output.
+<<<<<<< HEAD
      */
     ClientConfiguration& setLogger(LoggerFactoryPtr loggerFactory);
 
     LoggerFactoryPtr getLogger() const;
+=======
+     *
+     * When passed in, the configuration takes ownership of the loggerFactory object.
+     * The logger factory can only be set once per process. Any subsequent calls to
+     * set the logger factory will have no effect, though the logger factory object
+     * will be cleaned up.
+     */
+    ClientConfiguration& setLogger(LoggerFactory* loggerFactory);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     ClientConfiguration& setUseTls(bool useTls);
     bool isUseTls() const;
@@ -149,6 +174,25 @@ class ClientConfiguration {
      */
     const unsigned int& getStatsIntervalInSeconds() const;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Set partitions update interval in seconds.
+     * If a partitioned topic is produced or subscribed and `intervalInSeconds` is not 0, every
+     * `intervalInSeconds` seconds the partition number will be retrieved by sending lookup requests. If
+     * partition number has been increased, more producer/consumer of increased partitions will be created.
+     * Default is 60 seconds.
+     *
+     * @param intervalInSeconds the seconds between two lookup request for partitioned topic's metadata
+     */
+    ClientConfiguration& setPartititionsUpdateInterval(unsigned int intervalInSeconds);
+
+    /**
+     * Get partitions update interval in seconds.
+     */
+    unsigned int getPartitionsUpdateInterval() const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     friend class ClientImpl;
     friend class PulsarWrapper;
 
@@ -158,5 +202,8 @@ class ClientConfiguration {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PULSAR_CLIENTCONFIGURATION_H_ */

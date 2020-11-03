@@ -18,13 +18,23 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import java.util.Map;
+=======
+import java.time.Clock;
+import java.util.Map;
+import java.util.Set;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.Authentication;
 import org.apache.pulsar.client.api.AuthenticationFactory;
 import org.apache.pulsar.client.api.ClientBuilder;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.ProxyProtocol;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.PulsarClientException.UnsupportedAuthenticationException;
@@ -99,6 +109,18 @@ public class ClientBuilderImpl implements ClientBuilder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ClientBuilder listenerName(String listenerName) {
+        if (StringUtils.isBlank(listenerName)) {
+            throw new IllegalArgumentException("Param listenerName must not be blank.");
+        }
+        conf.setListenerName(StringUtils.trim(listenerName));
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ClientBuilder authentication(Authentication authentication) {
         conf.setAuthentication(authentication);
         return this;
@@ -107,6 +129,12 @@ public class ClientBuilderImpl implements ClientBuilder {
     @Override
     public ClientBuilder authentication(String authPluginClassName, String authParamsString)
             throws UnsupportedAuthenticationException {
+<<<<<<< HEAD
+=======
+        conf.setAuthPluginClassName(authPluginClassName);
+        conf.setAuthParams(authParamsString);
+        conf.setAuthParamMap(null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setAuthentication(AuthenticationFactory.create(authPluginClassName, authParamsString));
         return this;
     }
@@ -114,6 +142,12 @@ public class ClientBuilderImpl implements ClientBuilder {
     @Override
     public ClientBuilder authentication(String authPluginClassName, Map<String, String> authParams)
             throws UnsupportedAuthenticationException {
+<<<<<<< HEAD
+=======
+        conf.setAuthPluginClassName(authPluginClassName);
+        conf.setAuthParamMap(authParams);
+        conf.setAuthParams(null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setAuthentication(AuthenticationFactory.create(authPluginClassName, authParams));
         return this;
     }
@@ -173,6 +207,51 @@ public class ClientBuilderImpl implements ClientBuilder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ClientBuilder useKeyStoreTls(boolean useKeyStoreTls) {
+        conf.setUseKeyStoreTls(useKeyStoreTls);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder sslProvider(String sslProvider) {
+        conf.setSslProvider(sslProvider);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder tlsTrustStoreType(String tlsTrustStoreType) {
+        conf.setTlsTrustStoreType(tlsTrustStoreType);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder tlsTrustStorePath(String tlsTrustStorePath) {
+        conf.setTlsTrustStorePath(tlsTrustStorePath);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder tlsTrustStorePassword(String tlsTrustStorePassword) {
+        conf.setTlsTrustStorePassword(tlsTrustStorePassword);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder tlsCiphers(Set<String> tlsCiphers) {
+        conf.setTlsCiphers(tlsCiphers);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder tlsProtocols(Set<String> tlsProtocols) {
+        conf.setTlsProtocols(tlsProtocols);
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ClientBuilder statsInterval(long statsInterval, TimeUnit unit) {
         conf.setStatsIntervalSeconds(unit.toSeconds(statsInterval));
         return this;
@@ -191,14 +270,28 @@ public class ClientBuilderImpl implements ClientBuilder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ClientBuilder maxLookupRedirects(int maxLookupRedirects) {
+        conf.setMaxLookupRedirects(maxLookupRedirects);
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ClientBuilder maxNumberOfRejectedRequestPerConnection(int maxNumberOfRejectedRequestPerConnection) {
         conf.setMaxNumberOfRejectedRequestPerConnection(maxNumberOfRejectedRequestPerConnection);
         return this;
     }
 
     @Override
+<<<<<<< HEAD
     public ClientBuilder keepAliveInterval(int keepAliveIntervalSeconds, TimeUnit unit) {
         conf.setKeepAliveIntervalSeconds((int)unit.toSeconds(keepAliveIntervalSeconds));
+=======
+    public ClientBuilder keepAliveInterval(int keepAliveInterval, TimeUnit unit) {
+        conf.setKeepAliveIntervalSeconds((int)unit.toSeconds(keepAliveInterval));
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -208,7 +301,47 @@ public class ClientBuilderImpl implements ClientBuilder {
         return this;
     }
 
+<<<<<<< HEAD
     public ClientConfigurationData getClientConfigurationData() {
         return conf;
     }
+=======
+    @Override
+    public ClientBuilder startingBackoffInterval(long duration, TimeUnit unit) {
+    	conf.setInitialBackoffIntervalNanos(unit.toNanos(duration));
+    	return this;
+    }
+
+    @Override
+    public ClientBuilder maxBackoffInterval(long duration, TimeUnit unit) {
+    	conf.setMaxBackoffIntervalNanos(unit.toNanos(duration));
+    	return this;
+    }
+
+    public ClientConfigurationData getClientConfigurationData() {
+        return conf;
+    }
+
+    @Override
+    public ClientBuilder clock(Clock clock) {
+        conf.setClock(clock);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder proxyServiceUrl(String proxyServiceUrl, ProxyProtocol proxyProtocol) {
+        if (StringUtils.isNotBlank(proxyServiceUrl) && proxyProtocol == null) {
+            throw new IllegalArgumentException("proxyProtocol must be present with proxyServiceUrl");
+        }
+        conf.setProxyServiceUrl(proxyServiceUrl);
+        conf.setProxyProtocol(proxyProtocol);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder enableTransaction(boolean enableTransaction) {
+        conf.setEnableTransaction(enableTransaction);
+        return this;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

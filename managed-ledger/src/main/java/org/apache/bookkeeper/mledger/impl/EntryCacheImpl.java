@@ -21,6 +21,7 @@ package org.apache.bookkeeper.mledger.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl.createManagedLedgerException;
+<<<<<<< HEAD
 import static org.apache.bookkeeper.mledger.util.SafeRun.safeRun;
 
 import com.google.common.collect.Lists;
@@ -30,6 +31,19 @@ import io.netty.buffer.PooledByteBufAllocator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+=======
+
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Longs;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.api.BKException;
 import org.apache.bookkeeper.client.api.LedgerEntry;
 import org.apache.bookkeeper.client.api.ReadHandle;
@@ -37,7 +51,10 @@ import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntriesCallback;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntryCallback;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.util.RangeCache;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.util.RangeCache.Weighter;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +67,7 @@ public class EntryCacheImpl implements EntryCache {
     private final EntryCacheManager manager;
     private final ManagedLedgerImpl ml;
     private final RangeCache<PositionImpl, EntryImpl> entries;
+<<<<<<< HEAD
 
     private static final double MB = 1024 * 1024;
 
@@ -59,6 +77,17 @@ public class EntryCacheImpl implements EntryCache {
         this.manager = manager;
         this.ml = ml;
         this.entries = new RangeCache<>(entryWeighter);
+=======
+    private final boolean copyEntries;
+
+    private static final double MB = 1024 * 1024;
+
+    public EntryCacheImpl(EntryCacheManager manager, ManagedLedgerImpl ml, boolean copyEntries) {
+        this.manager = manager;
+        this.ml = ml;
+        this.entries = new RangeCache<>(EntryImpl::getLength, EntryImpl::getTimestamp);
+        this.copyEntries = copyEntries;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         if (log.isDebugEnabled()) {
             log.debug("[{}] Initialized managed-ledger entry cache", ml.getName());
@@ -96,23 +125,17 @@ public class EntryCacheImpl implements EntryCache {
                     entry.getLength());
         }
 
-        // Copy the entry into a buffer owned by the cache. The reason is that the incoming entry is retaining a buffer
-        // from netty, usually allocated in 64Kb chunks. So if we just retain the entry without copying it, we might
-        // retain actually the full 64Kb even for a small entry
-        int size = entry.getLength();
+<<<<<<< HEAD
+=======
         ByteBuf cachedData = null;
-        try {
-            cachedData = ALLOCATOR.directBuffer(size, size);
-        } catch (Throwable t) {
-            log.warn("[{}] Failed to allocate buffer for entry cache: {}", ml.getName(), t.getMessage(), t);
-            return false;
-        }
-
-        if (size > 0) {
-            ByteBuf entryBuf = entry.getDataBuffer();
-            int readerIdx = entryBuf.readerIndex();
-            cachedData.writeBytes(entryBuf);
-            entryBuf.readerIndex(readerIdx);
+        if (copyEntries) {
+            cachedData = copyEntry(entry);
+            if (cachedData == null) {
+                return false;
+            }
+        } else {
+            // Use retain here to have the same counter increase as in the copy entry scenario
+            cachedData = entry.getDataBuffer().retain();
         }
 
         PositionImpl position = entry.getPosition();
@@ -128,11 +151,64 @@ public class EntryCacheImpl implements EntryCache {
         }
     }
 
+    private ByteBuf copyEntry(EntryImpl entry) {
+>>>>>>> f773c602c... Test pr 10 (#27)
+        // Copy the entry into a buffer owned by the cache. The reason is that the incoming entry is retaining a buffer
+        // from netty, usually allocated in 64Kb chunks. So if we just retain the entry without copying it, we might
+        // retain actually the full 64Kb even for a small entry
+        int size = entry.getLength();
+        ByteBuf cachedData = null;
+        try {
+            cachedData = ALLOCATOR.directBuffer(size, size);
+        } catch (Throwable t) {
+<<<<<<< HEAD
+            log.warn("[{}] Failed to allocate buffer for entry cache: {}", ml.getName(), t.getMessage(), t);
+            return false;
+=======
+            log.warn("[{}] Failed to allocate buffer for entry cache: {}", ml.getName(), t.getMessage());
+            return null;
+>>>>>>> f773c602c... Test pr 10 (#27)
+        }
+
+        if (size > 0) {
+            ByteBuf entryBuf = entry.getDataBuffer();
+            int readerIdx = entryBuf.readerIndex();
+            cachedData.writeBytes(entryBuf);
+            entryBuf.readerIndex(readerIdx);
+        }
+
+<<<<<<< HEAD
+        PositionImpl position = entry.getPosition();
+        EntryImpl cacheEntry = EntryImpl.create(position, cachedData);
+        cachedData.release();
+        if (entries.put(position, cacheEntry)) {
+            manager.entryAdded(entry.getLength());
+            return true;
+        } else {
+            // entry was not inserted into cache, we need to discard it
+            cacheEntry.release();
+            return false;
+        }
+=======
+        return cachedData;
+>>>>>>> f773c602c... Test pr 10 (#27)
+    }
+
     @Override
     public void invalidateEntries(final PositionImpl lastPosition) {
         final PositionImpl firstPosition = PositionImpl.get(-1, 0);
 
+<<<<<<< HEAD
         Pair<Integer, Long> removed = entries.removeRange(firstPosition, lastPosition, true);
+=======
+        if (firstPosition.compareTo(lastPosition) > 0) {
+            log.debug("Attempted to invalidate entries in an invalid range : {} ~ {}",
+                firstPosition, lastPosition);
+            return;
+        }
+
+        Pair<Integer, Long> removed = entries.removeRange(firstPosition, lastPosition, false);
+>>>>>>> f773c602c... Test pr 10 (#27)
         int entriesRemoved = removed.getLeft();
         long sizeRemoved = removed.getRight();
         if (log.isDebugEnabled()) {
@@ -173,7 +249,11 @@ public class EntryCacheImpl implements EntryCache {
             callback.readEntryFailed(createManagedLedgerException(t), ctx);
         }
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private void asyncReadEntry0(ReadHandle lh, PositionImpl position, final ReadEntryCallback callback,
             final Object ctx) {
         if (log.isDebugEnabled()) {
@@ -211,7 +291,16 @@ public class EntryCacheImpl implements EntryCache {
                         } finally {
                             ledgerEntries.close();
                         }
+<<<<<<< HEAD
                     }, ml.getExecutor().chooseThread(ml.getName()));
+=======
+                    }, ml.getExecutor().chooseThread(ml.getName())).exceptionally(exception->{
+                    	  ml.invalidateLedgerHandle(lh, exception);
+                          callback.readEntryFailed(createManagedLedgerException(exception), ctx);
+                          return null;
+                    }
+                    );
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -229,7 +318,11 @@ public class EntryCacheImpl implements EntryCache {
             callback.readEntriesFailed(createManagedLedgerException(t), ctx);
         }
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void asyncReadEntry0(ReadHandle lh, long firstEntry, long lastEntry, boolean isSlowestReader,
             final ReadEntriesCallback callback, Object ctx) {
@@ -305,7 +398,21 @@ public class EntryCacheImpl implements EntryCache {
                         } finally {
                             ledgerEntries.close();
                         }
+<<<<<<< HEAD
                     }, ml.getExecutor().chooseThread(ml.getName()));
+=======
+                    }, ml.getExecutor().chooseThread(ml.getName())).exceptionally(exception->{
+                    	  if (exception instanceof BKException
+                                  && ((BKException)exception).getCode() == BKException.Code.TooManyRequestsException) {
+                                  callback.readEntriesFailed(createManagedLedgerException(exception), ctx);
+                              } else {
+                                  ml.invalidateLedgerHandle(lh, exception);
+                                  ManagedLedgerException mlException = createManagedLedgerException(exception);
+                                  callback.readEntriesFailed(mlException, ctx);
+                              }
+                    	return null;
+                    });
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -341,5 +448,14 @@ public class EntryCacheImpl implements EntryCache {
         return evicted;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void invalidateEntriesBeforeTimestamp(long timestamp) {
+        long evictedSize = entries.evictLEntriesBeforeTimestamp(timestamp);
+        manager.entriesRemoved(evictedSize);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(EntryCacheImpl.class);
 }

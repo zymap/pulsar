@@ -28,6 +28,12 @@ import lombok.Setter;
 
 import org.apache.pulsar.client.api.CompressionType;
 
+<<<<<<< HEAD
+=======
+/**
+ * Class representing an encryption context.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Getter
 @Setter
 public class EncryptionContext {
@@ -39,6 +45,12 @@ public class EncryptionContext {
     private int uncompressedMessageSize;
     private Optional<Integer> batchSize;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Encryption key with metadata.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Getter
     @Setter
     @NoArgsConstructor

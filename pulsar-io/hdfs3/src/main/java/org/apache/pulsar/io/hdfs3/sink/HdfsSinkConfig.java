@@ -28,9 +28,12 @@ import java.util.Map;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+<<<<<<< HEAD
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,10 +43,14 @@ import org.apache.pulsar.io.hdfs3.AbstractHdfsConfig;
  * Configuration object for all HDFS Sink components.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @ToString
+=======
+@EqualsAndHashCode(callSuper = false)
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class HdfsSinkConfig extends AbstractHdfsConfig implements Serializable {
 

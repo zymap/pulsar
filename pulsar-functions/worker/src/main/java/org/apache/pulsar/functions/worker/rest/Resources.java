@@ -19,11 +19,22 @@
 package org.apache.pulsar.functions.worker.rest;
 
 import org.apache.pulsar.functions.worker.rest.api.FunctionsMetricsResource;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.worker.rest.api.v2.FunctionApiV2Resource;
 import org.apache.pulsar.functions.worker.rest.api.v3.FunctionApiV3Resource;
 import org.apache.pulsar.functions.worker.rest.api.v3.SinkApiV3Resource;
 import org.apache.pulsar.functions.worker.rest.api.v3.SourceApiV3Resource;
 import org.apache.pulsar.functions.worker.rest.api.v2.WorkerApiV2Resource;
+=======
+import org.apache.pulsar.functions.worker.rest.api.v2.FunctionsApiV2Resource;
+import org.apache.pulsar.functions.worker.rest.api.v2.WorkerApiV2Resource;
+import org.apache.pulsar.functions.worker.rest.api.v2.WorkerStatsApiV2Resource;
+import org.apache.pulsar.functions.worker.rest.api.v3.FunctionsApiV3Resource;
+import org.apache.pulsar.functions.worker.rest.api.v3.SinkApiV3Resource;
+import org.apache.pulsar.functions.worker.rest.api.v3.SinksApiV3Resource;
+import org.apache.pulsar.functions.worker.rest.api.v3.SourceApiV3Resource;
+import org.apache.pulsar.functions.worker.rest.api.v3.SourcesApiV3Resource;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import java.util.Arrays;
@@ -38,8 +49,14 @@ public final class Resources {
     public static Set<Class<?>> getApiV2Resources() {
         return new HashSet<>(
                 Arrays.asList(
+<<<<<<< HEAD
                         FunctionApiV2Resource.class,
                         WorkerApiV2Resource.class,
+=======
+                        FunctionsApiV2Resource.class,
+                        WorkerApiV2Resource.class,
+                        WorkerStatsApiV2Resource.class,
+>>>>>>> f773c602c... Test pr 10 (#27)
                         MultiPartFeature.class
                 ));
     }
@@ -48,9 +65,17 @@ public final class Resources {
         return new HashSet<>(
                 Arrays.asList(
                         MultiPartFeature.class,
+<<<<<<< HEAD
                         SourceApiV3Resource.class,
                         SinkApiV3Resource.class,
                         FunctionApiV3Resource.class
+=======
+                        SourcesApiV3Resource.class,
+                        SourceApiV3Resource.class,
+                        SinksApiV3Resource.class,
+                        SinkApiV3Resource.class,
+                        FunctionsApiV3Resource.class
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ));
     }
 
@@ -58,7 +83,12 @@ public final class Resources {
         return new HashSet<>(
                 Arrays.asList(
                         ConfigurationResource.class,
+<<<<<<< HEAD
                         FunctionsMetricsResource.class
+=======
+                        FunctionsMetricsResource.class,
+                        WorkerReadinessResource.class
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ));
     }
 }

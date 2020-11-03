@@ -19,6 +19,7 @@
 package org.apache.pulsar.io.hbase;
 
 import com.google.common.base.Preconditions;
+<<<<<<< HEAD
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,10 +30,18 @@ import org.apache.pulsar.io.core.annotations.FieldDoc;
 
 import java.io.Serializable;
 
+=======
+import java.io.Serializable;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.apache.pulsar.io.core.annotations.FieldDoc;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Configuration object for all Hbase Sink components.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
@@ -47,6 +56,17 @@ public class HbaseAbstractConfig implements Serializable {
         defaultValue = "",
         help = "hbase system configuration 'hbase-site.xml' file")
     private String hbaseConfigResources;
+=======
+@Accessors(chain = true)
+public class HbaseAbstractConfig implements Serializable {
+
+    private static final long serialVersionUID = -8945930873383593712L;
+
+    @FieldDoc(
+        defaultValue = "hbase-site.xml",
+        help = "hbase system configuration 'hbase-site.xml' file")
+    private String hbaseConfigResources = "hbase-site.xml";
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldDoc(
         required = true,
@@ -55,13 +75,19 @@ public class HbaseAbstractConfig implements Serializable {
     private String zookeeperQuorum;
 
     @FieldDoc(
+<<<<<<< HEAD
         required = false,
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         defaultValue = "2181",
         help = "hbase system configuration about hbase.zookeeper.property.clientPort value")
     private String zookeeperClientPort = "2181";
 
     @FieldDoc(
+<<<<<<< HEAD
         required = false,
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         defaultValue = "/hbase",
         help = "hbase system configuration about zookeeper.znode.parent value")
     private String zookeeperZnodeParent = "/hbase";

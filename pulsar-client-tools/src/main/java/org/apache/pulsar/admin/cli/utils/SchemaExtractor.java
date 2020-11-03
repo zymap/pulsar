@@ -19,11 +19,16 @@
 package org.apache.pulsar.admin.cli.utils;
 
 import org.apache.pulsar.client.api.Schema;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.nio.charset.StandardCharsets;
 
 public class SchemaExtractor {
 
+<<<<<<< HEAD
     public static String getJsonSchemaInfo(Class clazz) {
 
         return new String(Schema.JSON(clazz).getSchemaInfo().getSchema(), StandardCharsets.UTF_8);
@@ -32,6 +37,18 @@ public class SchemaExtractor {
     public static String getAvroSchemaInfo(Class clazz) {
 
         return new String(Schema.AVRO(clazz).getSchemaInfo().getSchema(), StandardCharsets.UTF_8);
+=======
+    public static String getJsonSchemaInfo(SchemaDefinition schemaDefinition) {
+
+        return new String(Schema.JSON(schemaDefinition).getSchemaInfo().getSchema(),
+                          StandardCharsets.UTF_8);
+    }
+
+    public static String getAvroSchemaInfo(SchemaDefinition schemaDefinition) {
+
+        return new String(Schema.AVRO(schemaDefinition).getSchemaInfo().getSchema(),
+                          StandardCharsets.UTF_8);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 }

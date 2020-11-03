@@ -22,6 +22,10 @@
 #include "auth/AuthTls.h"
 #include "auth/AuthAthenz.h"
 #include "auth/AuthToken.h"
+<<<<<<< HEAD
+=======
+#include "auth/AuthOauth2.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <lib/LogUtils.h>
 
 #include <string>
@@ -125,6 +129,12 @@ AuthenticationPtr tryCreateBuiltinAuth(const std::string& pluginName, ParamMap& 
     } else if (boost::iequals(pluginName, ATHENZ_PLUGIN_NAME) ||
                boost::iequals(pluginName, ATHENZ_JAVA_PLUGIN_NAME)) {
         return AuthAthenz::create(paramMap);
+<<<<<<< HEAD
+=======
+    } else if (boost::iequals(pluginName, OAUTH2_TOKEN_PLUGIN_NAME) ||
+               boost::iequals(pluginName, OAUTH2_TOKEN_JAVA_PLUGIN_NAME)) {
+        return AuthOauth2::create(paramMap);
+>>>>>>> f773c602c... Test pr 10 (#27)
     } else {
         return AuthenticationPtr();
     }
@@ -139,6 +149,12 @@ AuthenticationPtr tryCreateBuiltinAuth(const std::string& pluginName, const std:
     } else if (boost::iequals(pluginName, ATHENZ_PLUGIN_NAME) ||
                boost::iequals(pluginName, ATHENZ_JAVA_PLUGIN_NAME)) {
         return AuthAthenz::create(authParamsString);
+<<<<<<< HEAD
+=======
+    } else if (boost::iequals(pluginName, OAUTH2_TOKEN_PLUGIN_NAME) ||
+               boost::iequals(pluginName, OAUTH2_TOKEN_JAVA_PLUGIN_NAME)) {
+        return AuthOauth2::create(authParamsString);
+>>>>>>> f773c602c... Test pr 10 (#27)
     } else {
         return AuthenticationPtr();
     }

@@ -291,7 +291,11 @@ public class ClientConfiguration implements Serializable {
      * Set the interval between each stat info <i>(default: 60 seconds)</i> Stats will be activated with positive
      * statsIntervalSeconds It should be set to at least 1 second
      *
+<<<<<<< HEAD
      * @param statsIntervalSeconds
+=======
+     * @param statsInterval
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            the interval between each stat info
      * @param unit
      *            time unit for {@code statsInterval}

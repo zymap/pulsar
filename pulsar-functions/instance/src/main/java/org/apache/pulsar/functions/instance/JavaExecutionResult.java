@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.functions.instance;
 
+<<<<<<< HEAD
 import lombok.*;
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * This is the Java Instance. This is started by the runtimeSpawner using the JavaInstanceClient
@@ -26,10 +30,13 @@ import lombok.*;
  * based invocation.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class JavaExecutionResult {
     private Exception userException;
     private Exception systemException;

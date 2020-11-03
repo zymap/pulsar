@@ -37,9 +37,17 @@ import org.apache.bookkeeper.client.LedgerHandle;
 import org.apache.bookkeeper.client.api.DigestType;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats;
+<<<<<<< HEAD
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.PersistentOfflineTopicStats;
 import org.apache.pulsar.common.util.collections.ConcurrentOpenHashMap;
+=======
+import org.apache.bookkeeper.mledger.util.Errors;
+import org.apache.pulsar.common.naming.TopicName;
+import org.apache.pulsar.common.policies.data.PersistentOfflineTopicStats;
+import org.apache.pulsar.common.util.collections.ConcurrentOpenHashMap;
+import org.apache.pulsar.metadata.api.Stat;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +153,11 @@ public class ManagedLedgerOfflineBacklog {
         store.getManagedLedgerInfo(managedLedgerName, false /* createIfMissing */,
                 new MetaStore.MetaStoreCallback<MLDataFormats.ManagedLedgerInfo>() {
                     @Override
+<<<<<<< HEAD
                     public void operationComplete(MLDataFormats.ManagedLedgerInfo mlInfo, MetaStore.Stat version) {
+=======
+                    public void operationComplete(MLDataFormats.ManagedLedgerInfo mlInfo, Stat stat) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                         for (MLDataFormats.ManagedLedgerInfo.LedgerInfo ls : mlInfo.getLedgerInfoList()) {
                             ledgers.put(ls.getLedgerId(), ls);
                         }
@@ -155,7 +167,11 @@ public class ManagedLedgerOfflineBacklog {
                             final long id = ledgers.lastKey();
                             AsyncCallback.OpenCallback opencb = (rc, lh, ctx1) -> {
                                 if (log.isDebugEnabled()) {
+<<<<<<< HEAD
                                     log.debug("[{}] Opened ledger {}: ", managedLedgerName, id,
+=======
+                                    log.debug("[{}] Opened ledger {}: {}", managedLedgerName, id,
+>>>>>>> f773c602c... Test pr 10 (#27)
                                             BKException.getMessage(rc));
                                 }
                                 if (rc == BKException.Code.OK) {
@@ -165,7 +181,11 @@ public class ManagedLedgerOfflineBacklog {
                                             .setSize(lh.getLength()).setTimestamp(System.currentTimeMillis()).build();
                                     ledgers.put(id, info);
                                     mlMetaCounter.countDown();
+<<<<<<< HEAD
                                 } else if (rc == BKException.Code.NoSuchLedgerExistsException) {
+=======
+                                } else if (Errors.isNoSuchLedgerExistsException(rc)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                                     log.warn("[{}] Ledger not found: {}", managedLedgerName, ledgers.lastKey());
                                     ledgers.remove(ledgers.lastKey());
                                     mlMetaCounter.countDown();
@@ -193,7 +213,11 @@ public class ManagedLedgerOfflineBacklog {
 
                     @Override
                     public void operationFailed(ManagedLedgerException.MetaStoreException e) {
+<<<<<<< HEAD
                         log.warn("[{}] Unable to obtain managed ledger metadata - {}", e);
+=======
+                        log.warn("[{}] Unable to obtain managed ledger metadata - {}", managedLedgerName, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                         mlMetaCounter.countDown();
                     }
                 });
@@ -218,7 +242,11 @@ public class ManagedLedgerOfflineBacklog {
         MetaStore store = factory.getMetaStore();
         BookKeeper bk = factory.getBookKeeper();
         final CountDownLatch allCursorsCounter = new CountDownLatch(1);
+<<<<<<< HEAD
         final long errorInReadingCursor = (long) -1;
+=======
+        final long errorInReadingCursor = -1;
+>>>>>>> f773c602c... Test pr 10 (#27)
         ConcurrentOpenHashMap<String, Long> ledgerRetryMap = new ConcurrentOpenHashMap<>();
 
         final MLDataFormats.ManagedLedgerInfo.LedgerInfo ledgerInfo = ledgers.lastEntry().getValue();
@@ -229,7 +257,11 @@ public class ManagedLedgerOfflineBacklog {
 
         store.getCursors(managedLedgerName, new MetaStore.MetaStoreCallback<List<String>>() {
             @Override
+<<<<<<< HEAD
             public void operationComplete(List<String> cursors, MetaStore.Stat v) {
+=======
+            public void operationComplete(List<String> cursors, Stat v) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 // Load existing cursors
                 if (log.isDebugEnabled()) {
                     log.debug("[{}] Found {} cursors", managedLedgerName, cursors.size());
@@ -335,7 +367,11 @@ public class ManagedLedgerOfflineBacklog {
                             new MetaStore.MetaStoreCallback<MLDataFormats.ManagedCursorInfo>() {
                                 @Override
                                 public void operationComplete(MLDataFormats.ManagedCursorInfo info,
+<<<<<<< HEAD
                                         MetaStore.Stat version) {
+=======
+                                        Stat stat) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                                     long cursorLedgerId = info.getCursorsLedgerId();
                                     if (log.isDebugEnabled()) {
                                         log.debug("[{}] Cursor {} meta-data read ledger id {}", managedLedgerName,
@@ -429,9 +465,13 @@ public class ManagedLedgerOfflineBacklog {
         PositionImpl lastAckedMessagePosition = null;
         try {
             bookKeeperAdmin = new BookKeeperAdmin(bookKeeper);
+<<<<<<< HEAD
             Iterator<LedgerEntry> entries = bookKeeperAdmin.readEntries(ledgerId, 0, lastEntry).iterator();
             while (entries.hasNext()) {
                 LedgerEntry ledgerEntry = entries.next();
+=======
+            for (LedgerEntry ledgerEntry : bookKeeperAdmin.readEntries(ledgerId, 0, lastEntry)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 lastEntry = ledgerEntry.getEntryId();
                 if (log.isDebugEnabled()) {
                     log.debug(" Read entry {} from ledger {} for cursor {}", lastEntry, ledgerId, cursorName);

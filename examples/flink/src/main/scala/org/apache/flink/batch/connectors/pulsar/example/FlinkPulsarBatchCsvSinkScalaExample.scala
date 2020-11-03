@@ -22,6 +22,10 @@ import org.apache.flink.api.java.tuple.Tuple4
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
 import org.apache.flink.batch.connectors.pulsar.PulsarCsvOutputFormat
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
   * Implements a batch Scala program on Pulsar topic by writing Flink DataSet as Csv.
@@ -65,7 +69,11 @@ object FlinkPulsarBatchCsvSinkScalaExample {
 
     // create PulsarCsvOutputFormat instance
     val pulsarCsvOutputFormat =
+<<<<<<< HEAD
       new PulsarCsvOutputFormat[NasaMission](serviceUrl, topic)
+=======
+      new PulsarCsvOutputFormat[NasaMission](serviceUrl, topic, new AuthenticationDisabled())
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     // create DataSet
     val textDS = env.fromCollection(nasaMissions)

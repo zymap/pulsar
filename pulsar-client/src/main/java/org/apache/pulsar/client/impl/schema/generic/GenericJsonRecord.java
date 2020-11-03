@@ -19,16 +19,29 @@
 package org.apache.pulsar.client.impl.schema.generic;
 
 import com.fasterxml.jackson.databind.JsonNode;
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.pulsar.client.api.schema.Field;
 import org.apache.pulsar.client.api.schema.GenericRecord;
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.client.api.schema.Field;
+import org.apache.pulsar.common.schema.SchemaInfo;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Generic json record.
  */
+<<<<<<< HEAD
 class GenericJsonRecord implements GenericRecord {
 
     private final List<Field> fields;
@@ -47,6 +60,30 @@ class GenericJsonRecord implements GenericRecord {
     @Override
     public List<Field> getFields() {
         return fields;
+=======
+@Slf4j
+public class GenericJsonRecord extends VersionedGenericRecord {
+
+    private final JsonNode jn;
+    private final SchemaInfo schemaInfo;
+
+    GenericJsonRecord(byte[] schemaVersion,
+                      List<Field> fields,
+                      JsonNode jn) {
+        this(schemaVersion, fields, jn, null);
+    }
+
+    GenericJsonRecord(byte[] schemaVersion,
+                      List<Field> fields,
+                      JsonNode jn, SchemaInfo schemaInfo) {
+        super(schemaVersion, fields);
+        this.jn = jn;
+        this.schemaInfo = schemaInfo;
+    }
+
+    public JsonNode getJsonNode() {
+        return jn;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -58,6 +95,7 @@ class GenericJsonRecord implements GenericRecord {
                 .stream()
                 .map(f -> new Field(f, idx.getAndIncrement()))
                 .collect(Collectors.toList());
+<<<<<<< HEAD
             return new GenericJsonRecord(fields, fn);
         } else if (fn.isBoolean()) {
             return fn.asBoolean();
@@ -67,8 +105,71 @@ class GenericJsonRecord implements GenericRecord {
             return fn.asDouble();
         } else if (fn.isDouble()) {
             return fn.asDouble();
+=======
+            return new GenericJsonRecord(schemaVersion, fields, fn, schemaInfo);
+        } else if (fn.isBoolean()) {
+            return fn.asBoolean();
+        } else if (fn.isFloatingPointNumber()) {
+            return fn.asDouble();
+        } else if (fn.isBigInteger()) {
+            if (fn.canConvertToLong()) {
+                return fn.asLong();
+            } else {
+                return fn.asText();
+            }
+        } else if (fn.isNumber()) {
+            return fn.numberValue();
+        } else if (fn.isBinary()) {
+            try {
+                return fn.binaryValue();
+            } catch (IOException e) {
+                return fn.asText();
+            }
+        } else if (isBinaryValue(fieldName)) {
+            try {
+                return fn.binaryValue();
+            } catch (IOException e) {
+                return fn.asText();
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             return fn.asText();
         }
     }
+<<<<<<< HEAD
+=======
+
+    private boolean isBinaryValue(String fieldName) {
+        boolean isBinary = false;
+
+        do {
+            if (schemaInfo == null) {
+                break;
+            }
+
+            try {
+                org.apache.avro.Schema schema = parseAvroSchema(schemaInfo.getSchemaDefinition());
+                org.apache.avro.Schema.Field field = schema.getField(fieldName);
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(field.schema().toString());
+                for (JsonNode node : jsonNode) {
+                    JsonNode jn = node.get("type");
+                    if (jn != null && ("bytes".equals(jn.asText()) || "byte".equals(jn.asText()))) {
+                        isBinary = true;
+                    }
+                }
+            } catch (Exception e) {
+                log.error("parse schemaInfo failed. ", e);
+            }
+        } while (false);
+
+        return isBinary;
+    }
+
+    private org.apache.avro.Schema parseAvroSchema(String schemaJson) {
+        final org.apache.avro.Schema.Parser parser = new org.apache.avro.Schema.Parser();
+        parser.setValidateDefaults(false);
+        return parser.parse(schemaJson);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

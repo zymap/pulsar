@@ -20,6 +20,10 @@ package org.apache.pulsar.websocket.stats;
 
 import java.util.Set;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.SubscriptionMode;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.websocket.ConsumerHandler;
 import org.apache.pulsar.websocket.ProducerHandler;
@@ -62,6 +66,10 @@ public class ProxyTopicStat {
         public ConsumerStats(ConsumerHandler handler) {
             this.subscriptionName = handler.getSubscription();
             this.subscriptionType = handler.getSubscriptionType();
+<<<<<<< HEAD
+=======
+            this.subscriptionMode = handler.getSubscriptionMode();
+>>>>>>> f773c602c... Test pr 10 (#27)
             this.remoteConnection = handler.getRemote().getInetSocketAddress().toString();
             this.numberOfMsgDelivered = handler.getMsgDeliveredCounter();
         }
@@ -76,6 +84,10 @@ public class ProxyTopicStat {
         public String remoteConnection;
         public String subscriptionName;
         public SubscriptionType subscriptionType;
+<<<<<<< HEAD
+=======
+        public SubscriptionMode subscriptionMode;
+>>>>>>> f773c602c... Test pr 10 (#27)
         public long numberOfMsgDelivered;
     }
 

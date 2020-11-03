@@ -37,6 +37,11 @@ class ConsumerStatsImpl : public ConsumerStatsBase {
     std::map<std::pair<Result, proto::CommandAck_AckType>, unsigned long> totalAckedMsgMap_;
 
     std::string consumerStr_;
+<<<<<<< HEAD
+=======
+
+    ExecutorServicePtr executor_;
+>>>>>>> f773c602c... Test pr 10 (#27)
     DeadlineTimerPtr timer_;
     std::mutex mutex_;
     unsigned int statsIntervalInSeconds_;
@@ -46,7 +51,11 @@ class ConsumerStatsImpl : public ConsumerStatsBase {
     friend class PulsarFriend;
 
    public:
+<<<<<<< HEAD
     ConsumerStatsImpl(std::string, DeadlineTimerPtr, unsigned int);
+=======
+    ConsumerStatsImpl(std::string, ExecutorServicePtr, unsigned int);
+>>>>>>> f773c602c... Test pr 10 (#27)
     ConsumerStatsImpl(const ConsumerStatsImpl& stats);
     void flushAndReset(const boost::system::error_code&);
     virtual void receivedMessage(Message&, Result);

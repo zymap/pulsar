@@ -59,11 +59,16 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
 
     private volatile double sendMsgsRate;
     private volatile double sendBytesRate;
+<<<<<<< HEAD
     private volatile double[] latencyPctValues;
+=======
+    private volatile double[] latencyPctValues = new double[PERCENTILES.length];
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private static final double[] PERCENTILES = { 0.5, 0.75, 0.95, 0.99, 0.999, 1.0 };
 
     public ProducerStatsRecorderImpl() {
+<<<<<<< HEAD
         numMsgsSent = null;
         numBytesSent = null;
         numSendFailed = null;
@@ -73,6 +78,17 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
         totalSendFailed = null;
         totalAcksReceived = null;
         ds = null;
+=======
+        numMsgsSent = new LongAdder();
+        numBytesSent = new LongAdder();
+        numSendFailed = new LongAdder();
+        numAcksReceived = new LongAdder();
+        totalMsgsSent = new LongAdder();
+        totalBytesSent = new LongAdder();
+        totalSendFailed = new LongAdder();
+        totalAcksReceived = new LongAdder();
+        ds = DoublesSketch.builder().build(256);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public ProducerStatsRecorderImpl(PulsarClientImpl pulsarClient, ProducerConfigurationData conf,
@@ -101,7 +117,11 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
             log.info("Starting Pulsar producer perf with config: {}", w.writeValueAsString(conf));
             log.info("Pulsar client config: {}", w.withoutAttribute("authentication").writeValueAsString(pulsarClient.getConfiguration()));
         } catch (IOException e) {
+<<<<<<< HEAD
             log.error("Failed to dump config info: {}", e);
+=======
+            log.error("Failed to dump config info", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         stat = (timeout) -> {
@@ -137,7 +157,11 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
                         | currentNumMsgsSent) != 0) {
 
                     for (int i = 0; i < latencyPctValues.length; i++) {
+<<<<<<< HEAD
                         if (latencyPctValues[i] == Double.NaN) {
+=======
+                        if (Double.isNaN(latencyPctValues[i])) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                             latencyPctValues[i] = 0;
                         }
                     }
@@ -148,9 +172,15 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
                             producer.getProducerName(), producer.getPendingQueueSize(),
                             THROUGHPUT_FORMAT.format(sendMsgsRate),
                             THROUGHPUT_FORMAT.format(sendBytesRate / 1024 / 1024 * 8),
+<<<<<<< HEAD
                             DEC.format(latencyPctValues[0] / 1000.0), DEC.format(latencyPctValues[2] / 1000.0),
                             DEC.format(latencyPctValues[3] / 1000.0), DEC.format(latencyPctValues[4] / 1000.0),
                             DEC.format(latencyPctValues[5] / 1000.0),
+=======
+                            DEC.format(latencyPctValues[0]), DEC.format(latencyPctValues[2]),
+                            DEC.format(latencyPctValues[3]), DEC.format(latencyPctValues[4]),
+                            DEC.format(latencyPctValues[5]),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             THROUGHPUT_FORMAT.format(currentNumAcksReceived / elapsed), currentNumSendFailedMsgs);
                 }
 
@@ -191,7 +221,11 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
     public void incrementNumAcksReceived(long latencyNs) {
         numAcksReceived.increment();
         synchronized (ds) {
+<<<<<<< HEAD
             ds.update(TimeUnit.NANOSECONDS.toMicros(latencyNs));
+=======
+            ds.update(TimeUnit.NANOSECONDS.toMillis(latencyNs));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -214,10 +248,17 @@ public class ProducerStatsRecorderImpl implements ProducerStatsRecorder {
         numBytesSent.add(stats.getNumBytesSent());
         numSendFailed.add(stats.getNumSendFailed());
         numAcksReceived.add(stats.getNumAcksReceived());
+<<<<<<< HEAD
         totalMsgsSent.add(stats.getNumMsgsSent());
         totalBytesSent.add(stats.getNumBytesSent());
         totalSendFailed.add(stats.getNumSendFailed());
         totalAcksReceived.add(stats.getNumAcksReceived());
+=======
+        totalMsgsSent.add(stats.getTotalMsgsSent());
+        totalBytesSent.add(stats.getTotalBytesSent());
+        totalSendFailed.add(stats.getTotalSendFailed());
+        totalAcksReceived.add(stats.getTotalAcksReceived());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

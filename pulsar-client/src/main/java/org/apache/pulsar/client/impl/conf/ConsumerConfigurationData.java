@@ -31,17 +31,38 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+<<<<<<< HEAD
 import lombok.Data;
+=======
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.pulsar.client.api.BatchReceivePolicy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.ConsumerCryptoFailureAction;
 import org.apache.pulsar.client.api.ConsumerEventListener;
 import org.apache.pulsar.client.api.CryptoKeyReader;
 import org.apache.pulsar.client.api.DeadLetterPolicy;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.MessageListener;
 import org.apache.pulsar.client.api.RegexSubscriptionMode;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 
 @Data
+=======
+import org.apache.pulsar.client.api.KeySharedPolicy;
+import org.apache.pulsar.client.api.MessageCrypto;
+import org.apache.pulsar.client.api.MessageListener;
+import org.apache.pulsar.client.api.RegexSubscriptionMode;
+import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+import org.apache.pulsar.client.api.SubscriptionMode;
+import org.apache.pulsar.client.api.SubscriptionType;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ConsumerConfigurationData<T> implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
 
@@ -53,6 +74,11 @@ public class ConsumerConfigurationData<T> implements Serializable, Cloneable {
 
     private SubscriptionType subscriptionType = SubscriptionType.Exclusive;
 
+<<<<<<< HEAD
+=======
+    private SubscriptionMode subscriptionMode = SubscriptionMode.Durable;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @JsonIgnore
     private MessageListener<T> messageListener;
 
@@ -63,6 +89,11 @@ public class ConsumerConfigurationData<T> implements Serializable, Cloneable {
 
     private long acknowledgementsGroupTimeMicros = TimeUnit.MILLISECONDS.toMicros(100);
 
+<<<<<<< HEAD
+=======
+    private long negativeAckRedeliveryDelayMicros = TimeUnit.MINUTES.toMicros(1);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private int maxTotalReceiverQueueSizeAcrossPartitions = 50000;
 
     private String consumerName = null;
@@ -73,9 +104,25 @@ public class ConsumerConfigurationData<T> implements Serializable, Cloneable {
 
     private int priorityLevel = 0;
 
+<<<<<<< HEAD
     @JsonIgnore
     private CryptoKeyReader cryptoKeyReader = null;
 
+=======
+    // max pending chunked message to avoid sitting incomplete message into the queue and memory
+    private int maxPendingChuckedMessage = 10;
+
+    private boolean autoAckOldestChunkedMessageOnQueueFull = false;
+
+    private long expireTimeOfIncompleteChunkedMessageMillis = 60 * 1000;
+
+    @JsonIgnore
+    private CryptoKeyReader cryptoKeyReader = null;
+
+    @JsonIgnore
+    private MessageCrypto messageCrypto = null;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ConsumerCryptoFailureAction cryptoFailureAction = ConsumerCryptoFailureAction.FAIL;
 
     private SortedMap<String, String> properties = new TreeMap<>();
@@ -84,17 +131,49 @@ public class ConsumerConfigurationData<T> implements Serializable, Cloneable {
 
     private SubscriptionInitialPosition subscriptionInitialPosition = SubscriptionInitialPosition.Latest;
 
+<<<<<<< HEAD
     private int patternAutoDiscoveryPeriod = 1;
+=======
+    private int patternAutoDiscoveryPeriod = 60;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private RegexSubscriptionMode regexSubscriptionMode = RegexSubscriptionMode.PersistentOnly;
 
     private DeadLetterPolicy deadLetterPolicy;
 
+<<<<<<< HEAD
     private boolean autoUpdatePartitions = true;
 
     @JsonIgnore
     public String getSingleTopic() {
         checkArgument(topicNames.size() == 1);
+=======
+    private boolean retryEnable = false;
+
+    @JsonIgnore
+    private BatchReceivePolicy batchReceivePolicy;
+
+    private boolean autoUpdatePartitions = true;
+
+    private long autoUpdatePartitionsIntervalSeconds = 60;
+
+    private boolean replicateSubscriptionState = false;
+
+    private boolean resetIncludeHead = false;
+
+    private KeySharedPolicy keySharedPolicy;
+
+    private boolean batchIndexAckEnabled = false;
+
+    public void setAutoUpdatePartitionsIntervalSeconds(int interval, TimeUnit timeUnit) {
+        checkArgument(interval > 0, "interval needs to be > 0");
+        this.autoUpdatePartitionsIntervalSeconds = timeUnit.toSeconds(interval);
+    }
+
+    @JsonIgnore
+    public String getSingleTopic() {
+        checkArgument(topicNames.size() == 1, "topicNames needs to be = 1");
+>>>>>>> f773c602c... Test pr 10 (#27)
         return topicNames.iterator().next();
     }
 

@@ -29,20 +29,35 @@ public class PulsarTestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
+<<<<<<< HEAD
         System.out.format("------- Starting test %s.%s(%s)-------\n", result.getTestClass(), result.getTestName(),
                 Arrays.toString(result.getParameters()));
+=======
+        System.out.format("------- Starting test %s.%s(%s)-------\n", result.getTestClass(),
+                result.getMethod().getMethodName(), Arrays.toString(result.getParameters()));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
+<<<<<<< HEAD
         System.out.format("------- SUCCESS -- %s.%s(%s)-------", result.getTestClass(), result.getTestName(),
                 Arrays.toString(result.getParameters()));
+=======
+        System.out.format("------- SUCCESS -- %s.%s(%s)-------", result.getTestClass(),
+                result.getMethod().getMethodName(), Arrays.toString(result.getParameters()));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
+<<<<<<< HEAD
         System.out.format("!!!!!!!!! FAILURE-- %s.%s(%s)-------\n", result.getTestClass(), result.getTestName(),
                 Arrays.toString(result.getParameters()));
+=======
+        System.out.format("!!!!!!!!! FAILURE-- %s.%s(%s)-------\n", result.getTestClass(),
+                result.getMethod().getMethodName(), Arrays.toString(result.getParameters()));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         if (result.getThrowable() instanceof ThreadTimeoutException) {
             System.out.println("====== THREAD DUMPS ======");
@@ -52,8 +67,13 @@ public class PulsarTestListener implements ITestListener {
 
     @Override
     public void onTestSkipped(ITestResult result) {
+<<<<<<< HEAD
         System.out.format("~~~~~~~~~ SKIPPED -- %s.%s(%s)-------", result.getTestClass(), result.getTestName(),
                 Arrays.toString(result.getParameters()));
+=======
+        System.out.format("~~~~~~~~~ SKIPPED -- %s.%s(%s)-------", result.getTestClass(),
+                result.getMethod().getMethodName(), Arrays.toString(result.getParameters()));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -68,6 +88,9 @@ public class PulsarTestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext context) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

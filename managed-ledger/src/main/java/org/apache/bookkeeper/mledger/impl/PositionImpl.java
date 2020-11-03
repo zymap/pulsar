@@ -28,11 +28,20 @@ import org.apache.bookkeeper.mledger.proto.MLDataFormats.PositionInfo;
 
 public class PositionImpl implements Position, Comparable<PositionImpl> {
 
+<<<<<<< HEAD
     private final long ledgerId;
     private final long entryId;
 
     public static PositionImpl earliest = new PositionImpl(-1, -1);
     public static PositionImpl latest = new PositionImpl(Long.MAX_VALUE, Long.MAX_VALUE);
+=======
+    protected long ledgerId;
+    protected long entryId;
+    protected long[] ackSet;
+
+    public static final PositionImpl earliest = new PositionImpl(-1, -1);
+    public static final PositionImpl latest = new PositionImpl(Long.MAX_VALUE, Long.MAX_VALUE);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public PositionImpl(PositionInfo pi) {
         this.ledgerId = pi.getLedgerId();
@@ -49,6 +58,15 @@ public class PositionImpl implements Position, Comparable<PositionImpl> {
         this.entryId = entryId;
     }
 
+<<<<<<< HEAD
+=======
+    public PositionImpl(long ledgerId, long entryId, long[] ackSet) {
+        this.ledgerId = ledgerId;
+        this.entryId = entryId;
+        this.ackSet = ackSet;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public PositionImpl(PositionImpl other) {
         this.ledgerId = other.ledgerId;
         this.entryId = other.entryId;
@@ -58,6 +76,13 @@ public class PositionImpl implements Position, Comparable<PositionImpl> {
         return new PositionImpl(ledgerId, entryId);
     }
 
+<<<<<<< HEAD
+=======
+    public static PositionImpl get(long ledgerId, long entryId, long[] ackSet) {
+        return new PositionImpl(ledgerId, entryId, ackSet);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static PositionImpl get(PositionImpl other) {
         return new PositionImpl(other);
     }
@@ -72,7 +97,15 @@ public class PositionImpl implements Position, Comparable<PositionImpl> {
 
     @Override
     public PositionImpl getNext() {
+<<<<<<< HEAD
         return PositionImpl.get(ledgerId, entryId + 1);
+=======
+        if (entryId < 0) {
+            return PositionImpl.get(ledgerId, 0);
+        } else {
+            return PositionImpl.get(ledgerId, entryId + 1);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**

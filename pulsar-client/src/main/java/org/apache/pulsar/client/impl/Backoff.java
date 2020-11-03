@@ -19,14 +19,27 @@
 package org.apache.pulsar.client.impl;
 
 import com.google.common.annotations.VisibleForTesting;
+<<<<<<< HEAD
+=======
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.time.Clock;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 // All variables are in TimeUnit millis by default
+<<<<<<< HEAD
 public class Backoff {
     private static final long DEFAULT_INTERVAL_IN_NANOSECONDS = TimeUnit.MILLISECONDS.toNanos(100);
     private static final long MAX_BACKOFF_INTERVAL_NANOSECONDS = TimeUnit.SECONDS.toNanos(30);
+=======
+@Data
+public class Backoff {
+    public static final long DEFAULT_INTERVAL_IN_NANOSECONDS = TimeUnit.MILLISECONDS.toNanos(100);
+    public static final long MAX_BACKOFF_INTERVAL_NANOSECONDS = TimeUnit.SECONDS.toNanos(30);
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final long initial;
     private final long max;
     private final Clock clock;
@@ -49,7 +62,11 @@ public class Backoff {
     }
 
     public Backoff(long initial, TimeUnit unitInitial, long max, TimeUnit unitMax, long mandatoryStop,
+<<<<<<< HEAD
             TimeUnit unitMandatoryStop) {
+=======
+                   TimeUnit unitMandatoryStop) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this(initial, unitInitial, max, unitMax, mandatoryStop, unitMandatoryStop, Clock.systemDefaultZone());
     }
 
@@ -58,7 +75,11 @@ public class Backoff {
         if (current < max) {
             this.next = Math.min(this.next * 2, this.max);
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         // Check for mandatory stop
         if (!mandatoryStopMade) {
             long now = clock.millis();
@@ -68,14 +89,23 @@ public class Backoff {
             } else {
                 timeElapsedSinceFirstBackoff = now - firstBackoffTimeInMillis;
             }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (timeElapsedSinceFirstBackoff + current > mandatoryStop) {
                 current = Math.max(initial, mandatoryStop - timeElapsedSinceFirstBackoff);
                 mandatoryStopMade = true;
             }
         }
+<<<<<<< HEAD
         
         // Randomly decrease the timeout up to 10% to avoid simultaneous retries        
+=======
+
+        // Randomly decrease the timeout up to 10% to avoid simultaneous retries
+>>>>>>> f773c602c... Test pr 10 (#27)
         // If current < 10 then current/10 < 1 and we get an exception from Random saying "Bound must be positive"
         if (current > 10) {
             current -= random.nextInt((int) current / 10);
@@ -99,6 +129,7 @@ public class Backoff {
         return firstBackoffTimeInMillis;
     }
 
+<<<<<<< HEAD
     public static boolean shouldBackoff(long initialTimestamp, TimeUnit unitInitial, int failedAttempts) {
         long initialTimestampInNano = unitInitial.toNanos(initialTimestamp);
         long currentTime = System.nanoTime();
@@ -107,6 +138,17 @@ public class Backoff {
             interval = interval * 2;
             if (interval > MAX_BACKOFF_INTERVAL_NANOSECONDS) {
                 interval = MAX_BACKOFF_INTERVAL_NANOSECONDS;
+=======
+    public static boolean shouldBackoff(long initialTimestamp, TimeUnit unitInitial, int failedAttempts,
+    									long defaultInterval, long maxBackoffInterval) {
+    	long initialTimestampInNano = unitInitial.toNanos(initialTimestamp);
+        long currentTime = System.nanoTime();
+        long interval = defaultInterval;
+        for (int i = 1; i < failedAttempts; i++) {
+            interval = interval * 2;
+            if (interval > maxBackoffInterval) {
+                interval = maxBackoffInterval;
+>>>>>>> f773c602c... Test pr 10 (#27)
                 break;
             }
         }
@@ -114,4 +156,12 @@ public class Backoff {
         // if the current time is less than the time at which next retry should occur, we should backoff
         return currentTime < (initialTimestampInNano + interval);
     }
+<<<<<<< HEAD
+=======
+
+    public static boolean shouldBackoff(long initialTimestamp, TimeUnit unitInitial, int failedAttempts) {
+        return Backoff.shouldBackoff(initialTimestamp, unitInitial, failedAttempts,
+        							 DEFAULT_INTERVAL_IN_NANOSECONDS, MAX_BACKOFF_INTERVAL_NANOSECONDS);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

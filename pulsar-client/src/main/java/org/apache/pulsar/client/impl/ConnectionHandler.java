@@ -20,12 +20,21 @@ package org.apache.pulsar.client.impl;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+<<<<<<< HEAD
+=======
+
+import com.google.common.annotations.VisibleForTesting;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.impl.HandlerState.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 class ConnectionHandler {
+=======
+public class ConnectionHandler {
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final AtomicReferenceFieldUpdater<ConnectionHandler, ClientCnx> CLIENT_CNX_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(ConnectionHandler.class, ClientCnx.class, "clientCnx");
     @SuppressWarnings("unused")
@@ -33,6 +42,10 @@ class ConnectionHandler {
 
     protected final HandlerState state;
     protected final Backoff backoff;
+<<<<<<< HEAD
+=======
+    protected long epoch = 0L;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     interface Connection {
         void connectionFailed(PulsarClientException exception);
@@ -72,7 +85,17 @@ class ConnectionHandler {
 
     private Void handleConnectionError(Throwable exception) {
         log.warn("[{}] [{}] Error connecting to broker: {}", state.topic, state.getHandlerName(), exception.getMessage());
+<<<<<<< HEAD
         connection.connectionFailed(new PulsarClientException(exception));
+=======
+        if (exception instanceof PulsarClientException) {
+            connection.connectionFailed((PulsarClientException) exception);
+        } else if (exception.getCause() instanceof  PulsarClientException) {
+            connection.connectionFailed((PulsarClientException)exception.getCause());
+        } else {
+            connection.connectionFailed(new PulsarClientException(exception));
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         State state = this.state.getState();
         if (state == State.Uninitialized || state == State.Connecting || state == State.Ready) {
@@ -94,11 +117,21 @@ class ConnectionHandler {
         state.setState(State.Connecting);
         state.client.timer().newTimeout(timeout -> {
             log.info("[{}] [{}] Reconnecting after connection was closed", state.topic, state.getHandlerName());
+<<<<<<< HEAD
+=======
+            ++epoch;
+>>>>>>> f773c602c... Test pr 10 (#27)
             grabCnx();
         }, delayMs, TimeUnit.MILLISECONDS);
     }
 
+<<<<<<< HEAD
     protected void connectionClosed(ClientCnx cnx) {
+=======
+    @VisibleForTesting
+    public void connectionClosed(ClientCnx cnx) {
+        state.client.getCnxPool().releaseConnection(cnx);
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (CLIENT_CNX_UPDATER.compareAndSet(this, cnx, null)) {
             if (!isValidStateForReconnection()) {
                 log.info("[{}] [{}] Ignoring reconnection request (state: {})", state.topic, state.getHandlerName(), state.getState());
@@ -110,6 +143,10 @@ class ConnectionHandler {
                     delayMs / 1000.0);
             state.client.timer().newTimeout(timeout -> {
                 log.info("[{}] [{}] Reconnecting after timeout", state.topic, state.getHandlerName());
+<<<<<<< HEAD
+=======
+                ++epoch;
+>>>>>>> f773c602c... Test pr 10 (#27)
                 grabCnx();
             }, delayMs, TimeUnit.MILLISECONDS);
         }
@@ -119,6 +156,7 @@ class ConnectionHandler {
         backoff.reset();
     }
 
+<<<<<<< HEAD
     protected ClientCnx cnx() {
         return CLIENT_CNX_UPDATER.get(this);
     }
@@ -128,6 +166,10 @@ class ConnectionHandler {
     }
 
     protected ClientCnx getClientCnx() {
+=======
+    @VisibleForTesting
+    public ClientCnx cnx() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return CLIENT_CNX_UPDATER.get(this);
     }
 
@@ -153,5 +195,13 @@ class ConnectionHandler {
         return false;
     }
 
+<<<<<<< HEAD
+=======
+    @VisibleForTesting
+    public long getEpoch() {
+        return epoch;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(ConnectionHandler.class);
 }

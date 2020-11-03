@@ -18,21 +18,41 @@
  */
 package org.apache.pulsar.functions.worker;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
+=======
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.any;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+<<<<<<< HEAD
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+=======
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.Reader;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.proto.Request.ServiceRequest;
 import org.apache.pulsar.functions.proto.Function.FunctionMetaData;
 import org.apache.pulsar.functions.worker.request.ServiceRequestUtils;
+=======
+import org.apache.pulsar.client.api.ReaderBuilder;
+import org.apache.pulsar.functions.proto.Request.ServiceRequest;
+import org.apache.pulsar.functions.proto.Function.FunctionMetaData;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -45,13 +65,28 @@ public class FunctionMetaDataTopicTailerTest {
     private static final String TEST_NAME = "test-fmt";
 
     private final Reader reader;
+<<<<<<< HEAD
+=======
+    private final ReaderBuilder readerBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final FunctionMetaDataManager fsm;
     private final FunctionMetaDataTopicTailer fsc;
 
     public FunctionMetaDataTopicTailerTest() throws Exception {
         this.reader = mock(Reader.class);
+<<<<<<< HEAD
         this.fsm = mock(FunctionMetaDataManager.class);
         this.fsc = new FunctionMetaDataTopicTailer(fsm, reader);
+=======
+        this.readerBuilder = mock(ReaderBuilder.class);
+        when(readerBuilder.topic(anyString())).thenReturn(readerBuilder);
+        when(readerBuilder.startMessageId(any(MessageId.class))).thenReturn(readerBuilder);
+        when(readerBuilder.readerName(anyString())).thenReturn(readerBuilder);
+        when(readerBuilder.subscriptionRolePrefix(anyString())).thenReturn(readerBuilder);
+        when(readerBuilder.create()).thenReturn(reader);
+        this.fsm = mock(FunctionMetaDataManager.class);
+        this.fsc = new FunctionMetaDataTopicTailer(fsm, readerBuilder, new WorkerConfig(), MessageId.earliest, ErrorNotifier.getDefaultImpl() );
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterMethod
@@ -63,6 +98,7 @@ public class FunctionMetaDataTopicTailerTest {
     @Test
     public void testUpdate() throws Exception {
 
+<<<<<<< HEAD
         ServiceRequest request = ServiceRequestUtils.getUpdateRequest(TEST_NAME, FunctionMetaData.newBuilder().build());
 
         Message msg = mock(Message.class);
@@ -80,5 +116,31 @@ public class FunctionMetaDataTopicTailerTest {
 
         verify(reader, times(2)).readNextAsync();
         verify(fsm, times(1)).processRequest(any(MessageId.class), any(ServiceRequest.class));
+=======
+        FunctionMetaData request = FunctionMetaData.newBuilder().build();
+
+        Message msg = mock(Message.class);
+        when(msg.getData()).thenReturn(request.toByteArray());
+        CountDownLatch readLatch = new CountDownLatch(1);
+        CountDownLatch processLatch = new CountDownLatch(1);
+        when(reader.readNext(anyInt(), any(TimeUnit.class))).thenReturn(msg).then(new Answer<Message>() {
+            public Message answer(InvocationOnMock invocation) {
+                try {
+                    readLatch.countDown();
+                    processLatch.await();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
+
+        fsc.start();
+
+        readLatch.await();
+
+        verify(reader, times(2)).readNext(anyInt(), any(TimeUnit.class));
+        verify(fsm, times(1)).processMetaDataTopicMessage(any(Message.class));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

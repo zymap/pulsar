@@ -3,6 +3,7 @@ id: concepts-schema-registry
 title: Schema Registry
 sidebar_label: Schema Registry
 ---
+<<<<<<< HEAD
 
 Type safety is extremely important in any application built around a message bus like Pulsar. Producers and consumers need some kind of mechanism for coordinating types at the topic level lest a wide variety of potential problems arise (for example serialization and deserialization issues). Applications typically adopt one of two basic approaches to type safety in messaging:
 
@@ -79,3 +80,5 @@ For usage instructions, see the documentation for your preferred client library:
 ## Managing Schemas
 
 You can use Pulsar's [admin tools](admin-api-schemas.md) for managing schemas for topics.
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

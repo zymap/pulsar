@@ -20,7 +20,10 @@ package org.apache.pulsar.broker.web;
 
 import java.io.IOException;
 
+<<<<<<< HEAD
 import javax.naming.AuthenticationException;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -31,8 +34,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.pulsar.broker.authentication.AuthenticationDataHttps;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.authentication.AuthenticationDataSource;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
+=======
+import org.apache.pulsar.broker.authentication.AuthenticationService;
+import org.apache.pulsar.common.sasl.SaslConstants;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +59,7 @@ public class AuthenticationFilter implements Filter {
         this.authenticationService = authenticationService;
     }
 
+<<<<<<< HEAD
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -65,13 +74,59 @@ public class AuthenticationFilter implements Filter {
                 LOG.debug("[{}] Authenticated HTTP request with role {}", request.getRemoteAddr(), role);
             }
         } catch (AuthenticationException e) {
+=======
+    private boolean isSaslRequest(HttpServletRequest request) {
+        if (request.getHeader(SaslConstants.SASL_HEADER_TYPE) == null ||
+            request.getHeader(SaslConstants.SASL_HEADER_TYPE).isEmpty()) {
+            return false;
+        }
+        if (request.getHeader(SaslConstants.SASL_HEADER_TYPE)
+            .equalsIgnoreCase(SaslConstants.SASL_TYPE_VALUE)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        try {
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+            if (!isSaslRequest(httpRequest)) {
+                // not sasl type, return role directly.
+                String role = authenticationService.authenticateHttpRequest((HttpServletRequest) request);
+                request.setAttribute(AuthenticatedRoleAttributeName, role);
+                request.setAttribute(AuthenticatedDataAttributeName,
+                    new AuthenticationDataHttps((HttpServletRequest) request));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[{}] Authenticated HTTP request with role {}", request.getRemoteAddr(), role);
+                }
+                chain.doFilter(request, response);
+                return;
+            }
+
+            boolean doFilter = authenticationService
+                .getAuthenticationProvider(SaslConstants.AUTH_METHOD_NAME)
+                .authenticateHttpRequest(httpRequest, httpResponse);
+
+            if (doFilter) {
+                chain.doFilter(request, response);
+            }
+        } catch (Exception e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication required");
             LOG.warn("[{}] Failed to authenticate HTTP request: {}", request.getRemoteAddr(), e.getMessage());
             return;
         }
+<<<<<<< HEAD
 
         chain.doFilter(request, response);
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

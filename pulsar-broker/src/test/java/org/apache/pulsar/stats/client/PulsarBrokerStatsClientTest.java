@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.stats.client;
 
+<<<<<<< HEAD
 import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.service.persistent.PersistentTopic;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -37,7 +40,10 @@ import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.ServerSideErrorException;
 import org.apache.pulsar.client.admin.internal.BrokerStatsImpl;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.Authentication;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
@@ -50,6 +56,19 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
+=======
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ServerErrorException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.spy;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarBrokerStatsClientTest extends ProducerConsumerBase {
 
     @BeforeMethod
@@ -113,7 +132,11 @@ public class PulsarBrokerStatsClientTest extends ProducerConsumerBase {
             producer.send(message.getBytes());
         }
 
+<<<<<<< HEAD
         Message<byte[]> msg = null;
+=======
+        Message<byte[]> msg;
+>>>>>>> f773c602c... Test pr 10 (#27)
         int count = 0;
         for (int i = 0; i < numberOfMsgs; i++) {
             msg = consumer.receive(5, TimeUnit.SECONDS);
@@ -123,7 +146,12 @@ public class PulsarBrokerStatsClientTest extends ProducerConsumerBase {
         }
 
         PersistentTopic topic = (PersistentTopic) pulsar.getBrokerService().getOrCreateTopic(topicName).get();
+<<<<<<< HEAD
         PersistentTopicInternalStats internalStats = topic.getInternalStats();
+=======
+        PersistentTopicInternalStats internalStats = topic.getInternalStats(true).get();
+        assertNotNull(internalStats.ledgers.get(0).metadata);
+>>>>>>> f773c602c... Test pr 10 (#27)
         CursorStats cursor = internalStats.cursors.get(subscriptionName);
         assertEquals(cursor.numberOfEntriesSinceFirstNotAckedMessage, numberOfMsgs);
         assertTrue(cursor.totalNonContiguousDeletedMessagesRange > 0

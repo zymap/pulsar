@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl.schema.generic;
 
+<<<<<<< HEAD
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.ByteArrayOutputStream;
@@ -30,11 +31,21 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.pulsar.client.api.SchemaSerializationException;
 import org.apache.pulsar.client.api.schema.GenericRecord;
+=======
+import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.Schema;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.api.schema.GenericRecordBuilder;
+import org.apache.pulsar.client.api.schema.SchemaReader;
+import org.apache.pulsar.client.impl.schema.SchemaUtils;
+import org.apache.pulsar.common.protocol.schema.BytesSchemaVersion;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.schema.SchemaInfo;
 
 /**
  * A generic avro schema.
  */
+<<<<<<< HEAD
 class GenericAvroSchema extends GenericSchema {
 
     private final GenericDatumWriter<org.apache.avro.generic.GenericRecord> datumWriter;
@@ -76,6 +87,65 @@ class GenericAvroSchema extends GenericSchema {
         } catch (IOException e) {
             throw new SchemaSerializationException(e);
         }
+=======
+@Slf4j
+public class GenericAvroSchema extends GenericSchemaImpl {
+
+    public final static String OFFSET_PROP = "__AVRO_READ_OFFSET__";
+
+    public GenericAvroSchema(SchemaInfo schemaInfo) {
+        this(schemaInfo, true);
+    }
+
+    GenericAvroSchema(SchemaInfo schemaInfo,
+                      boolean useProvidedSchemaAsReaderSchema) {
+        super(schemaInfo, useProvidedSchemaAsReaderSchema);
+        setReader(new GenericAvroReader(schema));
+        setWriter(new GenericAvroWriter(schema));
+    }
+
+    @Override
+    public GenericRecordBuilder newRecordBuilder() {
+        return new AvroRecordBuilderImpl(this);
+    }
+
+    @Override
+    public boolean supportSchemaVersioning() {
+        return true;
+    }
+
+    @Override
+    public org.apache.pulsar.client.api.Schema<GenericRecord> clone() {
+        org.apache.pulsar.client.api.Schema<GenericRecord> schema =
+                GenericAvroSchema.of(schemaInfo, useProvidedSchemaAsReaderSchema);
+        if (schemaInfoProvider != null) {
+            schema.setSchemaInfoProvider(schemaInfoProvider);
+        }
+        return schema;
+    }
+
+    @Override
+    protected SchemaReader<GenericRecord> loadReader(BytesSchemaVersion schemaVersion) {
+         SchemaInfo schemaInfo = getSchemaInfoByVersion(schemaVersion.get());
+         if (schemaInfo != null) {
+             log.info("Load schema reader for version({}), schema is : {}",
+                 SchemaUtils.getStringSchemaVersion(schemaVersion.get()),
+                 schemaInfo);
+             Schema writerSchema = parseAvroSchema(schemaInfo.getSchemaDefinition());
+             Schema readerSchema = useProvidedSchemaAsReaderSchema ? schema : writerSchema;
+             readerSchema.addProp(OFFSET_PROP, schemaInfo.getProperties().getOrDefault(OFFSET_PROP, "0"));
+
+             return new GenericAvroReader(
+                     writerSchema,
+                     readerSchema,
+                     schemaVersion.get());
+         } else {
+             log.warn("No schema found for version({}), use latest schema : {}",
+                 SchemaUtils.getStringSchemaVersion(schemaVersion.get()),
+                 this.schemaInfo);
+             return reader;
+         }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 }

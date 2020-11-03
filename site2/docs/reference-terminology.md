@@ -76,13 +76,26 @@ A message sent to a Pulsar broker by a [consumer](#consumer) that a message has 
 An acknowledgement (ack) is Pulsar's way of knowing that the message can be deleted from the system;
 if no acknowledgement, then the message will be retained until it's processed.
 
+<<<<<<< HEAD
+=======
+#### Negative Acknowledgment (nack)
+
+When an application fails to process a particular message, it can sends a "negative ack" to Pulsar
+to signal that the message should be replayed at a later timer. (By default, failed messages are
+replayed after a 1 minute delay)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #### Unacknowledged
 
 A message that has been delivered to a consumer for processing but not yet confirmed as processed by the consumer.
 
 #### Retention Policy
 
+<<<<<<< HEAD
 Size and/or time limits that you can set on a [namespace](#namespace) to configure retention of [messages](#message)
+=======
+Size and time limits that you can set on a [namespace](#namespace) to configure retention of [messages](#message)
+>>>>>>> f773c602c... Test pr 10 (#27)
 that have already been [acknowledged](#acknowledgement-ack).
 
 #### Multi-Tenancy
@@ -158,4 +171,7 @@ An append-only data structure in [BookKeeper](#bookkeeper) that is used to persi
 ### Functions
 
 Pulsar Functions are lightweight functions that can consume messages from Pulsar topics, apply custom processing logic, and, if desired, publish results to topics.
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

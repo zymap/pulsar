@@ -19,10 +19,19 @@
 package org.apache.pulsar.io.hdfs2.sink;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+<<<<<<< HEAD
+=======
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -39,6 +48,10 @@ import org.apache.pulsar.io.hdfs2.HdfsResources;
  * A Simple abstract class for HDFS sink.
  * Users need to implement extractKeyValue function to use this sink.
  */
+<<<<<<< HEAD
+=======
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 public abstract class HdfsAbstractSink<K, V> extends AbstractHdfsConnector implements Sink<V> {
 
     protected HdfsSinkConfig hdfsSinkConfig;
@@ -46,6 +59,10 @@ public abstract class HdfsAbstractSink<K, V> extends AbstractHdfsConnector imple
     protected HdfsSyncThread<V> syncThread;
     private Path path;
     private FSDataOutputStream hdfsStream;
+<<<<<<< HEAD
+=======
+    private DateTimeFormatter subdirectoryFormatter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public abstract KeyValue<K, V> extractKeyValue(Record<V> record);
     protected abstract void createWriter() throws IOException;
@@ -56,6 +73,12 @@ public abstract class HdfsAbstractSink<K, V> extends AbstractHdfsConnector imple
        hdfsSinkConfig.validate();
        connectorConfig = hdfsSinkConfig;
        unackedRecords = new LinkedBlockingQueue<Record<V>> (hdfsSinkConfig.getMaxPendingRecords());
+<<<<<<< HEAD
+=======
+       if (hdfsSinkConfig.getSubdirectoryPattern() != null) {
+           subdirectoryFormatter = DateTimeFormatter.ofPattern(hdfsSinkConfig.getSubdirectoryPattern());
+       }
+>>>>>>> f773c602c... Test pr 10 (#27)
        connectToHdfs();
        createWriter();
        launchSyncThread();
@@ -99,8 +122,18 @@ public abstract class HdfsAbstractSink<K, V> extends AbstractHdfsConnector imple
                 ext = getCompressionCodec().getDefaultExtension();
             }
 
+<<<<<<< HEAD
             path = new Path(FilenameUtils.concat(hdfsSinkConfig.getDirectory(),
                     hdfsSinkConfig.getFilenamePrefix() + "-" + System.currentTimeMillis() + ext));
+=======
+            String directory = hdfsSinkConfig.getDirectory();
+            if (subdirectoryFormatter != null) {
+                directory = FilenameUtils.concat(directory, LocalDateTime.now().format(subdirectoryFormatter));
+            }
+            path = new Path(FilenameUtils.concat(directory,
+                    hdfsSinkConfig.getFilenamePrefix() + "-" + System.currentTimeMillis() + ext));
+            log.info("Create path: {}", path);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         return path;
     }

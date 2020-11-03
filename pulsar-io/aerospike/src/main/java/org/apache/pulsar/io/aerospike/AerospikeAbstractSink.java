@@ -71,14 +71,23 @@ public abstract class AerospikeAbstractSink<K, V> implements Sink<byte[]> {
         writePolicy = new WritePolicy();
         writePolicy.maxRetries = aerospikeSinkConfig.getRetries();
         writePolicy.setTimeout(aerospikeSinkConfig.getTimeoutMs());
+<<<<<<< HEAD
         createClient();
+=======
+        eventLoops = new NioEventLoops(new EventPolicy(), 1);
+        eventLoop = eventLoops.next();
+        createClient(eventLoops);
+>>>>>>> f773c602c... Test pr 10 (#27)
         queue = new LinkedBlockingDeque<>(aerospikeSinkConfig.getMaxConcurrentRequests());
         for (int i = 0; i < aerospikeSinkConfig.getMaxConcurrentRequests(); ++i) {
             queue.put(new AWriteListener(queue));
         }
+<<<<<<< HEAD
 
         eventLoops = new NioEventLoops(new EventPolicy(), 1);
         eventLoop = eventLoops.next();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -109,7 +118,11 @@ public abstract class AerospikeAbstractSink<K, V> implements Sink<byte[]> {
         client.put(eventLoop, listener, writePolicy, key, bin);
     }
 
+<<<<<<< HEAD
     private void createClient() {
+=======
+    private void createClient(NioEventLoops eventLoops) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         String[] hosts = aerospikeSinkConfig.getSeedHosts().split(",");
         if (hosts.length <= 0) {
             throw new RuntimeException("Invalid Seed Hosts");
@@ -125,6 +138,10 @@ public abstract class AerospikeAbstractSink<K, V> implements Sink<byte[]> {
             policy.user = aerospikeSinkConfig.getUserName();
             policy.password = aerospikeSinkConfig.getPassword();
         }
+<<<<<<< HEAD
+=======
+        policy.eventLoops = eventLoops;
+>>>>>>> f773c602c... Test pr 10 (#27)
         client = new AerospikeClient(policy, aeroSpikeHosts);
     }
 

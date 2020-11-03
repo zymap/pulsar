@@ -20,6 +20,10 @@ package org.apache.pulsar.client.admin;
 
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
@@ -32,6 +36,7 @@ import org.apache.pulsar.common.policies.data.NamespaceOwnershipStatus;
 public interface Brokers {
     /**
      * Get the list of active brokers in the cluster.
+<<<<<<< HEAD
      * <p>
      * Get the list of active brokers (web service addresses) in the cluster.
      * <p>
@@ -39,6 +44,16 @@ public interface Brokers {
      *
      * <pre>
      * <code>["prod1-broker1.messaging.use.example.com:8080", "prod1-broker2.messaging.use.example.com:8080", "prod1-broker3.messaging.use.example.com:8080"]</code>
+=======
+     * <p/>
+     * Get the list of active brokers (web service addresses) in the cluster.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>["prod1-broker1.messaging.use.example.com:8080", "prod1-broker2.messaging.use.example.com:8080"
+     * * * "prod1-broker3.messaging.use.example.com:8080"]</code>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * </pre>
      *
      * @param cluster
@@ -53,6 +68,7 @@ public interface Brokers {
      */
     List<String> getActiveBrokers(String cluster) throws PulsarAdminException;
 
+<<<<<<< HEAD
 
     /**
      * Get the map of owned namespaces and their status from a single broker in the cluster
@@ -63,6 +79,36 @@ public interface Brokers {
      *
      * <pre>
      * <code>{"ns-1":{"broker_assignment":"shared","is_active":"true","is_controlled":"false"}, "ns-2":{"broker_assignment":"primary","is_active":"true","is_controlled":"true"}}</code>
+=======
+    /**
+     * Get the list of active brokers in the cluster asynchronously.
+     * <p/>
+     * Get the list of active brokers (web service addresses) in the cluster.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>["prod1-broker1.messaging.use.example.com:8080", "prod1-broker2.messaging.use.example.com:8080",
+     * "prod1-broker3.messaging.use.example.com:8080"]</code>
+     * </pre>
+     *
+     * @param cluster
+     *            Cluster name
+     * @return a list of (host:port)
+     */
+    CompletableFuture<List<String>> getActiveBrokersAsync(String cluster);
+
+    /**
+     * Get the map of owned namespaces and their status from a single broker in the cluster.
+     * <p/>
+     * The map is returned in a JSON object format below
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{"ns-1":{"broker_assignment":"shared","is_active":"true","is_controlled":"false"},
+     * "ns-2":{"broker_assignment":"primary","is_active":"true","is_controlled":"true"}}</code>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * </pre>
      *
      * @param cluster
@@ -70,6 +116,7 @@ public interface Brokers {
      * @return
      * @throws PulsarAdminException
      */
+<<<<<<< HEAD
     Map<String, NamespaceOwnershipStatus> getOwnedNamespaces(String cluster, String brokerUrl) throws PulsarAdminException;
     
     /**
@@ -86,20 +133,129 @@ public interface Brokers {
     /**
      * Get list of updatable configuration name
      * 
+=======
+    Map<String, NamespaceOwnershipStatus> getOwnedNamespaces(String cluster, String brokerUrl)
+            throws PulsarAdminException;
+
+    /**
+     * Get the map of owned namespaces and their status from a single broker in the cluster asynchronously.
+     * <p/>
+     * The map is returned in a JSON object format below
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{"ns-1":{"broker_assignment":"shared","is_active":"true","is_controlled":"false"},
+     * "ns-2":{"broker_assignment":"primary","is_active":"true","is_controlled":"true"}}</code>
+     * </pre>
+     *
+     * @param cluster
+     * @param brokerUrl
+     * @return
+     */
+    CompletableFuture<Map<String, NamespaceOwnershipStatus>> getOwnedNamespacesAsync(String cluster, String brokerUrl);
+
+    /**
+     * Update a dynamic configuration value into ZooKeeper.
+     * <p/>
+     * It updates dynamic configuration value in to Zk that triggers watch on
+     * brokers and all brokers can update {@link ServiceConfiguration} value
+     * locally
+     *
+     * @param configName
+     * @param configValue
+     * @throws PulsarAdminException
+     */
+    void updateDynamicConfiguration(String configName, String configValue) throws PulsarAdminException;
+
+    /**
+     * Update a dynamic configuration value into ZooKeeper asynchronously.
+     * <p/>
+     * It updates dynamic configuration value in to Zk that triggers watch on
+     * brokers and all brokers can update {@link ServiceConfiguration} value
+     * locally
+     *
+     * @param configName
+     * @param configValue
+     */
+    CompletableFuture<Void> updateDynamicConfigurationAsync(String configName, String configValue);
+
+    /**
+     * It deletes dynamic configuration value into ZooKeeper.
+     * <p/>
+     * It will not impact current value in broker but next time when
+     * broker restarts, it applies value from configuration file only.
+     *
+     * @param configName
+     * @throws PulsarAdminException
+     */
+    void deleteDynamicConfiguration(String configName) throws PulsarAdminException;
+
+    /**
+     * It deletes dynamic configuration value into ZooKeeper asynchronously.
+     * <p/>
+     * It will not impact current value in broker but next time when
+     * broker restarts, it applies value from configuration file only.
+     *
+     * @param configName
+     */
+    CompletableFuture<Void> deleteDynamicConfigurationAsync(String configName);
+
+    /**
+     * Get list of updatable configuration name.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     List<String> getDynamicConfigurationNames() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get values of all overridden dynamic-configs
      * 
+=======
+     * Get list of updatable configuration name asynchronously.
+     *
+     * @return
+     */
+    CompletableFuture<List<String>> getDynamicConfigurationNamesAsync();
+
+    /**
+     * Get values of runtime configuration.
+     *
+     * @return
+     * @throws PulsarAdminException
+     */
+    Map<String, String> getRuntimeConfigurations() throws PulsarAdminException;
+
+    /**
+     * Get values of runtime configuration asynchronously.
+     *
+     * @return
+     */
+    CompletableFuture<Map<String, String>> getRuntimeConfigurationsAsync();
+
+    /**
+     * Get values of all overridden dynamic-configs.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     Map<String, String> getAllDynamicConfigurations() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Get values of all overridden dynamic-configs asynchronously.
+     *
+     * @return
+     */
+    CompletableFuture<Map<String, String>> getAllDynamicConfigurationsAsync();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get the internal configuration data.
      *
      * @return internal configuration data.
@@ -107,9 +263,42 @@ public interface Brokers {
     InternalConfigurationData getInternalConfigurationData() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Run a healthcheck on the broker.
      *
      * @throws an exception if the healthcheck fails.
      */
     void healthcheck() throws PulsarAdminException;
+=======
+     * Get the internal configuration data asynchronously.
+     *
+     * @return internal configuration data.
+     */
+    CompletableFuture<InternalConfigurationData> getInternalConfigurationDataAsync();
+
+    /**
+     * Manually trigger backlogQuotaCheck.
+     *
+     * @throws PulsarAdminException
+     */
+    void backlogQuotaCheck() throws PulsarAdminException;
+
+    /**
+     * Manually trigger backlogQuotaCheck asynchronously.
+     * @return
+     */
+    CompletableFuture<Void> backlogQuotaCheckAsync();
+
+    /**
+     * Run a healthcheck on the broker.
+     *
+     * @throws PulsarAdminException if the healthcheck fails.
+     */
+    void healthcheck() throws PulsarAdminException;
+
+    /**
+     * Run a healthcheck on the broker asynchronously.
+     */
+    CompletableFuture<Void> healthcheckAsync();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

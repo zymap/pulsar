@@ -22,6 +22,7 @@ function downloadPageUrl() {
 }
 
 function binaryReleaseUrl(version) {
+<<<<<<< HEAD
     if (version.includes('incubating')) {
         return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/apache-pulsar-${version}-bin.tar.gz`
     } else {
@@ -47,40 +48,108 @@ function prestoPulsarReleaseUrl(version) {
     } else {
         return `https://archive.apache.org/dist/pulsar/pulsar-${version}/pulsar-presto-connector-${version}.tar.gz`
     }
+=======
+  if (version.includes('incubating')) {
+    return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/apache-pulsar-${version}-bin.tar.gz`
+  } else {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/apache-pulsar-${version}-bin.tar.gz`
+  }
+}
+
+function connectorReleaseUrl(version) {
+  if (version.includes('incubating')) {
+    return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/apache-pulsar-io-connectors-${version}-bin.tar.gz`
+  } else if (version >= '2.3.0') {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/connectors`
+  } else {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/apache-pulsar-io-connectors-${version}-bin.tar.gz`
+  }
+}
+
+function offloaderReleaseUrl(version) {
+  return `https://archive.apache.org/dist/pulsar/pulsar-${version}/apache-pulsar-offloaders-${version}-bin.tar.gz`
+}
+
+function prestoPulsarReleaseUrl(version) {
+  if (version.includes('incubating')) {
+    return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/pulsar-presto-connector-${version}.tar.gz`
+  } else {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/pulsar-presto-connector-${version}.tar.gz`
+  }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 function rpmReleaseUrl(version, type) {
   rpmVersion = version.replace('incubating', '1_incubating');
   if (version.includes('incubating')) {
+<<<<<<< HEAD
       return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=incubator/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}.x86_64.rpm`
   } else {
       return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}-1.x86_64.rpm`
+=======
+    return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=incubator/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}.x86_64.rpm`
+  } else {
+    return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}-1.x86_64.rpm`
+>>>>>>> f773c602c... Test pr 10 (#27)
   }
 }
 
 function debReleaseUrl(version, type) {
+<<<<<<< HEAD
     if (version.includes('incubating')) {
         return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=incubator/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
     } else {
         return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
     }
+=======
+  if (version.includes('incubating')) {
+    return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=incubator/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
+  } else {
+    return `https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
+  }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 function rpmDistUrl(version, type) {
   rpmVersion = version.replace('incubating', '1_incubating');
   if (version.includes('incubating')) {
+<<<<<<< HEAD
       return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}.x86_64.rpm`
   } else {
       return `https://archive.apache.org/dist/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}.x86_64.rpm`
+=======
+    return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}.x86_64.rpm`
+  } else {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/RPMS/apache-pulsar-client${type}-${rpmVersion}-1.x86_64.rpm`
+>>>>>>> f773c602c... Test pr 10 (#27)
   }
 }
 
 function debDistUrl(version, type) {
+<<<<<<< HEAD
     if (version.includes('incubating')) {
         return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
     } else {
         return `https://archive.apache.org/dist/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
     }
+=======
+  if (version.includes('incubating')) {
+    return `https://archive.apache.org/dist/incubator/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
+  } else {
+    return `https://archive.apache.org/dist/pulsar/pulsar-${version}/DEB/apache-pulsar-client${type}.deb`
+  }
+}
+
+function clientVersionUrl(version, type) {
+  var versions = version.split('.')
+  var majorVersion = parseInt(versions[0])
+  var minorVersion = parseInt(versions[1])
+  if (majorVersion === 2 && minorVersion < 5) {
+    return `/api/` + type + `/` + version;
+  } else if (majorVersion >= 2 && minorVersion >= 5) {
+    return `/api/` + type + `/` + majorVersion + `.` + minorVersion + `.0` + `-SNAPSHOT`
+  }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 function doReplace(options) {
@@ -121,6 +190,15 @@ const from = [
   /{{pulsar:dist_rpm:client-devel}}/g,
   /{{pulsar:dist_deb:client}}/g,
   /{{pulsar:dist_deb:client-devel}}/g,
+<<<<<<< HEAD
+=======
+
+  /\/api\/python/g,
+  /\/api\/cpp/g,
+  /\/api\/pulsar-functions/g,
+  /\/api\/client/g,
+  /\/api\/admin/g,
+>>>>>>> f773c602c... Test pr 10 (#27)
 ];
 
 const options = {
@@ -128,7 +206,12 @@ const options = {
     `${docsDir}/*.html`,
     `${docsDir}/**/*.html`
   ],
+<<<<<<< HEAD
   ignore: versions.map(v => `${docsDir}/${v}/**/*`), // TODO add next and assets
+=======
+  // TODO add next and assets
+  ignore: versions.map(v => `${docsDir}/${v}/**/*`).concat(versions.map(v => `${docsDir}/en/${v}/**/*`)),
+>>>>>>> f773c602c... Test pr 10 (#27)
   from: from,
   to: [
     `${latestVersionWithoutIncubating}`,
@@ -149,6 +232,15 @@ const options = {
     rpmDistUrl(`${latestVersion}`, "-devel"),
     debDistUrl(`${latestVersion}`, ""),
     debDistUrl(`${latestVersion}`, "-dev"),
+<<<<<<< HEAD
+=======
+
+    clientVersionUrl(`${latestVersion}`, "python"),
+    clientVersionUrl(`${latestVersion}`, "cpp"),
+    clientVersionUrl(`${latestVersion}`, "pulsar-functions"),
+    clientVersionUrl(`${latestVersion}`, "client"),
+    clientVersionUrl(`${latestVersion}`, "admin")
+>>>>>>> f773c602c... Test pr 10 (#27)
   ],
   dry: false
 };
@@ -165,7 +257,13 @@ for (v of versions) {
   const opts = {
     files: [
       `${docsDir}/${v}/*.html`,
+<<<<<<< HEAD
       `${docsDir}/${v}/**/*.html`
+=======
+      `${docsDir}/${v}/**/*.html`,
+      `${docsDir}/en/${v}/*.html`,
+      `${docsDir}/en/${v}/**/*.html`
+>>>>>>> f773c602c... Test pr 10 (#27)
     ],
     from: from,
     to: [
@@ -173,6 +271,7 @@ for (v of versions) {
       `${v}`,
       binaryReleaseUrl(`${v}`),
       connectorReleaseUrl(`${v}`),
+<<<<<<< HEAD
       prestoPulsarReleaseUrl(`${latestVersion}`),
       downloadPageUrl(),
       rpmReleaseUrl(`${v}`, ""),
@@ -182,6 +281,28 @@ for (v of versions) {
       debReleaseUrl(`${v}`, "-dev"),
     ],
     dry: true
+=======
+      offloaderReleaseUrl(`${v}`),
+      prestoPulsarReleaseUrl(`${v}`),
+      downloadPageUrl(),
+      rpmDistUrl(`${v}`, ""),
+      rpmDistUrl(`${v}`, "-debuginfo"),
+      rpmDistUrl(`${v}`, "-devel"),
+      debDistUrl(`${v}`, ""),
+      debDistUrl(`${v}`, "-dev"),
+      rpmDistUrl(`${v}`, ""),
+      rpmDistUrl(`${v}`, "-debuginfo"),
+      rpmDistUrl(`${v}`, "-devel"),
+      debDistUrl(`${v}`, ""),
+      debDistUrl(`${v}`, "-dev"),
+      clientVersionUrl(`${v}`, "python"),
+      clientVersionUrl(`${v}`, "cpp"),
+      clientVersionUrl(`${v}`, "pulsar-functions"),
+      clientVersionUrl(`${v}`, "client"),
+      clientVersionUrl(`${v}`, "admin")
+    ],
+    dry: false
+>>>>>>> f773c602c... Test pr 10 (#27)
   };
   doReplace(opts);
 }

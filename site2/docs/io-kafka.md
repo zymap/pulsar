@@ -3,6 +3,7 @@ id: io-kafka
 title: Kafka Connector
 sidebar_label: Kafka Connector
 ---
+<<<<<<< HEAD
 
 ## Source
 
@@ -42,3 +43,5 @@ to a Kafka topic.
 | producerConfigProperties | `false` | `null` | The producer config properties to be passed to Producer. Note that other properties specified in the connector config file take precedence over this config. |
 | keySerializerClass | `false` | `org.apache.kafka.common.serialization.StringSerializer` | Serializer class for value that implements the org.apache.kafka.common.serialization.Serializer interface. |
 | valueSerializerClass | `false` | `org.apache.kafka.common.serialization.ByteArraySerializer` | Serializer class for value that implements the org.apache.kafka.common.serialization.Serializer interface. |
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

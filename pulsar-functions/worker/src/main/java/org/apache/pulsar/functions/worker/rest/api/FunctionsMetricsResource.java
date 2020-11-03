@@ -20,6 +20,11 @@ package org.apache.pulsar.functions.worker.rest.api;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+<<<<<<< HEAD
+=======
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.exporter.common.TextFormat;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.SimpleTextOutputStream;
 import org.apache.pulsar.functions.worker.FunctionsStatsGenerator;
 import org.apache.pulsar.functions.worker.WorkerService;
@@ -31,17 +36,37 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 @Path("/")
 public class FunctionsMetricsResource extends FunctionApiResource {
     @Path("metrics")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+<<<<<<< HEAD
     public Response getMetrics() {
 
         WorkerService workerService = get();
 
         ByteBuf buf = ByteBufAllocator.DEFAULT.heapBuffer();
+=======
+    public Response getMetrics() throws IOException {
+
+        WorkerService workerService = get();
+        ByteBuf buf = ByteBufAllocator.DEFAULT.heapBuffer();
+        // if request, also attach the prometheus metrics
+        if (workerService.getWorkerConfig().isIncludeStandardPrometheusMetrics()) {
+            Writer writer = new BufWriter(buf);
+            TextFormat.write004(writer, CollectorRegistry.defaultRegistry.metricFamilySamples());
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             SimpleTextOutputStream stream = new SimpleTextOutputStream(buf);
             FunctionsStatsGenerator.generate(workerService,"default", stream);
@@ -60,4 +85,31 @@ public class FunctionsMetricsResource extends FunctionApiResource {
             buf.release();
         }
     }
+<<<<<<< HEAD
+=======
+
+    private static class BufWriter extends Writer {
+        private final ByteBuf buf;
+
+        public BufWriter(ByteBuf buf) {
+            this.buf = buf;
+        }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            buf.writeCharSequence(CharBuffer.wrap(cbuf, off, len), StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            // noop
+
+        }
+
+        @Override
+        public void close() throws IOException {
+            // noop
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -24,8 +24,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+<<<<<<< HEAD
 @Getter
 @AllArgsConstructor(access=AccessLevel.PRIVATE)
+=======
+/**
+ * Worker information.
+ */
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+>>>>>>> f773c602c... Test pr 10 (#27)
 @NoArgsConstructor
 @ToString
 public class WorkerInfo {

@@ -48,7 +48,11 @@ else
 fi
 
 BINDIR=`dirname "$0"`
+<<<<<<< HEAD
 BK_HOME=`cd $BINDIR/..;pwd`
+=======
+BK_HOME=`cd -P $BINDIR/..;pwd`
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 DEFAULT_CONF=$BK_HOME/conf/bookkeper.conf
 DEFAULT_LOG_CONF=$BK_HOME/conf/log4j2.yaml
@@ -183,7 +187,11 @@ OPTS="$OPTS -Dpulsar.log.file=$BOOKIE_LOG_FILE"
 #Change to BK_HOME to support relative paths
 cd "$BK_HOME"
 if [ $COMMAND == "bookie" ]; then
+<<<<<<< HEAD
     exec $JAVA $OPTS $JMX_ARGS org.apache.bookkeeper.proto.BookieServer --conf $BOOKIE_CONF $@
+=======
+    exec $JAVA $OPTS $JMX_ARGS org.apache.bookkeeper.server.Main --conf $BOOKIE_CONF $@
+>>>>>>> f773c602c... Test pr 10 (#27)
 elif [ $COMMAND == "autorecovery" ]; then
     exec $JAVA $OPTS $JMX_ARGS org.apache.bookkeeper.replication.AutoRecoveryMain --conf $BOOKIE_CONF $@
 elif [ $COMMAND == "localbookie" ]; then
@@ -195,7 +203,11 @@ elif [ $COMMAND == "upgrade" ]; then
 elif [ $COMMAND == "shell" ]; then
     ENTRY_FORMATTER_ARG="-DentryFormatterClass=${ENTRY_FORMATTER_CLASS:-org.apache.bookkeeper.util.StringEntryFormatter}"
     exec $JAVA $OPTS $ENTRY_FORMATTER_ARG org.apache.bookkeeper.bookie.BookieShell -conf $BOOKIE_CONF $@
+<<<<<<< HEAD
 elif [ $COMMAND == "help" ]; then
+=======
+elif [ $COMMAND == "help" -o $COMMAND == "--help" -o $COMMAND == "-h" ]; then
+>>>>>>> f773c602c... Test pr 10 (#27)
     bookkeeper_help;
 else
     exec $JAVA $OPTS $COMMAND $@

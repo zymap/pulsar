@@ -31,6 +31,10 @@ import (
 )
 
 type reader struct {
+<<<<<<< HEAD
+=======
+	schema         Schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 	client         *client
 	ptr            *C.pulsar_reader_t
 	defaultChannel chan ReaderMessage
@@ -52,18 +56,30 @@ func pulsarCreateReaderCallbackProxy(res C.pulsar_result, ptr *C.pulsar_reader_t
 		cc.callback(nil, newError(res, "Failed to create Reader"))
 	} else {
 		cc.reader.ptr = ptr
+<<<<<<< HEAD
+=======
+		cc.reader.schema = cc.schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 		runtime.SetFinalizer(cc.reader, readerFinalizer)
 		cc.callback(cc.reader, nil)
 	}
 }
 
 type readerAndCallback struct {
+<<<<<<< HEAD
+=======
+	schema   Schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 	reader   *reader
 	conf     *C.pulsar_reader_configuration_t
 	callback func(Reader, error)
 }
 
+<<<<<<< HEAD
 func createReaderAsync(client *client, options ReaderOptions, callback func(Reader, error)) {
+=======
+func createReaderAsync(client *client, schema Schema, options ReaderOptions, callback func(Reader, error)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
 	if options.Topic == "" {
 		go callback(nil, newError(C.pulsar_result_InvalidConfiguration, "topic is required"))
 		return
@@ -113,7 +129,11 @@ func createReaderAsync(client *client, options ReaderOptions, callback func(Read
 	defer C.free(unsafe.Pointer(topic))
 
 	C._pulsar_client_create_reader_async(client.ptr, topic, options.StartMessageID.(*messageID).ptr,
+<<<<<<< HEAD
 		conf, savePointer(&readerAndCallback{reader, conf, callback}))
+=======
+		conf, savePointer(&readerAndCallback{schema: schema, reader: reader, conf: conf, callback: callback}))
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 type readerCallback struct {
@@ -132,13 +152,24 @@ func pulsarReaderListenerProxy(cReader *C.pulsar_reader_t, message *C.pulsar_mes
 		}
 	}()
 
+<<<<<<< HEAD
 	rc.channel <- ReaderMessage{rc.reader, newMessageWrapper(message)}
+=======
+	rc.channel <- ReaderMessage{rc.reader, newMessageWrapper(rc.reader.Schema(), message)}
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 func (r *reader) Topic() string {
 	return C.GoString(C.pulsar_reader_get_topic(r.ptr))
 }
 
+<<<<<<< HEAD
+=======
+func (r *reader) Schema() Schema {
+	return r.schema
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 func (r *reader) Next(ctx context.Context) (Message, error) {
 	select {
 	case <-ctx.Done():
@@ -163,7 +194,11 @@ func (r *reader) HasNext() (bool, error) {
 }
 
 func (r *reader) Close() error {
+<<<<<<< HEAD
 	channel := make(chan error)
+=======
+	channel := make(chan error, 1)
+>>>>>>> f773c602c... Test pr 10 (#27)
 	r.CloseAsync(func(err error) { channel <- err; close(channel) })
 	return <-channel
 }

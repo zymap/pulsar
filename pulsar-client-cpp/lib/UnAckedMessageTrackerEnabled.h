@@ -23,11 +23,18 @@
 #include <mutex>
 
 namespace pulsar {
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 class UnAckedMessageTrackerEnabled : public UnAckedMessageTrackerInterface {
    public:
     ~UnAckedMessageTrackerEnabled();
     UnAckedMessageTrackerEnabled(long timeoutMs, const ClientImplPtr, ConsumerImplBase&);
+<<<<<<< HEAD
+=======
+    UnAckedMessageTrackerEnabled(long timeoutMs, long tickDuration, const ClientImplPtr, ConsumerImplBase&);
+>>>>>>> f773c602c... Test pr 10 (#27)
     bool add(const MessageId& m);
     bool remove(const MessageId& m);
     void removeMessagesTill(const MessageId& msgId);
@@ -40,13 +47,22 @@ class UnAckedMessageTrackerEnabled : public UnAckedMessageTrackerInterface {
     void timeoutHandlerHelper();
     bool isEmpty();
     long size();
+<<<<<<< HEAD
     std::set<MessageId> currentSet_;
     std::set<MessageId> oldSet_;
+=======
+    std::map<MessageId, std::set<MessageId>&> messageIdPartitionMap;
+    std::deque<std::set<MessageId>> timePartitions;
+>>>>>>> f773c602c... Test pr 10 (#27)
     std::mutex lock_;
     DeadlineTimerPtr timer_;
     ConsumerImplBase& consumerReference_;
     ClientImplPtr client_;
     long timeoutMs_;
+<<<<<<< HEAD
+=======
+    long tickDurationInMs_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 }  // namespace pulsar
 

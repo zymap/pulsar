@@ -28,7 +28,10 @@ import org.apache.bookkeeper.mledger.AsyncCallbacks.MarkDeleteCallback;
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.Position;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.service.Consumer;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 import org.apache.pulsar.compaction.CompactedTopic;
@@ -41,10 +44,20 @@ public class CompactorSubscription extends PersistentSubscription {
 
     public CompactorSubscription(PersistentTopic topic, CompactedTopic compactedTopic,
                                  String subscriptionName, ManagedCursor cursor) {
+<<<<<<< HEAD
         super(topic, subscriptionName, cursor);
         checkArgument(subscriptionName.equals(Compactor.COMPACTION_SUBSCRIPTION));
         this.compactedTopic = compactedTopic;
 
+=======
+        super(topic, subscriptionName, cursor, false);
+        checkArgument(subscriptionName.equals(Compactor.COMPACTION_SUBSCRIPTION));
+        this.compactedTopic = compactedTopic;
+
+        // Avoid compactor cursor to cause entries to be cached
+        this.cursor.setAlwaysInactive();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         Map<String, Long> properties = cursor.getProperties();
         if (properties.containsKey(Compactor.COMPACTED_TOPIC_LEDGER_PROPERTY)) {
             long compactedLedgerId = properties.get(Compactor.COMPACTED_TOPIC_LEDGER_PROPERTY);
@@ -86,7 +99,11 @@ public class CompactorSubscription extends PersistentSubscription {
                 }
             }, null);
 
+<<<<<<< HEAD
         if (topic.getManagedLedger().isTerminated() && cursor.getNumberOfEntriesInBacklog() == 0) {
+=======
+        if (topic.getManagedLedger().isTerminated() && cursor.getNumberOfEntriesInBacklog(false) == 0) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Notify all consumer that the end of topic was reached
             dispatcher.getConsumers().forEach(Consumer::reachedEndOfTopic);
         }

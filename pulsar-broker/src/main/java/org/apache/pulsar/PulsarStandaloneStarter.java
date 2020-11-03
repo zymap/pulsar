@@ -21,6 +21,10 @@ package org.apache.pulsar;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.FileInputStream;
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.ServiceConfigurationUtils;
@@ -52,6 +56,10 @@ public class PulsarStandaloneStarter extends PulsarStandalone {
             }
         } catch (Exception e) {
             jcommander.usage();
+<<<<<<< HEAD
+=======
+            log.error(e.getMessage());
+>>>>>>> f773c602c... Test pr 10 (#27)
             return;
         }
 
@@ -65,14 +73,33 @@ public class PulsarStandaloneStarter extends PulsarStandalone {
             zkServers = this.getAdvertisedAddress();
         } else if (isBlank(config.getAdvertisedAddress())) {
             // Use advertised address as local hostname
+<<<<<<< HEAD
             config.setAdvertisedAddress(ServiceConfigurationUtils.unsafeLocalhostResolve());
+=======
+            config.setAdvertisedAddress("localhost");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             // Use advertised address from config file
         }
 
         // Set ZK server's host to localhost
+<<<<<<< HEAD
         config.setZookeeperServers(zkServers + ":" + this.getZkPort());
         config.setConfigurationStoreServers(zkServers + ":" + this.getZkPort());
+=======
+        // Priority: args > conf > default
+        if (argsContains(args,"--zookeeper-port")) {
+            config.setZookeeperServers(zkServers + ":" + this.getZkPort());
+            config.setConfigurationStoreServers(zkServers + ":" + this.getZkPort());
+        } else {
+            if (config.getZookeeperServers() != null) {
+                this.setZkPort(Integer.parseInt(config.getZookeeperServers().split(":")[1]));
+            }
+            config.setZookeeperServers(zkServers + ":" + this.getZkPort());
+            config.setConfigurationStoreServers(zkServers + ":" + this.getZkPort());
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setRunningStandalone(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -90,15 +117,36 @@ public class PulsarStandaloneStarter extends PulsarStandalone {
                         bkEnsemble.stop();
                     }
                 } catch (Exception e) {
+<<<<<<< HEAD
                     log.error("Shutdown failed: {}", e.getMessage());
+=======
+                    log.error("Shutdown failed: {}", e.getMessage(), e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 }
             }
         });
     }
 
+<<<<<<< HEAD
     public static void main(String args[]) throws Exception {
         // Start standalone
         PulsarStandaloneStarter standalone = new PulsarStandaloneStarter(args);
         standalone.start();
+=======
+    private static boolean argsContains(String[] args, String arg) {
+        return Arrays.asList(args).contains(arg);
+    }
+
+    public static void main(String args[]) throws Exception {
+        // Start standalone
+        PulsarStandaloneStarter standalone = new PulsarStandaloneStarter(args);
+        try {
+            standalone.start();
+        } catch (Throwable th) {
+            log.error("Failed to start pulsar service.", th);
+            Runtime.getRuntime().exit(1);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

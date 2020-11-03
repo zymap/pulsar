@@ -32,7 +32,13 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 # Always apply env config to env scripts as well
+<<<<<<< HEAD
 conf_files = ['conf/pulsar_env.sh', 'conf/bkenv.sh'] + sys.argv[1:]
+=======
+conf_files = sys.argv[1:]
+
+PF_ENV_PREFIX = 'PULSAR_PREFIX_'
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 for conf_filename in conf_files:
     lines = []  # List of config file lines
@@ -51,11 +57,33 @@ for conf_filename in conf_files:
     # Update values from Env
     for k in sorted(os.environ.keys()):
         v = os.environ[k]
+<<<<<<< HEAD
+=======
+        if k.startswith(PF_ENV_PREFIX):
+            k = k[len(PF_ENV_PREFIX):]
+>>>>>>> f773c602c... Test pr 10 (#27)
         if k in keys:
             print('[%s] Applying config %s = %s' % (conf_filename, k, v))
             idx = keys[k]
             lines[idx] = '%s=%s\n' % (k, v)
 
+<<<<<<< HEAD
+=======
+
+    # Add new keys from Env
+    for k in sorted(os.environ.keys()):
+        v = os.environ[k]
+        if not k.startswith(PF_ENV_PREFIX):
+            continue
+        k = k[len(PF_ENV_PREFIX):]
+        if k not in keys:
+            print('[%s] Adding config %s = %s' % (conf_filename, k, v))
+            lines.append('%s=%s\n' % (k, v))
+        else:
+            print('[%s] Updating config %s = %s' %(conf_filename, k, v))
+            lines[keys[k]] = '%s=%s\n' % (k, v)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     # Store back the updated config in the same file
     f = open(conf_filename, 'w')
     for line in lines:

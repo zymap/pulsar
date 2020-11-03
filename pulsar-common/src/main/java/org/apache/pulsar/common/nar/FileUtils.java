@@ -129,7 +129,12 @@ public class FileUtils {
      * @throws IOException if abstract pathname does not denote a directory, or
      * if an I/O error occurs
      */
+<<<<<<< HEAD
     public static void deleteFilesInDirectory(final File directory, final FilenameFilter filter, final Logger logger) throws IOException {
+=======
+    public static void deleteFilesInDirectory(final File directory, final FilenameFilter filter,
+                                              final Logger logger) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         FileUtils.deleteFilesInDirectory(directory, filter, logger, false);
     }
 
@@ -145,7 +150,12 @@ public class FileUtils {
      * @throws IOException if abstract pathname does not denote a directory, or
      * if an I/O error occurs
      */
+<<<<<<< HEAD
     public static void deleteFilesInDirectory(final File directory, final FilenameFilter filter, final Logger logger, final boolean recurse) throws IOException {
+=======
+    public static void deleteFilesInDirectory(final File directory, final FilenameFilter filter, final Logger logger,
+                                              final boolean recurse) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         FileUtils.deleteFilesInDirectory(directory, filter, logger, recurse, false);
     }
 
@@ -163,7 +173,13 @@ public class FileUtils {
      * @throws IOException if abstract pathname does not denote a directory, or
      * if an I/O error occurs
      */
+<<<<<<< HEAD
     public static void deleteFilesInDirectory(final File directory, final FilenameFilter filter, final Logger logger, final boolean recurse, final boolean deleteEmptyDirectories) throws IOException {
+=======
+    public static void deleteFilesInDirectory(
+        final File directory, final FilenameFilter filter, final Logger logger,
+        final boolean recurse, final boolean deleteEmptyDirectories) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         // ensure the specified directory is actually a directory and that it exists
         if (null != directory && directory.isDirectory()) {
             final File ingestFiles[] = directory.listFiles();

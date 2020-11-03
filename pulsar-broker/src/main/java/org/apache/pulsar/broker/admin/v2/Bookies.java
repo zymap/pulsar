@@ -93,6 +93,7 @@ public class Bookies extends AdminResource {
     public void deleteBookieRackInfo(@PathParam("bookie") String bookieAddress) throws Exception {
         validateSuperUserAccess();
 
+<<<<<<< HEAD
         BookiesRackConfiguration racks = localZkCache()
                 .getData(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH, (key, content) -> ObjectMapperFactory
                         .getThreadLocal().readValue(content, BookiesRackConfiguration.class))
@@ -103,11 +104,36 @@ public class Bookies extends AdminResource {
         }
 
         log.info("Removed {} from rack mapping info", bookieAddress);
+=======
+
+        Optional<Entry<BookiesRackConfiguration, Stat>> entry = localZkCache()
+            .getEntry(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH, (key, content) -> ObjectMapperFactory
+                .getThreadLocal().readValue(content, BookiesRackConfiguration.class));
+
+        if (entry.isPresent()) {
+            BookiesRackConfiguration racks = entry.get().getKey();
+            if (!racks.removeBookie(bookieAddress)) {
+                throw new RestException(Status.NOT_FOUND, "Bookie address not found: " + bookieAddress);
+            } else {
+                localZk().setData(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH,
+                    jsonMapper().writeValueAsBytes(racks),
+                    entry.get().getValue().getVersion());
+                log.info("Removed {} from rack mapping info", bookieAddress);
+            }
+        } else {
+            throw new RestException(Status.NOT_FOUND, "Bookie rack placement info is not found");
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
     @Path("/racks-info/{bookie}")
+<<<<<<< HEAD
     @ApiOperation(value = "Updates the rack placement information for a specific bookie in the cluster")
+=======
+    @ApiOperation(value = "Updates the rack placement information for a specific bookie in the cluster (note. bookie address format:`address:port`)")
+>>>>>>> f773c602c... Test pr 10 (#27)
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission") })
     public void updateBookieRackInfo(@PathParam("bookie") String bookieAddress, @QueryParam("group") String group,
             BookieInfo bookieInfo) throws Exception {
@@ -128,6 +154,10 @@ public class Bookies extends AdminResource {
 
             localZk().setData(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH, jsonMapper().writeValueAsBytes(racks),
                     entry.get().getValue().getVersion());
+<<<<<<< HEAD
+=======
+            localZkCache().invalidate(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH);
+>>>>>>> f773c602c... Test pr 10 (#27)
             log.info("Updated rack mapping info for {}", bookieAddress);
         } else {
             // Creates the z-node with racks info

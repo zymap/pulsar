@@ -19,7 +19,14 @@
 package org.apache.pulsar.common.policies.impl;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.testng.Assert.assertNotNull;
+=======
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -38,12 +45,18 @@ import org.apache.pulsar.common.policies.data.AutoFailoverPolicyData;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyType;
 import org.apache.pulsar.common.policies.data.BrokerStatus;
 import org.apache.pulsar.common.policies.data.NamespaceIsolationData;
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.impl.NamespaceIsolationPolicies;
 import org.apache.pulsar.common.policies.impl.NamespaceIsolationPolicyImpl;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.testng.annotations.Test;
 
 @Test
+=======
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+import org.testng.annotations.Test;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class NamespaceIsolationPoliciesTest {
 
     private final String defaultJson = "{\"policy1\":{\"namespaces\":[\"pulsar/use/test.*\"],\"primary\":[\"prod1-broker[1-3].messaging.use.example.com\"],\"secondary\":[\"prod1-broker.*.use.example.com\"],\"auto_failover_policy\":{\"policy_type\":\"min_available\",\"parameters\":{\"min_limit\":\"3\",\"usage_threshold\":\"100\"}}}}";
@@ -68,6 +81,7 @@ public class NamespaceIsolationPoliciesTest {
         assertEquals(new String(outJson), this.defaultJson);
 
         NamespaceIsolationData nsPolicyData = new NamespaceIsolationData();
+<<<<<<< HEAD
         nsPolicyData.namespaces = new ArrayList<String>();
         nsPolicyData.namespaces.add("other/use/other.*");
         nsPolicyData.primary = new ArrayList<String>();
@@ -77,6 +91,17 @@ public class NamespaceIsolationPoliciesTest {
         nsPolicyData.auto_failover_policy = new AutoFailoverPolicyData();
         nsPolicyData.auto_failover_policy.policy_type = AutoFailoverPolicyType.min_available;
         nsPolicyData.auto_failover_policy.parameters = new HashMap<String, String>();
+=======
+        nsPolicyData.namespaces = new ArrayList<>();
+        nsPolicyData.namespaces.add("other/use/other.*");
+        nsPolicyData.primary = new ArrayList<>();
+        nsPolicyData.primary.add("prod1-broker[4-6].messaging.use.example.com");
+        nsPolicyData.secondary = new ArrayList<>();
+        nsPolicyData.secondary.add("prod1-broker.*.messaging.use.example.com");
+        nsPolicyData.auto_failover_policy = new AutoFailoverPolicyData();
+        nsPolicyData.auto_failover_policy.policy_type = AutoFailoverPolicyType.min_available;
+        nsPolicyData.auto_failover_policy.parameters = new HashMap<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
         nsPolicyData.auto_failover_policy.parameters.put("min_limit", "1");
         nsPolicyData.auto_failover_policy.parameters.put("usage_threshold", "100");
         policies.setPolicy("otherPolicy", nsPolicyData);
@@ -101,7 +126,11 @@ public class NamespaceIsolationPoliciesTest {
     public void testDeletePolicy() throws Exception {
         NamespaceIsolationPolicies policies = this.getDefaultTestPolicies();
         policies.deletePolicy("non-existing-policy");
+<<<<<<< HEAD
         assertTrue(!policies.getPolicies().isEmpty());
+=======
+        assertFalse(policies.getPolicies().isEmpty());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         policies.deletePolicy("policy1");
         assertTrue(policies.getPolicies().isEmpty());
@@ -111,7 +140,11 @@ public class NamespaceIsolationPoliciesTest {
     public void testGetNamespaceIsolationPolicyByName() throws Exception {
         NamespaceIsolationPolicies policies = this.getDefaultTestPolicies();
         NamespaceIsolationPolicy nsPolicy = policies.getPolicyByName("non-existing-policy");
+<<<<<<< HEAD
         assertTrue(nsPolicy == null);
+=======
+        assertNull(nsPolicy);
+>>>>>>> f773c602c... Test pr 10 (#27)
         nsPolicy = policies.getPolicyByName("policy1");
         assertNotNull(nsPolicy);
         assertEquals(new NamespaceIsolationPolicyImpl(policies.getPolicies().get("policy1")), nsPolicy);
@@ -121,7 +154,11 @@ public class NamespaceIsolationPoliciesTest {
     public void testGetNamespaceIsolationPolicyByNamespace() throws Exception {
         NamespaceIsolationPolicies policies = this.getDefaultTestPolicies();
         NamespaceIsolationPolicy nsPolicy = policies.getPolicyByNamespace(NamespaceName.get("no/such/namespace"));
+<<<<<<< HEAD
         assertTrue(nsPolicy == null);
+=======
+        assertNull(nsPolicy);
+>>>>>>> f773c602c... Test pr 10 (#27)
         nsPolicy = policies.getPolicyByNamespace(NamespaceName.get("pulsar/use/testns-1"));
         assertNotNull(nsPolicy);
         assertEquals(new NamespaceIsolationPolicyImpl(policies.getPolicies().get("policy1")), nsPolicy);
@@ -140,7 +177,11 @@ public class NamespaceIsolationPoliciesTest {
 
         assertEquals(policies.getPolicies().size(), 2);
         assertEquals(policies.getPolicyByName(newPolicyName), new NamespaceIsolationPolicyImpl(nsPolicyData));
+<<<<<<< HEAD
         assertTrue(!policies.getPolicyByName(newPolicyName).equals(policies.getPolicyByName("policy1")));
+=======
+        assertNotEquals(policies.getPolicyByName("policy1"), policies.getPolicyByName(newPolicyName));
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(policies.getPolicyByNamespace(NamespaceName.get("pulsar/use/TESTNS.1")),
                 new NamespaceIsolationPolicyImpl(nsPolicyData));
     }
@@ -148,7 +189,11 @@ public class NamespaceIsolationPoliciesTest {
     @SuppressWarnings("unchecked")
     private NamespaceIsolationPolicies getDefaultTestPolicies() throws Exception {
         ObjectMapper jsonMapper = ObjectMapperFactory.create();
+<<<<<<< HEAD
         return new NamespaceIsolationPolicies((Map<String, NamespaceIsolationData>) jsonMapper
+=======
+        return new NamespaceIsolationPolicies(jsonMapper
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .readValue(this.defaultJson.getBytes(), new TypeReference<Map<String, NamespaceIsolationData>>() {
                 }));
     }
@@ -167,17 +212,29 @@ public class NamespaceIsolationPoliciesTest {
         assertEquals(primaryCandidates.size(), 1);
         assertEquals(secondaryCandidates.size(), 0);
         assertEquals(sharedCandidates.size(), 0);
+<<<<<<< HEAD
         assertTrue(primaryCandidates.first().equals(primary));
+=======
+        assertEquals(primary, primaryCandidates.first());
+>>>>>>> f773c602c... Test pr 10 (#27)
         policies.assignBroker(ns, secondary, primaryCandidates, secondaryCandidates, sharedCandidates);
         assertEquals(primaryCandidates.size(), 1);
         assertEquals(secondaryCandidates.size(), 1);
         assertEquals(sharedCandidates.size(), 0);
+<<<<<<< HEAD
         assertTrue(secondaryCandidates.first().equals(secondary));
+=======
+        assertEquals(secondary, secondaryCandidates.first());
+>>>>>>> f773c602c... Test pr 10 (#27)
         policies.assignBroker(NamespaceName.get("pulsar/use1/testns-1"), shared, primaryCandidates, secondaryCandidates,
                 sharedCandidates);
         assertEquals(primaryCandidates.size(), 1);
         assertEquals(secondaryCandidates.size(), 1);
         assertEquals(sharedCandidates.size(), 1);
+<<<<<<< HEAD
         assertTrue(sharedCandidates.first().equals(shared));
+=======
+        assertEquals(shared, sharedCandidates.first());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

@@ -18,14 +18,26 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Represents the basic information about a pulsar topic.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarTopicDescription {
     private final String tableName;
     private final String topicName;

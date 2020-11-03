@@ -16,13 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 
 #include <iostream>
 
+<<<<<<< HEAD
 using namespace pulsar;
 
 const char* pulsar::strResult(Result result) {
+=======
+namespace pulsar {
+
+const char* strResult(Result result) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     switch (result) {
         case ResultOk:
             return "Ok";
@@ -131,6 +141,27 @@ const char* pulsar::strResult(Result result) {
 
         case ResultIncompatibleSchema:
             return "IncompatibleSchema";
+<<<<<<< HEAD
+=======
+
+        case ResultConsumerAssignError:
+            return "ResultConsumerAssignError";
+
+        case ResultCumulativeAcknowledgementNotAllowedError:
+            return "ResultCumulativeAcknowledgementNotAllowedError";
+
+        case ResultTransactionCoordinatorNotFoundError:
+            return "ResultTransactionCoordinatorNotFoundError";
+
+        case ResultInvalidTxnStatusError:
+            return "ResultInvalidTxnStatusError";
+
+        case ResultNotAllowedError:
+            return "ResultNotAllowedError";
+
+        case ResultTransactionConflict:
+            return "ResultTransactionConflict";
+>>>>>>> f773c602c... Test pr 10 (#27)
     };
     // NOTE : Do not add default case in the switch above. In future if we get new cases for
     // ServerError and miss them in the switch above we would like to get notified. Adding
@@ -138,8 +169,14 @@ const char* pulsar::strResult(Result result) {
     return "UnknownErrorCode";
 }
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 std::ostream& operator<<(std::ostream& s, Result result) { return s << strResult(result); }
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, Result result) { return s << strResult(result); }
+
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)

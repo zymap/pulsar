@@ -27,6 +27,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.stats.Metrics;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.util.RestException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.websocket.stats.ProxyTopicStat;
 import org.apache.pulsar.websocket.stats.ProxyTopicStat.ConsumerStats;
 import org.apache.pulsar.websocket.stats.ProxyTopicStat.ProducerStats;

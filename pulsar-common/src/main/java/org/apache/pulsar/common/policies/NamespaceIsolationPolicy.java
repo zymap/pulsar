@@ -25,24 +25,42 @@ import java.util.SortedSet;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.BrokerStatus;
 
+<<<<<<< HEAD
 public interface NamespaceIsolationPolicy {
 
     /**
      * Get the list of regex for the set of primary brokers
+=======
+/**
+ * Namespace isolation policy.
+ */
+public interface NamespaceIsolationPolicy {
+
+    /**
+     * Get the list of regex for the set of primary brokers.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return
      */
     List<String> getPrimaryBrokers();
 
     /**
+<<<<<<< HEAD
      * Get the list of regex for the set of secondary brokers
+=======
+     * Get the list of regex for the set of secondary brokers.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return
      */
     List<String> getSecondaryBrokers();
 
     /**
+<<<<<<< HEAD
      * Get the list of primary brokers for the namespace according to the policy
+=======
+     * Get the list of primary brokers for the namespace according to the policy.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param availableBrokers
      * @param namespace
@@ -51,7 +69,11 @@ public interface NamespaceIsolationPolicy {
     List<URL> findPrimaryBrokers(List<URL> availableBrokers, NamespaceName namespace);
 
     /**
+<<<<<<< HEAD
      * Get the list of secondary brokers for the namespace according to the policy
+=======
+     * Get the list of secondary brokers for the namespace according to the policy.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param availableBrokers
      * @param namespace
@@ -60,7 +82,11 @@ public interface NamespaceIsolationPolicy {
     List<URL> findSecondaryBrokers(List<URL> availableBrokers, NamespaceName namespace);
 
     /**
+<<<<<<< HEAD
      * Check to see whether the primary brokers can still handle a new namespace or has to failover
+=======
+     * Check to see whether the primary brokers can still handle a new namespace or has to failover.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param primaryCandidates
      * @return
@@ -68,7 +94,11 @@ public interface NamespaceIsolationPolicy {
     boolean shouldFailover(SortedSet<BrokerStatus> primaryCandidates);
 
     /**
+<<<<<<< HEAD
      * Check to see whether the primary brokers can still handle a new namespace or has to failover
+=======
+     * Check to see whether the primary brokers can still handle a new namespace or has to failover.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param totalPrimaryCandidates
      * @return
@@ -76,7 +106,11 @@ public interface NamespaceIsolationPolicy {
     boolean shouldFailover(int totalPrimaryCandidates);
 
     /**
+<<<<<<< HEAD
      * Check to see whether the namespace ownership should fallback to the primary brokers
+=======
+     * Check to see whether the namespace ownership should fallback to the primary brokers.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param primaryBrokers
      * @return
@@ -84,7 +118,11 @@ public interface NamespaceIsolationPolicy {
     boolean shouldFallback(SortedSet<BrokerStatus> primaryBrokers);
 
     /**
+<<<<<<< HEAD
      * Check to see whether the specific host is a primary broker
+=======
+     * Check to see whether the specific host is a primary broker.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param brokerAddress
      * @return
@@ -92,7 +130,11 @@ public interface NamespaceIsolationPolicy {
     boolean isPrimaryBroker(String brokerAddress);
 
     /**
+<<<<<<< HEAD
      * Check to see whether the specific host is a secondary broker
+=======
+     * Check to see whether the specific host is a secondary broker.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param brokerAddress
      * @return
@@ -100,7 +142,11 @@ public interface NamespaceIsolationPolicy {
     boolean isSecondaryBroker(String brokerAddress);
 
     /**
+<<<<<<< HEAD
      * According to the namespace isolation policy, find the allowed available primary brokers
+=======
+     * According to the namespace isolation policy, find the allowed available primary brokers.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param primaryCandidates
      * @return

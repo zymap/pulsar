@@ -74,7 +74,11 @@ public class PerformanceClient {
         @Parameter(names = { "-u", "--proxy-url" }, description = "Pulsar Proxy URL, e.g., \"ws://localhost:8080/\"", required = true)
         public String proxyURL;
 
+<<<<<<< HEAD
         @Parameter(description = "/persistent/my-property/my-ns/my-topic", required = true)
+=======
+        @Parameter(description = "persistent://tenant/ns/my-topic", required = true)
+>>>>>>> f773c602c... Test pr 10 (#27)
         public List<String> topics;
 
         @Parameter(names = { "-r", "--rate" }, description = "Publish rate msg/s across topics")
@@ -89,8 +93,16 @@ public class PerformanceClient {
         @Parameter(names = { "--auth_plugin" }, description = "Authentication plugin class name")
         public String authPluginClassName;
 
+<<<<<<< HEAD
         @Parameter(names = {
                 "--auth_params" }, description = "Authentication parameters, e.g., \"key1:val1,key2:val2\"")
+=======
+        @Parameter(
+            names = { "--auth-params" },
+            description = "Authentication parameters, whose format is determined by the implementation " +
+                "of method `configure` in authentication plugin class, for example \"key1:val1,key2:val2\" " +
+                "or \"{\"key1\":\"val1\",\"key2\":\"val2\"}.")
+>>>>>>> f773c602c... Test pr 10 (#27)
         public String authParams;
 
         @Parameter(names = { "-m",
@@ -108,12 +120,20 @@ public class PerformanceClient {
     public Arguments loadArguments(String[] args) {
         Arguments arguments = new Arguments();
         jc = new JCommander(arguments);
+<<<<<<< HEAD
         jc.setProgramName("pulsar-perf-websocket-producer");
+=======
+        jc.setProgramName("pulsar-perf websocket-producer");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         try {
             jc.parse(args);
         } catch (ParameterException e) {
+<<<<<<< HEAD
             log.error(e.getMessage());
+=======
+            System.out.println(e.getMessage());
+>>>>>>> f773c602c... Test pr 10 (#27)
             jc.usage();
             System.exit(-1);
         }

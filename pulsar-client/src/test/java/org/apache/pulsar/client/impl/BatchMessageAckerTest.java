@@ -22,9 +22,18 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+<<<<<<< HEAD
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+=======
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.BitSet;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class BatchMessageAckerTest {
 
     private static final int BATCH_SIZE = 10;
@@ -68,4 +77,16 @@ public class BatchMessageAckerTest {
         assertEquals(0, acker.getOutstandingAcks());
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testBitSetAcker() {
+        BitSet bitSet = BitSet.valueOf(acker.getBitSet().toLongArray());
+        BatchMessageAcker bitSetAcker = BatchMessageAcker.newAcker(bitSet);
+
+        Assert.assertEquals(acker.getBitSet(), bitSetAcker.getBitSet());
+        Assert.assertEquals(acker.getOutstandingAcks(), bitSetAcker.getOutstandingAcks());
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

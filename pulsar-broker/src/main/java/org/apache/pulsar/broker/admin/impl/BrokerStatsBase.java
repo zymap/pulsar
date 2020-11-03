@@ -167,7 +167,11 @@ public class BrokerStatsBase extends AdminResource {
                 throw new RestException(Status.CONFLICT, lm.getClass().getName() + " does not support this operation");
             }
         } catch (Exception e) {
+<<<<<<< HEAD
             log.error("Unable to get Resource Availability - [{}]", e);
+=======
+            log.error("Unable to get Resource Availability", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             throw new RestException(e);
         }
     }

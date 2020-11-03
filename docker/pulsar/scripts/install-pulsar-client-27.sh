@@ -21,4 +21,8 @@
 set -x
 
 WHEEL_FILE=$(ls /pulsar/pulsar-client | grep cp27)
+<<<<<<< HEAD
 pip install /pulsar/pulsar-client/${WHEEL_FILE}
+=======
+pip2 install /pulsar/pulsar-client/${WHEEL_FILE}
+>>>>>>> f773c602c... Test pr 10 (#27)

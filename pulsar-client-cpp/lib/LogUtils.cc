@@ -18,6 +18,10 @@
  */
 #include "LogUtils.h"
 
+<<<<<<< HEAD
+=======
+#include <atomic>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <iostream>
 
 #include "SimpleLoggerImpl.h"
@@ -37,6 +41,7 @@ void LogUtils::init(const std::string& logfilePath) {
 #endif  // USE_LOG4CXX
 }
 
+<<<<<<< HEAD
 static LoggerFactoryPtr s_loggerFactory;
 
 void LogUtils::setLoggerFactory(LoggerFactoryPtr loggerFactory) { s_loggerFactory = loggerFactory; }
@@ -46,6 +51,24 @@ LoggerFactoryPtr LogUtils::getLoggerFactory() {
         s_loggerFactory.reset(new SimpleLoggerFactory());
     }
     return s_loggerFactory;
+=======
+static std::atomic<LoggerFactory*> s_loggerFactory(nullptr);
+
+void LogUtils::setLoggerFactory(std::unique_ptr<LoggerFactory> loggerFactory) {
+    LoggerFactory* oldFactory = nullptr;
+    LoggerFactory* newFactory = loggerFactory.release();
+    if (!s_loggerFactory.compare_exchange_strong(oldFactory, newFactory)) {
+        delete newFactory;  // there's already a factory set
+    }
+}
+
+LoggerFactory* LogUtils::getLoggerFactory() {
+    if (s_loggerFactory.load() == nullptr) {
+        std::unique_ptr<LoggerFactory> newFactory(new SimpleLoggerFactory());
+        setLoggerFactory(std::move(newFactory));
+    }
+    return s_loggerFactory.load();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 std::string LogUtils::getLoggerName(const std::string& path) {
@@ -55,4 +78,10 @@ std::string LogUtils::getLoggerName(const std::string& path) {
     return path.substr(startIdx + 1, endIdx - startIdx - 1);
 }
 
+<<<<<<< HEAD
 }  // namespace pulsar
+=======
+void LogUtils::resetLoggerFactory() { s_loggerFactory.exchange(nullptr, std::memory_order_release); }
+
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)

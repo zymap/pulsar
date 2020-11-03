@@ -18,11 +18,21 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
+=======
+import com.google.common.base.MoreObjects;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Holder for bundles.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class BundlesData {
     public List<String> boundaries;
     public int numBundles;
@@ -59,6 +69,14 @@ public class BundlesData {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hash(boundaries);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof BundlesData) {
             BundlesData other = (BundlesData) obj;

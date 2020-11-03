@@ -31,6 +31,13 @@ public class ZkAdminPaths {
                 name.getNamespace(), name.getDomain().value(), name.getEncodedLocalName());
     }
 
+<<<<<<< HEAD
+=======
+    public static String managedLedgerPath(TopicName name) {
+        return "/managed-ledgers/" + name.getPersistenceNamingEncoding();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static String namespacePoliciesPath(NamespaceName name) {
         return adminPath(POLICIES, name.toString());
     }

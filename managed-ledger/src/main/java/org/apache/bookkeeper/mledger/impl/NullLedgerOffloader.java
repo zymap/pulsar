@@ -24,6 +24,10 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.bookkeeper.client.api.ReadHandle;
 import org.apache.bookkeeper.mledger.LedgerOffloader;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.policies.data.OffloadPolicies;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Null implementation that throws an error on any invokation.
@@ -60,4 +64,17 @@ public class NullLedgerOffloader implements LedgerOffloader {
         promise.completeExceptionally(new UnsupportedOperationException());
         return promise;
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public OffloadPolicies getOffloadPolicies() {
+        return null;
+    }
+
+    @Override
+    public void close() {
+
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

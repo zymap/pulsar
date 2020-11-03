@@ -18,12 +18,22 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.Map;
 
 import org.apache.pulsar.common.partition.PartitionedTopicMetadata;
 
 import com.google.common.collect.Maps;
 
+=======
+import com.google.common.collect.Maps;
+import java.util.Map;
+import org.apache.pulsar.common.partition.PartitionedTopicMetadata;
+
+/**
+ * Statistics for a partitioned topic.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PartitionedTopicStats extends TopicStats {
 
     public PartitionedTopicMetadata metadata;

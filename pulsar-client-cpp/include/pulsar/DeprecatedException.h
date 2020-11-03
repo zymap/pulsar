@@ -21,11 +21,18 @@
 
 #include <stdexcept>
 #include <string>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
 
 namespace pulsar {
 class DeprecatedException : public std::runtime_error {
+=======
+#include <pulsar/defines.h>
+
+namespace pulsar {
+class PULSAR_PUBLIC DeprecatedException : public std::runtime_error {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     explicit DeprecatedException(const std::string& __arg);
 
@@ -34,6 +41,9 @@ class DeprecatedException : public std::runtime_error {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // DEPRECATED_EXCEPTION_HPP_

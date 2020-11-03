@@ -18,19 +18,37 @@
  */
 package org.apache.pulsar.functions.api.examples;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
 
 /**
  * Example function that uses the built in publish function in the context
+<<<<<<< HEAD
  * to publish to a desired topic based on config
+=======
+ * to publish to a desired topic based on config.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class PublishFunction implements Function<String, Void> {
     @Override
     public Void process(String input, Context context) {
         String publishTopic = (String) context.getUserConfigValueOrDefault("publish-topic", "publishtopic");
         String output = String.format("%s!", input);
+<<<<<<< HEAD
         context.publish(publishTopic, output);
+=======
+        try {
+            context.newOutputMessage(publishTopic, Schema.STRING).value(output).sendAsync();
+        } catch (PulsarClientException e) {
+            context.getLogger().error(e.toString());
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         return null;
     }
 }

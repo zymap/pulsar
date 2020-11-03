@@ -110,7 +110,11 @@ A subscription is a named configuration rule that determines how messages are de
 
 In *exclusive* mode, only a single consumer is allowed to attach to the subscription. If more than one consumer attempts to subscribe to a topic using the same subscription, the consumer receives an error.
 
+<<<<<<< HEAD
 In the diagram above, only **Consumer-A** is allowed to consume messages.
+=======
+In the diagram above, only **Consumer A-0** is allowed to consume messages.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 > Exclusive mode is the default subscription mode.
 
@@ -150,8 +154,13 @@ When a consumer subscribes to a Pulsar topic, by default it subscribes to one sp
 
 When subscribing to multiple topics, the Pulsar client will automatically make a call to the Pulsar API to discover the topics that match the regex pattern/list and then subscribe to all of them. If any of the topics don't currently exist, the consumer will auto-subscribe to them once the topics are created.
 
+<<<<<<< HEAD
 > #### No ordering guarantees
 > When a consumer subscribes to multiple topics, all ordering guarantees normally provided by Pulsar on single topics do not hold. If your use case for Pulsar involves any strict ordering requirements, we would strongly recommend against using this feature.
+=======
+> #### No ordering guarantees across multiple topics
+> When a producer sends messages to a single topic, all messages are guaranteed to be read from that topic in the same order. However, these guarantees do not hold across multiple topics. So when a producer sends message to multiple topics, the order in which messages are read from those topics is not guaranteed to be the same.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 Here are some multi-topic subscription examples for Java:
 

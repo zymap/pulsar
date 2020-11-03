@@ -29,8 +29,11 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 
 import io.netty.buffer.ByteBuf;
+<<<<<<< HEAD
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 import java.text.DecimalFormat;
@@ -61,6 +64,10 @@ import org.apache.bookkeeper.mledger.ManagedLedgerFactoryConfig;
 import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.mledger.impl.ManagedLedgerFactoryImpl;
 import org.apache.commons.codec.digest.DigestUtils;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.testclient.utils.PaddingDecimalFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +100,11 @@ public class ManagedLedgerWriter {
         @Parameter(names = { "--threads" }, description = "Number of threads writing")
         public int numThreads = 1;
 
+<<<<<<< HEAD
         @Parameter(names = { "-zk", "--zookeeperServers" }, description = "ZooKeeper connection string")
+=======
+        @Parameter(names = { "-zk", "--zookeeperServers" }, description = "ZooKeeper connection string", required = true)
+>>>>>>> f773c602c... Test pr 10 (#27)
         public String zookeeperServers;
 
         @Parameter(names = { "-o", "--max-outstanding" }, description = "Max number of outstanding requests")
@@ -129,7 +140,11 @@ public class ManagedLedgerWriter {
 
         final Arguments arguments = new Arguments();
         JCommander jc = new JCommander(arguments);
+<<<<<<< HEAD
         jc.setProgramName("pulsar-perf-producer");
+=======
+        jc.setProgramName("pulsar-perf managed-ledger");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         try {
             jc.parse(args);
@@ -152,7 +167,11 @@ public class ManagedLedgerWriter {
         log.info("Starting Pulsar managed-ledger perf writer with config: {}", w.writeValueAsString(arguments));
 
         byte[] payloadData = new byte[arguments.msgSize];
+<<<<<<< HEAD
         ByteBuf payloadBuffer = PooledByteBufAllocator.DEFAULT.directBuffer(arguments.msgSize);
+=======
+        ByteBuf payloadBuffer = PulsarByteBufAllocator.DEFAULT.directBuffer(arguments.msgSize);
+>>>>>>> f773c602c... Test pr 10 (#27)
         payloadBuffer.writerIndex(arguments.msgSize);
 
         // Now processing command line arguments
@@ -198,7 +217,11 @@ public class ManagedLedgerWriter {
                 public void openLedgerFailed(ManagedLedgerException exception, Object ctx) {
                     future.completeExceptionally(exception);
                 }
+<<<<<<< HEAD
             }, null);
+=======
+            }, null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         List<ManagedLedger> managedLedgers = futures.stream().map(CompletableFuture::join).collect(Collectors.toList());

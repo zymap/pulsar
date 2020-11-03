@@ -24,6 +24,10 @@ import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.TimeZone;
 
 import javax.servlet.Servlet;
@@ -57,6 +61,12 @@ public class ProxyServer {
     private final WebSocketProxyConfiguration conf;
     private final WebExecutorThreadPool executorService;
 
+<<<<<<< HEAD
+=======
+    private ServerConnector connector;
+    private ServerConnector connectorTls;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ProxyServer(WebSocketProxyConfiguration config)
             throws PulsarClientException, MalformedURLException, PulsarServerException {
         this.conf = config;
@@ -65,7 +75,11 @@ public class ProxyServer {
         List<ServerConnector> connectors = new ArrayList<>();
 
         if (config.getWebServicePort().isPresent()) {
+<<<<<<< HEAD
 			ServerConnector connector = new ServerConnector(server);
+=======
+			connector = new ServerConnector(server);
+>>>>>>> f773c602c... Test pr 10 (#27)
 			connector.setPort(config.getWebServicePort().get());
 			connectors.add(connector);
         }
@@ -77,11 +91,21 @@ public class ProxyServer {
                         config.getTlsTrustCertsFilePath(),
                         config.getTlsCertificateFilePath(),
                         config.getTlsKeyFilePath(),
+<<<<<<< HEAD
                         config.getTlsRequireTrustedClientCertOnConnect());
                 ServerConnector tlsConnector = new ServerConnector(server, -1, -1, sslCtxFactory);
                 tlsConnector.setPort(config.getWebServicePortTls().get());
                 connectors.add(tlsConnector);
             } catch (GeneralSecurityException e) {
+=======
+                        config.isTlsRequireTrustedClientCertOnConnect(),
+                        true,
+                        config.getTlsCertRefreshCheckDurationSec());
+                connectorTls = new ServerConnector(server, -1, -1, sslCtxFactory);
+                connectorTls.setPort(config.getWebServicePortTls().get());
+                connectors.add(connectorTls);
+            } catch (Exception e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 throw new PulsarServerException(e);
             }
         }
@@ -116,6 +140,7 @@ public class ProxyServer {
 
     public void start() throws PulsarServerException {
         log.info("Starting web socket proxy at port {}", conf.getWebServicePort().get());
+<<<<<<< HEAD
         try {
             RequestLogHandler requestLogHandler = new RequestLogHandler();
             Slf4jRequestLog requestLog = new Slf4jRequestLog();
@@ -133,6 +158,25 @@ public class ProxyServer {
             handlerCollection.setHandlers(new Handler[] { contexts, new DefaultHandler(), requestLogHandler });
             server.setHandler(handlerCollection);
 
+=======
+        RequestLogHandler requestLogHandler = new RequestLogHandler();
+        Slf4jRequestLog requestLog = new Slf4jRequestLog();
+        requestLog.setExtended(true);
+        requestLog.setLogTimeZone(TimeZone.getDefault().getID());
+        requestLog.setLogLatency(true);
+        requestLogHandler.setRequestLog(requestLog);
+        handlers.add(0, new ContextHandlerCollection());
+        handlers.add(requestLogHandler);
+
+        ContextHandlerCollection contexts = new ContextHandlerCollection();
+        contexts.setHandlers(handlers.toArray(new Handler[handlers.size()]));
+
+        HandlerCollection handlerCollection = new HandlerCollection();
+        handlerCollection.setHandlers(new Handler[] { contexts, new DefaultHandler(), requestLogHandler });
+        server.setHandler(handlerCollection);
+
+        try {
+>>>>>>> f773c602c... Test pr 10 (#27)
             server.start();
         } catch (Exception e) {
             throw new PulsarServerException(e);
@@ -144,5 +188,24 @@ public class ProxyServer {
         executorService.stop();
     }
 
+<<<<<<< HEAD
+=======
+    public Optional<Integer> getListenPortHTTP() {
+        if (connector != null) {
+            return Optional.of(connector.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Integer> getListenPortHTTPS() {
+        if (connectorTls != null) {
+            return Optional.of(connectorTls.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(ProxyServer.class);
 }

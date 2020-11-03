@@ -21,12 +21,23 @@ package org.apache.pulsar.proxy.server;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+<<<<<<< HEAD
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.bookkeeper.test.PortManager;
+=======
+import com.google.common.collect.Sets;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.authentication.AuthenticationProviderTls;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
 import org.apache.pulsar.client.admin.PulsarAdmin;
@@ -50,8 +61,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.collections.Maps;
 
+<<<<<<< HEAD
 import com.google.common.collect.Sets;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ProxyAuthenticatedProducerConsumerTest extends ProducerConsumerBase {
     private static final Logger log = LoggerFactory.getLogger(ProxyAuthenticatedProducerConsumerTest.class);
 
@@ -74,12 +88,21 @@ public class ProxyAuthenticatedProducerConsumerTest extends ProducerConsumerBase
         conf.setAuthenticationEnabled(true);
         conf.setAuthorizationEnabled(true);
 
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setTlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH);
         conf.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         conf.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
         conf.setTlsAllowInsecureConnection(true);
+<<<<<<< HEAD
+=======
+        conf.setNumExecutorThreadPoolSize(5);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Set<String> superUserRoles = new HashSet<>();
         superUserRoles.add("localhost");
@@ -102,10 +125,17 @@ public class ProxyAuthenticatedProducerConsumerTest extends ProducerConsumerBase
         proxyConfig.setAuthenticationEnabled(true);
         proxyConfig.setAuthenticationEnabled(true);
 
+<<<<<<< HEAD
         proxyConfig.setServicePort(PortManager.nextFreePort());
         proxyConfig.setServicePortTls(PortManager.nextFreePort());
         proxyConfig.setWebServicePort(PortManager.nextFreePort());
         proxyConfig.setWebServicePortTls(PortManager.nextFreePort());
+=======
+        proxyConfig.setServicePort(Optional.of(0));
+        proxyConfig.setServicePortTls(Optional.of(0));
+        proxyConfig.setWebServicePort(Optional.of(0));
+        proxyConfig.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         proxyConfig.setTlsEnabledWithBroker(true);
 
         // enable tls and auth&auth at proxy
@@ -154,7 +184,11 @@ public class ProxyAuthenticatedProducerConsumerTest extends ProducerConsumerBase
     public void testTlsSyncProducerAndConsumer() throws Exception {
         log.info("-- Starting {} test --", methodName);
 
+<<<<<<< HEAD
         final String proxyServiceUrl = "pulsar://localhost:" + proxyConfig.getServicePortTls().get();
+=======
+        final String proxyServiceUrl = proxyService.getServiceUrlTls();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Map<String, String> authParams = Maps.newHashMap();
         authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
         authParams.put("tlsKeyFile", TLS_CLIENT_KEY_FILE_PATH);
@@ -164,7 +198,11 @@ public class ProxyAuthenticatedProducerConsumerTest extends ProducerConsumerBase
         PulsarClient proxyClient = createPulsarClient(authTls, proxyServiceUrl);
 
         admin.clusters().createCluster(configClusterName, new ClusterData(brokerUrl.toString(), brokerUrlTls.toString(),
+<<<<<<< HEAD
                 "pulsar://localhost:" + BROKER_PORT, "pulsar+ssl://localhost:" + BROKER_PORT_TLS));
+=======
+                pulsar.getBrokerServiceUrl(), pulsar.getBrokerServiceUrlTls()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("test")));
         admin.namespaces().createNamespace("my-property/my-ns", Sets.newHashSet("test"));

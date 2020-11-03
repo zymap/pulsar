@@ -19,8 +19,14 @@
 
 from setuptools import setup
 from distutils.core import Extension
+<<<<<<< HEAD
 import subprocess
 import sys
+=======
+from distutils.util import strtobool
+from os import environ
+import subprocess
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 from distutils.command import build_ext
 
@@ -28,12 +34,18 @@ import xml.etree.ElementTree as ET
 from os.path import dirname, realpath, join
 
 def get_version():
+<<<<<<< HEAD
+=======
+    use_full_pom_name = strtobool(environ.get('USE_FULL_POM_NAME', 'False'))
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     # Get the pulsar version from pom.xml
     TOP_LEVEL_PATH = dirname(dirname(dirname(realpath(__file__))))
     POM_PATH = join(TOP_LEVEL_PATH, 'pom.xml')
     root = ET.XML(open(POM_PATH).read())
     version = root.find('{http://maven.apache.org/POM/4.0.0}version').text.strip()
 
+<<<<<<< HEAD
     # Strip the '-incubating' suffix, since it prevents the packages
     # from being uploaded into PyPI
     return version.split('-')[0]
@@ -45,6 +57,26 @@ if sys.version_info[0] == 2:
     PY2 = True
 else:
     PY2 = False
+=======
+    if use_full_pom_name:
+        return version
+    else:
+        # Strip the '-incubating' suffix, since it prevents the packages
+        # from being uploaded into PyPI
+        return version.split('-')[0]
+
+
+def get_name():
+    postfix = environ.get('NAME_POSTFIX', '')
+    base = 'pulsar-client'
+    return base + postfix
+
+VERSION = get_version()
+NAME = get_name()
+
+print(VERSION)
+print(NAME)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # This is a workaround to have setuptools to include
 # the already compiled _pulsar.so library
@@ -62,6 +94,7 @@ class my_build_ext(build_ext.build_ext):
 
 
 dependencies = [
+<<<<<<< HEAD
     'fastavro',
     'grpcio',
     'protobuf',
@@ -69,16 +102,32 @@ dependencies = [
 
     # functions dependencies
     "apache-bookkeeper-client",
+=======
+    'fastavro==0.24.0',
+    'grpcio',
+    'protobuf>=3.6.1',
+    'six',
+    'certifi',
+    'enum34>=1.1.9; python_version < "3.4"',
+
+    # functions dependencies
+    "apache-bookkeeper-client>=4.9.2",
+>>>>>>> f773c602c... Test pr 10 (#27)
     "prometheus_client",
     "ratelimit"
 ]
 
+<<<<<<< HEAD
 if PY2:
     # Python 2 compat dependencies
     dependencies += ['enum34']
 
 setup(
     name="pulsar-client",
+=======
+setup(
+    name=NAME,
+>>>>>>> f773c602c... Test pr 10 (#27)
     version=VERSION,
     packages=['pulsar', 'pulsar.schema', 'pulsar.functions'],
     cmdclass={'build_ext': my_build_ext},

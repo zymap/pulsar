@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.RecordCursor;
 import com.facebook.presto.spi.RecordSet;
 import com.facebook.presto.spi.type.Type;
@@ -27,6 +28,19 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+=======
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.collect.ImmutableList;
+import io.prestosql.spi.connector.RecordCursor;
+import io.prestosql.spi.connector.RecordSet;
+import io.prestosql.spi.type.Type;
+import java.util.List;
+
+/**
+ * Implementation of a record set.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarRecordSet implements RecordSet {
 
     private final List<PulsarColumnHandle> columnHandles;

@@ -32,6 +32,20 @@ public class AutoProduceBytesSchema<T> implements Schema<byte[]> {
     private boolean requireSchemaValidation = true;
     private Schema<T> schema;
 
+<<<<<<< HEAD
+=======
+    public AutoProduceBytesSchema() {
+    }
+
+    public AutoProduceBytesSchema(Schema<T> schema) {
+        this.schema = schema;
+        SchemaInfo schemaInfo = schema.getSchemaInfo();
+        this.requireSchemaValidation = schemaInfo != null
+                                       && schemaInfo.getType() != SchemaType.BYTES
+                                       && schemaInfo.getType() != SchemaType.NONE;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void setSchema(Schema<T> schema) {
         this.schema = schema;
         this.requireSchemaValidation = schema.getSchemaInfo() != null
@@ -40,7 +54,15 @@ public class AutoProduceBytesSchema<T> implements Schema<byte[]> {
     }
 
     private void ensureSchemaInitialized() {
+<<<<<<< HEAD
         checkState(null != schema, "Schema is not initialized before used");
+=======
+        checkState(schemaInitialized(), "Schema is not initialized before used");
+    }
+
+    public boolean schemaInitialized() {
+        return schema != null;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -63,12 +85,20 @@ public class AutoProduceBytesSchema<T> implements Schema<byte[]> {
     }
 
     @Override
+<<<<<<< HEAD
     public byte[] decode(byte[] bytes) {
+=======
+    public byte[] decode(byte[] bytes, byte[] schemaVersion) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ensureSchemaInitialized();
 
         if (requireSchemaValidation) {
             // verify the message can be detected by the underlying schema
+<<<<<<< HEAD
             schema.decode(bytes);
+=======
+            schema.decode(bytes, schemaVersion);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         return bytes;
@@ -80,4 +110,12 @@ public class AutoProduceBytesSchema<T> implements Schema<byte[]> {
 
         return schema.getSchemaInfo();
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public Schema<byte[]> clone() {
+        return new AutoProduceBytesSchema<>(schema.clone());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

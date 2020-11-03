@@ -126,6 +126,11 @@ void export_config() {
             .def("batching_max_publish_delay_ms", &ProducerConfiguration::getBatchingMaxPublishDelayMs, return_value_policy<copy_const_reference>())
             .def("batching_max_publish_delay_ms", &ProducerConfiguration::setBatchingMaxPublishDelayMs, return_self<>())
             .def("property", &ProducerConfiguration::setProperty, return_self<>())
+<<<<<<< HEAD
+=======
+            .def("batching_type", &ProducerConfiguration::setBatchingType, return_self<>())
+            .def("batching_type", &ProducerConfiguration::getBatchingType)
+>>>>>>> f773c602c... Test pr 10 (#27)
             ;
 
     class_<ConsumerConfiguration>("ConsumerConfiguration")
@@ -142,6 +147,11 @@ void export_config() {
             .def("consumer_name", &ConsumerConfiguration::setConsumerName)
             .def("unacked_messages_timeout_ms", &ConsumerConfiguration::getUnAckedMessagesTimeoutMs)
             .def("unacked_messages_timeout_ms", &ConsumerConfiguration::setUnAckedMessagesTimeoutMs)
+<<<<<<< HEAD
+=======
+            .def("negative_ack_redelivery_delay_ms", &ConsumerConfiguration::getNegativeAckRedeliveryDelayMs)
+            .def("negative_ack_redelivery_delay_ms", &ConsumerConfiguration::setNegativeAckRedeliveryDelayMs)
+>>>>>>> f773c602c... Test pr 10 (#27)
             .def("broker_consumer_stats_cache_time_ms", &ConsumerConfiguration::getBrokerConsumerStatsCacheTimeInMs)
             .def("broker_consumer_stats_cache_time_ms", &ConsumerConfiguration::setBrokerConsumerStatsCacheTimeInMs)
             .def("pattern_auto_discovery_period", &ConsumerConfiguration::getPatternAutoDiscoveryPeriod)
@@ -149,10 +159,19 @@ void export_config() {
             .def("read_compacted", &ConsumerConfiguration::isReadCompacted)
             .def("read_compacted", &ConsumerConfiguration::setReadCompacted)
             .def("property", &ConsumerConfiguration::setProperty, return_self<>())
+<<<<<<< HEAD
             ;
 
     class_<ReaderConfiguration>("ReaderConfiguration")
             .def("message_listener", &ReaderConfiguration_setReaderListener, return_self<>())
+=======
+            .def("subscription_initial_position", &ConsumerConfiguration::getSubscriptionInitialPosition)
+            .def("subscription_initial_position", &ConsumerConfiguration::setSubscriptionInitialPosition)
+            ;
+
+    class_<ReaderConfiguration>("ReaderConfiguration")
+            .def("reader_listener", &ReaderConfiguration_setReaderListener, return_self<>())
+>>>>>>> f773c602c... Test pr 10 (#27)
             .def("schema", &ReaderConfiguration::getSchema, return_value_policy<copy_const_reference>())
             .def("schema", &ReaderConfiguration::setSchema, return_self<>())
             .def("receiver_queue_size", &ReaderConfiguration::getReceiverQueueSize)

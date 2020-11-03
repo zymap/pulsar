@@ -19,6 +19,7 @@
 #ifndef MESSAGE_BUILDER_H
 #define MESSAGE_BUILDER_H
 
+<<<<<<< HEAD
 #include <vector>
 #include "Message.h"
 
@@ -28,6 +29,17 @@ namespace pulsar {
 class PulsarWrapper;
 
 class MessageBuilder {
+=======
+#include <chrono>
+#include <vector>
+#include <pulsar/defines.h>
+#include "Message.h"
+
+namespace pulsar {
+class PulsarWrapper;
+
+class PULSAR_PUBLIC MessageBuilder {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     MessageBuilder();
 
@@ -63,13 +75,42 @@ class MessageBuilder {
      */
     MessageBuilder& setProperties(const StringMap& properties);
 
+<<<<<<< HEAD
     /*
      * set partition key for the message routing
+=======
+    /**
+     * set partition key for message routing and topic compaction
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param hash of this key is used to determine message's topic partition
      */
     MessageBuilder& setPartitionKey(const std::string& partitionKey);
 
     /**
+<<<<<<< HEAD
+=======
+     * set ordering key used for key_shared subscriptions
+     * @param the ordering key for the message
+     */
+    MessageBuilder& setOrderingKey(const std::string& orderingKey);
+
+    /**
+     * Specify a delay for the delivery of the messages.
+     *
+     * @param delay the delay in milliseconds
+     */
+    MessageBuilder& setDeliverAfter(const std::chrono::milliseconds delay);
+
+    /**
+     * Specify the this message should not be delivered earlier than the
+     * specified timestamp.
+     *
+     * @param deliveryTimestamp UTC based timestamp in milliseconds
+     */
+    MessageBuilder& setDeliverAt(uint64_t deliveryTimestamp);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Set the event timestamp for the message.
      */
     MessageBuilder& setEventTimestamp(uint64_t eventTimestamp);
@@ -127,6 +168,9 @@ class MessageBuilder {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif

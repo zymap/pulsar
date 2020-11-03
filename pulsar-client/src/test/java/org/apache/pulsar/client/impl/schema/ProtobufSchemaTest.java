@@ -20,15 +20,26 @@ package org.apache.pulsar.client.impl.schema;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+<<<<<<< HEAD
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.Schema;
 import org.apache.pulsar.client.impl.schema.ProtobufSchema;
+=======
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.Schema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.schema.SchemaType;
 import org.apache.pulsar.functions.proto.Function;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+<<<<<<< HEAD
+=======
+import java.util.HashMap;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 @Slf4j
 public class ProtobufSchemaTest {
@@ -36,7 +47,11 @@ public class ProtobufSchemaTest {
     private static final String NAME = "foo";
 
     private static final String EXPECTED_SCHEMA_JSON = "{\"type\":\"record\",\"name\":\"TestMessage\"," +
+<<<<<<< HEAD
             "\"namespace\":\"org.apache.pulsar.client.schema.proto.Test$\",\"fields\":[{\"name\":\"stringField\"," +
+=======
+            "\"namespace\":\"org.apache.pulsar.client.schema.proto.Test\",\"fields\":[{\"name\":\"stringField\"," +
+>>>>>>> f773c602c... Test pr 10 (#27)
             "\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"default\":\"\"}," +
             "{\"name\":\"doubleField\",\"type\":\"double\",\"default\":0},{\"name\":\"intField\",\"type\":\"int\"," +
             "\"default\":0},{\"name\":\"testEnum\",\"type\":{\"type\":\"enum\",\"name\":\"TestEnum\"," +
@@ -46,6 +61,7 @@ public class ProtobufSchemaTest {
             "\"type\":\"double\",\"default\":0}]}],\"default\":null},{\"name\":\"repeatedField\"," +
             "\"type\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}}]}";
 
+<<<<<<< HEAD
     private static final String EXPECTED_PARSING_INFO = "{\"__PARSING_INFO__\":\"[{\\\"number\\\":1," +
             "\\\"name\\\":\\\"stringField\\\",\\\"type\\\":\\\"STRING\\\",\\\"label\\\":\\\"LABEL_OPTIONAL\\\"," +
             "\\\"definition\\\":null},{\\\"number\\\":2,\\\"name\\\":\\\"doubleField\\\",\\\"type\\\":\\\"DOUBLE\\\"," +
@@ -55,6 +71,16 @@ public class ProtobufSchemaTest {
             "\\\"label\\\":\\\"LABEL_OPTIONAL\\\",\\\"definition\\\":null},{\\\"number\\\":5," +
             "\\\"name\\\":\\\"nestedField\\\",\\\"type\\\":\\\"MESSAGE\\\",\\\"label\\\":\\\"LABEL_OPTIONAL\\\"," +
             "\\\"definition\\\":null},{\\\"number\\\":10,\\\"name\\\":\\\"repeatedField\\\"," +
+=======
+    private static final String EXPECTED_PARSING_INFO = "{\"__alwaysAllowNull\":\"true\",\"__jsr310ConversionEnabled\":\"false\",\"__PARSING_INFO__\":" +
+            "\"[{\\\"number\\\":1,\\\"name\\\":\\\"stringField\\\",\\\"type\\\":\\\"STRING\\\",\\\"label\\\":\\\"" +
+            "LABEL_OPTIONAL\\\",\\\"definition\\\":null},{\\\"number\\\":2,\\\"name\\\":\\\"doubleField\\\",\\\"type\\\"" +
+            ":\\\"DOUBLE\\\",\\\"label\\\":\\\"LABEL_OPTIONAL\\\",\\\"definition\\\":null},{\\\"number\\\":6,\\\"name\\\"" +
+            ":\\\"intField\\\",\\\"type\\\":\\\"INT32\\\",\\\"label\\\":\\\"LABEL_OPTIONAL\\\",\\\"definition\\\":null}," +
+            "{\\\"number\\\":4,\\\"name\\\":\\\"testEnum\\\",\\\"type\\\":\\\"ENUM\\\",\\\"label\\\":\\\"LABEL_OPTIONAL\\\"," +
+            "\\\"definition\\\":null},{\\\"number\\\":5,\\\"name\\\":\\\"nestedField\\\",\\\"type\\\":\\\"MESSAGE\\\",\\\"" +
+            "label\\\":\\\"LABEL_OPTIONAL\\\",\\\"definition\\\":null},{\\\"number\\\":10,\\\"name\\\":\\\"repeatedField\\\"," +
+>>>>>>> f773c602c... Test pr 10 (#27)
             "\\\"type\\\":\\\"STRING\\\",\\\"label\\\":\\\"LABEL_REPEATED\\\",\\\"definition\\\":null}]\"}";
 
     @Test
@@ -89,7 +115,11 @@ public class ProtobufSchemaTest {
         try {
             ProtobufSchema<org.apache.pulsar.client.schema.proto.Test.TestMessage> protobufSchema
                     = ProtobufSchema.ofGenericClass(org.apache.pulsar.client.schema.proto.Test.TestMessage.class,
+<<<<<<< HEAD
                     Collections.emptyMap());
+=======
+                    new HashMap<>());
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Exception e) {
             Assert.fail("Should not construct a ProtobufShema over a non-protobuf-generated class");
         }
@@ -112,4 +142,21 @@ public class ProtobufSchemaTest {
         Assert.assertEquals(new ObjectMapper().writeValueAsString(protobufSchema.getSchemaInfo().getProperties()), EXPECTED_PARSING_INFO);
 
     }
+<<<<<<< HEAD
+=======
+
+    @Test
+    public void testDecodeByteBuf() throws JsonProcessingException {
+        ProtobufSchema<org.apache.pulsar.client.schema.proto.Test.TestMessage> protobufSchema
+                = ProtobufSchema.of(org.apache.pulsar.client.schema.proto.Test.TestMessage.class);
+        org.apache.pulsar.client.schema.proto.Test.TestMessage testMessage =
+                org.apache.pulsar.client.schema.proto.Test.TestMessage.newBuilder().build();
+        byte[] bytes = protobufSchema.encode(org.apache.pulsar.client.schema.proto.Test.TestMessage.newBuilder().build());
+        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.buffer(bytes.length);
+        byteBuf.writeBytes(bytes);
+
+        Assert.assertEquals(testMessage, protobufSchema.decode(byteBuf));
+
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

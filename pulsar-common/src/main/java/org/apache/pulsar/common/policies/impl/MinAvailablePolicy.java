@@ -20,21 +20,38 @@ package org.apache.pulsar.common.policies.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+<<<<<<< HEAD
 import java.util.SortedSet;
 
+=======
+import com.google.common.base.Objects;
+import java.util.SortedSet;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.AutoFailoverPolicy;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyData;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyType;
 import org.apache.pulsar.common.policies.data.BrokerStatus;
 
+<<<<<<< HEAD
 import com.google.common.base.Objects;
 
+=======
+/**
+ * Implementation of min available policy.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class MinAvailablePolicy extends AutoFailoverPolicy {
     private static final String MIN_LIMIT_KEY = "min_limit";
     private static final String USAGE_THRESHOLD_KEY = "usage_threshold";
     private static final int MAX_USAGE_THRESHOLD = 100;
 
+<<<<<<< HEAD
     public int min_limit;
+=======
+    @SuppressWarnings("checkstyle:MemberName")
+    public int min_limit;
+    @SuppressWarnings("checkstyle:MemberName")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public int usage_threshold;
 
     MinAvailablePolicy(int minLimit, int usageThreshold) {
@@ -51,6 +68,14 @@ public class MinAvailablePolicy extends AutoFailoverPolicy {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(min_limit, usage_threshold);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof MinAvailablePolicy) {
             MinAvailablePolicy other = (MinAvailablePolicy) obj;

@@ -95,6 +95,16 @@ public class NamespaceBundle implements ServiceUnitId, Comparable<NamespaceBundl
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(nsname,
+                keyRange.lowerEndpoint(), keyRange.lowerBoundType(),
+                keyRange.upperEndpoint(), keyRange.upperBoundType());
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object other) {
         if (other instanceof NamespaceBundle) {
             NamespaceBundle obj = (NamespaceBundle) other;
@@ -146,4 +156,11 @@ public class NamespaceBundle implements ServiceUnitId, Comparable<NamespaceBundl
     public static String getBundleRange(String namespaceBundle) {
         return namespaceBundle.substring(namespaceBundle.lastIndexOf('/') + 1);
     }
+<<<<<<< HEAD
+=======
+
+    public NamespaceBundleFactory getNamespaceBundleFactory() {
+        return factory;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

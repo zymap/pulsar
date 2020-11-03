@@ -21,10 +21,15 @@ package org.apache.pulsar.proxy.server;
 import com.google.common.collect.Lists;
 
 import io.prometheus.client.jetty.JettyStatisticsCollector;
+<<<<<<< HEAD
 
 import java.io.IOException;
 import java.net.URI;
 import java.security.GeneralSecurityException;
+=======
+import java.io.IOException;
+import java.net.URI;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,15 +37,26 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+<<<<<<< HEAD
 
 import javax.servlet.DispatcherType;
 
+=======
+import javax.servlet.DispatcherType;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
 import org.apache.pulsar.broker.web.AuthenticationFilter;
 import org.apache.pulsar.broker.web.JsonMapperProvider;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.web.WebExecutorThreadPool;
 import org.apache.pulsar.common.util.SecurityUtility;
+=======
+import org.apache.pulsar.broker.web.RateLimitingFilter;
+import org.apache.pulsar.broker.web.WebExecutorThreadPool;
+import org.apache.pulsar.common.util.SecurityUtility;
+import org.apache.pulsar.common.util.keystoretls.KeyStoreSSLContext;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -78,7 +94,14 @@ public class WebServer {
     protected int externalServicePort;
     private URI serviceURI = null;
 
+<<<<<<< HEAD
     public WebServer(ProxyConfiguration config, AuthenticationService authenticationService) {
+=======
+    private ServerConnector connector;
+    private ServerConnector connectorTls;
+
+    public WebServer(ProxyConfiguration config, AuthenticationService authenticationService) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.webServiceExecutor = new WebExecutorThreadPool(config.getHttpNumThreads(), "pulsar-external-web");
         this.server = new Server(webServiceExecutor);
         this.authenticationService = authenticationService;
@@ -91,12 +114,18 @@ public class WebServer {
 
         if (config.getWebServicePort().isPresent()) {
             this.externalServicePort = config.getWebServicePort().get();
+<<<<<<< HEAD
             ServerConnector connector = new ServerConnector(server, 1, 1, new HttpConnectionFactory(http_config));
+=======
+            connector = new ServerConnector(server, 1, 1, new HttpConnectionFactory(http_config));
+            connector.setHost(config.getBindAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
             connector.setPort(externalServicePort);
             connectors.add(connector);
         }
         if (config.getWebServicePortTls().isPresent()) {
             try {
+<<<<<<< HEAD
                 SslContextFactory sslCtxFactory = SecurityUtility.createSslContextFactory(
                         config.isTlsAllowInsecureConnection(),
                         config.getTlsTrustCertsFilePath(),
@@ -107,6 +136,37 @@ public class WebServer {
                 tlsConnector.setPort(config.getWebServicePortTls().get());
                 connectors.add(tlsConnector);
             } catch (GeneralSecurityException e) {
+=======
+                SslContextFactory sslCtxFactory;
+                if (config.isTlsEnabledWithKeyStore()) {
+                    sslCtxFactory = KeyStoreSSLContext.createSslContextFactory(
+                            config.getTlsProvider(),
+                            config.getTlsKeyStoreType(),
+                            config.getTlsKeyStore(),
+                            config.getTlsKeyStorePassword(),
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustStoreType(),
+                            config.getTlsTrustStore(),
+                            config.getTlsTrustStorePassword(),
+                            config.isTlsRequireTrustedClientCertOnConnect(),
+                            config.getTlsCertRefreshCheckDurationSec()
+                    );
+                } else {
+                    sslCtxFactory = SecurityUtility.createSslContextFactory(
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustCertsFilePath(),
+                            config.getTlsCertificateFilePath(),
+                            config.getTlsKeyFilePath(),
+                            config.isTlsRequireTrustedClientCertOnConnect(),
+                            true,
+                            config.getTlsCertRefreshCheckDurationSec());
+                }
+                connectorTls = new ServerConnector(server, 1, 1, sslCtxFactory);
+                connectorTls.setPort(config.getWebServicePortTls().get());
+                connectorTls.setHost(config.getBindAddress());
+                connectors.add(connectorTls);
+            } catch (Exception e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 throw new RuntimeException(e);
             }
         }
@@ -125,6 +185,13 @@ public class WebServer {
     }
 
     public void addServlet(String basePath, ServletHolder servletHolder, List<Pair<String, Object>> attributes) {
+<<<<<<< HEAD
+=======
+        addServlet(basePath, servletHolder, attributes, true);
+    }
+
+    public void addServlet(String basePath, ServletHolder servletHolder, List<Pair<String, Object>> attributes, boolean requireAuthentication) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         Optional<String> existingPath = servletPaths.stream().filter(p -> p.startsWith(basePath)).findFirst();
         if (existingPath.isPresent()) {
             throw new IllegalArgumentException(
@@ -138,11 +205,23 @@ public class WebServer {
         for (Pair<String, Object> attribute : attributes) {
             context.setAttribute(attribute.getLeft(), attribute.getRight());
         }
+<<<<<<< HEAD
         if (config.isAuthenticationEnabled()) {
+=======
+        if (config.isAuthenticationEnabled() && requireAuthentication) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             FilterHolder filter = new FilterHolder(new AuthenticationFilter(authenticationService));
             context.addFilter(filter, MATCH_ALL, EnumSet.allOf(DispatcherType.class));
         }
 
+<<<<<<< HEAD
+=======
+        if (config.isHttpRequestsLimitEnabled()) {
+            context.addFilter(new FilterHolder(new RateLimitingFilter(config.getHttpRequestsMaxPerSecond())), MATCH_ALL,
+                    EnumSet.allOf(DispatcherType.class));
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         handlers.add(context);
     }
 
@@ -229,5 +308,24 @@ public class WebServer {
         return server.isStarted();
     }
 
+<<<<<<< HEAD
+=======
+    public Optional<Integer> getListenPortHTTP() {
+        if (connector != null) {
+            return Optional.of(connector.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Integer> getListenPortHTTPS() {
+        if (connectorTls != null) {
+            return Optional.of(connectorTls.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
 }

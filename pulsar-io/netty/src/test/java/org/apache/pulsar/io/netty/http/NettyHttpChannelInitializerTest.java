@@ -20,10 +20,17 @@ package org.apache.pulsar.io.netty.http;
 
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.pulsar.io.netty.NettySource;
+<<<<<<< HEAD
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+=======
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Tests for Netty Channel Initializer

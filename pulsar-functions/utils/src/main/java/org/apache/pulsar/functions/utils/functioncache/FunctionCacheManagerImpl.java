@@ -37,8 +37,16 @@ public class FunctionCacheManagerImpl implements FunctionCacheManager {
     /** Registered Functions **/
     private final Map<String, FunctionCacheEntry> cacheFunctions;
 
+<<<<<<< HEAD
     public FunctionCacheManagerImpl() {
         this.cacheFunctions = new ConcurrentHashMap<>();
+=======
+    private ClassLoader rootClassLoader;
+
+    public FunctionCacheManagerImpl(ClassLoader rootClassLoader) {
+        this.cacheFunctions = new ConcurrentHashMap<>();
+        this.rootClassLoader = rootClassLoader;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     Map<String, FunctionCacheEntry> getCacheFunctions() {
@@ -93,7 +101,11 @@ public class FunctionCacheManagerImpl implements FunctionCacheManager {
                             requiredJarFiles,
                             requiredClasspaths,
                             urls,
+<<<<<<< HEAD
                             eid));
+=======
+                            eid, rootClassLoader));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (Throwable cause) {
                     Exceptions.rethrowIOException(cause);
                 }
@@ -107,7 +119,12 @@ public class FunctionCacheManagerImpl implements FunctionCacheManager {
     }
 
     @Override
+<<<<<<< HEAD
     public void registerFunctionInstanceWithArchive(String fid, String eid, String narArchive) throws IOException {
+=======
+    public void registerFunctionInstanceWithArchive(String fid, String eid,
+                                                    String narArchive, String narExtractionDirectory) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (fid == null) {
             throw new NullPointerException("FunctionID not set");
         }
@@ -122,7 +139,11 @@ public class FunctionCacheManagerImpl implements FunctionCacheManager {
 
             // Create new cache entry
             try {
+<<<<<<< HEAD
                 cacheFunctions.put(fid, new FunctionCacheEntry(narArchive, eid));
+=======
+                cacheFunctions.put(fid, new FunctionCacheEntry(narArchive, eid, rootClassLoader, narExtractionDirectory));
+>>>>>>> f773c602c... Test pr 10 (#27)
             } catch (Throwable cause) {
                 Exceptions.rethrowIOException(cause);
             }

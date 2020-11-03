@@ -19,6 +19,15 @@
 package org.apache.pulsar.broker.namespace;
 
 import com.google.common.base.MoreObjects;
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Maps;
+import org.apache.pulsar.policies.data.loadbalancer.AdvertisedListener;
+
+import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.Map;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class NamespaceEphemeralData {
     private String nativeUrl;
@@ -26,17 +35,37 @@ public class NamespaceEphemeralData {
     private String httpUrl;
     private String httpUrlTls;
     private boolean disabled;
+<<<<<<< HEAD
+=======
+    private Map<String, AdvertisedListener> advertisedListeners;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public NamespaceEphemeralData() {
     }
 
     public NamespaceEphemeralData(String brokerUrl, String brokerUrlTls, String httpUrl, String httpUrlTls,
             boolean disabled) {
+<<<<<<< HEAD
+=======
+        this(brokerUrl, brokerUrlTls, httpUrl, httpUrlTls, disabled, null);
+    }
+
+    public NamespaceEphemeralData(String brokerUrl, String brokerUrlTls, String httpUrl, String httpUrlTls,
+                                  boolean disabled, Map<String, AdvertisedListener> advertisedListeners) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.nativeUrl = brokerUrl;
         this.nativeUrlTls = brokerUrlTls;
         this.httpUrl = httpUrl;
         this.httpUrlTls = httpUrlTls;
         this.disabled = disabled;
+<<<<<<< HEAD
+=======
+        if (advertisedListeners == null) {
+            this.advertisedListeners = Collections.EMPTY_MAP;
+        } else {
+            this.advertisedListeners = Maps.newHashMap(advertisedListeners);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public String getNativeUrl() {
@@ -63,9 +92,24 @@ public class NamespaceEphemeralData {
         this.disabled = flag;
     }
 
+<<<<<<< HEAD
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("nativeUrl", nativeUrl).add("httpUrl", httpUrl)
                 .add("disabled", disabled).toString();
+=======
+    @NotNull
+    public Map<String, AdvertisedListener> getAdvertisedListeners() {
+        if (this.advertisedListeners == null) {
+            return Collections.EMPTY_MAP;
+        }
+        return Collections.unmodifiableMap(this.advertisedListeners);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("nativeUrl", nativeUrl).add("httpUrl", httpUrl)
+                .add("disabled", disabled).add("advertisedListeners", getAdvertisedListeners()).toString();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

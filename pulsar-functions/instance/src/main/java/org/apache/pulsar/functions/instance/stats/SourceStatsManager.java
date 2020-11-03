@@ -173,8 +173,13 @@ public class SourceStatsManager extends ComponentStatsManager {
                 .help("Exception from source.")
                 .register(collectorRegistry);
 
+<<<<<<< HEAD
         sysExceptionRateLimiter = new RateLimiter(scheduledExecutorService, 5, 1, TimeUnit.MINUTES);
         sourceExceptionRateLimiter = new RateLimiter(scheduledExecutorService, 5, 1, TimeUnit.MINUTES);
+=======
+        sysExceptionRateLimiter = new RateLimiter(scheduledExecutorService, 5, 1, TimeUnit.MINUTES, null);
+        sourceExceptionRateLimiter = new RateLimiter(scheduledExecutorService, 5, 1, TimeUnit.MINUTES, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -190,9 +195,12 @@ public class SourceStatsManager extends ComponentStatsManager {
 
         statTotalWritten1min.clear();
         _statTotalWritten1min = statTotalWritten1min.labels(metricsLabels);
+<<<<<<< HEAD
 
         latestSystemExceptions.clear();
         latestSourceExceptions.clear();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -215,35 +223,62 @@ public class SourceStatsManager extends ComponentStatsManager {
 
         // report exception throw prometheus
         if (sysExceptionRateLimiter.tryAcquire()) {
+<<<<<<< HEAD
             String[] exceptionMetricsLabels = Arrays.copyOf(metricsLabels, metricsLabels.length + 2);
             exceptionMetricsLabels[exceptionMetricsLabels.length - 2] = ex.getMessage() != null ? ex.getMessage() : "";
             exceptionMetricsLabels[exceptionMetricsLabels.length - 1] = String.valueOf(ts);
+=======
+            String[] exceptionMetricsLabels = getExceptionMetricsLabels(ex);
+>>>>>>> f773c602c... Test pr 10 (#27)
             sysExceptions.labels(exceptionMetricsLabels).set(1.0);
         }
     }
 
     @Override
+<<<<<<< HEAD
     public void incrUserExceptions(Exception ex) {
+=======
+    public void incrUserExceptions(Throwable ex) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         incrSysExceptions(ex);
     }
 
     @Override
+<<<<<<< HEAD
     public void incrSourceExceptions(Exception ex) {
+=======
+    public void incrSourceExceptions(Throwable ex) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         long ts = System.currentTimeMillis();
         InstanceCommunication.FunctionStatus.ExceptionInformation info = getExceptionInfo(ex, ts);
         latestSourceExceptions.add(info);
 
         // report exception throw prometheus
         if (sourceExceptionRateLimiter.tryAcquire()) {
+<<<<<<< HEAD
             String[] exceptionMetricsLabels = Arrays.copyOf(metricsLabels, metricsLabels.length + 2);
             exceptionMetricsLabels[exceptionMetricsLabels.length - 2] = ex.getMessage() != null ? ex.getMessage() : "";
             exceptionMetricsLabels[exceptionMetricsLabels.length - 1] = String.valueOf(ts);
+=======
+            String[] exceptionMetricsLabels = getExceptionMetricsLabels(ex);
+>>>>>>> f773c602c... Test pr 10 (#27)
             sourceExceptions.labels(exceptionMetricsLabels).set(1.0);
         }
     }
 
+<<<<<<< HEAD
     @Override
     public void incrSinkExceptions(Exception ex) {
+=======
+    private String[] getExceptionMetricsLabels(Throwable ex) {
+        String[] exceptionMetricsLabels = Arrays.copyOf(metricsLabels, metricsLabels.length + 1);
+        exceptionMetricsLabels[exceptionMetricsLabels.length - 1] = ex.getMessage() != null ? ex.getMessage() : "";
+        return exceptionMetricsLabels;
+    }
+
+    @Override
+    public void incrSinkExceptions(Throwable ex) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         incrSysExceptions(ex);
     }
 

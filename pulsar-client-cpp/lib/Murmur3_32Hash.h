@@ -24,15 +24,25 @@
 #ifndef MURMUR3_32_HASH_HPP_
 #define MURMUR3_32_HASH_HPP_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include "Hash.h"
 
 #include <cstdint>
 #include <string>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 namespace pulsar {
 
 class Murmur3_32Hash : public Hash {
+=======
+namespace pulsar {
+
+class PULSAR_PUBLIC Murmur3_32Hash : public Hash {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     Murmur3_32Hash();
 
@@ -48,6 +58,9 @@ class Murmur3_32Hash : public Hash {
     uint32_t makeHash(const void* key, const int64_t len);
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #endif /* MURMUR3_32_HASH_HPP_ */

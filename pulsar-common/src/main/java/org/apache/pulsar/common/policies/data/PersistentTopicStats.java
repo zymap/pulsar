@@ -19,7 +19,11 @@
 package org.apache.pulsar.common.policies.data;
 
 /**
+<<<<<<< HEAD
  * Maintain compatibility with previous class name
+=======
+ * Maintain compatibility with previous class name.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class PersistentTopicStats extends TopicStats {
 

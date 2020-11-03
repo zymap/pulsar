@@ -20,7 +20,10 @@ package org.apache.pulsar.client.impl;
 
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
+<<<<<<< HEAD
 import org.mockito.Matchers;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -29,7 +32,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertNotNull;
@@ -51,7 +59,11 @@ public class ProducerBuilderImplTest {
         when(client.newProducer()).thenReturn(producerBuilderImpl);
 
         when(client.createProducerAsync(
+<<<<<<< HEAD
                 Matchers.any(ProducerConfigurationData.class), Matchers.any(Schema.class), eq(null)))
+=======
+                any(ProducerConfigurationData.class), any(Schema.class), eq(null)))
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .thenReturn(CompletableFuture.completedFuture(producer));
     }
 
@@ -304,6 +316,32 @@ public class ProducerBuilderImplTest {
                 .create();
     }
 
+<<<<<<< HEAD
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testProducerBuilderImplWhenBatchingMaxPublishDelayPropertyIsNegative() {
+        producerBuilderImpl.batchingMaxPublishDelay(-1, TimeUnit.MILLISECONDS);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testProducerBuilderImplWhenSendTimeoutPropertyIsNegative() {
+        producerBuilderImpl.sendTimeout(-1, TimeUnit.SECONDS);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testProducerBuilderImplWhenMaxPendingMessagesAcrossPartitionsPropertyIsInvalid() {
+        producerBuilderImpl.maxPendingMessagesAcrossPartitions(999);
+    }
+
+    @Test
+    public void testProducerBuilderImplWhenNumericPropertiesAreValid() {
+        producerBuilderImpl.batchingMaxPublishDelay(1, TimeUnit.SECONDS);
+        producerBuilderImpl.batchingMaxMessages(2);
+        producerBuilderImpl.sendTimeout(1, TimeUnit.SECONDS);
+        producerBuilderImpl.maxPendingMessagesAcrossPartitions(1000);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private class CustomMessageRouter implements MessageRouter {
         @Override
         public int choosePartition(Message<?> msg, TopicMetadata metadata) {

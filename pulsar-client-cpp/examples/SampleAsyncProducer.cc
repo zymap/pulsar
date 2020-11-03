@@ -27,8 +27,13 @@ DECLARE_LOG_OBJECT()
 
 using namespace pulsar;
 
+<<<<<<< HEAD
 void callback(Result code, const Message& msg) {
     LOG_INFO("Received code: " << code << " -- Msg: " << msg);
+=======
+void callback(Result code, const MessageId& msgId) {
+    LOG_INFO("Received code: " << code << " -- MsgID: " << msgId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 int main() {

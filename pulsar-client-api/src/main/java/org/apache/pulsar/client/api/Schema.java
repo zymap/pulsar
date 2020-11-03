@@ -18,16 +18,40 @@
  */
 package org.apache.pulsar.client.api;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.schema.GenericRecord;
 import org.apache.pulsar.client.internal.DefaultImplementation;
 import org.apache.pulsar.common.schema.KeyValue;
+=======
+import java.nio.ByteBuffer;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.api.schema.GenericSchema;
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.api.schema.SchemaInfoProvider;
+import org.apache.pulsar.client.internal.DefaultImplementation;
+import org.apache.pulsar.common.schema.KeyValue;
+import org.apache.pulsar.common.schema.KeyValueEncodingType;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
 
 /**
+<<<<<<< HEAD
  * Message schema definition
  */
 public interface Schema<T> {
+=======
+ * Message schema definition.
+ */
+public interface Schema<T> extends Cloneable{
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Check if the message is a valid object for this schema.
@@ -38,7 +62,10 @@ public interface Schema<T> {
      * the bytes.
      *
      * @param message the messages to verify
+<<<<<<< HEAD
      * @return true if it is a valid message
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws SchemaSerializationException if it is not a valid message
      */
     default void validate(byte[] message) {
@@ -57,13 +84,58 @@ public interface Schema<T> {
     byte[] encode(T message);
 
     /**
+<<<<<<< HEAD
      * Decode a byte array into an object using the schema definition and deserializer implementation
+=======
+     * Returns whether this schema supports versioning.
+     *
+     * <p>Most of the schema implementations don't really support schema versioning, or it just doesn't
+     * make any sense to support schema versionings (e.g. primitive schemas). Only schema returns
+     * {@link GenericRecord} should support schema versioning.
+     *
+     * <p>If a schema implementation returns <tt>false</tt>, it should implement {@link #decode(byte[])};
+     * while a schema implementation returns <tt>true</tt>, it should implement {@link #decode(byte[], byte[])}
+     * instead.
+     *
+     * @return true if this schema implementation supports schema versioning; otherwise returns false.
+     */
+    default boolean supportSchemaVersioning() {
+        return false;
+    }
+
+    default void setSchemaInfoProvider(SchemaInfoProvider schemaInfoProvider) {
+    }
+
+    /**
+     * Decode a byte array into an object using the schema definition and deserializer implementation.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param bytes
      *            the byte array to decode
      * @return the deserialized object
      */
+<<<<<<< HEAD
     T decode(byte[] bytes);
+=======
+    default T decode(byte[] bytes) {
+        // use `null` to indicate ignoring schema version
+        return decode(bytes, null);
+    }
+
+    /**
+     * Decode a byte array into an object using a given version.
+     *
+     * @param bytes
+     *            the byte array to decode
+     * @param schemaVersion
+     *            the schema version to decode the object. null indicates using latest version.
+     * @return the deserialized object
+     */
+    default T decode(byte[] bytes, byte[] schemaVersion) {
+        // ignore version by default (most of the primitive schema implementations ignore schema version)
+        return decode(bytes);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * @return an object that represents the Schema associated metadata
@@ -71,22 +143,135 @@ public interface Schema<T> {
     SchemaInfo getSchemaInfo();
 
     /**
+<<<<<<< HEAD
+=======
+     * Check if this schema requires fetching schema info to configure the schema.
+     *
+     * @return true if the schema requires fetching schema info to configure the schema,
+     *         otherwise false.
+     */
+    default boolean requireFetchingSchemaInfo() {
+        return false;
+    }
+
+    /**
+     * Configure the schema to use the provided schema info.
+     *
+     * @param topic topic name
+     * @param componentName component name
+     * @param schemaInfo schema info
+     */
+    default void configureSchemaInfo(String topic, String componentName,
+                                     SchemaInfo schemaInfo) {
+        // no-op
+    }
+
+    /**
+     * Duplicates the schema.
+     *
+     * @return The duplicated schema.
+     */
+    Schema<T> clone();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Schema that doesn't perform any encoding on the message payloads. Accepts a byte array and it passes it through.
      */
     Schema<byte[]> BYTES = DefaultImplementation.newBytesSchema();
 
     /**
+<<<<<<< HEAD
+=======
+     * ByteBuffer Schema.
+     */
+    Schema<ByteBuffer> BYTEBUFFER = DefaultImplementation.newByteBufferSchema();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Schema that can be used to encode/decode messages whose values are String. The payload is encoded with UTF-8.
      */
     Schema<String> STRING = DefaultImplementation.newStringSchema();
 
     /**
+<<<<<<< HEAD
+=======
+     * INT8 Schema.
+     */
+    Schema<Byte> INT8 = DefaultImplementation.newByteSchema();
+
+    /**
+     * INT16 Schema.
+     */
+    Schema<Short> INT16 = DefaultImplementation.newShortSchema();
+
+    /**
+     * INT32 Schema.
+     */
+    Schema<Integer> INT32 = DefaultImplementation.newIntSchema();
+
+    /**
+     * INT64 Schema.
+     */
+    Schema<Long> INT64 = DefaultImplementation.newLongSchema();
+
+    /**
+     * Boolean Schema.
+     */
+    Schema<Boolean> BOOL = DefaultImplementation.newBooleanSchema();
+
+    /**
+     * Float Schema.
+     */
+    Schema<Float> FLOAT = DefaultImplementation.newFloatSchema();
+
+    /**
+     * Double Schema.
+     */
+    Schema<Double> DOUBLE = DefaultImplementation.newDoubleSchema();
+
+    /**
+     * Date Schema.
+     */
+    Schema<Date> DATE = DefaultImplementation.newDateSchema();
+
+    /**
+     * Time Schema.
+     */
+    Schema<Time> TIME = DefaultImplementation.newTimeSchema();
+
+    /**
+     * Timestamp Schema.
+     */
+    Schema<Timestamp> TIMESTAMP = DefaultImplementation.newTimestampSchema();
+
+    /**
+     * Instant Schema.
+     */
+    Schema<Instant> INSTANT = DefaultImplementation.newInstantSchema();
+    /**
+     * LocalDate Schema.
+     */
+    Schema<LocalDate> LOCAL_DATE = DefaultImplementation.newLocalDateSchema();
+    /**
+     * LocalTime Schema.
+     */
+    Schema<LocalTime> LOCAL_TIME = DefaultImplementation.newLocalTimeSchema();
+    /**
+     * LocalDateTime Schema.
+     */
+    Schema<LocalDateTime> LOCAL_DATE_TIME = DefaultImplementation.newLocalDateTimeSchema();
+
+    // CHECKSTYLE.OFF: MethodName
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Create a Protobuf schema type by extracting the fields of the specified class.
      *
      * @param clazz the Protobuf generated class to be used to extract the schema
      * @return a Schema instance
      */
     static <T extends com.google.protobuf.GeneratedMessageV3> Schema<T> PROTOBUF(Class<T> clazz) {
+<<<<<<< HEAD
         return DefaultImplementation.newProtobufSchema(clazz);
     }
 
@@ -98,16 +283,67 @@ public interface Schema<T> {
      */
     static <T> Schema<T> AVRO(Class<T> clazz) {
         return DefaultImplementation.newAvroSchema(clazz);
+=======
+        return DefaultImplementation.newProtobufSchema(SchemaDefinition.builder().withPojo(clazz).build());
+    }
+
+    /**
+     * Create a Protobuf schema type with schema definition.
+     *
+     * @param schemaDefinition schemaDefinition the definition of the schema
+     * @return a Schema instance
+     */
+    static <T extends com.google.protobuf.GeneratedMessageV3> Schema<T> PROTOBUF(SchemaDefinition<T> schemaDefinition) {
+        return DefaultImplementation.newProtobufSchema(schemaDefinition);
+    }
+
+    /**
+     * Create a  Avro schema type by default configuration of the class.
+     *
+     * @param pojo the POJO class to be used to extract the Avro schema
+     * @return a Schema instance
+     */
+    static <T> Schema<T> AVRO(Class<T> pojo) {
+        return DefaultImplementation.newAvroSchema(SchemaDefinition.builder().withPojo(pojo).build());
+    }
+
+    /**
+     * Create a Avro schema type with schema definition.
+     *
+     * @param schemaDefinition the definition of the schema
+     * @return a Schema instance
+     */
+    static <T> Schema<T> AVRO(SchemaDefinition<T> schemaDefinition) {
+        return DefaultImplementation.newAvroSchema(schemaDefinition);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
      * Create a JSON schema type by extracting the fields of the specified class.
      *
+<<<<<<< HEAD
      * @param clazz the POJO class to be used to extract the JSON schema
      * @return a Schema instance
      */
     static <T> Schema<T> JSON(Class<T> clazz) {
         return DefaultImplementation.newJSONSchema(clazz);
+=======
+     * @param pojo the POJO class to be used to extract the JSON schema
+     * @return a Schema instance
+     */
+    static <T> Schema<T> JSON(Class<T> pojo) {
+        return DefaultImplementation.newJSONSchema(SchemaDefinition.builder().withPojo(pojo).build());
+    }
+
+    /**
+     * Create a JSON schema type with schema definition.
+     *
+     * @param schemaDefinition the definition of the schema
+     * @return a Schema instance
+     */
+    static <T> Schema<T> JSON(SchemaDefinition schemaDefinition) {
+        return DefaultImplementation.newJSONSchema(schemaDefinition);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -120,7 +356,13 @@ public interface Schema<T> {
     /**
      * Schema that can be used to encode/decode KeyValue.
      */
+<<<<<<< HEAD
     Schema<KeyValue<byte[], byte[]>> KV_BYTES = DefaultImplementation.newKeyValueSchema(BYTES, BYTES);
+=======
+    static Schema<KeyValue<byte[], byte[]>> KV_BYTES() {
+        return DefaultImplementation.newKeyValueBytesSchema();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Key Value Schema whose underneath key and value schemas are JSONSchema.
@@ -136,6 +378,17 @@ public interface Schema<T> {
         return DefaultImplementation.newKeyValueSchema(key, value);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Key Value Schema using passed in key, value and encoding type schemas.
+     */
+    static <K, V> Schema<KeyValue<K, V>> KeyValue(Schema<K> key, Schema<V> value,
+        KeyValueEncodingType keyValueEncodingType) {
+        return DefaultImplementation.newKeyValueSchema(key, value, keyValueEncodingType);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Deprecated
     static Schema<GenericRecord> AUTO() {
         return AUTO_CONSUME();
@@ -144,10 +397,17 @@ public interface Schema<T> {
     /**
      * Create a schema instance that automatically deserialize messages
      * based on the current topic schema.
+<<<<<<< HEAD
      * <p>
      * The messages values are deserialized into a {@link GenericRecord} object.
      * <p>
      * Currently this is only supported with Avro and JSON schema types.
+=======
+     *
+     * <p>The messages values are deserialized into a {@link GenericRecord} object.
+     *
+     * <p>Currently this is only supported with Avro and JSON schema types.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the auto schema instance
      */
@@ -158,11 +418,19 @@ public interface Schema<T> {
     /**
      * Create a schema instance that accepts a serialized payload
      * and validates it against the topic schema.
+<<<<<<< HEAD
      * <p>
      * Currently this is only supported with Avro and JSON schema types.
      * <p>
      * This method can be used when publishing a raw JSON payload,
      * for which the format is known and a POJO class is not avaialable.
+=======
+     *
+     * <p>Currently this is only supported with Avro and JSON schema types.
+     *
+     * <p>This method can be used when publishing a raw JSON payload,
+     * for which the format is known and a POJO class is not available.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the auto schema instance
      */
@@ -170,7 +438,39 @@ public interface Schema<T> {
         return DefaultImplementation.newAutoProduceSchema();
     }
 
+<<<<<<< HEAD
     static Schema<?> getSchema(SchemaInfo schemaInfo) {
         return DefaultImplementation.getSchema(schemaInfo);
     }
+=======
+    /**
+     * Create a schema instance that accepts a serialized payload
+     * and validates it against the schema specified.
+     *
+     * @return the auto schema instance
+     * @since 2.5.0
+     * @see #AUTO_PRODUCE_BYTES()
+     */
+    static Schema<byte[]> AUTO_PRODUCE_BYTES(Schema<?> schema) {
+        return DefaultImplementation.newAutoProduceSchema(schema);
+    }
+
+    // CHECKSTYLE.ON: MethodName
+
+    static Schema<?> getSchema(SchemaInfo schemaInfo) {
+        return DefaultImplementation.getSchema(schemaInfo);
+    }
+
+    /**
+     * Returns a generic schema of existing schema info.
+     *
+     * <p>Only supports AVRO and JSON.
+     *
+     * @param schemaInfo schema info
+     * @return a generic schema instance
+     */
+    static GenericSchema<GenericRecord> generic(SchemaInfo schemaInfo) {
+        return DefaultImplementation.getGenericSchema(schemaInfo);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

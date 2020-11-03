@@ -19,9 +19,16 @@
 package org.apache.pulsar.io.hbase.sink;
 
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.pulsar.client.api.schema.GenericRecord;
+=======
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.impl.schema.BooleanSchema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.schema.DoubleSchema;
 import org.apache.pulsar.client.impl.schema.FloatSchema;
 import org.apache.pulsar.client.impl.schema.IntSchema;
@@ -57,11 +64,24 @@ public class HbaseGenericRecordSink extends HbaseAbstractSink<GenericRecord> {
         byte[] familyValueBytes = getBytes(familyName);
 
         List<String> qualifierNames = tableDefinition.getQualifierNames();
+<<<<<<< HEAD
         for (String qualifierName : qualifierNames) {
             Object qualifierValue = record.getField(qualifierName);
             if (null != qualifierValue) {
                 Put put = new Put(getBytes(rowKeyValue));
                 put.addColumn(familyValueBytes, getBytes(qualifierName), getBytes(qualifierValue));
+=======
+        if (CollectionUtils.isNotEmpty(qualifierNames)) {
+            Put put = new Put(getBytes(rowKeyValue));
+            for (String qualifierName : qualifierNames) {
+                Object qualifierValue = record.getField(qualifierName);
+                if (null != qualifierValue) {
+                    put.addColumn(familyValueBytes, getBytes(qualifierName),
+                      getBytes(qualifierValue));
+                }
+            }
+            if (CollectionUtils.isNotEmpty(put.getFamilyCellMap().values())) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 puts.add(put);
             }
         }
@@ -77,7 +97,11 @@ public class HbaseGenericRecordSink extends HbaseAbstractSink<GenericRecord> {
         } else if (value instanceof Float) {
             return FloatSchema.of().encode((Float) value);
         } else if (value instanceof Boolean) {
+<<<<<<< HEAD
             return Bytes.toBytes((Boolean) value);
+=======
+            return BooleanSchema.of().encode((Boolean) value);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else if (value instanceof String) {
             return StringSchema.utf8().encode((String) value);
         } else if (value instanceof Short) {

@@ -20,6 +20,10 @@ package org.apache.pulsar.common.util.collections;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -31,7 +35,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.util.collections.GrowableArrayBlockingQueue;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
@@ -42,7 +49,11 @@ public class GrowableArrayBlockingQueueTest {
     public void simple() throws Exception {
         BlockingQueue<Integer> queue = new GrowableArrayBlockingQueue<>(4);
 
+<<<<<<< HEAD
         assertEquals(queue.poll(), null);
+=======
+        assertNull(queue.poll());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertEquals(queue.remainingCapacity(), Integer.MAX_VALUE);
         assertEquals(queue.toString(), "[]");
@@ -145,7 +156,11 @@ public class GrowableArrayBlockingQueueTest {
     public void growArray() throws Exception {
         BlockingQueue<Integer> queue = new GrowableArrayBlockingQueue<>(4);
 
+<<<<<<< HEAD
         assertEquals(queue.poll(), null);
+=======
+        assertNull(queue.poll());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertTrue(queue.offer(1));
         assertTrue(queue.offer(2));
@@ -174,13 +189,21 @@ public class GrowableArrayBlockingQueueTest {
     public void pollTimeout() throws Exception {
         BlockingQueue<Integer> queue = new GrowableArrayBlockingQueue<>(4);
 
+<<<<<<< HEAD
         assertEquals(queue.poll(1, TimeUnit.MILLISECONDS), null);
+=======
+        assertNull(queue.poll(1, TimeUnit.MILLISECONDS));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         queue.put(1);
         assertEquals(queue.poll(1, TimeUnit.MILLISECONDS).intValue(), 1);
 
         // 0 timeout should not block
+<<<<<<< HEAD
         assertEquals(queue.poll(0, TimeUnit.HOURS), null);
+=======
+        assertNull(queue.poll(0, TimeUnit.HOURS));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         queue.put(2);
         queue.put(3);
@@ -215,7 +238,11 @@ public class GrowableArrayBlockingQueueTest {
     public void removeTest() throws Exception {
         BlockingQueue<Integer> queue = new GrowableArrayBlockingQueue<>(4);
 
+<<<<<<< HEAD
         assertEquals(queue.poll(), null);
+=======
+        assertNull(queue.poll());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertTrue(queue.offer(1));
         assertTrue(queue.offer(2));

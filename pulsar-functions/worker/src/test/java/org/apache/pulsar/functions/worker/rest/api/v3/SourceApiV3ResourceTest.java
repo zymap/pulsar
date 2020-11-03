@@ -18,12 +18,43 @@
  */
 package org.apache.pulsar.functions.worker.rest.api.v3;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.distributedlog.api.namespace.Namespace;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
+=======
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.testng.Assert.assertEquals;
+
+import com.google.common.collect.Lists;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.ws.rs.core.Response;
+
+import org.apache.distributedlog.api.namespace.Namespace;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.pulsar.client.admin.Functions;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.admin.Namespaces;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -31,8 +62,15 @@ import org.apache.pulsar.client.admin.Tenants;
 import org.apache.pulsar.common.io.SourceConfig;
 import org.apache.pulsar.common.nar.NarClassLoader;
 import org.apache.pulsar.common.policies.data.TenantInfo;
+<<<<<<< HEAD
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.functions.api.utils.IdentityFunction;
+=======
+import org.apache.pulsar.common.util.ClassLoaderUtils;
+import org.apache.pulsar.common.util.RestException;
+import org.apache.pulsar.functions.api.utils.IdentityFunction;
+import org.apache.pulsar.functions.instance.InstanceUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.proto.Function.FunctionDetails;
 import org.apache.pulsar.functions.proto.Function.FunctionMetaData;
 import org.apache.pulsar.functions.proto.Function.PackageLocationMetaData;
@@ -41,6 +79,7 @@ import org.apache.pulsar.functions.proto.Function.SinkSpec;
 import org.apache.pulsar.functions.proto.Function.SourceSpec;
 import org.apache.pulsar.functions.runtime.RuntimeFactory;
 import org.apache.pulsar.functions.source.TopicSchema;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.utils.SourceConfigUtils;
 import org.apache.pulsar.functions.utils.io.ConnectorUtils;
 import org.apache.pulsar.functions.worker.FunctionMetaDataManager;
@@ -54,6 +93,17 @@ import org.apache.pulsar.functions.worker.rest.api.SourceImpl;
 import org.apache.pulsar.io.twitter.TwitterFireHose;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.mockito.Mockito;
+=======
+import org.apache.pulsar.functions.utils.FunctionCommon;
+import org.apache.pulsar.functions.utils.SourceConfigUtils;
+import org.apache.pulsar.functions.utils.io.ConnectorUtils;
+import org.apache.pulsar.functions.worker.*;
+import org.apache.pulsar.functions.worker.rest.api.SourcesImpl;
+import org.apache.pulsar.io.twitter.TwitterFireHose;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.testng.IObjectFactory;
@@ -61,6 +111,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,6 +141,13 @@ import static org.testng.Assert.assertEquals;
 @PrepareForTest({Utils.class, ConnectorUtils.class, org.apache.pulsar.functions.utils.Utils.class})
 @PowerMockIgnore({ "javax.management.*", "javax.ws.*", "org.apache.logging.log4j.*", "org.apache.pulsar.io.*" })
 @Slf4j
+=======
+/**
+ * Unit test of {@link SourcesApiV3Resource}.
+ */
+@PrepareForTest({WorkerUtils.class, ConnectorUtils.class, FunctionCommon.class, ClassLoaderUtils.class, InstanceUtils.class})
+@PowerMockIgnore({ "javax.management.*", "javax.ws.*", "org.apache.logging.log4j.*", "org.apache.pulsar.io.*" })
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class SourceApiV3ResourceTest {
 
     @ObjectFactory
@@ -113,16 +171,28 @@ public class SourceApiV3ResourceTest {
     private PulsarAdmin mockedPulsarAdmin;
     private Tenants mockedTenants;
     private Namespaces mockedNamespaces;
+<<<<<<< HEAD
+=======
+    private Functions mockedFunctions;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private TenantInfo mockedTenantInfo;
     private List<String> namespaceList = new LinkedList<>();
     private FunctionMetaDataManager mockedManager;
     private FunctionRuntimeManager mockedFunctionRunTimeManager;
     private RuntimeFactory mockedRuntimeFactory;
     private Namespace mockedNamespace;
+<<<<<<< HEAD
     private SourceImpl resource;
     private InputStream mockedInputStream;
     private FormDataContentDisposition mockedFormData;
     private FunctionMetaData mockedFunctionMetaData;
+=======
+    private SourcesImpl resource;
+    private InputStream mockedInputStream;
+    private FormDataContentDisposition mockedFormData;
+    private FunctionMetaData mockedFunctionMetaData;
+    private LeaderService mockedLeaderService;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @BeforeMethod
     public void setup() throws Exception {
@@ -137,19 +207,38 @@ public class SourceApiV3ResourceTest {
         this.mockedPulsarAdmin = mock(PulsarAdmin.class);
         this.mockedTenants = mock(Tenants.class);
         this.mockedNamespaces = mock(Namespaces.class);
+<<<<<<< HEAD
+=======
+        this.mockedFunctions = mock(Functions.class);
+        this.mockedLeaderService = mock(LeaderService.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
         namespaceList.add(tenant + "/" + namespace);
 
         this.mockedWorkerService = mock(WorkerService.class);
         when(mockedWorkerService.getFunctionMetaDataManager()).thenReturn(mockedManager);
+<<<<<<< HEAD
+=======
+        when(mockedWorkerService.getLeaderService()).thenReturn(mockedLeaderService);
+>>>>>>> f773c602c... Test pr 10 (#27)
         when(mockedWorkerService.getFunctionRuntimeManager()).thenReturn(mockedFunctionRunTimeManager);
         when(mockedFunctionRunTimeManager.getRuntimeFactory()).thenReturn(mockedRuntimeFactory);
         when(mockedWorkerService.getDlogNamespace()).thenReturn(mockedNamespace);
         when(mockedWorkerService.isInitialized()).thenReturn(true);
         when(mockedWorkerService.getBrokerAdmin()).thenReturn(mockedPulsarAdmin);
+<<<<<<< HEAD
         when(mockedPulsarAdmin.tenants()).thenReturn(mockedTenants);
         when(mockedPulsarAdmin.namespaces()).thenReturn(mockedNamespaces);
         when(mockedTenants.getTenantInfo(any())).thenReturn(mockedTenantInfo);
         when(mockedNamespaces.getNamespaces(any())).thenReturn(namespaceList);
+=======
+        when(mockedWorkerService.getFunctionAdmin()).thenReturn(mockedPulsarAdmin);
+        when(mockedPulsarAdmin.tenants()).thenReturn(mockedTenants);
+        when(mockedPulsarAdmin.namespaces()).thenReturn(mockedNamespaces);
+        when(mockedPulsarAdmin.functions()).thenReturn(mockedFunctions);
+        when(mockedTenants.getTenantInfo(any())).thenReturn(mockedTenantInfo);
+        when(mockedNamespaces.getNamespaces(any())).thenReturn(namespaceList);
+        when(mockedLeaderService.isLeader()).thenReturn(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         URL file = Thread.currentThread().getContextClassLoader().getResource(JAR_FILE_NAME);
         if (file == null)  {
@@ -168,8 +257,14 @@ public class SourceApiV3ResourceTest {
             .setPulsarServiceUrl("pulsar://localhost:6650/");
         when(mockedWorkerService.getWorkerConfig()).thenReturn(workerConfig);
 
+<<<<<<< HEAD
         this.resource = spy(new SourceImpl(() -> mockedWorkerService));
         Mockito.doReturn(org.apache.pulsar.functions.utils.Utils.ComponentType.SOURCE).when(this.resource).calculateSubjectType(any());
+=======
+        this.resource = spy(new SourcesImpl(() -> mockedWorkerService));
+        mockStatic(InstanceUtils.class);
+        PowerMockito.when(InstanceUtils.calculateSubjectType(any())).thenReturn(FunctionDetails.ComponentType.SOURCE);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     //
@@ -218,7 +313,11 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source Name is not provided")
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source name is not provided")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testRegisterSourceMissingSourceName() {
         try {
             testRegisterSourceMissingArguments(
@@ -239,7 +338,32 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source Package is not provided")
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source class UnknownClass must be in class path")
+    public void testRegisterSourceWrongClassName() {
+        try {
+            testRegisterSourceMissingArguments(
+                    tenant,
+                    namespace,
+                    source,
+                    mockedInputStream,
+                    mockedFormData,
+                    outputTopic,
+                    outputSerdeClassName,
+                    "UnknownClass",
+                    parallelism,
+                    null
+            );
+        } catch (RestException re){
+            assertEquals(re.getResponse().getStatusInfo(), Response.Status.BAD_REQUEST);
+            throw re;
+        }
+    }
+
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source package is not provided")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testRegisterSourceMissingPackage() {
         try {
             testRegisterSourceMissingArguments(
@@ -325,7 +449,11 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Invalid Source Jar")
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Encountered error .*. when getting Source package from .*")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testRegisterSourceHttpUrl() {
         try {
             testRegisterSourceMissingArguments(
@@ -380,31 +508,77 @@ public class SourceApiV3ResourceTest {
             sourceConfig.setParallelism(parallelism);
         }
 
+<<<<<<< HEAD
         resource.registerFunction(
+=======
+        resource.registerSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 tenant,
                 namespace,
                 function,
                 inputStream,
                 details,
                 pkgUrl,
+<<<<<<< HEAD
                 null,
                 new Gson().toJson(sourceConfig),
                 null);
 
+=======
+                sourceConfig,
+                null, null);
+
+    }
+
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source config is not provided")
+    public void testMissingSinkConfig() {
+        resource.registerSource(
+                tenant,
+                namespace,
+                source,
+                mockedInputStream,
+                mockedFormData,
+                null,
+                null,
+                null, null);
+    }
+
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source config is not provided")
+    public void testUpdateMissingSinkConfig() {
+        when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+        resource.updateSource(
+                tenant,
+                namespace,
+                source,
+                mockedInputStream,
+                mockedFormData,
+                null,
+                null,
+                null, null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private void registerDefaultSource() throws IOException {
         SourceConfig sourceConfig = createDefaultSourceConfig();
+<<<<<<< HEAD
         resource.registerFunction(
+=======
+        resource.registerSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
             tenant,
             namespace,
                 source,
             new FileInputStream(JAR_FILE_PATH),
             mockedFormData,
             null,
+<<<<<<< HEAD
             null,
             new Gson().toJson(sourceConfig),
                 null);
+=======
+            sourceConfig,
+                null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source test-source already exists")
@@ -424,13 +598,24 @@ public class SourceApiV3ResourceTest {
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "upload failure")
     public void testRegisterSourceUploadFailure() throws Exception {
         try {
+<<<<<<< HEAD
             mockStatic(Utils.class);
             doThrow(new IOException("upload failure")).when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+            mockStatic(WorkerUtils.class);
+            doThrow(new IOException("upload failure")).when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
 
             registerDefaultSource();
@@ -440,14 +625,23 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     public void testRegisterSourceSuccess() throws Exception {
         mockStatic(Utils.class);
         doNothing().when(Utils.class);
         Utils.uploadFileToBookkeeper(
+=======
+    @Test
+    public void testRegisterSourceSuccess() throws Exception {
+        mockStatic(WorkerUtils.class);
+        doNothing().when(WorkerUtils.class);
+        WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 anyString(),
                 any(File.class),
                 any(Namespace.class));
 
+<<<<<<< HEAD
         when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
 
         RequestResult rr = new RequestResult()
@@ -455,18 +649,34 @@ public class SourceApiV3ResourceTest {
             .setMessage("source registered");
         CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
         when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+        PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+        when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         registerDefaultSource();
     }
 
     @Test
     public void testRegisterSourceConflictingFields() throws Exception {
+<<<<<<< HEAD
         mockStatic(Utils.class);
         doNothing().when(Utils.class);
         Utils.uploadFileToBookkeeper(
                 anyString(),
                 any(File.class),
                 any(Namespace.class));
+=======
+
+        mockStatic(WorkerUtils.class);
+        PowerMockito.doNothing().when(WorkerUtils.class, "uploadFileToBookkeeper", anyString(),
+                any(File.class),
+                any(Namespace.class));
+
+        PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         String actualTenant = "DIFFERENT_TENANT";
         String actualNamespace = "DIFFERENT_NAMESPACE";
         String actualName = "DIFFERENT_NAME";
@@ -475,12 +685,15 @@ public class SourceApiV3ResourceTest {
         when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
         when(mockedManager.containsFunction(eq(actualTenant), eq(actualNamespace), eq(actualName))).thenReturn(false);
 
+<<<<<<< HEAD
         RequestResult rr = new RequestResult()
                 .setSuccess(true)
                 .setMessage("source registered");
         CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
         when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         SourceConfig sourceConfig = new SourceConfig();
         sourceConfig.setTenant(tenant);
         sourceConfig.setNamespace(namespace);
@@ -489,28 +702,44 @@ public class SourceApiV3ResourceTest {
         sourceConfig.setParallelism(parallelism);
         sourceConfig.setTopicName(outputTopic);
         sourceConfig.setSerdeClassName(outputSerdeClassName);
+<<<<<<< HEAD
         resource.registerFunction(
+=======
+        resource.registerSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 actualTenant,
                 actualNamespace,
                 actualName,
                 new FileInputStream(JAR_FILE_PATH),
                 mockedFormData,
                 null,
+<<<<<<< HEAD
                 null,
                 new Gson().toJson(sourceConfig),
                 null);
+=======
+                sourceConfig,
+                null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "source failed to register")
     public void testRegisterSourceFailure() throws Exception {
         try {
+<<<<<<< HEAD
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
 
             RequestResult rr = new RequestResult()
@@ -518,6 +747,14 @@ public class SourceApiV3ResourceTest {
                 .setMessage("source failed to register");
             CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
             when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
+
+            doThrow(new IllegalArgumentException("source failed to register"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             registerDefaultSource();
         } catch (RestException re){
@@ -526,21 +763,39 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "java.io.IOException: Function registration interrupted")
     public void testRegisterSourceInterrupted() throws Exception {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Function registration interrupted")
+    public void testRegisterSourceInterrupted() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
 
             CompletableFuture<RequestResult> requestResult = FutureUtil.failedFuture(
                 new IOException("Function registration interrupted"));
             when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
+
+            doThrow(new IllegalStateException("Function registration interrupted"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             registerDefaultSource();
         } catch (RestException re){
@@ -554,7 +809,11 @@ public class SourceApiV3ResourceTest {
     //
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Tenant is not provided")
+<<<<<<< HEAD
     public void testUpdateSourceMissingTenant() throws IOException {
+=======
+    public void testUpdateSourceMissingTenant() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             testUpdateSourceMissingArguments(
                 null,
@@ -574,7 +833,11 @@ public class SourceApiV3ResourceTest {
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Namespace is not provided")
+<<<<<<< HEAD
     public void testUpdateSourceMissingNamespace() throws IOException {
+=======
+    public void testUpdateSourceMissingNamespace() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             testUpdateSourceMissingArguments(
                 tenant,
@@ -593,8 +856,13 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source Name is not provided")
     public void testUpdateSourceMissingFunctionName() throws IOException {
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source name is not provided")
+    public void testUpdateSourceMissingFunctionName() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             testUpdateSourceMissingArguments(
                 tenant,
@@ -606,7 +874,11 @@ public class SourceApiV3ResourceTest {
                     outputSerdeClassName,
                 className,
                 parallelism,
+<<<<<<< HEAD
                     "Source Name is not provided");
+=======
+                    "Source name is not provided");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (RestException re){
             assertEquals(re.getResponse().getStatusInfo(), Response.Status.BAD_REQUEST);
             throw re;
@@ -614,11 +886,19 @@ public class SourceApiV3ResourceTest {
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Update contains no change")
+<<<<<<< HEAD
     public void testUpdateSourceMissingPackage() throws IOException {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+=======
+    public void testUpdateSourceMissingPackage() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             testUpdateSourceMissingArguments(
                 tenant,
@@ -638,11 +918,19 @@ public class SourceApiV3ResourceTest {
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Update contains no change")
+<<<<<<< HEAD
     public void testUpdateSourceMissingTopicName() throws IOException {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+=======
+    public void testUpdateSourceMissingTopicName() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             testUpdateSourceMissingArguments(
                     tenant,
@@ -661,12 +949,23 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source parallelism should positive number")
     public void testUpdateSourceNegativeParallelism() throws IOException {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source parallelism must be a positive number")
+    public void testUpdateSourceNegativeParallelism() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             testUpdateSourceMissingArguments(
                     tenant,
@@ -678,7 +977,11 @@ public class SourceApiV3ResourceTest {
                     outputSerdeClassName,
                     className,
                     -2,
+<<<<<<< HEAD
                     "Source parallelism should positive number");
+=======
+                    "Source parallelism must be a positive number");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (RestException re){
             assertEquals(re.getResponse().getStatusInfo(), Response.Status.BAD_REQUEST);
             throw re;
@@ -686,11 +989,21 @@ public class SourceApiV3ResourceTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void testUpdateSourceChangedParallelism() throws IOException {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+=======
+    public void testUpdateSourceChangedParallelism() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             testUpdateSourceMissingArguments(
                 tenant,
@@ -709,6 +1022,7 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Destination topics differ")
     public void testUpdateSourceChangedTopic() throws IOException {
         try {
@@ -739,6 +1053,35 @@ public class SourceApiV3ResourceTest {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+=======
+    @Test
+    public void testUpdateSourceChangedTopic() throws Exception {
+        mockStatic(WorkerUtils.class);
+        doNothing().when(WorkerUtils.class);
+        WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+
+        testUpdateSourceMissingArguments(
+                tenant,
+                namespace,
+                source,
+                null,
+                mockedFormData,
+                "DifferentTopic",
+                outputSerdeClassName,
+                className,
+                parallelism,
+                null);
+    }
+
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source parallelism must be a positive number")
+    public void testUpdateSourceZeroParallelism() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.downloadFromBookkeeper(any(Namespace.class), any(File.class), anyString());
+
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             testUpdateSourceMissingArguments(
                     tenant,
@@ -750,7 +1093,11 @@ public class SourceApiV3ResourceTest {
                     outputSerdeClassName,
                     className,
                     0,
+<<<<<<< HEAD
                     "Source parallelism should positive number");
+=======
+                    "Source parallelism must be a positive number");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (RestException re){
             assertEquals(re.getResponse().getStatusInfo(), Response.Status.BAD_REQUEST);
             throw re;
@@ -767,18 +1114,37 @@ public class SourceApiV3ResourceTest {
             String outputSerdeClassName,
             String className,
             Integer parallelism,
+<<<<<<< HEAD
             String expectedError) throws IOException {
+=======
+            String expectedError) throws Exception {
+
+        NarClassLoader classLoader = mock(NarClassLoader.class);
+        doReturn(TwitterFireHose.class).when(classLoader).loadClass(eq(TwitterFireHose.class.getName()));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         mockStatic(ConnectorUtils.class);
         doReturn(TwitterFireHose.class.getName()).when(ConnectorUtils.class);
         ConnectorUtils.getIOSourceClass(any(NarClassLoader.class));
 
+<<<<<<< HEAD
         mockStatic(org.apache.pulsar.functions.utils.Utils.class);
         doReturn(String.class).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.getSourceType(anyString(), any(NarClassLoader.class));
 
         doReturn(mock(NarClassLoader.class)).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.extractNarClassLoader(any(Path.class), anyString(), any(File.class));
+=======
+        mockStatic(ClassLoaderUtils.class);
+
+        mockStatic(FunctionCommon.class);
+        PowerMockito.when(FunctionCommon.class, "createPkgTempFile").thenCallRealMethod();
+        doReturn(String.class).when(FunctionCommon.class);
+        FunctionCommon.getSourceType(eq(TwitterFireHose.class));
+
+        doReturn(classLoader).when(FunctionCommon.class);
+        FunctionCommon.extractNarClassLoader(any(), any(), any());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         this.mockedFunctionMetaData = FunctionMetaData.newBuilder().setFunctionDetails(createDefaultFunctionDetails()).build();
         when(mockedManager.getFunctionMetaData(any(), any(), any())).thenReturn(mockedFunctionMetaData);
@@ -808,6 +1174,7 @@ public class SourceApiV3ResourceTest {
             sourceConfig.setParallelism(parallelism);
         }
 
+<<<<<<< HEAD
         if (expectedError == null) {
             RequestResult rr = new RequestResult()
                     .setSuccess(true)
@@ -817,12 +1184,21 @@ public class SourceApiV3ResourceTest {
         }
 
         resource.updateFunction(
+=======
+        if (expectedError != null) {
+            doThrow(new IllegalArgumentException(expectedError))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+        }
+
+        resource.updateSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
             tenant,
             namespace,
             function,
             inputStream,
             details,
             null,
+<<<<<<< HEAD
             null,
             new Gson().toJson(sourceConfig),
                 null);
@@ -830,6 +1206,14 @@ public class SourceApiV3ResourceTest {
     }
 
     private void updateDefaultSource() throws IOException {
+=======
+            sourceConfig,
+                null, null, null);
+
+    }
+
+    private void updateDefaultSource() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         SourceConfig sourceConfig = new SourceConfig();
         sourceConfig.setTenant(tenant);
         sourceConfig.setNamespace(namespace);
@@ -839,27 +1223,50 @@ public class SourceApiV3ResourceTest {
         sourceConfig.setTopicName(outputTopic);
         sourceConfig.setSerdeClassName(outputSerdeClassName);
 
+<<<<<<< HEAD
+=======
+        NarClassLoader classLoader = mock(NarClassLoader.class);
+        doReturn(TwitterFireHose.class).when(classLoader).loadClass(eq(TwitterFireHose.class.getName()));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         mockStatic(ConnectorUtils.class);
         doReturn(TwitterFireHose.class.getName()).when(ConnectorUtils.class);
         ConnectorUtils.getIOSourceClass(any(NarClassLoader.class));
 
+<<<<<<< HEAD
         mockStatic(org.apache.pulsar.functions.utils.Utils.class);
         doReturn(String.class).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.getSourceType(anyString(), any(NarClassLoader.class));
 
         doReturn(mock(NarClassLoader.class)).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.extractNarClassLoader(any(Path.class), anyString(), any(File.class));
+=======
+        mockStatic(ClassLoaderUtils.class);
+
+        mockStatic(FunctionCommon.class);
+        PowerMockito.when(FunctionCommon.class, "createPkgTempFile").thenCallRealMethod();
+        doReturn(String.class).when(FunctionCommon.class);
+        FunctionCommon.getSourceType(eq(TwitterFireHose.class));
+
+        doReturn(classLoader).when(FunctionCommon.class);
+        FunctionCommon.extractNarClassLoader(any(), any(File.class), any());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         this.mockedFunctionMetaData = FunctionMetaData.newBuilder().setFunctionDetails(createDefaultFunctionDetails()).build();
         when(mockedManager.getFunctionMetaData(any(), any(), any())).thenReturn(mockedFunctionMetaData);
 
+<<<<<<< HEAD
         resource.updateFunction(
+=======
+        resource.updateSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
             tenant,
             namespace,
                 source,
                 new FileInputStream(JAR_FILE_PATH),
             mockedFormData,
             null,
+<<<<<<< HEAD
             null,
             new Gson().toJson(sourceConfig),
                 null);
@@ -867,6 +1274,14 @@ public class SourceApiV3ResourceTest {
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source test-source doesn't exist")
     public void testUpdateNotExistedSource() throws IOException {
+=======
+            sourceConfig,
+                null, null, null);
+    }
+
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source test-source doesn't exist")
+    public void testUpdateNotExistedSource() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(false);
             updateDefaultSource();
@@ -879,13 +1294,24 @@ public class SourceApiV3ResourceTest {
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "upload failure")
     public void testUpdateSourceUploadFailure() throws Exception {
         try {
+<<<<<<< HEAD
             mockStatic(Utils.class);
             doThrow(new IOException("upload failure")).when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+            mockStatic(WorkerUtils.class);
+            doThrow(new IOException("upload failure")).when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
             updateDefaultSource();
         } catch (RestException re){
@@ -896,13 +1322,20 @@ public class SourceApiV3ResourceTest {
 
     @Test
     public void testUpdateSourceSuccess() throws Exception {
+<<<<<<< HEAD
         mockStatic(Utils.class);
         doNothing().when(Utils.class);
         Utils.uploadFileToBookkeeper(
+=======
+        mockStatic(WorkerUtils.class);
+        doNothing().when(WorkerUtils.class);
+        WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                 anyString(),
                 any(File.class),
                 any(Namespace.class));
 
+<<<<<<< HEAD
         when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
 
         RequestResult rr = new RequestResult()
@@ -910,12 +1343,21 @@ public class SourceApiV3ResourceTest {
             .setMessage("source registered");
         CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
         when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+        PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+        when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         updateDefaultSource();
     }
 
     @Test
+<<<<<<< HEAD
     public void testUpdateSourceWithUrl() throws IOException {
+=======
+    public void testUpdateSourceWithUrl() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         Configurator.setRootLevel(Level.DEBUG);
 
         String filePackageUrl = "file://" + JAR_FILE_PATH;
@@ -929,20 +1371,40 @@ public class SourceApiV3ResourceTest {
         sourceConfig.setClassName(className);
         sourceConfig.setParallelism(parallelism);
 
+<<<<<<< HEAD
+=======
+        NarClassLoader classLoader = mock(NarClassLoader.class);
+        doReturn(TwitterFireHose.class).when(classLoader).loadClass(eq(TwitterFireHose.class.getName()));
+
+        when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         mockStatic(ConnectorUtils.class);
         doReturn(TwitterFireHose.class.getName()).when(ConnectorUtils.class);
         ConnectorUtils.getIOSourceClass(any(NarClassLoader.class));
 
+<<<<<<< HEAD
         mockStatic(org.apache.pulsar.functions.utils.Utils.class);
         doReturn(String.class).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.getSourceType(anyString(), any(NarClassLoader.class));
 
         doReturn(mock(NarClassLoader.class)).when(org.apache.pulsar.functions.utils.Utils.class);
         org.apache.pulsar.functions.utils.Utils.extractNarClassLoader(any(Path.class), anyString(), any(File.class));
+=======
+        mockStatic(ClassLoaderUtils.class);
+
+        mockStatic(FunctionCommon.class);
+        doReturn(String.class).when(FunctionCommon.class);
+        FunctionCommon.getSourceType(eq(TwitterFireHose.class));
+        PowerMockito.when(FunctionCommon.class, "extractFileFromPkgURL", any()).thenCallRealMethod();
+
+        doReturn(classLoader).when(FunctionCommon.class);
+        FunctionCommon.extractNarClassLoader(any(), any(), any());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         this.mockedFunctionMetaData = FunctionMetaData.newBuilder().setFunctionDetails(createDefaultFunctionDetails()).build();
         when(mockedManager.getFunctionMetaData(any(), any(), any())).thenReturn(mockedFunctionMetaData);
 
+<<<<<<< HEAD
 
         when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
         RequestResult rr = new RequestResult()
@@ -952,28 +1414,43 @@ public class SourceApiV3ResourceTest {
             when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
 
         resource.updateFunction(
+=======
+        resource.updateSource(
+>>>>>>> f773c602c... Test pr 10 (#27)
             tenant,
             namespace,
                 source,
             null,
             null,
             filePackageUrl,
+<<<<<<< HEAD
             null,
             new Gson().toJson(sourceConfig),
                 null);
+=======
+            sourceConfig,
+                null, null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "source failed to register")
     public void testUpdateSourceFailure() throws Exception {
         try {
+<<<<<<< HEAD
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
 
             RequestResult rr = new RequestResult()
@@ -981,6 +1458,14 @@ public class SourceApiV3ResourceTest {
                     .setMessage("source failed to register");
             CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
             when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+
+            doThrow(new IllegalArgumentException("source failed to register"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             updateDefaultSource();
         } catch (RestException re){
@@ -989,21 +1474,39 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "java.io.IOException: Function registration interrupted")
     public void testUpdateSourceInterrupted() throws Exception {
         try {
             mockStatic(Utils.class);
             doNothing().when(Utils.class);
             Utils.uploadFileToBookkeeper(
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Function registration interrupted")
+    public void testUpdateSourceInterrupted() throws Exception {
+        try {
+            mockStatic(WorkerUtils.class);
+            doNothing().when(WorkerUtils.class);
+            WorkerUtils.uploadFileToBookkeeper(
+>>>>>>> f773c602c... Test pr 10 (#27)
                     anyString(),
                     any(File.class),
                     any(Namespace.class));
 
+<<<<<<< HEAD
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
 
             CompletableFuture<RequestResult> requestResult = FutureUtil.failedFuture(
                 new IOException("Function registration interrupted"));
             when(mockedManager.updateFunction(any(FunctionMetaData.class))).thenReturn(requestResult);
+=======
+            PowerMockito.when(WorkerUtils.class, "dumpToTmpFile", any()).thenCallRealMethod();
+
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+
+            doThrow(new IllegalStateException("Function registration interrupted"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             updateDefaultSource();
         } catch (RestException re){
@@ -1044,7 +1547,11 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source Name is not provided")
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source name is not provided")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testDeregisterSourceMissingFunctionName() {
         try {
             testDeregisterSourceMissingArguments(
@@ -1067,7 +1574,11 @@ public class SourceApiV3ResourceTest {
             tenant,
             namespace,
             function,
+<<<<<<< HEAD
                 null);
+=======
+                null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     }
 
@@ -1076,7 +1587,11 @@ public class SourceApiV3ResourceTest {
             tenant,
             namespace,
                 source,
+<<<<<<< HEAD
                 null);
+=======
+                null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp= "Source test-source doesn't exist")
@@ -1094,16 +1609,21 @@ public class SourceApiV3ResourceTest {
     public void testDeregisterSourceSuccess() {
         when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
 
+<<<<<<< HEAD
         RequestResult rr = new RequestResult()
             .setSuccess(true)
             .setMessage("source deregistered");
         CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
         when(mockedManager.deregisterFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(requestResult);
+=======
+        when(mockedManager.getFunctionMetaData(eq(tenant), eq(namespace), eq(source))).thenReturn(FunctionMetaData.newBuilder().build());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         deregisterDefaultSource();
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "source failed to deregister")
+<<<<<<< HEAD
     public void testDeregisterSourceFailure() {
         try {
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
@@ -1113,6 +1633,16 @@ public class SourceApiV3ResourceTest {
                 .setMessage("source failed to deregister");
             CompletableFuture<RequestResult> requestResult = CompletableFuture.completedFuture(rr);
             when(mockedManager.deregisterFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(requestResult);
+=======
+    public void testDeregisterSourceFailure() throws Exception {
+        try {
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+
+            when(mockedManager.getFunctionMetaData(eq(tenant), eq(namespace), eq(source))).thenReturn(FunctionMetaData.newBuilder().build());
+
+            doThrow(new IllegalArgumentException("source failed to deregister"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             deregisterDefaultSource();
         } catch (RestException re){
@@ -1122,6 +1652,7 @@ public class SourceApiV3ResourceTest {
     }
 
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Function deregistration interrupted")
+<<<<<<< HEAD
     public void testDeregisterSourceInterrupted() {
         try {
             when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
@@ -1129,6 +1660,16 @@ public class SourceApiV3ResourceTest {
             CompletableFuture<RequestResult> requestResult = FutureUtil.failedFuture(
                 new IOException("Function deregistration interrupted"));
             when(mockedManager.deregisterFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(requestResult);
+=======
+    public void testDeregisterSourceInterrupted() throws Exception {
+        try {
+            when(mockedManager.containsFunction(eq(tenant), eq(namespace), eq(source))).thenReturn(true);
+
+            when(mockedManager.getFunctionMetaData(eq(tenant), eq(namespace), eq(source))).thenReturn(FunctionMetaData.newBuilder().build());
+
+            doThrow(new IllegalStateException("Function deregistration interrupted"))
+                    .when(mockedManager).updateFunctionOnLeader(any(FunctionMetaData.class), Mockito.anyBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             deregisterDefaultSource();
         } catch (RestException re){
@@ -1169,7 +1710,11 @@ public class SourceApiV3ResourceTest {
         }
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source Name is not provided")
+=======
+    @Test(expectedExceptions = RestException.class, expectedExceptionsMessageRegExp = "Source name is not provided")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testGetSourceMissingFunctionName() {
         try {
             testGetSourceMissingArguments(
@@ -1191,7 +1736,11 @@ public class SourceApiV3ResourceTest {
         resource.getFunctionInfo(
             tenant,
             namespace,
+<<<<<<< HEAD
             source
+=======
+            source, null, null
+>>>>>>> f773c602c... Test pr 10 (#27)
         );
     }
 
@@ -1281,14 +1830,22 @@ public class SourceApiV3ResourceTest {
     ) {
         resource.listFunctions(
             tenant,
+<<<<<<< HEAD
             namespace
+=======
+            namespace, null, null
+>>>>>>> f773c602c... Test pr 10 (#27)
         );
     }
 
     private List<String> listDefaultSources() {
         return resource.listFunctions(
             tenant,
+<<<<<<< HEAD
             namespace);
+=======
+            namespace, null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -1321,9 +1878,16 @@ public class SourceApiV3ResourceTest {
                 FunctionDetails.newBuilder().setName("test-3").build()).build();
         functionMetaDataList.add(f3);
         when(mockedManager.listFunctions(eq(tenant), eq(namespace))).thenReturn(functionMetaDataList);
+<<<<<<< HEAD
         doReturn(org.apache.pulsar.functions.utils.Utils.ComponentType.SOURCE).when(this.resource).calculateSubjectType(f1);
         doReturn(org.apache.pulsar.functions.utils.Utils.ComponentType.FUNCTION).when(this.resource).calculateSubjectType(f2);
         doReturn(org.apache.pulsar.functions.utils.Utils.ComponentType.SINK).when(this.resource).calculateSubjectType(f3);
+=======
+        mockStatic(InstanceUtils.class);
+        PowerMockito.when(InstanceUtils.calculateSubjectType(f1.getFunctionDetails())).thenReturn(FunctionDetails.ComponentType.SOURCE);
+        PowerMockito.when(InstanceUtils.calculateSubjectType(f2.getFunctionDetails())).thenReturn(FunctionDetails.ComponentType.FUNCTION);
+        PowerMockito.when(InstanceUtils.calculateSubjectType(f3.getFunctionDetails())).thenReturn(FunctionDetails.ComponentType.SINK);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         List<String> sourceList = listDefaultSources();
         assertEquals(functions, sourceList);

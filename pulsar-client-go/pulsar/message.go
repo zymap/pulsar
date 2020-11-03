@@ -25,6 +25,12 @@ type ProducerMessage struct {
 	// Payload for the message
 	Payload []byte
 
+<<<<<<< HEAD
+=======
+	//Value and payload is mutually exclusive, `Value interface{}` for schema message.
+	Value interface{}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// Sets the key of the message for routing policy
 	Key string
 
@@ -39,6 +45,12 @@ type ProducerMessage struct {
 
 	// Set the sequence id to assign to the current message
 	SequenceID int64
+<<<<<<< HEAD
+=======
+
+	// Set the delay duration to deliver the message
+	DeliverAfter time.Duration
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 type Message interface {
@@ -66,6 +78,12 @@ type Message interface {
 
 	// Get the key of the message, if any
 	Key() string
+<<<<<<< HEAD
+=======
+
+	//Get the de-serialized value of the message, according the configured
+	GetValue(v interface{}) error
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 // Identifier for a particular message

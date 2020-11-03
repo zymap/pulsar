@@ -46,7 +46,11 @@ public class SequenceIdWithErrorTest extends BrokerBkEnsemblesTests {
         String topicName = "prop/my-test/my-topic";
         int N = 10;
 
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("pulsar://localhost:" + BROKER_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(pulsar.getBrokerServiceUrl()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // Create consumer
         Consumer<String> consumer = client.newConsumer(Schema.STRING).topic(topicName).subscriptionName("sub")

@@ -25,19 +25,30 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;
 import io.netty.buffer.ByteBuf;
+<<<<<<< HEAD
 import java.util.Enumeration;
+=======
+import java.util.Iterator;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+<<<<<<< HEAD
 import org.apache.bookkeeper.client.AsyncCallback.ReadCallback;
 import org.apache.bookkeeper.client.BKException;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.api.LedgerEntry;
 import org.apache.bookkeeper.client.api.ReadHandle;
 import org.apache.bookkeeper.mledger.AsyncCallbacks;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntriesCallback;
 import org.apache.bookkeeper.mledger.Entry;
+<<<<<<< HEAD
+=======
+import org.apache.bookkeeper.mledger.ManagedLedgerException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +92,11 @@ public class EntryCacheManager {
             return new EntryCacheDisabled(ml);
         }
 
+<<<<<<< HEAD
         EntryCache newEntryCache = new EntryCacheImpl(this, ml);
+=======
+        EntryCache newEntryCache = new EntryCacheImpl(this, ml, mlFactory.getConfig().isCopyEntriesInCache());
+>>>>>>> f773c602c... Test pr 10 (#27)
         EntryCache currentEntryCache = caches.putIfAbsent(ml.getName(), newEntryCache);
         if (currentEntryCache != null) {
             return currentEntryCache;
@@ -152,7 +167,11 @@ public class EntryCacheManager {
     }
 
     public void clear() {
+<<<<<<< HEAD
         caches.values().forEach(cache -> cache.clear());
+=======
+        caches.values().forEach(EntryCache::clear);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     protected class EntryCacheDisabled implements EntryCache {
@@ -190,6 +209,13 @@ public class EntryCacheManager {
         }
 
         @Override
+<<<<<<< HEAD
+=======
+        public void invalidateEntriesBeforeTimestamp(long timestamp) {
+        }
+
+        @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
         public void asyncReadEntry(ReadHandle lh, long firstEntry, long lastEntry, boolean isSlowestReader,
                 final ReadEntriesCallback callback, Object ctx) {
             lh.readAsync(firstEntry, lastEntry).whenComplete(
@@ -213,13 +239,47 @@ public class EntryCacheManager {
                         mlFactoryMBean.recordCacheMiss(entries.size(), totalSize);
                         ml.mbean.addReadEntriesSample(entries.size(), totalSize);
 
+<<<<<<< HEAD
                         callback.readEntriesComplete(entries, null);
+=======
+                        callback.readEntriesComplete(entries, ctx);
+                    }).exceptionally(exception -> {
+                    	callback.readEntriesFailed(createManagedLedgerException(exception), ctx);
+                    	return null;
+>>>>>>> f773c602c... Test pr 10 (#27)
                     });
         }
 
         @Override
         public void asyncReadEntry(ReadHandle lh, PositionImpl position, AsyncCallbacks.ReadEntryCallback callback,
                 Object ctx) {
+<<<<<<< HEAD
+=======
+            lh.readAsync(position.getEntryId(), position.getEntryId()).whenCompleteAsync(
+                    (ledgerEntries, exception) -> {
+                        if (exception != null) {
+                            ml.invalidateLedgerHandle(lh, exception);
+                            callback.readEntryFailed(createManagedLedgerException(exception), ctx);
+                            return;
+                        }
+
+                        try {
+                            Iterator<LedgerEntry> iterator = ledgerEntries.iterator();
+                            if (iterator.hasNext()) {
+                                LedgerEntry ledgerEntry = iterator.next();
+                                EntryImpl returnEntry = EntryImpl.create(ledgerEntry);
+
+                                mlFactoryMBean.recordCacheMiss(1, returnEntry.getLength());
+                                ml.getMBean().addReadEntriesSample(1, returnEntry.getLength());
+                                callback.readEntryComplete(returnEntry, ctx);
+                            } else {
+                                callback.readEntryFailed(new ManagedLedgerException("Could not read given position"), ctx);
+                            }
+                        } finally {
+                            ledgerEntries.close();
+                        }
+                    }, ml.getExecutor().chooseThread(ml.getName()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         @Override

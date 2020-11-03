@@ -18,19 +18,37 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import org.apache.avro.Schema;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+=======
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Properties;
+import org.apache.avro.Schema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.common.naming.TopicName;
 
+<<<<<<< HEAD
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+=======
+/**
+ * A helper class containing repeatable logic used in the other classes.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarConnectorUtils {
 
     public static Schema parseSchema(String schemaJson) {
         Schema.Parser parser = new Schema.Parser();
+<<<<<<< HEAD
+=======
+        parser.setValidateDefaults(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return parser.parse(schemaJson);
     }
 
@@ -53,7 +71,11 @@ public class PulsarConnectorUtils {
         Class<?> theCls;
         try {
             theCls = Class.forName(userClassName, true, classLoader);
+<<<<<<< HEAD
         } catch (ClassNotFoundException cnfe) {
+=======
+        } catch (ClassNotFoundException | NoClassDefFoundError cnfe) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             throw new RuntimeException("User class must be in class path", cnfe);
         }
         if (!xface.isAssignableFrom(theCls)) {
@@ -73,4 +95,29 @@ public class PulsarConnectorUtils {
             throw new RuntimeException("User class constructor throws exception", e);
         }
     }
+<<<<<<< HEAD
+=======
+
+    public static Properties getProperties(Map<String, String> configMap) {
+        Properties properties = new Properties();
+        for (Map.Entry<String, String> entry : configMap.entrySet()) {
+            properties.setProperty(entry.getKey(), entry.getValue());
+        }
+        return properties;
+    }
+
+
+    public static String rewriteNamespaceDelimiterIfNeeded(String namespace, PulsarConnectorConfig config) {
+        return config.getNamespaceDelimiterRewriteEnable()
+                ? namespace.replace("/", config.getRewriteNamespaceDelimiter())
+                : namespace;
+    }
+
+    public static String restoreNamespaceDelimiterIfNeeded(String namespace, PulsarConnectorConfig config) {
+        return config.getNamespaceDelimiterRewriteEnable()
+                ? namespace.replace(config.getRewriteNamespaceDelimiter(), "/")
+                : namespace;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -21,12 +21,22 @@ package org.apache.pulsar.common.policies.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+<<<<<<< HEAD
  */
 public class NonPersistentSubscriptionStats extends SubscriptionStats{
 
     /**
      * for non-persistent topic: broker drops msg for subscription if none of the consumer available for message
      * delivery
+=======
+ * Statistics for subscription to non-persistent topics.
+ */
+public class NonPersistentSubscriptionStats extends SubscriptionStats {
+
+    /**
+     * for non-persistent topic: broker drops msg for subscription if none of the consumer available for message
+     * delivery.
+>>>>>>> f773c602c... Test pr 10 (#27)
      **/
     public double msgDropRate;
 

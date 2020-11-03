@@ -46,13 +46,19 @@ import org.apache.pulsar.common.functions.WorkerInfo;
 import org.apache.pulsar.common.policies.data.ConsumerStats;
 import org.apache.pulsar.common.policies.data.TopicStats;
 import org.apache.pulsar.functions.proto.Function;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.utils.FunctionDetailsUtils;
+=======
+import org.apache.pulsar.functions.utils.FunctionCommon;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.apache.pulsar.functions.worker.SchedulerManager.checkHeartBeatFunction;
 
 /**
  * A simple implementation of leader election using a pulsar topic.
  */
 @Slf4j
+<<<<<<< HEAD
 public class MembershipManager implements AutoCloseable, ConsumerEventListener {
 
     private final String consumerName;
@@ -61,6 +67,12 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
     private PulsarAdmin pulsarAdminClient;
     private final CompletableFuture<Void> firstConsumerEventFuture;
     private final AtomicBoolean isLeader = new AtomicBoolean();
+=======
+public class MembershipManager implements AutoCloseable {
+
+    private final WorkerConfig workerConfig;
+    private PulsarAdmin pulsarAdmin;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     static final String COORDINATION_TOPIC_SUBSCRIPTION = "participants";
 
@@ -71,6 +83,7 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
     @VisibleForTesting
     Map<Function.Instance, Long> unsignedFunctionDurations = new HashMap<>();
 
+<<<<<<< HEAD
     MembershipManager(WorkerService service, PulsarClient client)
             throws PulsarClientException {
         this.workerConfig = service.getWorkerConfig();
@@ -114,15 +127,25 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
 
     public boolean isLeader() {
         return isLeader.get();
+=======
+    MembershipManager(WorkerService workerService, PulsarClient pulsarClient, PulsarAdmin pulsarAdmin) {
+        this.workerConfig = workerService.getWorkerConfig();
+        this.pulsarAdmin = pulsarAdmin;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public List<WorkerInfo> getCurrentMembership() {
 
         List<WorkerInfo> workerIds = new LinkedList<>();
         TopicStats topicStats = null;
+<<<<<<< HEAD
         PulsarAdmin pulsarAdmin = this.getPulsarAdminClient();
         try {
             topicStats = pulsarAdmin.topics().getStats(this.workerConfig.getClusterCoordinationTopic());
+=======
+        try {
+            topicStats = this.pulsarAdmin.topics().getStats(this.workerConfig.getClusterCoordinationTopic());
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (PulsarAdminException e) {
             log.error("Failed to get status of coordinate topic {}",
                     this.workerConfig.getClusterCoordinationTopic(), e);
@@ -139,9 +162,14 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
 
     public WorkerInfo getLeader() {
         TopicStats topicStats = null;
+<<<<<<< HEAD
         PulsarAdmin pulsarAdmin = this.getPulsarAdminClient();
         try {
             topicStats = pulsarAdmin.topics().getStats(this.workerConfig.getClusterCoordinationTopic());
+=======
+        try {
+            topicStats = this.pulsarAdmin.topics().getStats(this.workerConfig.getClusterCoordinationTopic());
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (PulsarAdminException e) {
             log.error("Failed to get status of coordinate topic {}",
                     this.workerConfig.getClusterCoordinationTopic(), e);
@@ -163,11 +191,16 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
     }
 
     @Override
+<<<<<<< HEAD
     public void close() throws PulsarClientException {
         consumer.close();
         if (this.pulsarAdminClient != null) {
             this.pulsarAdminClient.close();
         }
+=======
+    public void close() {
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void checkFailures(FunctionMetaDataManager functionMetaDataManager,
@@ -179,7 +212,11 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
         List<Function.FunctionMetaData> functionMetaDataList = functionMetaDataManager.getAllFunctionMetaData();
         Map<String, Function.FunctionMetaData> functionMetaDataMap = new HashMap<>();
         for (Function.FunctionMetaData entry : functionMetaDataList) {
+<<<<<<< HEAD
             functionMetaDataMap.put(FunctionDetailsUtils.getFullyQualifiedName(entry.getFunctionDetails()), entry);
+=======
+            functionMetaDataMap.put(FunctionCommon.getFullyQualifiedName(entry.getFunctionDetails()), entry);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         Map<String, Map<String, Function.Assignment>> currentAssignments = functionRuntimeManager.getCurrentAssignments();
         Map<String, Function.Assignment> assignmentMap = new HashMap<>();
@@ -192,9 +229,15 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
         Iterator<Map.Entry<Function.Instance, Long>> it = unsignedFunctionDurations.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Function.Instance, Long> entry = it.next();
+<<<<<<< HEAD
             String fullyQualifiedFunctionName = FunctionDetailsUtils.getFullyQualifiedName(
                     entry.getKey().getFunctionMetaData().getFunctionDetails());
             String fullyQualifiedInstanceId = org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(entry.getKey());
+=======
+            String fullyQualifiedFunctionName = FunctionCommon.getFullyQualifiedName(
+                    entry.getKey().getFunctionMetaData().getFunctionDetails());
+            String fullyQualifiedInstanceId = FunctionCommon.getFullyQualifiedInstanceId(entry.getKey());
+>>>>>>> f773c602c... Test pr 10 (#27)
             //remove functions that don't exist anymore
             if (!functionMetaDataMap.containsKey(fullyQualifiedFunctionName)) {
                 it.remove();
@@ -256,15 +299,31 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
         // check unassigned
         Collection<Function.Instance> needSchedule = new LinkedList<>();
         Collection<Function.Assignment> needRemove = new LinkedList<>();
+<<<<<<< HEAD
+=======
+        Map<String, Integer> numRemoved = new HashMap<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
         for (Map.Entry<Function.Instance, Long> entry : this.unsignedFunctionDurations.entrySet()) {
             Function.Instance instance = entry.getKey();
             long unassignedDurationMs = entry.getValue();
             if (currentTimeMs - unassignedDurationMs > this.workerConfig.getRescheduleTimeoutMs()) {
                 needSchedule.add(instance);
                 // remove assignment from failed node
+<<<<<<< HEAD
                 Function.Assignment assignment = assignmentMap.get(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(instance));
                 if (assignment != null) {
                     needRemove.add(assignment);
+=======
+                Function.Assignment assignment = assignmentMap.get(FunctionCommon.getFullyQualifiedInstanceId(instance));
+                if (assignment != null) {
+                    needRemove.add(assignment);
+
+                    Integer count = numRemoved.get(assignment.getWorkerId());
+                    if (count == null) {
+                        count = 0;
+                    }
+                    numRemoved.put(assignment.getWorkerId(),  count + 1);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 }
                 triggerScheduler = true;
             }
@@ -273,6 +332,7 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
             functionRuntimeManager.removeAssignments(needRemove);
         }
         if (triggerScheduler) {
+<<<<<<< HEAD
             log.info("Functions that need scheduling/rescheduling: {}", needSchedule);
             schedulerManager.schedule();
         }
@@ -306,4 +366,11 @@ public class MembershipManager implements AutoCloseable, ConsumerEventListener {
         return false;
     }
     
+=======
+            log.info("Failure check - Total number of instances that need to be scheduled/rescheduled: {} | Number of unassigned instances that need to be scheduled: {} | Number of instances on dead workers that need to be reassigned {}",
+                    needSchedule.size(), needSchedule.size() - needRemove.size(), numRemoved);
+            schedulerManager.schedule();
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

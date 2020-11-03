@@ -25,7 +25,12 @@ package org.apache.pulsar.functions.secretsprovider;
 public class EnvironmentBasedSecretsProvider implements SecretsProvider {
 
     /**
+<<<<<<< HEAD
      * Fetches a secret
+=======
+     * Fetches a secret.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return The actual secret
      */
     @Override

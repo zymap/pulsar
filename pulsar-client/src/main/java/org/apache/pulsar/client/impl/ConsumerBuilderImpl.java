@@ -25,11 +25,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+<<<<<<< HEAD
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+=======
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.api.BatchReceivePolicy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
 import org.apache.pulsar.client.api.ConsumerCryptoFailureAction;
@@ -37,20 +48,38 @@ import org.apache.pulsar.client.api.ConsumerEventListener;
 import org.apache.pulsar.client.api.ConsumerInterceptor;
 import org.apache.pulsar.client.api.CryptoKeyReader;
 import org.apache.pulsar.client.api.DeadLetterPolicy;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.KeySharedPolicy;
+import org.apache.pulsar.client.api.MessageCrypto;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.MessageListener;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.RegexSubscriptionMode;
 import org.apache.pulsar.client.api.PulsarClientException.InvalidConfigurationException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.impl.conf.ConfigurationDataUtils;
 import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
+=======
+import org.apache.pulsar.client.api.SubscriptionMode;
+import org.apache.pulsar.client.api.SubscriptionType;
+import org.apache.pulsar.client.impl.conf.ConfigurationDataUtils;
+import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
+import org.apache.pulsar.client.util.RetryMessageUtil;
+import org.apache.pulsar.common.naming.TopicName;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.FutureUtil;
 
 import com.google.common.collect.Lists;
 import lombok.NonNull;
 
+<<<<<<< HEAD
+=======
+@Getter(AccessLevel.PUBLIC)
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
 
     private final PulsarClientImpl client;
@@ -59,6 +88,10 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
     private List<ConsumerInterceptor<T>> interceptorList;
 
     private static long MIN_ACK_TIMEOUT_MILLIS = 1000;
+<<<<<<< HEAD
+=======
+    private static long MIN_TICK_TIME_MILLIS = 100;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static long DEFAULT_ACK_TIMEOUT_MILLIS_FOR_DEAD_LETTER = 30000L;
 
 
@@ -87,6 +120,7 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
     public Consumer<T> subscribe() throws PulsarClientException {
         try {
             return subscribeAsync().get();
+<<<<<<< HEAD
         } catch (ExecutionException e) {
             Throwable t = e.getCause();
             if (t instanceof PulsarClientException) {
@@ -97,6 +131,10 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PulsarClientException(e);
+=======
+        } catch (Exception e) {
+            throw PulsarClientException.unwrap(e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -111,6 +149,34 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
             return FutureUtil.failedFuture(
                     new InvalidConfigurationException("Subscription name must be set on the consumer builder"));
         }
+<<<<<<< HEAD
+=======
+
+        if (conf.getKeySharedPolicy() != null && conf.getSubscriptionType() != SubscriptionType.Key_Shared) {
+            return FutureUtil.failedFuture(
+                    new InvalidConfigurationException("KeySharedPolicy must set with KeyShared subscription"));
+        }
+        if(conf.isRetryEnable() && conf.getTopicNames().size() > 0 ) {
+            TopicName topicFirst = TopicName.get(conf.getTopicNames().iterator().next());
+            String retryLetterTopic = topicFirst.getNamespace() + "/" + conf.getSubscriptionName() + RetryMessageUtil.RETRY_GROUP_TOPIC_SUFFIX;
+            String deadLetterTopic = topicFirst.getNamespace() + "/" + conf.getSubscriptionName() + RetryMessageUtil.DLQ_GROUP_TOPIC_SUFFIX;
+            if(conf.getDeadLetterPolicy() == null) {
+                conf.setDeadLetterPolicy(DeadLetterPolicy.builder()
+                                        .maxRedeliverCount(RetryMessageUtil.MAX_RECONSUMETIMES)
+                                        .retryLetterTopic(retryLetterTopic)
+                                        .deadLetterTopic(deadLetterTopic)
+                                        .build());
+            } else {
+                if (StringUtils.isBlank(conf.getDeadLetterPolicy().getRetryLetterTopic())) {
+                    conf.getDeadLetterPolicy().setRetryLetterTopic(retryLetterTopic);
+                }
+                if (StringUtils.isBlank(conf.getDeadLetterPolicy().getDeadLetterTopic())) {
+                    conf.getDeadLetterPolicy().setDeadLetterTopic(deadLetterTopic);
+                }
+            }
+            conf.getTopicNames().add(conf.getDeadLetterPolicy().getRetryLetterTopic());
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         return interceptorList == null || interceptorList.size() == 0 ?
                 client.subscribeAsync(conf, schema, null) :
                 client.subscribeAsync(conf, schema, new ConsumerInterceptors<>(interceptorList));
@@ -122,7 +188,12 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
                 "Passed in topicNames should not be null or empty.");
         Arrays.stream(topicNames).forEach(topicName ->
                 checkArgument(StringUtils.isNotBlank(topicName), "topicNames cannot have blank topic"));
+<<<<<<< HEAD
         conf.getTopicNames().addAll(Lists.newArrayList(topicNames));
+=======
+        conf.getTopicNames().addAll(Lists.newArrayList(Arrays.stream(topicNames).map(StringUtils::trim)
+                .collect(Collectors.toList())));
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -132,7 +203,11 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
                 "Passed in topicNames list should not be null or empty.");
         topicNames.stream().forEach(topicName ->
                 checkArgument(StringUtils.isNotBlank(topicName), "topicNames cannot have blank topic"));
+<<<<<<< HEAD
         conf.getTopicNames().addAll(topicNames);
+=======
+        conf.getTopicNames().addAll(topicNames.stream().map(StringUtils::trim).collect(Collectors.toList()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -159,19 +234,52 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
 
     @Override
     public ConsumerBuilder<T> ackTimeout(long ackTimeout, TimeUnit timeUnit) {
+<<<<<<< HEAD
         checkArgument(timeUnit.toMillis(ackTimeout) >= MIN_ACK_TIMEOUT_MILLIS,
                 "Ack timeout should be should be greater than " + MIN_ACK_TIMEOUT_MILLIS + " ms");
+=======
+        checkArgument(ackTimeout == 0 || timeUnit.toMillis(ackTimeout) >= MIN_ACK_TIMEOUT_MILLIS,
+                "Ack timeout should be greater than " + MIN_ACK_TIMEOUT_MILLIS + " ms");
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setAckTimeoutMillis(timeUnit.toMillis(ackTimeout));
         return this;
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConsumerBuilder<T> ackTimeoutTickTime(long tickTime, TimeUnit timeUnit) {
+        checkArgument(timeUnit.toMillis(tickTime) >= MIN_TICK_TIME_MILLIS,
+                "Ack timeout tick time should be greater than " + MIN_TICK_TIME_MILLIS + " ms");
+        conf.setTickDurationMillis(timeUnit.toMillis(tickTime));
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> negativeAckRedeliveryDelay(long redeliveryDelay, TimeUnit timeUnit) {
+        checkArgument(redeliveryDelay >= 0, "redeliveryDelay needs to be >= 0");
+        conf.setNegativeAckRedeliveryDelayMicros(timeUnit.toMicros(redeliveryDelay));
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConsumerBuilder<T> subscriptionType(@NonNull SubscriptionType subscriptionType) {
         conf.setSubscriptionType(subscriptionType);
         return this;
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConsumerBuilder<T> subscriptionMode(@NonNull SubscriptionMode subscriptionMode) {
+        conf.setSubscriptionMode(subscriptionMode);
+        return this;
+    }
+
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConsumerBuilder<T> messageListener(@NonNull MessageListener<T> messageListener) {
         conf.setMessageListener(messageListener);
         return this;
@@ -190,6 +298,15 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConsumerBuilder<T> messageCrypto(@NonNull MessageCrypto messageCrypto) {
+        conf.setMessageCrypto(messageCrypto);
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConsumerBuilder<T> cryptoFailureAction(@NonNull ConsumerCryptoFailureAction action) {
         conf.setCryptoFailureAction(action);
         return this;
@@ -218,11 +335,30 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
 
     @Override
     public ConsumerBuilder<T> priorityLevel(int priorityLevel) {
+<<<<<<< HEAD
+=======
+        checkArgument(priorityLevel >= 0, "priorityLevel needs to be >= 0");
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setPriorityLevel(priorityLevel);
         return this;
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConsumerBuilder<T> maxPendingChuckedMessage(int maxPendingChuckedMessage) {
+        conf.setMaxPendingChuckedMessage(maxPendingChuckedMessage);
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> autoAckOldestChunkedMessageOnQueueFull(boolean autoAckOldestChunkedMessageOnQueueFull) {
+        conf.setAutoAckOldestChunkedMessageOnQueueFull(autoAckOldestChunkedMessageOnQueueFull);
+        return this;
+    }
+    
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConsumerBuilder<T> property(String key, String value) {
         checkArgument(StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value),
                 "property key/value cannot be blank");
@@ -243,6 +379,10 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
 
     @Override
     public ConsumerBuilder<T> maxTotalReceiverQueueSizeAcrossPartitions(int maxTotalReceiverQueueSizeAcrossPartitions) {
+<<<<<<< HEAD
+=======
+        checkArgument(maxTotalReceiverQueueSizeAcrossPartitions >= 0, "maxTotalReceiverQueueSizeAcrossPartitions needs to be >= 0");
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setMaxTotalReceiverQueueSizeAcrossPartitions(maxTotalReceiverQueueSizeAcrossPartitions);
         return this;
     }
@@ -255,7 +395,20 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
 
     @Override
     public ConsumerBuilder<T> patternAutoDiscoveryPeriod(int periodInMinutes) {
+<<<<<<< HEAD
         conf.setPatternAutoDiscoveryPeriod(periodInMinutes);
+=======
+        checkArgument(periodInMinutes >= 0, "periodInMinutes needs to be >= 0");
+        patternAutoDiscoveryPeriod(periodInMinutes, TimeUnit.MINUTES);
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> patternAutoDiscoveryPeriod(int interval, TimeUnit unit) {
+        checkArgument(interval >= 0, "interval needs to be >= 0");
+        int intervalSeconds = (int) unit.toSeconds(interval);
+        conf.setPatternAutoDiscoveryPeriod(intervalSeconds);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -273,6 +426,15 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConsumerBuilder<T> replicateSubscriptionState(boolean replicateSubscriptionState) {
+        conf.setReplicateSubscriptionState(replicateSubscriptionState);
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConsumerBuilder<T> intercept(ConsumerInterceptor<T>... interceptors) {
         if (interceptorList == null) {
             interceptorList = new ArrayList<>();
@@ -298,7 +460,60 @@ public class ConsumerBuilderImpl<T> implements ConsumerBuilder<T> {
         return this;
     }
 
+<<<<<<< HEAD
     public ConsumerConfigurationData<T> getConf() {
         return conf;
     }
+=======
+    @Override
+    public ConsumerBuilder<T> autoUpdatePartitionsInterval(int interval, TimeUnit unit) {
+        conf.setAutoUpdatePartitionsIntervalSeconds(interval, unit);
+        return this;
+    }
+
+    @Override
+
+    public ConsumerBuilder<T> startMessageIdInclusive() {
+        conf.setResetIncludeHead(true);
+        return this;
+    }
+
+    public ConsumerBuilder<T> batchReceivePolicy(BatchReceivePolicy batchReceivePolicy) {
+        checkArgument(batchReceivePolicy != null, "batchReceivePolicy must not be null.");
+        batchReceivePolicy.verify();
+        conf.setBatchReceivePolicy(batchReceivePolicy);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return conf != null ? conf.toString() : null;
+    }
+
+    @Override
+    public ConsumerBuilder<T> keySharedPolicy(KeySharedPolicy keySharedPolicy) {
+        keySharedPolicy.validate();
+        conf.setKeySharedPolicy(keySharedPolicy);
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> enableRetry(boolean retryEnable) {
+        conf.setRetryEnable(retryEnable);
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> enableBatchIndexAcknowledgment(boolean batchIndexAcknowledgmentEnabled) {
+        conf.setBatchIndexAckEnabled(batchIndexAcknowledgmentEnabled);
+        return this;
+    }
+
+    @Override
+    public ConsumerBuilder<T> expireTimeOfIncompleteChunkedMessage(long duration, TimeUnit unit) {
+        conf.setExpireTimeOfIncompleteChunkedMessageMillis(unit.toMillis(duration));
+        return null;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

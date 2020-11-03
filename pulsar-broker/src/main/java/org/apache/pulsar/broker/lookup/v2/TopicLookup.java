@@ -33,7 +33,10 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.pulsar.broker.lookup.TopicLookupBase;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.web.NoSwaggerDocumentation;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.naming.TopicName;
 
 @Path("/v2/topic")
@@ -42,6 +45,10 @@ public class TopicLookup extends TopicLookupBase {
     @GET
     @Path("{topic-domain}/{tenant}/{namespace}/{topic}")
     @Produces(MediaType.APPLICATION_JSON)
+<<<<<<< HEAD
+=======
+    @ApiResponses(value = { @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace of this topic") })
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void lookupTopicAsync(@PathParam("topic-domain") String topicDomain, @PathParam("tenant") String tenant,
             @PathParam("namespace") String namespace, @PathParam("topic") @Encoded String encodedTopic,
             @QueryParam("authoritative") @DefaultValue("false") boolean authoritative,

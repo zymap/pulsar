@@ -103,7 +103,14 @@ public class ReadOnlyCursorTest extends MockedBookKeeperTestCase {
     @Test
     void skip() throws Exception {
         ManagedLedger ledger = factory.open("skip",
+<<<<<<< HEAD
                 new ManagedLedgerConfig().setMaxEntriesPerLedger(2).setRetentionTime(1, TimeUnit.HOURS));
+=======
+                new ManagedLedgerConfig()
+                        .setMaxEntriesPerLedger(2)
+                        .setRetentionTime(1, TimeUnit.HOURS)
+                        .setRetentionSizeInMB(-1));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         int N = 10;
 
@@ -152,7 +159,14 @@ public class ReadOnlyCursorTest extends MockedBookKeeperTestCase {
     @Test
     void skipMultiple() throws Exception {
         ManagedLedger ledger = factory.open("skip",
+<<<<<<< HEAD
                 new ManagedLedgerConfig().setMaxEntriesPerLedger(7).setRetentionTime(1, TimeUnit.HOURS));
+=======
+                new ManagedLedgerConfig()
+                        .setMaxEntriesPerLedger(7)
+                        .setRetentionTime(1, TimeUnit.HOURS)
+                        .setRetentionSizeInMB(-1));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         int N = 30;
 

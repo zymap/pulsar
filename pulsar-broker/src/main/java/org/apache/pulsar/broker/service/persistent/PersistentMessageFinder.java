@@ -27,6 +27,10 @@ import org.apache.pulsar.common.util.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -65,7 +69,11 @@ public class PersistentMessageFinder implements AsyncCallbacks.FindEntryCallback
                 MessageImpl msg = null;
                 try {
                     msg = MessageImpl.deserialize(entry.getDataBuffer());
+<<<<<<< HEAD
                     return msg.getPublishTime() <= timestamp;
+=======
+                    return msg.getPublishTime() < timestamp;
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (Exception e) {
                     log.error("[{}][{}] Error deserializing message for message position find", topicName, subName, e);
                 } finally {
@@ -83,7 +91,11 @@ public class PersistentMessageFinder implements AsyncCallbacks.FindEntryCallback
             }
             callback.findEntryFailed(
                     new ManagedLedgerException.ConcurrentFindCursorPositionException("last find is still running"),
+<<<<<<< HEAD
                     null);
+=======
+                    Optional.empty(), null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -106,7 +118,11 @@ public class PersistentMessageFinder implements AsyncCallbacks.FindEntryCallback
     }
 
     @Override
+<<<<<<< HEAD
     public void findEntryFailed(ManagedLedgerException exception, Object ctx) {
+=======
+    public void findEntryFailed(ManagedLedgerException exception, Optional<Position> failedReadPosition, Object ctx) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         checkArgument(ctx instanceof AsyncCallbacks.FindEntryCallback);
         AsyncCallbacks.FindEntryCallback callback = (AsyncCallbacks.FindEntryCallback) ctx;
         if (log.isDebugEnabled()) {
@@ -114,6 +130,10 @@ public class PersistentMessageFinder implements AsyncCallbacks.FindEntryCallback
                     timestamp, exception);
         }
         messageFindInProgress = FALSE;
+<<<<<<< HEAD
         callback.findEntryFailed(exception, null);
+=======
+        callback.findEntryFailed(exception, failedReadPosition, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

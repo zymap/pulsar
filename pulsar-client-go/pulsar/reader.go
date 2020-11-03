@@ -81,4 +81,9 @@ type Reader interface {
 
 	// Close the reader and stop the broker to push more messages
 	Close() error
+<<<<<<< HEAD
+=======
+
+	Schema() Schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

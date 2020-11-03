@@ -36,6 +36,18 @@ downloadDirectory: /tmp/pulsar_functions
 processContainerFactory:
   logDirectory:
 
+<<<<<<< HEAD
+=======
+# Bookie Authentication
+#
+# Authentication plugin to use when connecting to bookies
+# bookkeeperClientAuthenticationPlugin:
+# BookKeeper auth plugin implementatation specifics parameters name and values
+# bookkeeperClientAuthenticationParametersName:
+# Parameters for bookkeeper auth plugin
+# bookkeeperClientAuthenticationParameters:
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 schedulerClassName: "org.apache.pulsar.functions.worker.scheduler.RoundRobinScheduler"
 functionAssignmentTopicName: "assignments"
 failureCheckFreqMs: 30000

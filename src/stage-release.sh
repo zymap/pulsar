@@ -27,7 +27,11 @@ fi
 
 DEST_PATH=$1
 
+<<<<<<< HEAD
 pushd pushd $(dirname "$0")
+=======
+pushd $(dirname "$0")
+>>>>>>> f773c602c... Test pr 10 (#27)
 PULSAR_PATH=$(git rev-parse --show-toplevel)
 VERSION=`./get-project-version.py`
 popd

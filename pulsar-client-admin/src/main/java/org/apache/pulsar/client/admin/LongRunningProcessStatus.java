@@ -22,6 +22,12 @@ package org.apache.pulsar.client.admin;
  * Status of long running process.
  */
 public class LongRunningProcessStatus {
+<<<<<<< HEAD
+=======
+    /**
+     * Status code.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public enum Status {
         NOT_RUN,
         RUNNING,

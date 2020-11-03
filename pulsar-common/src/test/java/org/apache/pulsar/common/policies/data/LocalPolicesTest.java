@@ -18,13 +18,21 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.LocalPolicies;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 public class LocalPolicesTest {
@@ -44,10 +52,18 @@ public class LocalPolicesTest {
         localPolicy0.bundles.setNumBundles(boundaries0.size() - 1);
         localPolicy1.bundles.setBoundaries(boundaries1);
         localPolicy1.bundles.setNumBundles(boundaries1.size() - 1);
+<<<<<<< HEAD
         assertFalse(localPolicy0.equals(localPolicy1));
         assertFalse(localPolicy0.equals(new OldPolicies()));
         localPolicy1.bundles.setBoundaries(boundaries0);
         localPolicy1.bundles.setNumBundles(boundaries0.size() - 1);
         assertTrue(localPolicy0.equals(localPolicy1));
+=======
+        assertNotEquals(localPolicy1, localPolicy0);
+        assertNotEquals(new OldPolicies(), localPolicy0);
+        localPolicy1.bundles.setBoundaries(boundaries0);
+        localPolicy1.bundles.setNumBundles(boundaries0.size() - 1);
+        assertEquals(localPolicy1, localPolicy0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

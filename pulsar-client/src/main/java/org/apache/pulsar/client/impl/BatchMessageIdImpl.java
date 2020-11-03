@@ -26,6 +26,7 @@ import org.apache.pulsar.client.api.MessageId;
 public class BatchMessageIdImpl extends MessageIdImpl {
     private final static int NO_BATCH = -1;
     private final int batchIndex;
+<<<<<<< HEAD
 
     private final BatchMessageAcker acker;
 
@@ -36,6 +37,26 @@ public class BatchMessageIdImpl extends MessageIdImpl {
     public BatchMessageIdImpl(long ledgerId, long entryId, int partitionIndex, int batchIndex, BatchMessageAcker acker) {
         super(ledgerId, entryId, partitionIndex);
         this.batchIndex = batchIndex;
+=======
+    private final int batchSize;
+
+    private final transient BatchMessageAcker acker;
+
+    // Private constructor used only for json deserialization
+    @SuppressWarnings("unused")
+    private BatchMessageIdImpl() {
+        this(-1, -1, -1, -1);
+    }
+
+    public BatchMessageIdImpl(long ledgerId, long entryId, int partitionIndex, int batchIndex) {
+        this(ledgerId, entryId, partitionIndex, batchIndex, 0, BatchMessageAckerDisabled.INSTANCE);
+    }
+
+    public BatchMessageIdImpl(long ledgerId, long entryId, int partitionIndex, int batchIndex, int batchSize, BatchMessageAcker acker) {
+        super(ledgerId, entryId, partitionIndex);
+        this.batchIndex = batchIndex;
+        this.batchSize = batchSize;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.acker = acker;
     }
 
@@ -44,9 +65,17 @@ public class BatchMessageIdImpl extends MessageIdImpl {
         if (other instanceof BatchMessageIdImpl) {
             BatchMessageIdImpl otherId = (BatchMessageIdImpl) other;
             this.batchIndex = otherId.batchIndex;
+<<<<<<< HEAD
             this.acker = otherId.acker;
         } else {
             this.batchIndex = NO_BATCH;
+=======
+            this.batchSize = otherId.batchSize;
+            this.acker = otherId.acker;
+        } else {
+            this.batchIndex = NO_BATCH;
+            this.batchSize = 0;
+>>>>>>> f773c602c... Test pr 10 (#27)
             this.acker = BatchMessageAckerDisabled.INSTANCE;
         }
     }
@@ -101,7 +130,19 @@ public class BatchMessageIdImpl extends MessageIdImpl {
 
     @Override
     public String toString() {
+<<<<<<< HEAD
         return String.format("%d:%d:%d:%d", ledgerId, entryId, partitionIndex, batchIndex);
+=======
+        return new StringBuilder()
+          .append(ledgerId)
+          .append(':')
+          .append(entryId)
+          .append(':')
+          .append(partitionIndex)
+          .append(':')
+          .append(batchIndex)
+          .toString();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     // Serialization

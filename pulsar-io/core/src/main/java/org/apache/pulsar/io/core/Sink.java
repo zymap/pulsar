@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.pulsar.functions.api.Record;
 
 /**
+<<<<<<< HEAD
  * Generic sink interface users can implement to run Sink on top of Pulsar Functions
  */
 public interface Sink<T> extends AutoCloseable {
@@ -31,13 +32,28 @@ public interface Sink<T> extends AutoCloseable {
      *
      * @param config initialization config
      * @param sinkContext
+=======
+ * Generic sink interface users can implement to run Sink on top of Pulsar Functions.
+ */
+public interface Sink<T> extends AutoCloseable {
+    /**
+     * Open connector with configuration.
+     *
+     * @param config initialization config
+     * @param sinkContext environment where the sink connector is running
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws Exception IO type exceptions when opening a connector
      */
     void open(final Map<String, Object> config, SinkContext sinkContext) throws Exception;
 
     /**
+<<<<<<< HEAD
      * Write a message to Sink
      * @param inputRecordContext Context of input record from the source
+=======
+     * Write a message to Sink.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param record record to write to sink
      * @throws Exception
      */

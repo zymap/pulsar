@@ -20,6 +20,10 @@ package org.apache.pulsar.broker.service.schema;
 
 import javax.validation.constraints.NotNull;
 import org.apache.pulsar.broker.PulsarService;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.protocol.schema.SchemaStorage;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public interface SchemaStorageFactory {
     @NotNull

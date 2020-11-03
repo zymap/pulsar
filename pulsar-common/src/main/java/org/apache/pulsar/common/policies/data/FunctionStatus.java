@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import lombok.Data;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 
@@ -25,6 +26,17 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+=======
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import lombok.Data;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+
+/**
+ * Data lass containing status of Pulsar Function.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Data
 public class FunctionStatus {
 
@@ -32,11 +44,23 @@ public class FunctionStatus {
     public int numRunning;
     public List<FunctionInstanceStatus> instances = new LinkedList<>();
 
+<<<<<<< HEAD
+=======
+    /**
+     * Function instance status.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Data
     public static class FunctionInstanceStatus {
         public int instanceId;
         public FunctionInstanceStatusData status;
 
+<<<<<<< HEAD
+=======
+        /**
+         * Function instance status data.
+         */
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Data
         public static class FunctionInstanceStatusData {
 

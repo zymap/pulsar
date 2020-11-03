@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.functions.api;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.api.Schema;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -28,21 +34,38 @@ import java.util.Optional;
 public interface Record<T> {
 
     /**
+<<<<<<< HEAD
      * If the record originated from a topic, report the topic name
+=======
+     * If the record originated from a topic, report the topic name.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     default Optional<String> getTopicName() {
         return Optional.empty();
     }
 
     /**
+<<<<<<< HEAD
      * Return a key if the key has one associated
+=======
+     * Return a key if the key has one associated.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     default Optional<String> getKey() {
         return Optional.empty();
     }
 
+<<<<<<< HEAD
     /**
      * Retrieves the actual data of the record
+=======
+    default Schema<T> getSchema() {
+        return null;
+    }
+
+    /**
+     * Retrieves the actual data of the record.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return The record data
      */
@@ -85,23 +108,42 @@ public interface Record<T> {
     }
 
     /**
+<<<<<<< HEAD
      * Acknowledge that this record is fully processed
+=======
+     * Acknowledge that this record is fully processed.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     default void ack() {
     }
 
     /**
+<<<<<<< HEAD
      * To indicate that this record has failed to be processed
+=======
+     * To indicate that this record has failed to be processed.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     default void fail() {
     }
 
     /**
+<<<<<<< HEAD
      * To support message routing on a per message basis
+=======
+     * To support message routing on a per message basis.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return The topic this message should be written to
      */
     default Optional<String> getDestinationTopic() {
         return Optional.empty();
     }
+<<<<<<< HEAD
+=======
+
+    default Optional<Message<T>> getMessage() {
+        return Optional.empty();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

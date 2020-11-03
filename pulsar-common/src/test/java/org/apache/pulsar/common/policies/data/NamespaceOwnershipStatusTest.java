@@ -31,11 +31,18 @@ import org.apache.pulsar.common.policies.data.NamespaceOwnershipStatus;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
 public class NamespaceOwnershipStatusTest {
 
     @Test
     void testSerialization() throws Exception {
+=======
+public class NamespaceOwnershipStatusTest {
+
+    @Test
+    public void testSerialization() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         String jsonStr = "{\"ns-1\":{\"broker_assignment\":\"shared\",\"is_controlled\":false,\"is_active\":true},"
                 + "\"ns-2\":{\"broker_assignment\":\"primary\",\"is_controlled\":true,\"is_active\":false},"
                 + "\"ns-3\":{\"broker_assignment\":\"secondary\",\"is_controlled\":true,\"is_active\":true}}";

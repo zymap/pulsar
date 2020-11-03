@@ -20,6 +20,7 @@ package org.apache.pulsar.broker.service;
 
 import static org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest.retryStrategically;
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 
 import com.google.common.collect.Sets;
 
@@ -31,22 +32,44 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+=======
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import lombok.Cleanup;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
 import org.apache.bookkeeper.mledger.impl.ManagedCursorImpl;
 import org.apache.bookkeeper.mledger.impl.ManagedLedgerFactoryImpl;
 import org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo.LedgerInfo;
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
 import org.apache.bookkeeper.util.StringUtils;
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.service.persistent.PersistentTopic;
 import org.apache.pulsar.client.admin.PulsarAdmin;
+=======
+import org.apache.bookkeeper.util.StringUtils;
+import org.apache.pulsar.broker.service.persistent.PersistentTopic;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.TenantInfo;
 import org.apache.pulsar.zookeeper.LocalBookkeeperEnsemble;
@@ -56,10 +79,16 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+=======
+import org.apache.pulsar.client.api.Schema;
+import org.apache.zookeeper.ZooKeeper;
+import org.testng.Assert;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 /**
  */
+<<<<<<< HEAD
 public class BrokerBkEnsemblesTests {
     protected static int BROKER_SERVICE_PORT = PortManager.nextFreePort();
     protected PulsarService pulsar;
@@ -73,12 +102,16 @@ public class BrokerBkEnsemblesTests {
     protected int BROKER_WEBSERVICE_PORT;
 
     private final int numberOfBookies;
+=======
+public class BrokerBkEnsemblesTests extends BkEnsemblesTestBase {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public BrokerBkEnsemblesTests() {
         this(3);
     }
 
     public BrokerBkEnsemblesTests(int numberOfBookies) {
+<<<<<<< HEAD
         this.numberOfBookies = numberOfBookies;
     }
 
@@ -128,6 +161,9 @@ public class BrokerBkEnsemblesTests {
         } catch (Throwable t) {
             LOG.warn("Error cleaning up broker test setup state", t);
         }
+=======
+        super(numberOfBookies);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -148,7 +184,13 @@ public class BrokerBkEnsemblesTests {
     public void testCrashBrokerWithoutCursorLedgerLeak() throws Exception {
 
         ZooKeeper zk = bkEnsemble.getZkClient();
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl(adminUrl.toString()).statsInterval(0, TimeUnit.SECONDS)
+=======
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(pulsar.getWebServiceAddress())
+                .statsInterval(0, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .build();
 
         final String ns1 = "prop/usc/crash-broker";
@@ -242,7 +284,13 @@ public class BrokerBkEnsemblesTests {
         // Ensure intended state for autoSkipNonRecoverableData
         admin.brokers().updateDynamicConfiguration("autoSkipNonRecoverableData", "false");
 
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl(adminUrl.toString()).statsInterval(0, TimeUnit.SECONDS)
+=======
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(pulsar.getWebServiceAddress())
+                .statsInterval(0, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .build();
 
         final String ns1 = "prop/usc/crash-broker";
@@ -343,7 +391,13 @@ public class BrokerBkEnsemblesTests {
 
     @Test(timeOut=20000)
     public void testTopicWithWildCardChar() throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl(adminUrl.toString()).statsInterval(0, TimeUnit.SECONDS)
+=======
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(pulsar.getWebServiceAddress())
+                .statsInterval(0, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .build();
 
         final String ns1 = "prop/usc/topicWithSpecialChar";
@@ -352,7 +406,11 @@ public class BrokerBkEnsemblesTests {
         } catch (Exception e) {
 
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         final String topic1 = "persistent://"+ns1+"/`~!@#$%^&*()-_+=[]://{}|\\;:'\"<>,./?-30e04524";
         final String subName1 = "c1";
         final byte[] content = "test".getBytes();
@@ -368,5 +426,58 @@ public class BrokerBkEnsemblesTests {
         client.close();
     }
 
+<<<<<<< HEAD
     private static final Logger LOG = LoggerFactory.getLogger(BrokerBkEnsemblesTests.class);
+=======
+
+    @Test
+    public void testDeleteTopicWithMissingData() throws Exception {
+        String namespace = "prop/usc-" + System.nanoTime();
+        admin.namespaces().createNamespace(namespace);
+
+        String topic = namespace + "/my-topic-" + System.nanoTime();
+
+        @Cleanup
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(pulsar.getBrokerServiceUrl())
+                .statsInterval(0, TimeUnit.SECONDS)
+                .build();
+
+        @Cleanup
+        Consumer<String> consumer = client.newConsumer(Schema.STRING)
+                .topic(topic)
+                .subscriptionName("test").subscribe();
+
+        @Cleanup
+        Producer<String> producer = client.newProducer(Schema.STRING)
+                .topic(topic)
+                .create();
+
+        producer.send("Hello");
+
+        // Stop all bookies, to get all data offline
+        bkEnsemble.stopBK();
+
+        // Unload the topic. Since all the bookies are down, the recovery
+        // will fail and the topic will not get reloaded.
+        admin.topics().unload(topic);
+
+        Thread.sleep(1000);
+
+        CompletableFuture<Optional<Topic>> future = pulsar.getBrokerService().getTopicIfExists(topic);
+        try {
+            future.get();
+            fail("Should have thrown exception");
+        } catch (ExecutionException e) {
+            // Expected
+        }
+
+        // Deletion must succeed
+        admin.topics().delete(topic);
+
+        // Topic will not be there after
+        assertEquals(pulsar.getBrokerService().getTopicIfExists(topic).join(), Optional.empty());
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

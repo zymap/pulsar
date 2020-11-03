@@ -22,6 +22,10 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+<<<<<<< HEAD
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider;
 import org.apache.pulsar.common.configuration.PulsarConfiguration;
 import org.apache.pulsar.discovery.service.web.DiscoveryServiceServlet;
@@ -32,6 +36,10 @@ import com.google.common.collect.Sets;
  * Service Configuration to start :{@link DiscoveryServiceServlet}
  *
  */
+<<<<<<< HEAD
+=======
+@Data
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ServiceConfig implements PulsarConfiguration {
 
     // Local-Zookeeper quorum connection string
@@ -45,6 +53,7 @@ public class ServiceConfig implements PulsarConfiguration {
     // ZooKeeper session timeout
     private int zookeeperSessionTimeoutMs = 30_000;
 
+<<<<<<< HEAD
     // Port to use to server binary-proto request
     private Integer servicePort = 5000;
     // Port to use to server binary-proto-tls request
@@ -53,6 +62,19 @@ public class ServiceConfig implements PulsarConfiguration {
     private Integer webServicePort = 8080;
     // Port to use to server HTTPS request
     private Integer webServicePortTls;
+=======
+    // ZooKeeper cache expiry time in seconds
+    private int zooKeeperCacheExpirySeconds=300;
+
+    // Port to use to server binary-proto request
+    private Optional<Integer> servicePort = Optional.ofNullable(5000);
+    // Port to use to server binary-proto-tls request
+    private Optional<Integer> servicePortTls = Optional.empty();
+    // Port to use to server HTTP request
+    private Optional<Integer> webServicePort = Optional.ofNullable(8080);
+    // Port to use to server HTTPS request
+    private Optional<Integer> webServicePortTls = Optional.empty();
+>>>>>>> f773c602c... Test pr 10 (#27)
     // Control whether to bind directly on localhost rather than on normal
     // hostname
     private boolean bindOnLocalhost = false;
@@ -78,6 +100,11 @@ public class ServiceConfig implements PulsarConfiguration {
     /***** --- TLS --- ****/
     @Deprecated
     private boolean tlsEnabled = false;
+<<<<<<< HEAD
+=======
+    // Tls cert refresh duration in seconds (set 0 to check on every new connection)
+    private long tlsCertRefreshCheckDurationSec = 300;
+>>>>>>> f773c602c... Test pr 10 (#27)
     // Path for the TLS certificate file
     private String tlsCertificateFilePath;
     // Path for the TLS private key file
@@ -96,6 +123,7 @@ public class ServiceConfig implements PulsarConfiguration {
     // Reject the Connection if the Client Certificate is not trusted.
     private boolean tlsRequireTrustedClientCertOnConnect = false;
 
+<<<<<<< HEAD
     private Properties properties = new Properties();
 
     public String getZookeeperServers() {
@@ -115,10 +143,32 @@ public class ServiceConfig implements PulsarConfiguration {
     public void setGlobalZookeeperServers(String globalZookeeperServers) {
         this.globalZookeeperServers = globalZookeeperServers;
     }
+=======
+    /***** --- TLS with KeyStore--- ****/
+    // Enable TLS with KeyStore type configuration in broker
+    private boolean tlsEnabledWithKeyStore = false;
+    // TLS Provider
+    private String tlsProvider = null;
+    // TLS KeyStore type configuration in broker: JKS, PKCS12
+    private String tlsKeyStoreType = "JKS";
+    // TLS KeyStore path in broker
+    private String tlsKeyStore = null;
+    // TLS KeyStore password in broker
+    private String tlsKeyStorePassword = null;
+    // TLS TrustStore type configuration in broker: JKS, PKCS12
+    private String tlsTrustStoreType = "JKS";
+    // TLS TrustStore path in broker
+    private String tlsTrustStore = null;
+    // TLS TrustStore password in broker"
+    private String tlsTrustStorePassword = null;
+
+    private Properties properties = new Properties();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public String getConfigurationStoreServers() {
         return null == configurationStoreServers ? getGlobalZookeeperServers() : configurationStoreServers;
     }
+<<<<<<< HEAD
 
     public void setConfigurationStoreServers(String configurationStoreServers) {
         this.configurationStoreServers = configurationStoreServers;
@@ -293,4 +343,6 @@ public class ServiceConfig implements PulsarConfiguration {
     public void setTlsRequireTrustedClientCertOnConnect(boolean tlsRequireTrustedClientCertOnConnect) {
         this.tlsRequireTrustedClientCertOnConnect = tlsRequireTrustedClientCertOnConnect;
     }
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

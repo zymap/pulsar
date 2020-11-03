@@ -29,7 +29,10 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.apache.commons.lang.StringUtils;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.tests.integration.docker.ContainerExecResult;
 import org.apache.pulsar.tests.integration.utils.DockerUtils;
 import org.testcontainers.containers.GenericContainer;
@@ -116,6 +119,15 @@ public class ChaosContainer<SelfT extends ChaosContainer<SelfT>> extends Generic
         return DockerUtils.runCommand(client, dockerId, commands);
     }
 
+<<<<<<< HEAD
+=======
+    public CompletableFuture<ContainerExecResult> execCmdAsync(String... commands) throws Exception {
+        DockerClient client = this.getDockerClient();
+        String dockerId = this.getContainerId();
+        return DockerUtils.runCommandAsync(client, dockerId, commands);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ChaosContainer)) {

@@ -69,7 +69,11 @@ public class PulsarStats implements Closeable {
         this.nsStats = new NamespaceStats();
         this.clusterReplicationMetrics = new ClusterReplicationMetrics(pulsar.getConfiguration().getClusterName(),
                 pulsar.getConfiguration().isReplicationMetricsEnabled());
+<<<<<<< HEAD
         this.bundleStats = Maps.newHashMap();
+=======
+        this.bundleStats = Maps.newConcurrentMap();
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.tempMetricsCollection = Lists.newArrayList();
         this.metricsCollection = Lists.newArrayList();
         this.brokerOperabilityMetrics = new BrokerOperabilityMetrics(pulsar.getConfiguration().getClusterName(),
@@ -138,7 +142,11 @@ public class PulsarStats implements Closeable {
                                 }
                                 // this task: helps to activate inactive-backlog-cursors which have caught up and
                                 // connected, also deactivate active-backlog-cursors which has backlog
+<<<<<<< HEAD
                                 ((PersistentTopic) topic).getManagedLedger().checkBackloggedCursors();
+=======
+                                ((PersistentTopic) topic).checkBackloggedCursors();
+>>>>>>> f773c602c... Test pr 10 (#27)
                             }else if (topic instanceof NonPersistentTopic) {
                                 tempNonPersistentTopics.add((NonPersistentTopic) topic);
                             } else {

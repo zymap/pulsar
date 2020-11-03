@@ -60,12 +60,20 @@ public class CmdBookies extends CmdBase {
         }
     }
 
+<<<<<<< HEAD
     @Parameters(commandDescription = "Updates the rack placement information for a specific bookie in the cluster")
+=======
+    @Parameters(commandDescription = "Updates the rack placement information for a specific bookie in the cluster (note. bookie address format:`address:port`)")
+>>>>>>> f773c602c... Test pr 10 (#27)
     private class UpdateBookie extends CliCommand {
         @Parameter(names = { "-g", "--group" }, description = "Bookie group name", required = false)
         private String group = "default";
 
+<<<<<<< HEAD
         @Parameter(names = { "-b", "--bookie" }, description = "Bookie address", required = true)
+=======
+        @Parameter(names = { "-b", "--bookie" }, description = "Bookie address (format: `address:port`)", required = true)
+>>>>>>> f773c602c... Test pr 10 (#27)
         private String bookieAddress;
 
         @Parameter(names = { "-r", "--rack" }, description = "Bookie rack name", required = true)

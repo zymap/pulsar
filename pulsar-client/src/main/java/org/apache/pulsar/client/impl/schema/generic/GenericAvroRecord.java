@@ -23,12 +23,16 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.util.Utf8;
 import org.apache.pulsar.client.api.schema.Field;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.schema.GenericRecord;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A generic avro record.
  */
 @Slf4j
+<<<<<<< HEAD
 class GenericAvroRecord implements GenericRecord {
 
     private final org.apache.avro.Schema schema;
@@ -40,15 +44,31 @@ class GenericAvroRecord implements GenericRecord {
                       org.apache.avro.generic.GenericRecord record) {
         this.schema = schema;
         this.fields = fields;
+=======
+public class GenericAvroRecord extends VersionedGenericRecord {
+
+    private final org.apache.avro.Schema schema;
+    private final org.apache.avro.generic.GenericRecord record;
+
+    public GenericAvroRecord(byte[] schemaVersion,
+                      org.apache.avro.Schema schema,
+                      List<Field> fields,
+                      org.apache.avro.generic.GenericRecord record) {
+        super(schemaVersion, fields);
+        this.schema = schema;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.record = record;
     }
 
     @Override
+<<<<<<< HEAD
     public List<Field> getFields() {
         return fields;
     }
 
     @Override
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Object getField(String fieldName) {
         Object value = record.get(fieldName);
         if (value instanceof Utf8) {
@@ -61,13 +81,21 @@ class GenericAvroRecord implements GenericRecord {
                 .stream()
                 .map(f -> new Field(f.name(), f.pos()))
                 .collect(Collectors.toList());
+<<<<<<< HEAD
             return new GenericAvroRecord(schema, fields, avroRecord);
+=======
+            return new GenericAvroRecord(schemaVersion, schema, fields, avroRecord);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             return value;
         }
     }
 
+<<<<<<< HEAD
     org.apache.avro.generic.GenericRecord getAvroRecord() {
+=======
+    public org.apache.avro.generic.GenericRecord getAvroRecord() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return record;
     }
 

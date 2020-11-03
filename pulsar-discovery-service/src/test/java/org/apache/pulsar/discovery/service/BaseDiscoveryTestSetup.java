@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.discovery.service;
 
+<<<<<<< HEAD
 import static org.apache.bookkeeper.test.PortManager.nextFreePort;
 import static org.apache.pulsar.discovery.service.web.ZookeeperCacheLoader.LOADBALANCE_BROKERS_ROOT;
 
@@ -25,6 +26,18 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.discovery.service.DiscoveryService;
+=======
+import static org.apache.pulsar.discovery.service.web.ZookeeperCacheLoader.LOADBALANCE_BROKERS_ROOT;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+
+import com.google.common.util.concurrent.MoreExecutors;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.bookkeeper.util.ZkUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.discovery.service.server.ServiceConfig;
 import org.apache.pulsar.zookeeper.ZooKeeperClientFactory;
 import org.apache.pulsar.zookeeper.ZookeeperClientFactoryImpl;
@@ -33,30 +46,46 @@ import org.apache.zookeeper.MockZooKeeper;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 
+<<<<<<< HEAD
 import com.google.common.util.concurrent.MoreExecutors;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class BaseDiscoveryTestSetup {
 
     protected ServiceConfig config;
     protected DiscoveryService service;
+<<<<<<< HEAD
     protected MockZooKeeper mockZookKeeper;
+=======
+    protected MockZooKeeper mockZooKeeper;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final String TLS_SERVER_CERT_FILE_PATH = "./src/test/resources/certificate/server.crt";
     private final String TLS_SERVER_KEY_FILE_PATH = "./src/test/resources/certificate/server.key";
 
     protected void setup() throws Exception {
         config = new ServiceConfig();
+<<<<<<< HEAD
         config.setServicePort(nextFreePort());
         config.setServicePortTls(nextFreePort());
+=======
+        config.setServicePort(Optional.of(0));
+        config.setServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setBindOnLocalhost(true);
 
         config.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         config.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
 
+<<<<<<< HEAD
         mockZookKeeper = createMockZooKeeper();
+=======
+        mockZooKeeper = createMockZooKeeper();
+>>>>>>> f773c602c... Test pr 10 (#27)
         service = spy(new DiscoveryService(config));
         doReturn(mockZooKeeperClientFactory).when(service).getZooKeeperClientFactory();
         service.start();
@@ -64,7 +93,11 @@ public class BaseDiscoveryTestSetup {
     }
 
     protected void cleanup() throws Exception {
+<<<<<<< HEAD
         mockZookKeeper.shutdown();
+=======
+        mockZooKeeper.shutdown();
+>>>>>>> f773c602c... Test pr 10 (#27)
         service.close();
     }
 
@@ -83,7 +116,11 @@ public class BaseDiscoveryTestSetup {
         public CompletableFuture<ZooKeeper> create(String serverList, SessionType sessionType,
                 int zkSessionTimeoutMillis) {
             // Always return the same instance (so that we don't loose the mock ZK content on broker restart
+<<<<<<< HEAD
             return CompletableFuture.completedFuture(mockZookKeeper);
+=======
+            return CompletableFuture.completedFuture(mockZooKeeper);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     };
 

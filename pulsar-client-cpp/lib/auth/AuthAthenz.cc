@@ -18,7 +18,10 @@
  */
 #include <lib/auth/AuthAthenz.h>
 
+<<<<<<< HEAD
 #include <unistd.h>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <string.h>
 #include <time.h>
 
@@ -92,7 +95,11 @@ AuthenticationPtr AuthAthenz::create(ParamMap& params) {
 
 const std::string AuthAthenz::getAuthMethodName() const { return "athenz"; }
 
+<<<<<<< HEAD
 Result AuthAthenz::getAuthData(AuthenticationDataPtr& authDataContent) const {
+=======
+Result AuthAthenz::getAuthData(AuthenticationDataPtr& authDataContent) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     authDataContent = authDataAthenz_;
     return ResultOk;
 }

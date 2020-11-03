@@ -26,6 +26,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.PulsarClientException.InvalidServiceURL;
 import org.apache.pulsar.common.net.ServiceURI;
@@ -34,10 +38,20 @@ import org.apache.pulsar.common.net.ServiceURI;
  * The default implementation of {@link ServiceNameResolver}.
  */
 @Slf4j
+<<<<<<< HEAD
 class PulsarServiceNameResolver implements ServiceNameResolver {
 
     private volatile ServiceURI serviceUri;
     private volatile String serviceUrl;
+=======
+public class PulsarServiceNameResolver implements ServiceNameResolver {
+
+    private volatile ServiceURI serviceUri;
+    private volatile String serviceUrl;
+    private static final AtomicIntegerFieldUpdater<PulsarServiceNameResolver> CURRENT_INDEX_UPDATER =
+            AtomicIntegerFieldUpdater.newUpdater(PulsarServiceNameResolver.class, "currentIndex");
+    private volatile int currentIndex;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private volatile List<InetSocketAddress> addressList;
 
     @Override
@@ -50,7 +64,13 @@ class PulsarServiceNameResolver implements ServiceNameResolver {
         if (list.size() == 1) {
             return list.get(0);
         } else {
+<<<<<<< HEAD
             return list.get(randomIndex(list.size()));
+=======
+            CURRENT_INDEX_UPDATER.getAndUpdate(this, last -> (last + 1) % list.size());
+            return list.get(currentIndex);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -89,13 +109,21 @@ class PulsarServiceNameResolver implements ServiceNameResolver {
                 URI hostUri = new URI(hostUrl);
                 addresses.add(InetSocketAddress.createUnresolved(hostUri.getHost(), hostUri.getPort()));
             } catch (URISyntaxException e) {
+<<<<<<< HEAD
                 log.error("Invalid host provided {}", hostUrl, e.getMessage(), e);
+=======
+                log.error("Invalid host provided {}", hostUrl, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 throw new InvalidServiceURL(e);
             }
         }
         this.addressList = addresses;
         this.serviceUrl = serviceUrl;
         this.serviceUri = uri;
+<<<<<<< HEAD
+=======
+        this.currentIndex = randomIndex(addresses.size());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private static int randomIndex(int numAddresses) {

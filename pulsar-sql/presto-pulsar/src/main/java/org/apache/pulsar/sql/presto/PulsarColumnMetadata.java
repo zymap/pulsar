@@ -18,12 +18,23 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.ColumnMetadata;
 import com.facebook.presto.spi.type.Type;
 
 import java.util.Arrays;
 import java.util.List;
 
+=======
+import io.prestosql.spi.connector.ColumnMetadata;
+import io.prestosql.spi.type.Type;
+import java.util.Arrays;
+import java.util.Objects;
+
+/**
+ * Description of the column metadata.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarColumnMetadata extends ColumnMetadata {
 
     private boolean isInternal;
@@ -31,15 +42,29 @@ public class PulsarColumnMetadata extends ColumnMetadata {
     private String nameWithCase;
     private String[] fieldNames;
     private Integer[] positionIndices;
+<<<<<<< HEAD
 
     public PulsarColumnMetadata(String name, Type type, String comment, String extraInfo,
                                 boolean hidden, boolean isInternal,
                                 String[] fieldNames, Integer[] positionIndices) {
+=======
+    private PulsarColumnHandle.HandleKeyValueType handleKeyValueType;
+    public final static String KEY_SCHEMA_COLUMN_PREFIX = "__key.";
+
+    public PulsarColumnMetadata(String name, Type type, String comment, String extraInfo,
+                                boolean hidden, boolean isInternal,
+                                String[] fieldNames, Integer[] positionIndices,
+                                PulsarColumnHandle.HandleKeyValueType handleKeyValueType) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super(name, type, comment, extraInfo, hidden);
         this.nameWithCase = name;
         this.isInternal = isInternal;
         this.fieldNames = fieldNames;
         this.positionIndices = positionIndices;
+<<<<<<< HEAD
+=======
+        this.handleKeyValueType = handleKeyValueType;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public String getNameWithCase() {
@@ -58,6 +83,7 @@ public class PulsarColumnMetadata extends ColumnMetadata {
         return positionIndices;
     }
 
+<<<<<<< HEAD
     @Override
     public String toString() {
         return "PulsarColumnMetadata{" +
@@ -66,10 +92,41 @@ public class PulsarColumnMetadata extends ColumnMetadata {
                 ", fieldNames=" + Arrays.toString(fieldNames) +
                 ", positionIndices=" + Arrays.toString(positionIndices) +
                 '}';
+=======
+    public PulsarColumnHandle.HandleKeyValueType getHandleKeyValueType() {
+        return handleKeyValueType;
+    }
+
+    public boolean isKey() {
+        return Objects.equals(handleKeyValueType, PulsarColumnHandle.HandleKeyValueType.KEY);
+    }
+
+    public boolean isValue() {
+        return Objects.equals(handleKeyValueType, PulsarColumnHandle.HandleKeyValueType.VALUE);
+    }
+
+    public static String getColumnName(PulsarColumnHandle.HandleKeyValueType handleKeyValueType, String name) {
+        if (Objects.equals(PulsarColumnHandle.HandleKeyValueType.KEY, handleKeyValueType)) {
+            return KEY_SCHEMA_COLUMN_PREFIX + name;
+        }
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "PulsarColumnMetadata{"
+            + "isInternal=" + isInternal
+            + ", nameWithCase='" + nameWithCase + '\''
+            + ", fieldNames=" + Arrays.toString(fieldNames)
+            + ", positionIndices=" + Arrays.toString(positionIndices)
+            + ", handleKeyValueType=" + handleKeyValueType
+            + '}';
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public boolean equals(Object o) {
+<<<<<<< HEAD
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
@@ -80,6 +137,33 @@ public class PulsarColumnMetadata extends ColumnMetadata {
         if (nameWithCase != null ? !nameWithCase.equals(that.nameWithCase) : that.nameWithCase != null) return false;
         if (!Arrays.deepEquals(fieldNames, that.fieldNames)) return false;
         return Arrays.deepEquals(positionIndices, that.positionIndices);
+=======
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        PulsarColumnMetadata that = (PulsarColumnMetadata) o;
+
+        if (isInternal != that.isInternal) {
+            return false;
+        }
+        if (nameWithCase != null ? !nameWithCase.equals(that.nameWithCase) : that.nameWithCase != null) {
+            return false;
+        }
+        if (!Arrays.deepEquals(fieldNames, that.fieldNames)) {
+            return false;
+        }
+        if (!Arrays.deepEquals(positionIndices, that.positionIndices)) {
+            return false;
+        }
+        return Objects.equals(handleKeyValueType, that.handleKeyValueType);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -89,6 +173,10 @@ public class PulsarColumnMetadata extends ColumnMetadata {
         result = 31 * result + (nameWithCase != null ? nameWithCase.hashCode() : 0);
         result = 31 * result + Arrays.hashCode(fieldNames);
         result = 31 * result + Arrays.hashCode(positionIndices);
+<<<<<<< HEAD
+=======
+        result = 31 * result + (handleKeyValueType != null ? handleKeyValueType.hashCode() : 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return result;
     }
 }

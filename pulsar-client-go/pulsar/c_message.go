@@ -32,7 +32,12 @@ import (
 )
 
 type message struct {
+<<<<<<< HEAD
 	ptr *C.pulsar_message_t
+=======
+	ptr    *C.pulsar_message_t
+	schema Schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 type messageID struct {
@@ -71,6 +76,13 @@ func buildMessage(message ProducerMessage) *C.pulsar_message_t {
 		C.pulsar_message_set_event_timestamp(cMsg, C.uint64_t(timeToUnixTimestampMillis(message.EventTime)))
 	}
 
+<<<<<<< HEAD
+=======
+	if message.DeliverAfter != 0 {
+		C.pulsar_message_set_deliver_after(cMsg, C.uint64_t(durationToUnixTimestampMillis(message.DeliverAfter)))
+	}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	if message.SequenceID != 0 {
 		C.pulsar_message_set_sequence_id(cMsg, C.int64_t(message.SequenceID))
 	}
@@ -88,7 +100,11 @@ func buildMessage(message ProducerMessage) *C.pulsar_message_t {
 				C.setString(array, C.CString(s), C.int(i))
 			}
 
+<<<<<<< HEAD
 			C.pulsar_message_set_replication_clusters(cMsg, array)
+=======
+			C.pulsar_message_set_replication_clusters(cMsg, array, C.size_t(size))
+>>>>>>> f773c602c... Test pr 10 (#27)
 		}
 	}
 
@@ -97,8 +113,13 @@ func buildMessage(message ProducerMessage) *C.pulsar_message_t {
 
 ////////////// Message
 
+<<<<<<< HEAD
 func newMessageWrapper(ptr *C.pulsar_message_t) Message {
 	msg := &message{ptr: ptr}
+=======
+func newMessageWrapper(schema Schema, ptr *C.pulsar_message_t) Message {
+	msg := &message{schema: schema, ptr: ptr}
+>>>>>>> f773c602c... Test pr 10 (#27)
 	runtime.SetFinalizer(msg, messageFinalizer)
 	return msg
 }
@@ -107,6 +128,13 @@ func messageFinalizer(msg *message) {
 	C.pulsar_message_free(msg.ptr)
 }
 
+<<<<<<< HEAD
+=======
+func (m *message) GetValue(v interface{}) error {
+	return m.schema.Decode(m.Payload(), v)
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 func (m *message) Properties() map[string]string {
 	cProperties := C.pulsar_message_get_properties(m.ptr)
 	defer C.pulsar_string_map_free(cProperties)
@@ -167,6 +195,15 @@ func newMessageId(msg *C.pulsar_message_t) MessageID {
 	return msgId
 }
 
+<<<<<<< HEAD
+=======
+func getMessageId(messageId *C.pulsar_message_id_t) MessageID {
+	msgId := &messageID{ptr: messageId}
+	runtime.SetFinalizer(msgId, messageIdFinalizer)
+	return msgId
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 func messageIdFinalizer(msgID *messageID) {
 	C.pulsar_message_id_free(msgID.ptr)
 }
@@ -201,10 +238,16 @@ func latestMessageID() *messageID {
 }
 
 func timeFromUnixTimestampMillis(timestamp C.ulonglong) time.Time {
+<<<<<<< HEAD
 	ts := int64(timestamp)
 	seconds := ts / int64(time.Millisecond)
 	millis := ts - seconds
 	nanos := millis * int64(time.Millisecond)
+=======
+	ts := int64(timestamp) * int64(time.Millisecond)
+	seconds := ts / int64(time.Second)
+	nanos := ts - (seconds * int64(time.Second))
+>>>>>>> f773c602c... Test pr 10 (#27)
 	return time.Unix(seconds, nanos)
 }
 
@@ -213,3 +256,10 @@ func timeToUnixTimestampMillis(t time.Time) C.ulonglong {
 	millis := nanos / int64(time.Millisecond)
 	return C.ulonglong(millis)
 }
+<<<<<<< HEAD
+=======
+
+func durationToUnixTimestampMillis(t time.Duration) C.ulonglong {
+	return C.ulonglong(t.Milliseconds())
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

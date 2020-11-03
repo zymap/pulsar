@@ -18,14 +18,27 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
+=======
+import com.google.common.base.MoreObjects;
+import java.util.Objects;
+
+/**
+ * Dispatch rate.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class DispatchRate {
 
     public int dispatchThrottlingRateInMsg = -1;
     public long dispatchThrottlingRateInByte = -1;
+<<<<<<< HEAD
+=======
+    public boolean relativeToPublishRate = false; /* throttles dispatch relatively publish-rate */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public int ratePeriodInSecond = 1; /* by default dispatch-rate will be calculate per 1 second */
 
     public DispatchRate() {
@@ -43,6 +56,15 @@ public class DispatchRate {
         this.ratePeriodInSecond = ratePeriodInSecond;
     }
 
+<<<<<<< HEAD
+=======
+    public DispatchRate(int dispatchThrottlingRateInMsg, long dispatchThrottlingRateInByte,
+            int ratePeriodInSecond, boolean relativeToPublishRate) {
+        this(dispatchThrottlingRateInMsg, dispatchThrottlingRateInByte, ratePeriodInSecond);
+        this.relativeToPublishRate = relativeToPublishRate;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public int hashCode() {
         return Objects.hash(dispatchThrottlingRateInMsg, dispatchThrottlingRateInByte,

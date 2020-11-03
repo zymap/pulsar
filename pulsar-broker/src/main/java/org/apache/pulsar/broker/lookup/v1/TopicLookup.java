@@ -53,6 +53,10 @@ public class TopicLookup extends TopicLookupBase {
     @GET
     @Path("{topic-domain}/{property}/{cluster}/{namespace}/{topic}")
     @Produces(MediaType.APPLICATION_JSON)
+<<<<<<< HEAD
+=======
+    @ApiResponses(value = { @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace of this topic") })
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void lookupTopicAsync(@PathParam("topic-domain") String topicDomain, @PathParam("property") String property,
             @PathParam("cluster") String cluster, @PathParam("namespace") String namespace,
             @PathParam("topic") @Encoded String encodedTopic,

@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.naming;
 
+<<<<<<< HEAD
 public interface ServiceUnitId {
 
     @Override
@@ -32,10 +33,33 @@ public interface ServiceUnitId {
 
     /**
      * Check whether a fully-qualified topic is included in this <code>ServiceUnitId</code> object
+=======
+/**
+ * Basic interface for service unit's identification.
+ */
+public interface ServiceUnitId {
+
+    @Override
+    String toString();
+
+    /**
+     * Return the namespace object that this <code>ServiceUnitId</code> belongs to.
+     *
+     * @return NamespaceName object
+     */
+    NamespaceName getNamespaceObject();
+
+    /**
+     * Check whether a fully-qualified topic is included in this <code>ServiceUnitId</code> object.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topicName
      *            a fully-qualified topic object
      * @return true or false
      */
+<<<<<<< HEAD
     public abstract boolean includes(TopicName topicName);
+=======
+    boolean includes(TopicName topicName);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

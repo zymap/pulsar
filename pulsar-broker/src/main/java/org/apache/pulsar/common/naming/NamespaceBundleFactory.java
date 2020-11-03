@@ -42,6 +42,10 @@ import org.apache.pulsar.broker.admin.AdminResource;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.BundlesData;
 import org.apache.pulsar.common.policies.data.LocalPolicies;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.stats.CacheMetricsCollector;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.zookeeper.ZooKeeperCacheListener;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -68,7 +72,13 @@ public class NamespaceBundleFactory implements ZooKeeperCacheListener<LocalPolic
     public NamespaceBundleFactory(PulsarService pulsar, HashFunction hashFunc) {
         this.hashFunc = hashFunc;
 
+<<<<<<< HEAD
         this.bundlesCache = Caffeine.newBuilder().buildAsync((NamespaceName namespace, Executor executor) -> {
+=======
+        this.bundlesCache = Caffeine.newBuilder()
+                .recordStats()
+                .buildAsync((NamespaceName namespace, Executor executor) -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
             String path = AdminResource.joinPath(LOCAL_POLICIES_ROOT, namespace.toString());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loading cache with bundles for {}", namespace);
@@ -101,6 +111,11 @@ public class NamespaceBundleFactory implements ZooKeeperCacheListener<LocalPolic
             return future;
         });
 
+<<<<<<< HEAD
+=======
+        CacheMetricsCollector.CAFFEINE.addCache("bundles", this.bundlesCache);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         // local-policies have been changed which has contains namespace bundles
         pulsar.getLocalZkCacheService().policiesCache()
                 .registerListener((String path, LocalPolicies data, Stat stat) -> {
@@ -155,6 +170,13 @@ public class NamespaceBundleFactory implements ZooKeeperCacheListener<LocalPolic
         return bundlesCache.synchronous().get(nsname);
     }
 
+<<<<<<< HEAD
+=======
+    public Optional<NamespaceBundles> getBundlesIfPresent(NamespaceName nsname) throws Exception {
+        return Optional.ofNullable(bundlesCache.synchronous().getIfPresent(nsname));
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public NamespaceBundle getBundle(NamespaceName nsname, Range<Long> hashRange) {
         return new NamespaceBundle(nsname, hashRange, this);
     }
@@ -212,11 +234,27 @@ public class NamespaceBundleFactory implements ZooKeeperCacheListener<LocalPolic
      *            {@link NamespaceBundle} needs to be split
      * @param numBundles
      *            split into numBundles
+<<<<<<< HEAD
      * @return List of split {@link NamespaceBundle} and {@link NamespaceBundles} that contains final bundles including
      *         split bundles for a given namespace
      */
     public Pair<NamespaceBundles, List<NamespaceBundle>> splitBundles(NamespaceBundle targetBundle, int numBundles) {
         checkArgument(canSplitBundle(targetBundle), "%s bundle can't be split further", targetBundle);
+=======
+     * @param splitBoundary
+     *            split into 2 numBundles by the given split key. The given split key must between the key range of the
+     *            given split bundle.
+     * @return List of split {@link NamespaceBundle} and {@link NamespaceBundles} that contains final bundles including
+     *         split bundles for a given namespace
+     */
+    public Pair<NamespaceBundles, List<NamespaceBundle>> splitBundles(NamespaceBundle targetBundle, int numBundles, Long splitBoundary) {
+        checkArgument(canSplitBundle(targetBundle), "%s bundle can't be split further", targetBundle);
+        if (splitBoundary != null) {
+            checkArgument(splitBoundary > targetBundle.getLowerEndpoint() && splitBoundary < targetBundle.getUpperEndpoint(),
+                "The given fixed key must between the key range of the %s bundle", targetBundle);
+            numBundles = 2;
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         checkNotNull(targetBundle, "can't split null bundle");
         checkNotNull(targetBundle.getNamespaceObject(), "namespace must be present");
         NamespaceName nsname = targetBundle.getNamespaceObject();
@@ -234,7 +272,11 @@ public class NamespaceBundleFactory implements ZooKeeperCacheListener<LocalPolic
                 splitPartition = i;
                 Long maxVal = sourceBundle.partitions[i + 1];
                 Long minVal = sourceBundle.partitions[i];
+<<<<<<< HEAD
                 Long segSize = (maxVal - minVal) / numBundles;
+=======
+                Long segSize = splitBoundary == null ? (maxVal - minVal) / numBundles : splitBoundary - minVal;
+>>>>>>> f773c602c... Test pr 10 (#27)
                 partitions[pos++] = minVal;
                 Long curPartition = minVal + segSize;
                 for (int j = 0; j < numBundles - 1; j++) {

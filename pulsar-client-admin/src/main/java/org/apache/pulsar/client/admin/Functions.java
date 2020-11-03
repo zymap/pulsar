@@ -20,14 +20,26 @@ package org.apache.pulsar.client.admin;
 
 import java.util.List;
 import java.util.Set;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedException;
+<<<<<<< HEAD
 import org.apache.pulsar.common.functions.FunctionState;
 import org.apache.pulsar.common.io.ConnectorDefinition;
 import org.apache.pulsar.common.policies.data.FunctionStats;
 import org.apache.pulsar.common.functions.FunctionConfig;
+=======
+import org.apache.pulsar.common.functions.FunctionConfig;
+import org.apache.pulsar.common.functions.FunctionState;
+import org.apache.pulsar.common.functions.UpdateOptions;
+import org.apache.pulsar.common.io.ConnectorDefinition;
+import org.apache.pulsar.common.policies.data.FunctionStats;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.FunctionStatus;
 
 /**
@@ -36,9 +48,15 @@ import org.apache.pulsar.common.policies.data.FunctionStatus;
 public interface Functions {
     /**
      * Get the list of functions.
+<<<<<<< HEAD
      * <p>
      * Get the list of all the Pulsar functions.
      * <p>
+=======
+     * <p/>
+     * Get the list of all the Pulsar functions.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -53,8 +71,27 @@ public interface Functions {
     List<String> getFunctions(String tenant, String namespace) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the configuration for the specified function.
      * <p>
+=======
+     * Get the list of functions asynchronously.
+     * <p/>
+     * Get the list of all the Pulsar functions.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>["f1", "f2", "f3"]</code>
+     * </pre>
+     *
+     */
+    CompletableFuture<List<String>> getFunctionsAsync(String tenant, String namespace);
+
+    /**
+     * Get the configuration for the specified function.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -80,6 +117,30 @@ public interface Functions {
     FunctionConfig getFunction(String tenant, String namespace, String function) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Get the configuration for the specified function asynchronously.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{ serviceUrl : "http://my-broker.example.com:8080/" }</code>
+     * </pre>
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     *
+     * @return the function configuration
+     *
+     */
+    CompletableFuture<FunctionConfig> getFunctionAsync(String tenant, String namespace, String function);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Create a new function.
      *
      * @param functionConfig
@@ -91,12 +152,28 @@ public interface Functions {
     void createFunction(FunctionConfig functionConfig, String fileName) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * <pre>
+=======
+     * Create a new function asynchronously.
+     *
+     * @param functionConfig
+     *            the function configuration object
+     */
+    CompletableFuture<Void> createFunctionAsync(FunctionConfig functionConfig, String fileName);
+
+    /**
+     * Create a new function with package url.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Create a new function by providing url from which fun-pkg can be downloaded. supported url: http/file
      * eg:
      * File: file:/dir/fileName.jar
      * Http: http://www.repo.com/fileName.jar
+<<<<<<< HEAD
      * </pre>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param functionConfig
      *            the function configuration object
@@ -107,8 +184,28 @@ public interface Functions {
     void createFunctionWithUrl(FunctionConfig functionConfig, String pkgUrl) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Update the configuration for a function.
      * <p>
+=======
+     * Create a new function with package url asynchronously.
+     * <p/>
+     * Create a new function by providing url from which fun-pkg can be downloaded. supported url: http/file
+     * eg:
+     * File: file:/dir/fileName.jar
+     * Http: http://www.repo.com/fileName.jar
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param pkgUrl
+     *            url from which pkg can be downloaded
+     */
+    CompletableFuture<Void> createFunctionWithUrlAsync(FunctionConfig functionConfig, String pkgUrl);
+
+    /**
+     * Update the configuration for a function.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param functionConfig
      *            the function configuration object
@@ -123,13 +220,60 @@ public interface Functions {
     void updateFunction(FunctionConfig functionConfig, String fileName) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Update the configuration for a function.
      * <pre>
+=======
+     * Update the configuration for a function asynchronously.
+     * <p/>
+     *
+     * @param functionConfig
+     *            the function configuration object
+     */
+    CompletableFuture<Void> updateFunctionAsync(FunctionConfig functionConfig, String fileName);
+
+    /**
+     * Update the configuration for a function.
+     * <p/>
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param updateOptions
+     *            options for the update operations
+     * @throws NotAuthorizedException
+     *             You don't have admin permission to create the cluster
+     * @throws NotFoundException
+     *             Cluster doesn't exist
+     * @throws PulsarAdminException
+     *             Unexpected error
+     */
+    void updateFunction(FunctionConfig functionConfig, String fileName, UpdateOptions updateOptions)
+            throws PulsarAdminException;
+
+    /**
+     * Update the configuration for a function asynchronously.
+     * <p/>
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param updateOptions
+     *            options for the update operations
+     */
+    CompletableFuture<Void> updateFunctionAsync(
+            FunctionConfig functionConfig, String fileName, UpdateOptions updateOptions);
+
+    /**
+     * Update the configuration for a function.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Update a function by providing url from which fun-pkg can be downloaded. supported url: http/file
      * eg:
      * File: file:/dir/fileName.jar
      * Http: http://www.repo.com/fileName.jar
+<<<<<<< HEAD
      * </pre>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param functionConfig
      *            the function configuration object
@@ -145,8 +289,70 @@ public interface Functions {
     void updateFunctionWithUrl(FunctionConfig functionConfig, String pkgUrl) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Delete an existing function
      * <p>
+=======
+     * Update the configuration for a function asynchronously.
+     * <p/>
+     * Update a function by providing url from which fun-pkg can be downloaded. supported url: http/file
+     * eg:
+     * File: file:/dir/fileName.jar
+     * Http: http://www.repo.com/fileName.jar
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param pkgUrl
+     *            url from which pkg can be downloaded
+     */
+    CompletableFuture<Void> updateFunctionWithUrlAsync(FunctionConfig functionConfig, String pkgUrl);
+
+    /**
+     * Update the configuration for a function.
+     * <p/>
+     * Update a function by providing url from which fun-pkg can be downloaded. supported url: http/file
+     * eg:
+     * File: file:/dir/fileName.jar
+     * Http: http://www.repo.com/fileName.jar
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param pkgUrl
+     *            url from which pkg can be downloaded
+     * @param updateOptions
+     *            options for the update operations
+     * @throws NotAuthorizedException
+     *             You don't have admin permission to create the cluster
+     * @throws NotFoundException
+     *             Cluster doesn't exist
+     * @throws PulsarAdminException
+     *             Unexpected error
+     */
+    void updateFunctionWithUrl(FunctionConfig functionConfig, String pkgUrl, UpdateOptions updateOptions)
+            throws PulsarAdminException;
+
+    /**
+     * Update the configuration for a function asynchronously.
+     * <p/>
+     * Update a function by providing url from which fun-pkg can be downloaded. supported url: http/file
+     * eg:
+     * File: file:/dir/fileName.jar
+     * Http: http://www.repo.com/fileName.jar
+     *
+     * @param functionConfig
+     *            the function configuration object
+     * @param pkgUrl
+     *            url from which pkg can be downloaded
+     * @param updateOptions
+     *            options for the update operations
+     */
+    CompletableFuture<Void> updateFunctionWithUrlAsync(
+            FunctionConfig functionConfig, String pkgUrl, UpdateOptions updateOptions);
+
+    /**
+     * Delete an existing function.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Delete a function
      *
      * @param tenant
@@ -168,6 +374,23 @@ public interface Functions {
     void deleteFunction(String tenant, String namespace, String function) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Delete an existing function asynchronously.
+     * <p/>
+     * Delete a function
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<Void> deleteFunctionAsync(String tenant, String namespace, String function);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Gets the current status of a function.
      *
      * @param tenant
@@ -183,6 +406,21 @@ public interface Functions {
     FunctionStatus getFunctionStatus(String tenant, String namespace, String function) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Gets the current status of a function asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<FunctionStatus> getFunctionStatusAsync(String tenant, String namespace, String function);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Gets the current status of a function instance.
      *
      * @param tenant
@@ -196,10 +434,34 @@ public interface Functions {
      * @return
      * @throws PulsarAdminException
      */
+<<<<<<< HEAD
     FunctionStatus.FunctionInstanceStatus.FunctionInstanceStatusData getFunctionStatus(String tenant, String namespace, String function, int id)
             throws PulsarAdminException;
 
     /**
+=======
+    FunctionStatus.FunctionInstanceStatus.FunctionInstanceStatusData getFunctionStatus(
+            String tenant, String namespace, String function, int id)
+            throws PulsarAdminException;
+
+    /**
+     * Gets the current status of a function instance asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param id
+     *            Function instance-id
+     * @return
+     */
+    CompletableFuture<FunctionStatus.FunctionInstanceStatus.FunctionInstanceStatusData> getFunctionStatusAsync(
+            String tenant, String namespace, String function, int id);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Gets the current stats of a function instance.
      *
      * @param tenant
@@ -213,10 +475,34 @@ public interface Functions {
      * @return
      * @throws PulsarAdminException
      */
+<<<<<<< HEAD
     FunctionStats.FunctionInstanceStats.FunctionInstanceStatsData getFunctionStats(String tenant, String namespace, String function, int id)
             throws PulsarAdminException;
 
     /**
+=======
+    FunctionStats.FunctionInstanceStats.FunctionInstanceStatsData getFunctionStats(
+            String tenant, String namespace, String function, int id)
+            throws PulsarAdminException;
+
+    /**
+     * Gets the current stats of a function instance asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param id
+     *            Function instance-id
+     * @return
+     */
+    CompletableFuture<FunctionStats.FunctionInstanceStats.FunctionInstanceStatsData> getFunctionStatsAsync(
+            String tenant, String namespace, String function, int id);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Gets the current stats of a function.
      *
      * @param tenant
@@ -233,7 +519,25 @@ public interface Functions {
             throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Restart function instance
+=======
+     * Gets the current stats of a function asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @return
+     */
+
+    CompletableFuture<FunctionStats> getFunctionStatsAsync(String tenant, String namespace, String function);
+
+    /**
+     * Restart function instance.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -251,7 +555,26 @@ public interface Functions {
     void restartFunction(String tenant, String namespace, String function, int instanceId) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Restart all function instances
+=======
+     * Restart function instance asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     *
+     * @param instanceId
+     *            Function instanceId
+     */
+    CompletableFuture<Void> restartFunctionAsync(String tenant, String namespace, String function, int instanceId);
+
+    /**
+     * Restart all function instances.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -265,9 +588,26 @@ public interface Functions {
      */
     void restartFunction(String tenant, String namespace, String function) throws PulsarAdminException;
 
+<<<<<<< HEAD
 
     /**
      * Stop function instance
+=======
+    /**
+     * Restart all function instances asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<Void> restartFunctionAsync(String tenant, String namespace, String function);
+
+    /**
+     * Stop function instance.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -285,7 +625,26 @@ public interface Functions {
     void stopFunction(String tenant, String namespace, String function, int instanceId) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Start all function instances
+=======
+     * Stop function instance asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     *
+     * @param instanceId
+     *            Function instanceId
+     */
+    CompletableFuture<Void> stopFunctionAsync(String tenant, String namespace, String function, int instanceId);
+
+    /**
+     * Start all function instances.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -300,7 +659,23 @@ public interface Functions {
     void startFunction(String tenant, String namespace, String function) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Start function instance
+=======
+     * Start all function instances asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<Void> startFunctionAsync(String tenant, String namespace, String function);
+
+    /**
+     * Start function instance.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -318,7 +693,26 @@ public interface Functions {
     void startFunction(String tenant, String namespace, String function, int instanceId) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Stop all function instances
+=======
+     * Start function instance asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     *
+     * @param instanceId
+     *            Function instanceId
+     */
+    CompletableFuture<Void> startFunctionAsync(String tenant, String namespace, String function, int instanceId);
+
+    /**
+     * Stop all function instances.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param tenant
      *            Tenant name
@@ -332,6 +726,20 @@ public interface Functions {
      */
     void stopFunction(String tenant, String namespace, String function) throws PulsarAdminException;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Stop all function instances asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<Void> stopFunctionAsync(String tenant, String namespace, String function);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Triggers the function by writing to the input topic.
@@ -350,7 +758,30 @@ public interface Functions {
      * @throws PulsarAdminException
      *             Unexpected error
      */
+<<<<<<< HEAD
     String triggerFunction(String tenant, String namespace, String function, String topic, String triggerValue, String triggerFile) throws PulsarAdminException;
+=======
+    String triggerFunction(
+            String tenant, String namespace, String function, String topic, String triggerValue, String triggerFile)
+            throws PulsarAdminException;
+
+    /**
+     * Triggers the function by writing to the input topic asynchronously.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param triggerValue
+     *            The input that will be written to input topic
+     * @param triggerFile
+     *            The file which contains the input that will be written to input topic
+     */
+    CompletableFuture<String> triggerFunctionAsync(
+            String tenant, String namespace, String function, String topic, String triggerValue, String triggerFile);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Upload Data.
@@ -366,6 +797,19 @@ public interface Functions {
     void uploadFunction(String sourceFile, String path) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Upload Data asynchronously.
+     *
+     * @param sourceFile
+     *            dataFile that needs to be uploaded
+     * @param path
+     *            Path where data should be stored
+     */
+    CompletableFuture<Void> uploadFunctionAsync(String sourceFile, String path);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Download Function Code.
      *
      * @param destinationFile
@@ -379,35 +823,106 @@ public interface Functions {
     void downloadFunction(String destinationFile, String path) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Download Function Code.
+     *
+     * @param destinationFile
+     *            file where data should be downloaded to
+     * @param path
+     *            Path where data is located
+     */
+    CompletableFuture<Void> downloadFunctionAsync(String destinationFile, String path);
+
+    /**
+     * Download Function Code.
+     *
+     * @param destinationFile
+     *           file where data should be downloaded to
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @throws PulsarAdminException
+     */
+    void downloadFunction(String destinationFile, String tenant, String namespace, String function)
+            throws PulsarAdminException;
+
+    /**
+     * Download Function Code asynchronously.
+     *
+     * @param destinationFile
+     *           file where data should be downloaded to
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     */
+    CompletableFuture<Void> downloadFunctionAsync(
+            String destinationFile, String tenant, String namespace, String function);
+
+    /**
+     * Deprecated in favor of getting sources and sinks for their own APIs.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Fetches a list of supported Pulsar IO connectors currently running in cluster mode
      *
      * @throws PulsarAdminException
      *             Unexpected error
      *
      */
+<<<<<<< HEAD
     List<ConnectorDefinition> getConnectorsList() throws PulsarAdminException;
 
     /**
+=======
+    @Deprecated
+    List<ConnectorDefinition> getConnectorsList() throws PulsarAdminException;
+
+    /**
+     * Deprecated in favor of getting sources and sinks for their own APIs.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Fetches a list of supported Pulsar IO sources currently running in cluster mode
      *
      * @throws PulsarAdminException
      *             Unexpected error
      *
      */
+<<<<<<< HEAD
     Set<String> getSources() throws PulsarAdminException;
 
     /**
+=======
+    @Deprecated
+    Set<String> getSources() throws PulsarAdminException;
+
+    /**
+     * Deprecated in favor of getting sources and sinks for their own APIs.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Fetches a list of supported Pulsar IO sinks currently running in cluster mode
      *
      * @throws PulsarAdminException
      *             Unexpected error
      *
      */
+<<<<<<< HEAD
+=======
+    @Deprecated
+>>>>>>> f773c602c... Test pr 10 (#27)
     Set<String> getSinks() throws PulsarAdminException;
 
     /**
      * Fetch the current state associated with a Pulsar Function.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
      * Response Example:
      *
      * <pre>
@@ -432,5 +947,87 @@ public interface Functions {
      * @throws PulsarAdminException
      *             Unexpected error
      */
+    FunctionState getFunctionState(String tenant, String namespace, String function, String key)
+            throws PulsarAdminException;
+
+    /**
+     * Fetch the current state associated with a Pulsar Function asynchronously.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
+     * Response Example:
+     *
+     * <pre>
+     * <code>{ "value : 12, version : 2"}</code>
+     * </pre>
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param key
+     *            Key name of State
+     *
+     * @return the function configuration
+<<<<<<< HEAD
+     *
+=======
+     */
+    CompletableFuture<FunctionState> getFunctionStateAsync(
+            String tenant, String namespace, String function, String key);
+
+    /**
+     * Puts the given state associated with a Pulsar Function.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{ "value : 12, version : 2"}</code>
+     * </pre>
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param state
+     *            FunctionState
+     **
+>>>>>>> f773c602c... Test pr 10 (#27)
+     * @throws NotAuthorizedException
+     *             You don't have admin permission to get the configuration of the cluster
+     * @throws NotFoundException
+     *             Cluster doesn't exist
+     * @throws PulsarAdminException
+     *             Unexpected error
+     */
+<<<<<<< HEAD
     FunctionState getFunctionState(String tenant, String namespace, String function, String key) throws PulsarAdminException;
+=======
+    void putFunctionState(String tenant, String namespace, String function, FunctionState state)
+            throws PulsarAdminException;
+
+    /**
+     * Puts the given state associated with a Pulsar Function asynchronously.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{ "value : 12, version : 2"}</code>
+     * </pre>
+     *
+     * @param tenant
+     *            Tenant name
+     * @param namespace
+     *            Namespace name
+     * @param function
+     *            Function name
+     * @param state
+     *            FunctionState
+     */
+    CompletableFuture<Void> putFunctionStateAsync(
+            String tenant, String namespace, String function, FunctionState state);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

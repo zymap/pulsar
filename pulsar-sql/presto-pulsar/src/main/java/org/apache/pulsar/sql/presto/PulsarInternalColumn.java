@@ -18,15 +18,23 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.type.BigintType;
 import com.facebook.presto.spi.type.TimestampType;
 import com.facebook.presto.spi.type.TimestampWithTimeZoneType;
 import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.VarcharType;
+=======
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Objects.requireNonNull;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.raw.RawMessage;
 
 import java.util.Map;
@@ -39,6 +47,41 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class PulsarInternalColumn {
 
+=======
+import io.prestosql.spi.type.BigintType;
+import io.prestosql.spi.type.IntegerType;
+import io.prestosql.spi.type.TimestampType;
+import io.prestosql.spi.type.Type;
+import io.prestosql.spi.type.VarcharType;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import org.apache.pulsar.common.api.raw.RawMessage;
+
+/**
+ * This abstract class represents internal columns.
+ */
+public abstract class PulsarInternalColumn {
+
+    /**
+     * Internal column representing the partition.
+     */
+    public static class PartitionColumn extends PulsarInternalColumn {
+
+        PartitionColumn(String name, Type type, String comment) {
+            super(name, type, comment);
+        }
+
+        @Override
+        public Object getData(RawMessage message) {
+            return null;
+        }
+    }
+
+    /**
+     * Internal column representing the event time.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class EventTimeColumn extends PulsarInternalColumn {
 
         EventTimeColumn(String name, Type type, String comment) {
@@ -51,6 +94,12 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Internal column representing the publish time.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PublishTimeColumn extends PulsarInternalColumn {
 
         PublishTimeColumn(String name, Type type, String comment) {
@@ -63,6 +112,12 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Internal column representing the message id.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class MessageIdColumn extends PulsarInternalColumn {
 
         MessageIdColumn(String name, Type type, String comment) {
@@ -75,6 +130,12 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Internal column representing the sequence id.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class SequenceIdColumn extends PulsarInternalColumn {
 
         SequenceIdColumn(String name, Type type, String comment) {
@@ -87,6 +148,12 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Internal column representing the producer name.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class ProducerNameColumn extends PulsarInternalColumn {
 
         ProducerNameColumn(String name, Type type, String comment) {
@@ -99,6 +166,12 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Internal column representing the key.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class KeyColumn extends PulsarInternalColumn {
 
         KeyColumn(String name, Type type, String comment) {
@@ -111,9 +184,17 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
     public static class PropertiesColumn extends PulsarInternalColumn {
 
 
+=======
+    /**
+     * Internal column representing the message properties.
+     */
+    public static class PropertiesColumn extends PulsarInternalColumn {
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         private static final ObjectMapper mapper = new ObjectMapper();
 
         PropertiesColumn(String name, Type type, String comment) {
@@ -130,12 +211,22 @@ public abstract class PulsarInternalColumn {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public static final PartitionColumn PARTITION = new PartitionColumn("__partition__", IntegerType.INTEGER,
+        "The partition number which the message belongs to");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static final PulsarInternalColumn EVENT_TIME = new EventTimeColumn("__event_time__", TimestampType
             .TIMESTAMP, "Application defined timestamp in milliseconds of when the event occurred");
 
     public static final PulsarInternalColumn PUBLISH_TIME = new PublishTimeColumn("__publish_time__",
+<<<<<<< HEAD
             TimestampWithTimeZoneType.TIMESTAMP_WITH_TIME_ZONE,
             "The timestamp in milliseconds of when event as published");
+=======
+            TimestampType.TIMESTAMP, "The timestamp in milliseconds of when event as published");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static final PulsarInternalColumn MESSAGE_ID = new MessageIdColumn("__message_id__", VarcharType.VARCHAR,
             "The message ID of the message used to generate this row");
@@ -146,8 +237,13 @@ public abstract class PulsarInternalColumn {
     public static final PulsarInternalColumn PRODUCER_NAME = new ProducerNameColumn("__producer_name__", VarcharType
             .VARCHAR, "The name of the producer that publish the message used to generate this row");
 
+<<<<<<< HEAD
     public static final PulsarInternalColumn KEY = new KeyColumn("__key__", VarcharType.VARCHAR, "The partition key " +
             "for the topic");
+=======
+    public static final PulsarInternalColumn KEY = new KeyColumn("__key__", VarcharType.VARCHAR, "The partition key "
+        + "for the topic");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static final PulsarInternalColumn PROPERTIES = new PropertiesColumn("__properties__", VarcharType.VARCHAR,
             "User defined properties");
@@ -179,6 +275,7 @@ public abstract class PulsarInternalColumn {
                 getName(),
                 getType(),
                 hidden,
+<<<<<<< HEAD
                 true, null, null);
     }
 
@@ -188,6 +285,19 @@ public abstract class PulsarInternalColumn {
 
     public static Set<PulsarInternalColumn> getInternalFields() {
         return ImmutableSet.of(EVENT_TIME, PUBLISH_TIME, MESSAGE_ID, SEQUENCE_ID, PRODUCER_NAME, KEY, PROPERTIES);
+=======
+                true, null, null, PulsarColumnHandle.HandleKeyValueType.NONE);
+    }
+
+    PulsarColumnMetadata getColumnMetadata(boolean hidden) {
+        return new PulsarColumnMetadata(name, type, comment, null, hidden, true, null, null,
+                PulsarColumnHandle.HandleKeyValueType.NONE);
+    }
+
+    public static Set<PulsarInternalColumn> getInternalFields() {
+        return ImmutableSet.of(PARTITION, EVENT_TIME, PUBLISH_TIME, MESSAGE_ID, SEQUENCE_ID, PRODUCER_NAME, KEY,
+            PROPERTIES);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static Map<String, PulsarInternalColumn> getInternalFieldsMap() {

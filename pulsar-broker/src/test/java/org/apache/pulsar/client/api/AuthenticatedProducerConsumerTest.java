@@ -26,6 +26,10 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -71,8 +75,13 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         conf.setAuthenticationEnabled(true);
         conf.setAuthorizationEnabled(true);
 
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setTlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH);
         conf.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         conf.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
@@ -95,7 +104,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         conf.setAuthenticationProviders(providers);
 
         conf.setClusterName("test");
+<<<<<<< HEAD
 
+=======
+        conf.setNumExecutorThreadPoolSize(5);
+>>>>>>> f773c602c... Test pr 10 (#27)
         super.init();
     }
 
@@ -106,9 +119,15 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         String lookupUrl;
         // For http basic authentication test
         if (methodName.equals("testBasicCryptSyncProducerAndConsumer")) {
+<<<<<<< HEAD
             lookupUrl = new URI("https://localhost:" + BROKER_WEBSERVICE_PORT_TLS).toString();
         } else {
             lookupUrl = new URI("pulsar+ssl://localhost:" + BROKER_PORT_TLS).toString();
+=======
+            lookupUrl = pulsar.getWebServiceAddressTls();
+        } else {
+            lookupUrl = pulsar.getBrokerServiceUrlTls();
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         pulsarClient = PulsarClient.builder().serviceUrl(lookupUrl).statsInterval(0, TimeUnit.SECONDS)
                 .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).allowTlsInsecureConnection(true).authentication(auth)
@@ -169,6 +188,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         authTls.configure(authParams);
         internalSetup(authTls);
 
+<<<<<<< HEAD
+=======
+        admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString()));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("test")));
         admin.namespaces().createNamespace("my-property/my-ns", Sets.newHashSet("test"));
@@ -185,6 +209,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         authPassword.configure("{\"userId\":\"superUser\",\"password\":\"supepass\"}");
         internalSetup(authPassword);
 
+<<<<<<< HEAD
+=======
+        admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString()));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet(), Sets.newHashSet("test")));
         admin.namespaces().createNamespace("my-property/my-ns", Sets.newHashSet("test"));
@@ -201,6 +230,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         authPassword.configure("{\"userId\":\"superUser2\",\"password\":\"superpassword\"}");
         internalSetup(authPassword);
 
+<<<<<<< HEAD
+=======
+        admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString()));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet(), Sets.newHashSet("test")));
         admin.namespaces().createNamespace("my-property/my-ns", Sets.newHashSet("test"));
@@ -222,7 +256,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         internalSetup(authTls);
 
         admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString(), brokerUrlTls.toString(),
+<<<<<<< HEAD
                 "pulsar://localhost:" + BROKER_PORT, "pulsar+ssl://localhost:" + BROKER_PORT_TLS));
+=======
+                pulsar.getBrokerServiceUrl(), pulsar.getBrokerServiceUrlTls()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("anonymousUser"), Sets.newHashSet("test")));
 
@@ -235,7 +273,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
 
         // setup the client
         pulsarClient.close();
+<<<<<<< HEAD
         pulsarClient = PulsarClient.builder().serviceUrl("pulsar://localhost:" + BROKER_PORT)
+=======
+        pulsarClient = PulsarClient.builder().serviceUrl(pulsar.getBrokerServiceUrl())
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .operationTimeout(1, TimeUnit.SECONDS).build();
 
         // unauthorized topic test
@@ -271,7 +313,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
 
         final String cluster = "test";
         final ClusterData clusterData = new ClusterData(brokerUrl.toString(), brokerUrlTls.toString(),
+<<<<<<< HEAD
                 "pulsar://localhost:" + BROKER_PORT, "pulsar+ssl://localhost:" + BROKER_PORT_TLS);
+=======
+                pulsar.getBrokerServiceUrl(), pulsar.getBrokerServiceUrlTls());
+>>>>>>> f773c602c... Test pr 10 (#27)
         // this will cause NPE and it should throw 500
         doReturn(null).when(pulsar).getGlobalZkCache();
         try {
@@ -301,7 +347,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
         internalSetup(authTls);
 
         admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString(), brokerUrlTls.toString(),
+<<<<<<< HEAD
                 "pulsar://localhost:" + BROKER_PORT, "pulsar+ssl://localhost:" + BROKER_PORT_TLS));
+=======
+                pulsar.getBrokerServiceUrl(), pulsar.getBrokerServiceUrlTls()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("test")));
         String namespace = "my-property/my-ns";
@@ -309,7 +359,11 @@ public class AuthenticatedProducerConsumerTest extends ProducerConsumerBase {
 
         String topic = "persistent://" + namespace + "1/topic1";
         // this will cause NPE and it should throw 500
+<<<<<<< HEAD
         mockZookKeeper.shutdown();
+=======
+        mockZooKeeper.shutdown();
+>>>>>>> f773c602c... Test pr 10 (#27)
         pulsar.getConfiguration().setSuperUserRoles(Sets.newHashSet());
         try {
             admin.topics().getPartitionedTopicMetadata(topic);

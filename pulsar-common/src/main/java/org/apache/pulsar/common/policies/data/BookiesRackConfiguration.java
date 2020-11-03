@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+<<<<<<< HEAD
 public class BookiesRackConfiguration extends TreeMap<String, Map<String, BookieInfo>> {
 
     public boolean removeBookie(String address) {
@@ -37,6 +38,28 @@ public class BookiesRackConfiguration extends TreeMap<String, Map<String, Bookie
     }
 
     public Optional<BookieInfo> getBookie(String address) {
+=======
+/**
+ * The rack configuration map for bookies.
+ */
+public class BookiesRackConfiguration extends TreeMap<String, Map<String, BookieInfo>> {
+
+    private static final long serialVersionUID = 0L;
+
+    public synchronized boolean removeBookie(String address) {
+        for (Map.Entry<String, Map<String, BookieInfo>> entry : entrySet()) {
+            if (entry.getValue().remove(address) != null) {
+                if (entry.getValue().isEmpty()) {
+                    remove(entry.getKey());
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized Optional<BookieInfo> getBookie(String address) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         for (Map<String, BookieInfo> m : values()) {
             BookieInfo bi = m.get(address);
             if (bi != null) {
@@ -46,7 +69,11 @@ public class BookiesRackConfiguration extends TreeMap<String, Map<String, Bookie
         return Optional.empty();
     }
 
+<<<<<<< HEAD
     public void updateBookie(String group, String address, BookieInfo bookieInfo) {
+=======
+    public synchronized void updateBookie(String group, String address, BookieInfo bookieInfo) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         checkNotNull(group);
         checkNotNull(address);
         checkNotNull(bookieInfo);
@@ -55,4 +82,8 @@ public class BookiesRackConfiguration extends TreeMap<String, Map<String, Bookie
         removeBookie(address);
         computeIfAbsent(group, key -> new TreeMap<>()).put(address, bookieInfo);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

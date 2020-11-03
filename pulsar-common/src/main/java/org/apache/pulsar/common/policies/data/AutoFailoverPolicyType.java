@@ -18,10 +18,24 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 public enum AutoFailoverPolicyType {
     min_available
 
     ;
+=======
+import io.swagger.annotations.ApiModel;
+
+/**
+ * The policy type of auto failover.
+ */
+@ApiModel(
+    value = "AutoFailoverPolicyType",
+    description = "The policy type of auto failover."
+)
+public enum AutoFailoverPolicyType {
+    min_available;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static AutoFailoverPolicyType fromString(String autoFailoverPolicyTypeName) {
         for (AutoFailoverPolicyType autoFailoverPolicyType : AutoFailoverPolicyType.values()) {

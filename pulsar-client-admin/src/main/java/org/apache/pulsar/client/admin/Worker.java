@@ -21,48 +21,112 @@ package org.apache.pulsar.client.admin;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 
 import org.apache.pulsar.common.functions.WorkerInfo;
 import org.apache.pulsar.common.policies.data.WorkerFunctionInstanceStats;
+=======
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.pulsar.common.functions.WorkerInfo;
+import org.apache.pulsar.common.policies.data.WorkerFunctionInstanceStats;
+import org.apache.pulsar.common.stats.Metrics;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Admin interface for worker stats management.
  */
 public interface Worker {
 
+<<<<<<< HEAD
 
     /**
      * Get all functions stats on a worker
+=======
+    /**
+     * Get all functions stats on a worker.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     List<WorkerFunctionInstanceStats> getFunctionsStats() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
+=======
+     * Get all functions stats on a worker asynchronously.
+     * @return
+     */
+    CompletableFuture<List<WorkerFunctionInstanceStats>> getFunctionsStatsAsync();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get worker metrics.
      * @return
      * @throws PulsarAdminException
      */
+<<<<<<< HEAD
     Collection<org.apache.pulsar.common.stats.Metrics> getMetrics() throws PulsarAdminException;
 
     /**
      * Get List of all workers belonging to this cluster
+=======
+    Collection<Metrics> getMetrics() throws PulsarAdminException;
+
+    /**
+     * Get worker metrics asynchronously.
+     * @return
+     */
+    CompletableFuture<Collection<Metrics>> getMetricsAsync();
+
+    /**
+     * Get List of all workers belonging to this cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     List<WorkerInfo> getCluster() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the worker who is the leader of the cluster
+=======
+     * Get List of all workers belonging to this cluster asynchronously.
+     * @return
+     */
+    CompletableFuture<List<WorkerInfo>> getClusterAsync();
+
+    /**
+     * Get the worker who is the leader of the cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     WorkerInfo getClusterLeader() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the function assignment among the cluster
+=======
+     * Get the worker who is the leader of the cluster asynchronously.
+     * @return
+     */
+    CompletableFuture<WorkerInfo> getClusterLeaderAsync();
+
+    /**
+     * Get the function assignment among the cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws PulsarAdminException
      */
     Map<String, Collection<String>> getAssignments() throws PulsarAdminException;
+<<<<<<< HEAD
+=======
+
+    /**
+     * Get the function assignment among the cluster asynchronously.
+     * @return
+     */
+    CompletableFuture<Map<String, Collection<String>>> getAssignmentsAsync();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

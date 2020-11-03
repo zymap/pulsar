@@ -28,10 +28,17 @@ DOCKER_ORG=apachepulsar
 PYTHON_VERSIONS=(
    '2.7 cp27-cp27mu'
    '2.7 cp27-cp27m'
+<<<<<<< HEAD
    '3.4 cp34-cp34m'
    '3.5 cp35-cp35m'
    '3.6 cp36-cp36m'
    '3.7 cp37-cp37m'
+=======
+   '3.5 cp35-cp35m'
+   '3.6 cp36-cp36m'
+   '3.7 cp37-cp37m'
+   '3.8 cp38-cp38'
+>>>>>>> f773c602c... Test pr 10 (#27)
 )
 
 for line in "${PYTHON_VERSIONS[@]}"; do

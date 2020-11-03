@@ -24,17 +24,29 @@ package org.apache.pulsar.client.api;
  */
 public enum RegexSubscriptionMode {
     /**
+<<<<<<< HEAD
      * Only subscribe to persistent topics
+=======
+     * Only subscribe to persistent topics.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     PersistentOnly,
 
     /**
+<<<<<<< HEAD
      * Only subscribe to non-persistent topics
+=======
+     * Only subscribe to non-persistent topics.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     NonPersistentOnly,
 
     /**
+<<<<<<< HEAD
      * Subscribe to both persistent and non-persistent topics
+=======
+     * Subscribe to both persistent and non-persistent topics.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     AllTopics
 }

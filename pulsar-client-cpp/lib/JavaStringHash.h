@@ -19,19 +19,32 @@
 #ifndef JAVA_DEFAULT_HASH_HPP_
 #define JAVA_DEFAULT_HASH_HPP_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include "Hash.h"
 
 #include <cstdint>
 #include <string>
 #include <boost/functional/hash.hpp>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 namespace pulsar {
 class JavaStringHash : public Hash {
+=======
+namespace pulsar {
+class PULSAR_PUBLIC JavaStringHash : public Hash {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     JavaStringHash();
     int32_t makeHash(const std::string &key);
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* JAVA_DEFAULT_HASH_HPP_ */

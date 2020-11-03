@@ -33,12 +33,20 @@ void export_enums() {
             .value("LZ4", CompressionLZ4)
             .value("ZLib", CompressionZLib)
             .value("ZSTD", CompressionZSTD)
+<<<<<<< HEAD
+=======
+            .value("SNAPPY", CompressionSNAPPY)
+>>>>>>> f773c602c... Test pr 10 (#27)
             ;
 
     enum_<ConsumerType>("ConsumerType")
             .value("Exclusive", ConsumerExclusive)
             .value("Shared", ConsumerShared)
             .value("Failover", ConsumerFailover)
+<<<<<<< HEAD
+=======
+            .value("KeyShared", ConsumerKeyShared)
+>>>>>>> f773c602c... Test pr 10 (#27)
             ;
 
     enum_<Result >("Result", "Collection of return codes")
@@ -77,6 +85,7 @@ void export_enums() {
             ;
 
     enum_<SchemaType>("SchemaType", "Supported schema types")
+<<<<<<< HEAD
             .value("NONE", NONE)
             .value("STRING", STRING)
             .value("INT8", INT8)
@@ -94,4 +103,32 @@ void export_enums() {
             .value("KEY_VALUE", KEY_VALUE)
             ;
 
+=======
+            .value("NONE", pulsar::NONE)
+            .value("STRING", pulsar::STRING)
+            .value("INT8", pulsar::INT8)
+            .value("INT16", pulsar::INT16)
+            .value("INT32", pulsar::INT32)
+            .value("INT64", pulsar::INT64)
+            .value("FLOAT", pulsar::FLOAT)
+            .value("DOUBLE", pulsar::DOUBLE)
+            .value("BYTES", pulsar::BYTES)
+            .value("JSON", pulsar::JSON)
+            .value("PROTOBUF", pulsar::PROTOBUF)
+            .value("AVRO", pulsar::AVRO)
+            .value("AUTO_CONSUME", pulsar::AUTO_CONSUME)
+            .value("AUTO_PUBLISH", pulsar::AUTO_PUBLISH)
+            .value("KEY_VALUE", pulsar::KEY_VALUE)
+            ;
+
+    enum_<InitialPosition>("InitialPosition", "Supported initial position")
+            .value("Latest", InitialPositionLatest)
+            .value("Earliest", InitialPositionEarliest)
+            ;
+
+    enum_<ProducerConfiguration::BatchingType>("BatchingType", "Supported batching types")
+            .value("Default", ProducerConfiguration::DefaultBatching)
+            .value("KeyBased", ProducerConfiguration::KeyBasedBatching)
+            ;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

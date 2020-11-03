@@ -85,6 +85,7 @@ public abstract class MockedBookKeeperTestCase {
         zkc.create("/managed-ledgers", new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
 
+<<<<<<< HEAD
     @AfterMethod
     public void tearDown(Method method) throws Exception {
         LOG.info("@@@@@@@@@ stopping " + method);
@@ -97,12 +98,34 @@ public abstract class MockedBookKeeperTestCase {
 
     @BeforeClass
     public void setUpClass() throws Exception {
+=======
+    @AfterMethod(alwaysRun = true)
+    public void tearDown(Method method) {
+        try {
+            LOG.info("@@@@@@@@@ stopping " + method);
+            factory.shutdown();
+            factory = null;
+            stopBookKeeper();
+            stopZooKeeper();
+            LOG.info("--------- stopped {}", method);
+        } catch (Exception e) {
+            LOG.error("tearDown Error", e);
+        }
+    }
+
+    @BeforeClass
+    public void setUpClass() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         executor = OrderedScheduler.newSchedulerBuilder().numThreads(2).name("test").build();
         cachedExecutor = Executors.newCachedThreadPool();
     }
 
     @AfterClass
+<<<<<<< HEAD
     public void tearDownClass() throws Exception {
+=======
+    public void tearDownClass() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         executor.shutdown();
         cachedExecutor.shutdown();
     }

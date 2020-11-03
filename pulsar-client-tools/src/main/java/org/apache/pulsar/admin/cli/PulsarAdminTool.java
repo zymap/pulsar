@@ -27,6 +27,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,12 +48,29 @@ public class PulsarAdminTool {
     @Parameter(names = { "--auth-plugin" }, description = "Authentication plugin class name.")
     String authPluginClassName = null;
 
+<<<<<<< HEAD
     @Parameter(names = { "--auth-params" }, description = "Authentication parameters, e.g., \"key1:val1,key2:val2\".")
+=======
+    @Parameter(names = { "--request-timeout" }, description = "Request time out in seconds for "
+            + "the pulsar admin client for any request")
+    int requestTimeout = PulsarAdmin.DEFAULT_REQUEST_TIMEOUT_SECONDS;
+
+    @Parameter(
+        names = { "--auth-params" },
+        description = "Authentication parameters, whose format is determined by the implementation " +
+            "of method `configure` in authentication plugin class, for example \"key1:val1,key2:val2\" " +
+            "or \"{\"key1\":\"val1\",\"key2\":\"val2\"}.")
+>>>>>>> f773c602c... Test pr 10 (#27)
     String authParams = null;
 
     @Parameter(names = { "--tls-allow-insecure" }, description = "Allow TLS insecure connection")
     Boolean tlsAllowInsecureConnection;
 
+<<<<<<< HEAD
+=======
+    @Parameter(names = { "--tls-trust-cert-path" }, description = "Allow TLS trust cert file path")
+    String tlsTrustCertsFilePath;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @Parameter(names = { "--tls-enable-hostname-verification" }, description = "Enable TLS common name verification")
     Boolean tlsEnableHostnameVerification;
@@ -57,6 +78,15 @@ public class PulsarAdminTool {
     @Parameter(names = { "-h", "--help", }, help = true, description = "Show this help.")
     boolean help;
 
+<<<<<<< HEAD
+=======
+    // for tls with keystore type config
+    boolean useKeyStoreTls = false;
+    String tlsTrustStoreType = "JKS";
+    String tlsTrustStorePath = null;
+    String tlsTrustStorePassword = null;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     PulsarAdminTool(Properties properties) throws Exception {
         // fallback to previous-version serviceUrl property to maintain backward-compatibility
         serviceUrl = StringUtils.isNotBlank(properties.getProperty("webServiceUrl"))
@@ -70,11 +100,31 @@ public class PulsarAdminTool {
         boolean tlsEnableHostnameVerification = this.tlsEnableHostnameVerification != null
                 ? this.tlsEnableHostnameVerification
                 : Boolean.parseBoolean(properties.getProperty("tlsEnableHostnameVerification", "false"));
+<<<<<<< HEAD
         String tlsTrustCertsFilePath = properties.getProperty("tlsTrustCertsFilePath");
 
         adminBuilder = PulsarAdmin.builder().allowTlsInsecureConnection(tlsAllowInsecureConnection)
                 .enableTlsHostnameVerification(tlsEnableHostnameVerification)
                 .tlsTrustCertsFilePath(tlsTrustCertsFilePath);
+=======
+        final String tlsTrustCertsFilePath = StringUtils.isNotBlank(this.tlsTrustCertsFilePath)
+                ? this.tlsTrustCertsFilePath
+                : properties.getProperty("tlsTrustCertsFilePath");
+
+        this.useKeyStoreTls = Boolean
+                .parseBoolean(properties.getProperty("useKeyStoreTls", "false"));
+        this.tlsTrustStoreType = properties.getProperty("tlsTrustStoreType", "JKS");
+        this.tlsTrustStorePath = properties.getProperty("tlsTrustStorePath");
+        this.tlsTrustStorePassword = properties.getProperty("tlsTrustStorePassword");
+
+        adminBuilder = PulsarAdmin.builder().allowTlsInsecureConnection(tlsAllowInsecureConnection)
+                .enableTlsHostnameVerification(tlsEnableHostnameVerification)
+                .tlsTrustCertsFilePath(tlsTrustCertsFilePath)
+                .useKeyStoreTls(useKeyStoreTls)
+                .tlsTrustStoreType(tlsTrustStoreType)
+                .tlsTrustStorePath(tlsTrustStorePath)
+                .tlsTrustStorePassword(tlsTrustStorePassword);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         jcommander = new JCommander();
         jcommander.setProgramName("pulsar-admin");
@@ -98,8 +148,24 @@ public class PulsarAdminTool {
 
 
         commandMap.put("resource-quotas", CmdResourceQuotas.class);
+<<<<<<< HEAD
         commandMap.put("functions", CmdFunctions.class);
         commandMap.put("functions-worker", CmdFunctionWorker.class);
+=======
+        // pulsar-proxy cli
+        commandMap.put("proxy-stats", CmdProxyStats.class);
+
+        commandMap.put("functions", CmdFunctions.class);
+        commandMap.put("functions-worker", CmdFunctionWorker.class);
+        commandMap.put("sources", CmdSources.class);
+        commandMap.put("sinks", CmdSinks.class);
+
+        // Automatically generate documents for pulsar-admin
+        commandMap.put("documents", CmdGenerateDocument.class);
+
+        // To remain backwards compatibility for "source" and "sink" commands
+        // TODO eventually remove this
+>>>>>>> f773c602c... Test pr 10 (#27)
         commandMap.put("source", CmdSources.class);
         commandMap.put("sink", CmdSinks.class);
     }
@@ -108,6 +174,7 @@ public class PulsarAdminTool {
         try {
             adminBuilder.serviceHttpUrl(serviceUrl);
             adminBuilder.authentication(authPluginClassName, authParams);
+<<<<<<< HEAD
             PulsarAdmin admin = adminFactory.apply(adminBuilder);
             for (Map.Entry<String, Class<?>> c : commandMap.entrySet()) {
                 if (admin != null) {
@@ -117,6 +184,12 @@ public class PulsarAdminTool {
                     // In mode localrun, only some components are initialized, such as source, sink and functions
                     jcommander.addCommand(c.getKey(), c.getValue().getConstructor(PulsarAdmin.class).newInstance(admin));
                 }
+=======
+            adminBuilder.requestTimeout(requestTimeout, TimeUnit.SECONDS);
+            PulsarAdmin admin = adminFactory.apply(adminBuilder);
+            for (Map.Entry<String, Class<?>> c : commandMap.entrySet()) {
+                addCommand(c, admin);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         } catch (Exception e) {
             Throwable cause;
@@ -130,6 +203,26 @@ public class PulsarAdminTool {
         }
     }
 
+<<<<<<< HEAD
+=======
+    private void addCommand(Map.Entry<String, Class<?>> c, PulsarAdmin admin) throws Exception {
+        // To remain backwards compatibility for "source" and "sink" commands
+        // TODO eventually remove this
+        if (c.getKey().equals("sources") || c.getKey().equals("source")) {
+            jcommander.addCommand("sources", c.getValue().getConstructor(PulsarAdmin.class).newInstance(admin), "source");
+        } else if (c.getKey().equals("sinks") || c.getKey().equals("sink")) {
+            jcommander.addCommand("sinks", c.getValue().getConstructor(PulsarAdmin.class).newInstance(admin), "sink");
+        } else if (c.getKey().equals("functions")) {
+            jcommander.addCommand(c.getKey(), c.getValue().getConstructor(PulsarAdmin.class).newInstance(admin));
+        } else {
+            if (admin != null) {
+                // Other mode, all components are initialized.
+                jcommander.addCommand(c.getKey(), c.getValue().getConstructor(PulsarAdmin.class).newInstance(admin));
+            }
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     boolean run(String[] args) {
         return run(args, adminBuilder -> {
             try {
@@ -179,6 +272,18 @@ public class PulsarAdminTool {
         } else {
             setupCommands(adminFactory);
             String cmd = args[cmdPos];
+<<<<<<< HEAD
+=======
+
+            // To remain backwards compatibility for "source" and "sink" commands
+            // TODO eventually remove this
+            if (cmd.equals("source")) {
+                cmd = "sources";
+            } else if (cmd.equals("sink")) {
+                cmd = "sinks";
+            }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             JCommander obj = jcommander.getCommands().get(cmd);
             CmdBase cmdObj = (CmdBase) obj.getObjects().get(0);
 

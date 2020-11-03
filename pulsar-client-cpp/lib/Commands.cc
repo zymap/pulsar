@@ -20,7 +20,10 @@
 #include "MessageImpl.h"
 #include "Version.h"
 #include "pulsar/MessageBuilder.h"
+<<<<<<< HEAD
 #include "PulsarApi.pb.h"
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include "LogUtils.h"
 #include "PulsarApi.pb.h"
 #include "Utils.h"
@@ -215,6 +218,12 @@ SharedBuffer Commands::newConnect(const AuthenticationPtr& authentication, const
     connect->set_client_version(_PULSAR_VERSION_);
     connect->set_auth_method_name(authentication->getAuthMethodName());
     connect->set_protocol_version(ProtocolVersion_MAX);
+<<<<<<< HEAD
+=======
+
+    FeatureFlags* flags = connect->mutable_feature_flags();
+    flags->set_supports_auth_refresh(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
     if (connectingThroughProxy) {
         Url logicalAddressUrl;
         Url::parse(logicalAddress, logicalAddressUrl);
@@ -228,6 +237,26 @@ SharedBuffer Commands::newConnect(const AuthenticationPtr& authentication, const
     return writeMessageWithSize(cmd);
 }
 
+<<<<<<< HEAD
+=======
+SharedBuffer Commands::newAuthResponse(const AuthenticationPtr& authentication) {
+    BaseCommand cmd;
+    cmd.set_type(BaseCommand::AUTH_RESPONSE);
+    CommandAuthResponse* authResponse = cmd.mutable_authresponse();
+    authResponse->set_client_version(_PULSAR_VERSION_);
+
+    AuthData* authData = authResponse->mutable_response();
+    authData->set_auth_method_name(authentication->getAuthMethodName());
+
+    AuthenticationDataPtr authDataContent;
+    if (authentication->getAuthData(authDataContent) == ResultOk && authDataContent->hasDataFromCommand()) {
+        authData->set_auth_data(authDataContent->getCommandData());
+    }
+
+    return writeMessageWithSize(cmd);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 SharedBuffer Commands::newSubscribe(const std::string& topic, const std::string& subscription,
                                     uint64_t consumerId, uint64_t requestId, CommandSubscribe_SubType subType,
                                     const std::string& consumerName, SubscriptionMode subscriptionMode,
@@ -285,13 +314,24 @@ SharedBuffer Commands::newUnsubscribe(uint64_t consumerId, uint64_t requestId) {
 SharedBuffer Commands::newProducer(const std::string& topic, uint64_t producerId,
                                    const std::string& producerName, uint64_t requestId,
                                    const std::map<std::string, std::string>& metadata,
+<<<<<<< HEAD
                                    const SchemaInfo& schemaInfo) {
+=======
+                                   const SchemaInfo& schemaInfo, uint64_t epoch,
+                                   bool userProvidedProducerName) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     BaseCommand cmd;
     cmd.set_type(BaseCommand::PRODUCER);
     CommandProducer* producer = cmd.mutable_producer();
     producer->set_topic(topic);
     producer->set_producer_id(producerId);
     producer->set_request_id(requestId);
+<<<<<<< HEAD
+=======
+    producer->set_epoch(epoch);
+    producer->set_user_provided_producer_name(userProvidedProducerName);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     for (std::map<std::string, std::string>::const_iterator it = metadata.begin(); it != metadata.end();
          it++) {
         proto::KeyValue* keyValue = proto::KeyValue().New();
@@ -325,6 +365,23 @@ SharedBuffer Commands::newAck(uint64_t consumerId, const MessageIdData& messageI
     return writeMessageWithSize(cmd);
 }
 
+<<<<<<< HEAD
+=======
+SharedBuffer Commands::newMultiMessageAck(uint64_t consumerId, const std::set<MessageId>& msgIds) {
+    BaseCommand cmd;
+    cmd.set_type(BaseCommand::ACK);
+    CommandAck* ack = cmd.mutable_ack();
+    ack->set_consumer_id(consumerId);
+    ack->set_ack_type(CommandAck_AckType_Individual);
+    for (const auto& msgId : msgIds) {
+        auto newMsgId = ack->add_message_id();
+        newMsgId->set_ledgerid(msgId.ledgerId());
+        newMsgId->set_entryid(msgId.entryId());
+    }
+    return writeMessageWithSize(cmd);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 SharedBuffer Commands::newFlow(uint64_t consumerId, uint32_t messagePermits) {
     BaseCommand cmd;
     cmd.set_type(BaseCommand::FLOW);
@@ -366,11 +423,24 @@ SharedBuffer Commands::newPong() {
     return writeMessageWithSize(cmd);
 }
 
+<<<<<<< HEAD
 SharedBuffer Commands::newRedeliverUnacknowledgedMessages(uint64_t consumerId) {
+=======
+SharedBuffer Commands::newRedeliverUnacknowledgedMessages(uint64_t consumerId,
+                                                          const std::set<MessageId>& messageIds) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     BaseCommand cmd;
     cmd.set_type(BaseCommand::REDELIVER_UNACKNOWLEDGED_MESSAGES);
     CommandRedeliverUnacknowledgedMessages* command = cmd.mutable_redeliverunacknowledgedmessages();
     command->set_consumer_id(consumerId);
+<<<<<<< HEAD
+=======
+    for (const auto& msgId : messageIds) {
+        MessageIdData* msgIdData = command->add_message_ids();
+        msgIdData->set_ledgerid(msgId.ledgerId());
+        msgIdData->set_entryid(msgId.entryId());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
     return writeMessageWithSize(cmd);
 }
 
@@ -387,6 +457,19 @@ SharedBuffer Commands::newSeek(uint64_t consumerId, uint64_t requestId, const Me
     return writeMessageWithSize(cmd);
 }
 
+<<<<<<< HEAD
+=======
+SharedBuffer Commands::newSeek(uint64_t consumerId, uint64_t requestId, uint64_t timestamp) {
+    BaseCommand cmd;
+    cmd.set_type(BaseCommand::SEEK);
+    CommandSeek* commandSeek = cmd.mutable_seek();
+    commandSeek->set_consumer_id(consumerId);
+    commandSeek->set_request_id(requestId);
+    commandSeek->set_message_publish_time(timestamp);
+    return writeMessageWithSize(cmd);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 SharedBuffer Commands::newGetLastMessageId(uint64_t consumerId, uint64_t requestId) {
     BaseCommand cmd;
     cmd.set_type(BaseCommand::GET_LAST_MESSAGE_ID);
@@ -515,10 +598,63 @@ std::string Commands::messageType(BaseCommand_Type type) {
         case BaseCommand::GET_SCHEMA_RESPONSE:
             return "GET_SCHEMA_RESPONSE";
             break;
+<<<<<<< HEAD
+=======
+        case BaseCommand::AUTH_CHALLENGE:
+            return "AUTH_CHALLENGE";
+            break;
+        case BaseCommand::AUTH_RESPONSE:
+            return "AUTH_RESPONSE";
+            break;
+        case BaseCommand::ACK_RESPONSE:
+            return "ACK_RESPONSE";
+            break;
+        case BaseCommand::GET_OR_CREATE_SCHEMA:
+            return "GET_OR_CREATE_SCHEMA";
+        case BaseCommand::GET_OR_CREATE_SCHEMA_RESPONSE:
+            return "GET_OR_CREATE_SCHEMA_RESPONSE";
+        case BaseCommand::NEW_TXN:
+            return "NEW_TXN";
+            break;
+        case BaseCommand::NEW_TXN_RESPONSE:
+            return "NEW_TXN_RESPONSE";
+            break;
+        case BaseCommand::ADD_PARTITION_TO_TXN:
+            return "ADD_PARTITION_TO_TXN";
+            break;
+        case BaseCommand::ADD_PARTITION_TO_TXN_RESPONSE:
+            return "ADD_PARTITION_TO_TXN_RESPONSE";
+            break;
+        case BaseCommand::ADD_SUBSCRIPTION_TO_TXN:
+            return "ADD_SUBSCRIPTION_TO_TXN";
+            break;
+        case BaseCommand::ADD_SUBSCRIPTION_TO_TXN_RESPONSE:
+            return "ADD_SUBSCRIPTION_TO_TXN_RESPONSE";
+            break;
+        case BaseCommand::END_TXN:
+            return "END_TXN";
+            break;
+        case BaseCommand::END_TXN_RESPONSE:
+            return "END_TXN_RESPONSE";
+            break;
+        case BaseCommand::END_TXN_ON_PARTITION:
+            return "END_TXN_ON_PARTITION";
+            break;
+        case BaseCommand::END_TXN_ON_PARTITION_RESPONSE:
+            return "END_TXN_ON_PARTITION_RESPONSE";
+            break;
+        case BaseCommand::END_TXN_ON_SUBSCRIPTION:
+            return "END_TXN_ON_SUBSCRIPTION";
+            break;
+        case BaseCommand::END_TXN_ON_SUBSCRIPTION_RESPONSE:
+            return "END_TXN_ON_SUBSCRIPTION_RESPONSE";
+            break;
+>>>>>>> f773c602c... Test pr 10 (#27)
     };
 }
 
 void Commands::initBatchMessageMetadata(const Message& msg, pulsar::proto::MessageMetadata& batchMetadata) {
+<<<<<<< HEAD
     if (msg.impl_->metadata.has_publish_time()) {
         batchMetadata.set_publish_time(msg.impl_->metadata.publish_time());
     }
@@ -534,6 +670,31 @@ void Commands::initBatchMessageMetadata(const Message& msg, pulsar::proto::Messa
 
 void Commands::serializeSingleMessageInBatchWithPayload(const Message& msg, SharedBuffer& batchPayLoad,
                                                         const unsigned long& maxMessageSizeInBytes) {
+=======
+    // metadata has already been set in ProducerImpl::setMessageMetadata
+    const proto::MessageMetadata& metadata = msg.impl_->metadata;
+
+    // required fields
+    batchMetadata.set_producer_name(metadata.producer_name());
+    batchMetadata.set_sequence_id(metadata.sequence_id());
+    batchMetadata.set_publish_time(metadata.publish_time());
+
+    // optional fields
+    if (metadata.has_partition_key()) {
+        batchMetadata.set_partition_key(metadata.partition_key());
+    }
+    if (metadata.has_ordering_key()) {
+        batchMetadata.set_ordering_key(metadata.ordering_key());
+    }
+    if (metadata.has_replicated_from()) {
+        batchMetadata.set_replicated_from(metadata.replicated_from());
+    }
+    // TODO: set other optional fields
+}
+
+uint64_t Commands::serializeSingleMessageInBatchWithPayload(const Message& msg, SharedBuffer& batchPayLoad,
+                                                            unsigned long maxMessageSizeInBytes) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     SingleMessageMetadata metadata;
     if (msg.impl_->hasPartitionKey()) {
         metadata.set_partition_key(msg.impl_->getPartitionKey());
@@ -564,8 +725,12 @@ void Commands::serializeSingleMessageInBatchWithPayload(const Message& msg, Shar
         LOG_DEBUG("remaining size of batchPayLoad buffer ["
                   << batchPayLoad.writableBytes() << "] can't accomodate new payload [" << requiredSpace
                   << "] - expanding the batchPayload buffer");
+<<<<<<< HEAD
         SharedBuffer buffer = SharedBuffer::allocate(batchPayLoad.readableBytes() +
                                                      std::max(requiredSpace, maxMessageSizeInBytes));
+=======
+        SharedBuffer buffer = SharedBuffer::allocate(batchPayLoad.readableBytes() + requiredSpace);
+>>>>>>> f773c602c... Test pr 10 (#27)
         // Adding batch created so far
         buffer.write(batchPayLoad.data(), batchPayLoad.readableBytes());
         batchPayLoad = buffer;
@@ -575,6 +740,11 @@ void Commands::serializeSingleMessageInBatchWithPayload(const Message& msg, Shar
     metadata.SerializeToArray(batchPayLoad.mutableData(), msgMetadataSize);
     batchPayLoad.bytesWritten(msgMetadataSize);
     batchPayLoad.write(msg.impl_->payload.data(), payloadSize);
+<<<<<<< HEAD
+=======
+
+    return msg.impl_->metadata.sequence_id();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 Message Commands::deSerializeSingleMessageInBatch(Message& batchedMessage, int32_t batchIndex) {
@@ -602,5 +772,20 @@ Message Commands::deSerializeSingleMessageInBatch(Message& batchedMessage, int32
 
     return singleMessage;
 }
+<<<<<<< HEAD
+=======
+
+bool Commands::peerSupportsGetLastMessageId(int32_t peerVersion) { return peerVersion >= proto::v12; }
+
+bool Commands::peerSupportsActiveConsumerListener(int32_t peerVersion) { return peerVersion >= proto::v12; }
+
+bool Commands::peerSupportsMultiMessageAcknowledgement(int32_t peerVersion) {
+    return peerVersion >= proto::v12;
+}
+
+bool Commands::peerSupportsJsonSchemaAvroFormat(int32_t peerVersion) { return peerVersion >= proto::v13; }
+
+bool Commands::peerSupportsGetOrCreateSchema(int32_t peerVersion) { return peerVersion >= proto::v15; }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar
 /* namespace pulsar */

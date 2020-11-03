@@ -21,6 +21,10 @@ package org.apache.pulsar.tests.integration.auth.token;
 import com.google.common.io.Files;
 
 import java.io.File;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -87,4 +91,17 @@ public class TokenAuthWithPublicPrivateKeys extends PulsarTokenAuthenticationBas
         proxyContainer.withFileSystemBind(publicKeyFile.toString(), PUBLIC_KEY_PATH_INSIDE_CONTAINER);
         proxyContainer.withEnv("tokenPublicKey", "file://" + PUBLIC_KEY_PATH_INSIDE_CONTAINER);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    protected String createClientTokenWithExpiry(long expiryTime, TimeUnit unit) throws Exception {
+        return cmdContainer
+                .execCmd(PulsarCluster.PULSAR_COMMAND_SCRIPT, "tokens", "create",
+                        "--private-key", "file://" + PRIVATE_KEY_PATH_INSIDE_CONTAINER,
+                        "--subject", REGULAR_USER_ROLE,
+                        "--expiry-time", unit.toSeconds(expiryTime) + "s")
+                .getStdout().trim();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

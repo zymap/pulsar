@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.ColumnHandle;
 import com.facebook.presto.spi.ConnectorSplit;
 import com.facebook.presto.spi.HostAddress;
@@ -37,6 +38,38 @@ public class PulsarSplit implements ConnectorSplit {
     private final long splitId;
     private final String connectorId;
     private final String schemaName;
+=======
+import static java.util.Objects.requireNonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
+import io.airlift.log.Logger;
+import io.prestosql.spi.HostAddress;
+import io.prestosql.spi.connector.ColumnHandle;
+import io.prestosql.spi.connector.ConnectorSplit;
+import io.prestosql.spi.predicate.TupleDomain;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import org.apache.bookkeeper.mledger.impl.PositionImpl;
+import org.apache.pulsar.common.policies.data.OffloadPolicies;
+import org.apache.pulsar.common.schema.SchemaInfo;
+import org.apache.pulsar.common.schema.SchemaType;
+
+/**
+ * This class represents information for a split.
+ */
+public class PulsarSplit implements ConnectorSplit {
+
+    private static final Logger log = Logger.get(PulsarSplit.class);
+
+    private final long splitId;
+    private final String connectorId;
+    private final String schemaName;
+    private final String originSchemaName;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final String tableName;
     private final long splitSize;
     private final String schema;
@@ -46,15 +79,29 @@ public class PulsarSplit implements ConnectorSplit {
     private final long startPositionLedgerId;
     private final long endPositionLedgerId;
     private final TupleDomain<ColumnHandle> tupleDomain;
+<<<<<<< HEAD
 
     private final PositionImpl startPosition;
     private final PositionImpl endPosition;
+=======
+    private final SchemaInfo schemaInfo;
+
+    private final PositionImpl startPosition;
+    private final PositionImpl endPosition;
+    private final String schemaInfoProperties;
+
+    private final OffloadPolicies offloadPolicies;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @JsonCreator
     public PulsarSplit(
             @JsonProperty("splitId") long splitId,
             @JsonProperty("connectorId") String connectorId,
             @JsonProperty("schemaName") String schemaName,
+<<<<<<< HEAD
+=======
+            @JsonProperty("originSchemaName") String originSchemaName,
+>>>>>>> f773c602c... Test pr 10 (#27)
             @JsonProperty("tableName") String tableName,
             @JsonProperty("splitSize") long splitSize,
             @JsonProperty("schema") String schema,
@@ -63,8 +110,17 @@ public class PulsarSplit implements ConnectorSplit {
             @JsonProperty("endPositionEntryId") long endPositionEntryId,
             @JsonProperty("startPositionLedgerId") long startPositionLedgerId,
             @JsonProperty("endPositionLedgerId") long endPositionLedgerId,
+<<<<<<< HEAD
             @JsonProperty("tupleDomain") TupleDomain<ColumnHandle> tupleDomain) {
         this.splitId = splitId;
+=======
+            @JsonProperty("tupleDomain") TupleDomain<ColumnHandle> tupleDomain,
+            @JsonProperty("schemaInfoProperties") String schemaInfoProperties,
+            @JsonProperty("offloadPolicies") OffloadPolicies offloadPolicies) throws IOException {
+        this.splitId = splitId;
+        requireNonNull(schemaName, "schema name is null");
+        this.originSchemaName = originSchemaName;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.schemaName = requireNonNull(schemaName, "schema name is null");
         this.connectorId = requireNonNull(connectorId, "connector id is null");
         this.tableName = requireNonNull(tableName, "table name is null");
@@ -78,6 +134,19 @@ public class PulsarSplit implements ConnectorSplit {
         this.tupleDomain = requireNonNull(tupleDomain, "tupleDomain is null");
         this.startPosition = PositionImpl.get(startPositionLedgerId, startPositionEntryId);
         this.endPosition = PositionImpl.get(endPositionLedgerId, endPositionEntryId);
+<<<<<<< HEAD
+=======
+        this.schemaInfoProperties = schemaInfoProperties;
+        this.offloadPolicies = offloadPolicies;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.schemaInfo = SchemaInfo.builder()
+                .name(originSchemaName)
+                .type(schemaType)
+                .schema(schema.getBytes("ISO8859-1"))
+                .properties(objectMapper.readValue(schemaInfoProperties, Map.class))
+                .build();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @JsonProperty
@@ -111,6 +180,14 @@ public class PulsarSplit implements ConnectorSplit {
     }
 
     @JsonProperty
+<<<<<<< HEAD
+=======
+    public String getOriginSchemaName() {
+        return originSchemaName;
+    }
+
+    @JsonProperty
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String getSchema() {
         return schema;
     }
@@ -148,6 +225,19 @@ public class PulsarSplit implements ConnectorSplit {
         return endPosition;
     }
 
+<<<<<<< HEAD
+=======
+    @JsonProperty
+    public String getSchemaInfoProperties() {
+        return schemaInfoProperties;
+    }
+
+    @JsonProperty
+    public OffloadPolicies getOffloadPolicies() {
+        return offloadPolicies;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public boolean isRemotelyAccessible() {
         return true;
@@ -165,6 +255,7 @@ public class PulsarSplit implements ConnectorSplit {
 
     @Override
     public String toString() {
+<<<<<<< HEAD
         return "PulsarSplit{" +
                 "splitId=" + splitId +
                 ", connectorId='" + connectorId + '\'' +
@@ -178,5 +269,27 @@ public class PulsarSplit implements ConnectorSplit {
                 ", startPositionLedgerId=" + startPositionLedgerId +
                 ", endPositionLedgerId=" + endPositionLedgerId +
                 '}';
+=======
+        return "PulsarSplit{"
+            + "splitId=" + splitId
+            + ", connectorId='" + connectorId + '\''
+            + ", originSchemaName='" + originSchemaName + '\''
+            + ", schemaName='" + schemaName + '\''
+            + ", tableName='" + tableName + '\''
+            + ", splitSize=" + splitSize
+            + ", schema='" + schema + '\''
+            + ", schemaType=" + schemaType
+            + ", startPositionEntryId=" + startPositionEntryId
+            + ", endPositionEntryId=" + endPositionEntryId
+            + ", startPositionLedgerId=" + startPositionLedgerId
+            + ", endPositionLedgerId=" + endPositionLedgerId
+            + ", schemaInfoProperties=" + schemaInfoProperties
+            + (offloadPolicies == null ? "" : offloadPolicies.toString())
+            + '}';
+    }
+
+    public SchemaInfo getSchemaInfo() {
+        return schemaInfo;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

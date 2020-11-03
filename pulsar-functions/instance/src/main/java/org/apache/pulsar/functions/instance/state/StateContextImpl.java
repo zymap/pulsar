@@ -19,12 +19,24 @@
 package org.apache.pulsar.functions.instance.state;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+<<<<<<< HEAD
 import static org.apache.bookkeeper.common.concurrent.FutureUtils.result;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.nio.ByteBuffer;
 import org.apache.bookkeeper.api.kv.Table;
+=======
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
+import org.apache.bookkeeper.api.kv.Table;
+import org.apache.bookkeeper.api.kv.options.Options;
+
+import java.nio.ByteBuffer;
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * This class accumulates the state updates from one function.
@@ -40,6 +52,7 @@ public class StateContextImpl implements StateContext {
     }
 
     @Override
+<<<<<<< HEAD
     public void incr(String key, long amount) throws Exception {
         // TODO: this can be optimized with a batch operation.
         result(table.increment(
@@ -69,6 +82,65 @@ public class StateContextImpl implements StateContext {
     @Override
     public long getAmount(String key) throws Exception {
         return result(table.getNumber(Unpooled.wrappedBuffer(key.getBytes(UTF_8))));
+=======
+    public CompletableFuture<Void> incrCounter(String key, long amount) {
+        // TODO: this can be optimized with a batch operation.
+        return table.increment(
+            Unpooled.wrappedBuffer(key.getBytes(UTF_8)),
+            amount);
+    }
+
+    @Override
+    public CompletableFuture<Void> put(String key, ByteBuffer value) {
+        if(value != null) {
+            // Set position to off the buffer to the beginning.
+            // If a user used an operation like ByteBuffer.allocate(4).putInt(count) to create a ByteBuffer to store to the state store
+            // the position of the buffer will be at the end and nothing will be written to table service
+            value.position(0);
+            return table.put(
+                    Unpooled.wrappedBuffer(key.getBytes(UTF_8)),
+                    Unpooled.wrappedBuffer(value));
+        } else {
+            return table.put(
+                    Unpooled.wrappedBuffer(key.getBytes(UTF_8)),
+                    null);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> delete(String key) {
+        return table.delete(
+                Unpooled.wrappedBuffer(key.getBytes(UTF_8)),
+                Options.delete()
+        ).thenApply(ignored -> null);
+    }
+
+    @Override
+    public CompletableFuture<ByteBuffer> get(String key) {
+        return table.get(Unpooled.wrappedBuffer(key.getBytes(UTF_8))).thenApply(
+                data -> {
+                    try {
+                        if (data != null) {
+                            ByteBuffer result = ByteBuffer.allocate(data.readableBytes());
+                            data.readBytes(result);
+                            // Set position to off the buffer to the beginning, since the position after the read is going to be end of the buffer
+                            // If we do not rewind to the begining here, users will have to explicitly do this in their function code
+                            // in order to use any of the ByteBuffer operations
+                            result.position(0);
+                            return result;
+                        }
+                        return null;
+                    } finally {
+                        ReferenceCountUtil.safeRelease(data);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public CompletableFuture<Long> getCounter(String key) {
+        return table.getNumber(Unpooled.wrappedBuffer(key.getBytes(UTF_8)));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 }

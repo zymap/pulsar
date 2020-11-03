@@ -45,6 +45,16 @@ public interface RawReader {
     String getTopic();
 
     /**
+<<<<<<< HEAD
+=======
+     * Check if there is any message available to read.
+     *
+     * @return a completable future which will return whether there is any message available to read.
+     */
+    CompletableFuture<Boolean> hasMessageAvailableAsync();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Seek to a location in the topic. After the seek, the first message read will be the one with
      * with the specified message ID.
      * @param messageId the message ID to seek to

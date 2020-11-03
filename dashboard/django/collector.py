@@ -19,6 +19,10 @@
 #
 
 
+<<<<<<< HEAD
+=======
+import logging
+>>>>>>> f773c602c... Test pr 10 (#27)
 import os
 import django
 import requests
@@ -31,15 +35,29 @@ from django.utils.dateparse import parse_datetime
 from django.db import connection
 import time
 import argparse
+<<<<<<< HEAD
 
 current_milli_time = lambda: int(round(time.time() * 1000))
+=======
+import random
+
+current_milli_time = lambda: int(round(time.time() * 1000))
+logger = logging.getLogger(__name__)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 def get(base_url, path):
     if base_url.endswith('/'): path = path[1:]
     return requests.get(base_url + path,
+<<<<<<< HEAD
             headers=http_headers,
             proxies=http_proxyes,
         ).json()
+=======
+                        headers=http_headers,
+                        proxies=http_proxyes,
+                        ).json()
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 def parse_date(d):
     if d:
@@ -50,7 +68,13 @@ def parse_date(d):
         else:
             # Assume UTC if no timezone
             return pytz.timezone('UTC').localize(parse_datetime(d))
+<<<<<<< HEAD
     else: return None
+=======
+    else:
+        return None
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Fetch the stats for a given broker
 def fetch_broker_stats(cluster, broker_url, timestamp):
@@ -63,19 +87,34 @@ def fetch_broker_stats(cluster, broker_url, timestamp):
 
 def _fetch_broker_stats(cluster, broker_host_port, timestamp):
     broker_url = 'http://%s/' % broker_host_port
+<<<<<<< HEAD
     print('    Getting stats for %s' % broker_host_port)
 
     broker, _ = Broker.objects.get_or_create(
                         url     = broker_host_port,
                         cluster = cluster
                 )
+=======
+    logger.info('Getting stats for %s' % broker_host_port)
+
+    broker, _ = Broker.objects.get_or_create(
+        url=broker_host_port,
+        cluster=cluster
+    )
+>>>>>>> f773c602c... Test pr 10 (#27)
     active_broker = ActiveBroker(broker=broker, timestamp=timestamp)
     active_broker.save()
 
     # Get topics stats
+<<<<<<< HEAD
     topics_stats = get(broker_url, '/admin/broker-stats/destinations')
 
     clusters = dict( (cluster.name, cluster) for cluster in Cluster.objects.all() )
+=======
+    topics_stats = get(broker_url, '/admin/v2/broker-stats/topics')
+
+    clusters = dict((cluster.name, cluster) for cluster in Cluster.objects.all())
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     db_create_bundles = []
     db_update_bundles = []
@@ -92,17 +131,29 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
         property, _ = Property.objects.get_or_create(name=property_name)
 
         namespace, _ = Namespace.objects.get_or_create(
+<<<<<<< HEAD
                             name=namespace_name,
                             property=property)
+=======
+            name=namespace_name,
+            property=property,
+            timestamp=timestamp)
+>>>>>>> f773c602c... Test pr 10 (#27)
         namespace.clusters.add(cluster)
         namespace.save()
 
         for bundle_range, topics_stats in bundles_stats.items():
 
             bundle = Bundle.objects.filter(
+<<<<<<< HEAD
                     cluster_id=cluster.id,
                     namespace_id=namespace.id,
                     range=bundle_range)
+=======
+                cluster_id=cluster.id,
+                namespace_id=namespace.id,
+                range=bundle_range)
+>>>>>>> f773c602c... Test pr 10 (#27)
             if bundle:
                 temp_bundle = bundle.first()
                 temp_bundle.timestame = timestamp
@@ -110,6 +161,7 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                 bundle = temp_bundle
             else:
                 bundle = Bundle(
+<<<<<<< HEAD
                                 broker    = broker,
                                 namespace = namespace,
                                 range     = bundle_range,
@@ -117,6 +169,15 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                                 timestamp = timestamp)
                 db_create_bundles.append(bundle)
                 
+=======
+                    broker=broker,
+                    namespace=namespace,
+                    range=bundle_range,
+                    cluster=cluster,
+                    timestamp=timestamp)
+                db_create_bundles.append(bundle)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             for topic_name, stats in topics_stats['persistent'].items():
                 topic = Topic.objects.filter(
                     cluster_id=cluster.id,
@@ -126,6 +187,7 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                     name=topic_name)
                 if topic:
                     temp_topic = topic.first()
+<<<<<<< HEAD
                     temp_topic.timestamp              = timestamp
                     temp_topic.averageMsgSize         = stats['averageMsgSize']
                     temp_topic.msgRateIn              = stats['msgRateIn']
@@ -135,10 +197,22 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                     temp_topic.pendingAddEntriesCount = stats['pendingAddEntriesCount']
                     temp_topic.producerCount          = stats['producerCount']
                     temp_topic.storageSize            = stats['storageSize']
+=======
+                    temp_topic.timestamp = timestamp
+                    temp_topic.averageMsgSize = stats['averageMsgSize']
+                    temp_topic.msgRateIn = stats['msgRateIn']
+                    temp_topic.msgRateOut = stats['msgRateOut']
+                    temp_topic.msgThroughputIn = stats['msgThroughputIn']
+                    temp_topic.msgThroughputOut = stats['msgThroughputOut']
+                    temp_topic.pendingAddEntriesCount = stats['pendingAddEntriesCount']
+                    temp_topic.producerCount = stats['producerCount']
+                    temp_topic.storageSize = stats['storageSize']
+>>>>>>> f773c602c... Test pr 10 (#27)
                     db_update_topics.append(temp_topic)
                     topic = temp_topic
                 else:
                     topic = Topic(
+<<<<<<< HEAD
                         broker                 = broker,
                         active_broker          = active_broker,
                         name                   = topic_name,
@@ -154,6 +228,23 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                         pendingAddEntriesCount = stats['pendingAddEntriesCount'],
                         producerCount          = stats['producerCount'],
                         storageSize            = stats['storageSize']
+=======
+                        broker=broker,
+                        active_broker=active_broker,
+                        name=topic_name,
+                        namespace=namespace,
+                        bundle=bundle,
+                        cluster=cluster,
+                        timestamp=timestamp,
+                        averageMsgSize=stats['averageMsgSize'],
+                        msgRateIn=stats['msgRateIn'],
+                        msgRateOut=stats['msgRateOut'],
+                        msgThroughputIn=stats['msgThroughputIn'],
+                        msgThroughputOut=stats['msgThroughputOut'],
+                        pendingAddEntriesCount=stats['pendingAddEntriesCount'],
+                        producerCount=stats['producerCount'],
+                        storageSize=stats['storageSize']
+>>>>>>> f773c602c... Test pr 10 (#27)
                     )
                     db_create_topics.append(topic)
                 totalBacklog = 0
@@ -163,6 +254,7 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                 for subscription_name, subStats in stats['subscriptions'].items():
                     numSubscriptions += 1
                     subscription = Subscription.objects.filter(
+<<<<<<< HEAD
                             topic_id=topic.id,
                             namespace_id=namespace.id,
                             name=subscription_name)
@@ -176,10 +268,26 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                         temp_subscription.msgThroughputOut = subStats['msgThroughputOut']
                         temp_subscription.subscriptionType = subStats['type'][0]
                         temp_subscription.unackedMessages  = subStats.get('unackedMessages', 0)
+=======
+                        topic_id=topic.id,
+                        namespace_id=namespace.id,
+                        name=subscription_name)
+                    if subscription:
+                        temp_subscription = subscription.first()
+                        temp_subscription.timestamp = timestamp
+                        temp_subscription.msgBacklog = subStats['msgBacklog']
+                        temp_subscription.msgRateExpired = subStats['msgRateExpired']
+                        temp_subscription.msgRateOut = subStats['msgRateOut']
+                        temp_subscription.msgRateRedeliver = subStats.get('msgRateRedeliver', 0)
+                        temp_subscription.msgThroughputOut = subStats['msgThroughputOut']
+                        temp_subscription.subscriptionType = subStats['type'][0]
+                        temp_subscription.unackedMessages = subStats.get('unackedMessages', 0)
+>>>>>>> f773c602c... Test pr 10 (#27)
                         db_update_subscriptions.append(temp_subscription)
                         subscription = temp_subscription
                     else:
                         subscription = Subscription(
+<<<<<<< HEAD
                             topic            = topic,
                             name             = subscription_name,
                             namespace        = namespace,
@@ -191,6 +299,19 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                             msgThroughputOut = subStats['msgThroughputOut'],
                             subscriptionType = subStats['type'][0],
                             unackedMessages  = subStats.get('unackedMessages', 0),
+=======
+                            topic=topic,
+                            name=subscription_name,
+                            namespace=namespace,
+                            timestamp=timestamp,
+                            msgBacklog=subStats['msgBacklog'],
+                            msgRateExpired=subStats['msgRateExpired'],
+                            msgRateOut=subStats['msgRateOut'],
+                            msgRateRedeliver=subStats.get('msgRateRedeliver', 0),
+                            msgThroughputOut=subStats['msgThroughputOut'],
+                            subscriptionType=subStats['type'][0],
+                            unackedMessages=subStats.get('unackedMessages', 0),
+>>>>>>> f773c602c... Test pr 10 (#27)
                         )
                         db_create_subscriptions.append(subscription)
 
@@ -203,6 +324,7 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                             consumerName=consStats.get('consumerName'))
                         if consumer:
                             temp_consumer = consumer.first()
+<<<<<<< HEAD
                             temp_consumer.timestamp        = timestamp
                             temp_consumer.address          = consStats['address']
                             temp_consumer.availablePermits = consStats.get('availablePermits', 0)
@@ -212,10 +334,23 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                             temp_consumer.msgThroughputOut = consStats.get('msgThroughputOut', 0)
                             temp_consumer.unackedMessages  = consStats.get('unackedMessages', 0)
                             temp_consumer.blockedConsumerOnUnackedMsgs  = consStats.get('blockedConsumerOnUnackedMsgs', False)
+=======
+                            temp_consumer.timestamp = timestamp
+                            temp_consumer.address = consStats['address']
+                            temp_consumer.availablePermits = consStats.get('availablePermits', 0)
+                            temp_consumer.connectedSince = parse_date(consStats.get('connectedSince'))
+                            temp_consumer.msgRateOut = consStats.get('msgRateOut', 0)
+                            temp_consumer.msgRateRedeliver = consStats.get('msgRateRedeliver', 0)
+                            temp_consumer.msgThroughputOut = consStats.get('msgThroughputOut', 0)
+                            temp_consumer.unackedMessages = consStats.get('unackedMessages', 0)
+                            temp_consumer.blockedConsumerOnUnackedMsgs = consStats.get('blockedConsumerOnUnackedMsgs',
+                                                                                       False)
+>>>>>>> f773c602c... Test pr 10 (#27)
                             db_update_consumers.append(temp_consumer)
                             consumer = temp_consumer
                         else:
                             consumer = Consumer(
+<<<<<<< HEAD
                                 subscription     = subscription,
                                 timestamp        = timestamp,
                                 address          = consStats['address'],
@@ -227,6 +362,19 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
                                 msgThroughputOut = consStats.get('msgThroughputOut', 0),
                                 unackedMessages  = consStats.get('unackedMessages', 0),
                                 blockedConsumerOnUnackedMsgs  = consStats.get('blockedConsumerOnUnackedMsgs', False)
+=======
+                                subscription=subscription,
+                                timestamp=timestamp,
+                                address=consStats['address'],
+                                availablePermits=consStats.get('availablePermits', 0),
+                                connectedSince=parse_date(consStats.get('connectedSince')),
+                                consumerName=consStats.get('consumerName'),
+                                msgRateOut=consStats.get('msgRateOut', 0),
+                                msgRateRedeliver=consStats.get('msgRateRedeliver', 0),
+                                msgThroughputOut=consStats.get('msgThroughputOut', 0),
+                                unackedMessages=consStats.get('unackedMessages', 0),
+                                blockedConsumerOnUnackedMsgs=consStats.get('blockedConsumerOnUnackedMsgs', False)
+>>>>>>> f773c602c... Test pr 10 (#27)
                             )
                             db_create_consumers.append(consumer)
 
@@ -242,6 +390,7 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
 
                 for remote_cluster, replStats in stats['replication'].items():
                     replication = Replication(
+<<<<<<< HEAD
                         timestamp              = timestamp,
                         topic                  = topic,
                         local_cluster          = cluster,
@@ -258,15 +407,41 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
 
                         inboundConnectedSince  = parse_date(replStats.get('inboundConnectedSince')),
                         outboundConnectedSince = parse_date(replStats.get('outboundConnectedSince')),
+=======
+                        timestamp=timestamp,
+                        topic=topic,
+                        local_cluster=cluster,
+                        remote_cluster=clusters[remote_cluster],
+
+                        msgRateIn=replStats['msgRateIn'],
+                        msgRateOut=replStats['msgRateOut'],
+                        msgThroughputIn=replStats['msgThroughputIn'],
+                        msgThroughputOut=replStats['msgThroughputOut'],
+                        replicationBacklog=replStats['replicationBacklog'],
+                        connected=replStats['connected'],
+                        replicationDelayInSeconds=replStats['replicationDelayInSeconds'],
+                        msgRateExpired=replStats['msgRateExpired'],
+
+                        inboundConnectedSince=parse_date(replStats.get('inboundConnectedSince')),
+                        outboundConnectedSince=parse_date(replStats.get('outboundConnectedSince')),
+>>>>>>> f773c602c... Test pr 10 (#27)
                     )
 
                     db_replication.append(replication)
 
+<<<<<<< HEAD
                     replicationMsgIn         += replication.msgRateIn
                     replicationMsgOut        += replication.msgRateOut
                     replicationThroughputIn  += replication.msgThroughputIn
                     replicationThroughputOut += replication.msgThroughputOut
                     replicationBacklog       += replication.replicationBacklog
+=======
+                    replicationMsgIn += replication.msgRateIn
+                    replicationMsgOut += replication.msgRateOut
+                    replicationThroughputIn += replication.msgThroughputIn
+                    replicationThroughputOut += replication.msgThroughputOut
+                    replicationBacklog += replication.replicationBacklog
+>>>>>>> f773c602c... Test pr 10 (#27)
 
                 topic.replicationRateIn = replicationMsgIn
                 topic.replicationRateOut = replicationMsgOut
@@ -317,6 +492,22 @@ def _fetch_broker_stats(cluster, broker_host_port, timestamp):
             replication.topic = replication.topic
             replication.save()
 
+<<<<<<< HEAD
+=======
+    tenants = get(broker_url, '/admin/v2/tenants')
+    for tenant_name in tenants:
+        namespaces = get(broker_url, '/admin/v2/namespaces/' + tenant_name)
+        for namespace_name in namespaces:
+            property, _ = Property.objects.get_or_create(name=tenant_name)
+            namespace, _ = Namespace.objects.get_or_create(
+                name=namespace_name,
+                property=property,
+                timestamp=timestamp)
+            namespace.clusters.add(cluster)
+            namespace.save()
+
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 def update_or_create_object(db_bundles, db_topics, db_consumers, db_subscriptions):
     # For DB providers we have to insert or update one by one
     # to be able to retrieve the PK of the newly inserted records
@@ -337,17 +528,38 @@ def update_or_create_object(db_bundles, db_topics, db_consumers, db_subscription
 
 
 def fetch_stats():
+<<<<<<< HEAD
+=======
+    logger.info("Begin fetch stats")
+>>>>>>> f773c602c... Test pr 10 (#27)
     timestamp = current_milli_time()
 
     pool = multiprocessing.Pool(args.workers)
 
     futures = []
 
+<<<<<<< HEAD
     for cluster_name in get(args.serviceUrl, '/admin/clusters'):
         if cluster_name == 'global': continue
 
         cluster_url = get(args.serviceUrl, '/admin/clusters/' + cluster_name)['serviceUrl']
         print('Cluster:', cluster_name,  '->', cluster_url)
+=======
+    for cluster_name in get(args.serviceUrl, '/admin/v2/clusters'):
+        if cluster_name == 'global': continue
+
+        cluster_url = get(args.serviceUrl, '/admin/v2/clusters/' + cluster_name)['serviceUrl']
+        if cluster_url.find(',')>=0:
+            cluster_url_list = cluster_url.split(',')
+            index = random.randint(0,len(cluster_url_list)-1)
+            if index==0:
+                cluster_url = cluster_url_list[index]
+            else:
+                protocol = ("https://" if(cluster_url.find("https")>=0) else "http://")
+                cluster_url = protocol+cluster_url_list[index]
+
+        logger.info('Cluster:{} -> {}'.format(cluster_name, cluster_url))
+>>>>>>> f773c602c... Test pr 10 (#27)
         cluster, created = Cluster.objects.get_or_create(name=cluster_name)
         if cluster_url != cluster.serviceUrl:
             cluster.serviceUrl = cluster_url
@@ -356,11 +568,19 @@ def fetch_stats():
     # Get the list of brokers for each cluster
     for cluster in Cluster.objects.all():
         try:
+<<<<<<< HEAD
             for broker_host_port in get(cluster.serviceUrl, '/admin/brokers/' + cluster.name):
                 f = pool.apply_async(fetch_broker_stats, (cluster, broker_host_port, timestamp))
                 futures.append(f)
         except Exception as e:
             print('ERROR: ', e)
+=======
+            for broker_host_port in get(cluster.serviceUrl, '/admin/v2/brokers/' + cluster.name):
+                f = pool.apply_async(fetch_broker_stats, (cluster, broker_host_port, timestamp))
+                futures.append(f)
+        except Exception as e:
+            logger.error('ERROR: ', e)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     pool.close()
 
@@ -373,12 +593,21 @@ def fetch_stats():
     latest, _ = LatestTimestamp.objects.get_or_create(name='latest')
     latest.timestamp = timestamp
     latest.save()
+<<<<<<< HEAD
 
 def purge_db():
+=======
+    logger.info("Finished fetch stats")
+
+
+def purge_db():
+    logger.info("Begin purge db")
+>>>>>>> f773c602c... Test pr 10 (#27)
     now = current_milli_time()
     ttl_minutes = args.purge
     threshold = now - (ttl_minutes * 60 * 1000)
 
+<<<<<<< HEAD
     Bundle.objects.filter(timestamp__lt = threshold).delete()
     Topic.objects.filter(timestamp__lt = threshold).delete()
     Subscription.objects.filter(timestamp__lt = threshold).delete()
@@ -389,6 +618,22 @@ def collect_and_purge():
     fetch_stats()
     purge_db()
     print('-- Finished collecting stats')
+=======
+    Bundle.objects.filter(timestamp__lt=threshold).delete()
+    Topic.objects.filter(timestamp__lt=threshold).delete()
+    Subscription.objects.filter(timestamp__lt=threshold).delete()
+    Consumer.objects.filter(timestamp__lt=threshold).delete()
+    Namespace.objects.filter(timestamp__lt=threshold).delete()
+    logger.info("Finished purge db")
+
+
+def collect_and_purge():
+    logger.info('Starting stats collection')
+    fetch_stats()
+    purge_db()
+    logger.info('Finished collecting stats')
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dashboard.settings")
@@ -400,6 +645,7 @@ if __name__ == "__main__":
     parser.add_argument(action="store", dest="serviceUrl", help='Service URL of one cluster in the Pulsar instance')
 
     parser.add_argument('--proxy', action='store',
+<<<<<<< HEAD
                             help="Connect using a HTTP proxy", dest="proxy")
     parser.add_argument('--header', action="append", dest="header",
                             help='Add an additional HTTP header to all requests')
@@ -408,17 +654,40 @@ if __name__ == "__main__":
 
     parser.add_argument('--workers', action="store", dest="workers", type=int, default=64,
                             help='Number of worker processes to be used to fetch the stats (default: 64)')
+=======
+                        help="Connect using an HTTP proxy", dest="proxy")
+    parser.add_argument('--header', action="append", dest="header",
+                        help='Add an additional HTTP header to all requests')
+    parser.add_argument('--purge', action="store", dest="purge", type=int, default=60,
+                        help='Purge statistics older than PURGE minutes. (default: 60min)')
+
+    parser.add_argument('--workers', action="store", dest="workers", type=int, default=64,
+                        help='Number of worker processes to be used to fetch the stats (default: 64)')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     global args
     args = parser.parse_args(sys.argv[1:])
 
     global http_headers
     http_headers = {}
+<<<<<<< HEAD
     if args.header:
         http_headers = dict(x.split(': ') for x in args.header)
 
     global http_proxyes
     http_proxyes = {}
+=======
+    jwt_token = os.getenv("JWT_TOKEN", None)
+    if jwt_token is not None:
+        http_headers = {
+            "Authorization": "Bearer {}".format(jwt_token)}
+    if args.header:
+        http_headers = dict(x.split(': ') for x in args.header)
+        logger.info(http_headers)
+
+    global http_proxyes
+    http_proxyes = { "no_proxy": os.getenv("NO_PROXY", "") }
+>>>>>>> f773c602c... Test pr 10 (#27)
     if args.proxy:
         http_proxyes['http'] = args.proxy
         http_proxyes['https'] = args.proxy
@@ -427,4 +696,8 @@ if __name__ == "__main__":
     while True:
         p = multiprocessing.Process(target=collect_and_purge)
         p.start()
+<<<<<<< HEAD
         time.sleep(60)
+=======
+        time.sleep(int(os.getenv("COLLECTION_INTERVAL", 60)))
+>>>>>>> f773c602c... Test pr 10 (#27)

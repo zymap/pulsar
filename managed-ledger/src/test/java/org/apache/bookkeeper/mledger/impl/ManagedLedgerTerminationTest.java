@@ -19,6 +19,11 @@
 package org.apache.bookkeeper.mledger.impl;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.fail;
 
 import java.util.Collections;
@@ -103,10 +108,17 @@ public class ManagedLedgerTerminationTest extends MockedBookKeeperTestCase {
 
         Position p0 = ledger.addEntry("entry-0".getBytes());
         Position p1 = ledger.addEntry("entry-1".getBytes());
+<<<<<<< HEAD
         assertEquals(ledger.isTerminated(), false);
 
         Position lastPosition = ledger.terminate();
         assertEquals(ledger.isTerminated(), true);
+=======
+        assertFalse(ledger.isTerminated());
+
+        Position lastPosition = ledger.terminate();
+        assertTrue(ledger.isTerminated());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(lastPosition, p1);
 
         List<Entry> entries = c1.readEntries(10);
@@ -133,10 +145,17 @@ public class ManagedLedgerTerminationTest extends MockedBookKeeperTestCase {
 
         Position p0 = ledger.addEntry("entry-0".getBytes());
         Position p1 = ledger.addEntry("entry-1".getBytes());
+<<<<<<< HEAD
         assertEquals(ledger.isTerminated(), false);
 
         Position lastPosition = ledger.terminate();
         assertEquals(ledger.isTerminated(), true);
+=======
+        assertFalse(ledger.isTerminated());
+
+        Position lastPosition = ledger.terminate();
+        assertTrue(ledger.isTerminated());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(lastPosition, p1);
 
         ManagedCursor c1 = ledger.newNonDurableCursor(PositionImpl.earliest);

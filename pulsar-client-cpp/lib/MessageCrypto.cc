@@ -141,13 +141,21 @@ std::string MessageCrypto::stringToHex(const std::string& inputStr, size_t len) 
     return stringToHex(inputStr.c_str(), len);
 }
 
+<<<<<<< HEAD
 Result MessageCrypto::addPublicKeyCipher(std::set<std::string>& keyNames,
+=======
+Result MessageCrypto::addPublicKeyCipher(const std::set<std::string>& keyNames,
+>>>>>>> f773c602c... Test pr 10 (#27)
                                          const CryptoKeyReaderPtr keyReader) {
     Lock lock(mutex_);
 
     // Generate data key
     RAND_bytes(dataKey_.get(), dataKeyLen_);
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string dataKeyStr(reinterpret_cast<char*>(dataKey_.get()), dataKeyLen_);
         std::string strHex = stringToHex(dataKeyStr, dataKeyStr.size());
         LOG_DEBUG(logCtx_ << "Generated Data key " << strHex);
@@ -203,7 +211,11 @@ Result MessageCrypto::addPublicKeyCipher(const std::string& keyName, const Crypt
     // Add a new entry or replace existing entry, if one is present.
     encryptedDataKeyMap_[keyName] = eki;
 
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string strHex = stringToHex(encryptedKeyStr, encryptedKeyStr.size());
         LOG_DEBUG(logCtx_ << " Data key encrypted for key " << keyName
                           << ". Encrypted key size = " << encryptedKeyStr.size() << ", value = " << strHex);
@@ -219,7 +231,11 @@ bool MessageCrypto::removeKeyCipher(const std::string& keyName) {
     return true;
 }
 
+<<<<<<< HEAD
 bool MessageCrypto::encrypt(std::set<std::string>& encKeys, const CryptoKeyReaderPtr keyReader,
+=======
+bool MessageCrypto::encrypt(const std::set<std::string>& encKeys, const CryptoKeyReaderPtr keyReader,
+>>>>>>> f773c602c... Test pr 10 (#27)
                             proto::MessageMetadata& msgMetadata, SharedBuffer& payload,
                             SharedBuffer& encryptedPayload) {
     if (!encKeys.size()) {
@@ -253,7 +269,11 @@ bool MessageCrypto::encrypt(std::set<std::string>& encKeys, const CryptoKeyReade
         proto::EncryptionKeys* encKeys = proto::EncryptionKeys().New();
         encKeys->set_key(keyName);
         encKeys->set_value(keyInfo->getKey());
+<<<<<<< HEAD
         if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+        if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             std::string strHex = stringToHex(keyInfo->getKey(), keyInfo->getKey().size());
             LOG_DEBUG(logCtx_ << " Encrypted data key added for key " << keyName << ". Encrypted key size = "
                               << keyInfo->getKey().size() << ", value = " << strHex);
@@ -323,7 +343,11 @@ bool MessageCrypto::encrypt(std::set<std::string>& encKeys, const CryptoKeyReade
         return false;
     }
     encryptedPayload.bytesWritten(tagLen_);
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string strPayloadHex = stringToHex(payload.data(), payload.readableBytes());
         std::string strHex = stringToHex(encryptedPayload.data(), encryptedPayload.readableBytes());
         LOG_DEBUG(logCtx_ << " Original size = " << payload.readableBytes() << ", value = " << strPayloadHex
@@ -376,7 +400,11 @@ bool MessageCrypto::decryptDataKey(const std::string& keyName, const std::string
     std::string keyDigestStr(reinterpret_cast<char*>(keyDigest), digestLen);
     std::string dataKeyStr(reinterpret_cast<char*>(dataKey_.get()), dataKeyLen_);
     dataKeyCache_[keyDigestStr] = make_pair(dataKeyStr, boost::posix_time::second_clock::universal_time());
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string strHex = stringToHex(dataKeyStr, dataKeyStr.size());
         LOG_DEBUG(logCtx_ << "Data key for key " << keyName << " decrypted. Decrypted data key is "
                           << strHex);
@@ -395,7 +423,11 @@ bool MessageCrypto::decryptData(const std::string& dataKeySecret, const proto::M
 
     EVP_CIPHER_CTX* cipherCtx = NULL;
     decryptedPayload = SharedBuffer::allocate(payload.readableBytes() + EVP_MAX_BLOCK_LENGTH + tagLen_);
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string strHex = stringToHex(payload.data(), payload.readableBytes());
         LOG_DEBUG(logCtx_ << "Attempting to decrypt data with encrypted size " << payload.readableBytes()
                           << ", data = " << strHex);
@@ -443,7 +475,11 @@ bool MessageCrypto::decryptData(const std::string& dataKeySecret, const proto::M
         return false;
     }
     decryptedPayload.bytesWritten(decLen);
+<<<<<<< HEAD
     if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::DEBUG))) {
+=======
+    if (PULSAR_UNLIKELY(logger()->isEnabled(Logger::LEVEL_DEBUG))) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         std::string strHex = stringToHex(decryptedPayload.data(), decryptedPayload.readableBytes());
         LOG_DEBUG(logCtx_ << "Data decrypted. Decrypted size = " << decryptedPayload.readableBytes()
                           << ", data = " << strHex);

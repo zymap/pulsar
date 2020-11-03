@@ -20,3 +20,7 @@
 name: twitter
 description: Ingest data from Twitter firehose
 sourceClass: org.apache.pulsar.io.twitter.TwitterFireHose
+<<<<<<< HEAD
+=======
+sourceConfigClass: org.apache.pulsar.io.twitter.TwitterFireHoseConfig
+>>>>>>> f773c602c... Test pr 10 (#27)

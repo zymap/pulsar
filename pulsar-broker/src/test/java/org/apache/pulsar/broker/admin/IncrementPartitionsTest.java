@@ -19,10 +19,23 @@
 package org.apache.pulsar.broker.admin;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 
 import org.apache.pulsar.broker.admin.AdminApiTest.MockedPulsarService;
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.client.api.Consumer;
+=======
+import static org.testng.Assert.fail;
+
+import org.apache.pulsar.broker.admin.AdminApiTest.MockedPulsarService;
+import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
+import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
+import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.Reader;
+import org.apache.pulsar.client.api.Schema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.TenantInfo;
@@ -33,6 +46,13 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+<<<<<<< HEAD
+=======
+import java.util.Collections;
+
+import lombok.Cleanup;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class IncrementPartitionsTest extends MockedPulsarServiceBaseTest {
 
     private MockedPulsarService mockPulsarSetup;
@@ -49,7 +69,11 @@ public class IncrementPartitionsTest extends MockedPulsarServiceBaseTest {
         mockPulsarSetup.setup();
 
         // Setup namespaces
+<<<<<<< HEAD
         admin.clusters().createCluster("use", new ClusterData("http://127.0.0.1" + ":" + BROKER_WEBSERVICE_PORT));
+=======
+        admin.clusters().createCluster("use", new ClusterData(pulsar.getWebServiceAddress()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         TenantInfo tenantInfo = new TenantInfo(Sets.newHashSet("role1", "role2"), Sets.newHashSet("use"));
         admin.tenants().createTenant("prop-xyz", tenantInfo);
         admin.namespaces().createNamespace("prop-xyz/use/ns1");
@@ -77,11 +101,25 @@ public class IncrementPartitionsTest extends MockedPulsarServiceBaseTest {
     public void testIncrementPartitionsOfTopic() throws Exception {
         final String partitionedTopicName = "persistent://prop-xyz/use/ns1/test-topic-2";
 
+<<<<<<< HEAD
         admin.topics().createPartitionedTopic(partitionedTopicName, 10);
         assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 10);
 
         Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(partitionedTopicName).subscriptionName("sub-1")
                 .subscribe();
+=======
+        admin.topics().createPartitionedTopic(partitionedTopicName, 1);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 1);
+
+        Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(partitionedTopicName).subscriptionName("sub-1")
+          .subscribe();
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName, 2);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 2);
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName, 10);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 10);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         admin.topics().updatePartitionedTopic(partitionedTopicName, 20);
         assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 20);
@@ -91,4 +129,57 @@ public class IncrementPartitionsTest extends MockedPulsarServiceBaseTest {
 
         consumer.close();
     }
+<<<<<<< HEAD
+=======
+
+    @Test
+    public void testIncrementPartitionsWithNoSubscriptions() throws Exception {
+        final String partitionedTopicName = "persistent://prop-xyz/use/ns1/test-topic-" + System.nanoTime();
+
+        admin.topics().createPartitionedTopic(partitionedTopicName, 1);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 1);
+
+        @Cleanup
+        Producer<String> consumer = pulsarClient.newProducer(Schema.STRING)
+                .topic(partitionedTopicName)
+                .create();
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName, 2);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 2);
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName, 10);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 10);
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName, 20);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName).partitions, 20);
+    }
+
+    @Test
+    public void testIncrementPartitionsWithReaders() throws Exception {
+        TopicName partitionedTopicName = TopicName.get("persistent://prop-xyz/use/ns1/test-topic-" + System.nanoTime());
+
+        admin.topics().createPartitionedTopic(partitionedTopicName.toString(), 1);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName.toString()).partitions, 1);
+
+        @Cleanup
+        Producer<String> consumer = pulsarClient.newProducer(Schema.STRING)
+                .topic(partitionedTopicName.toString())
+                .create();
+
+        @Cleanup
+        Reader<String> reader = pulsarClient.newReader(Schema.STRING)
+            .topic(partitionedTopicName.getPartition(0).toString())
+            .startMessageId(MessageId.earliest)
+            .create();
+
+        admin.topics().updatePartitionedTopic(partitionedTopicName.toString(), 2);
+        assertEquals(admin.topics().getPartitionedTopicMetadata(partitionedTopicName.toString()).partitions, 2);
+
+        assertEquals(admin.topics().getSubscriptions(partitionedTopicName.getPartition(0).toString()).size(), 1);
+
+        // Partition-1 should not have subscriptions
+        assertEquals(admin.topics().getSubscriptions(partitionedTopicName.getPartition(1).toString()),
+                Collections.emptyList());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

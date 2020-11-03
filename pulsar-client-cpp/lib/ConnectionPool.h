@@ -19,6 +19,10 @@
 #ifndef _PULSAR_CONNECTION_POOL_HEADER_
 #define _PULSAR_CONNECTION_POOL_HEADER_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 
 #include "ClientConnection.h"
@@ -26,16 +30,28 @@
 #include <string>
 #include <map>
 #include <mutex>
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 class ExecutorService;
 
+<<<<<<< HEAD
 class ConnectionPool {
+=======
+class PULSAR_PUBLIC ConnectionPool {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     ConnectionPool(const ClientConfiguration& conf, ExecutorServiceProviderPtr executorProvider,
                    const AuthenticationPtr& authentication, bool poolConnections = true);
 
+<<<<<<< HEAD
+=======
+    void close();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Get a connection from the pool.
      * <p>
@@ -67,5 +83,8 @@ class ConnectionPool {
     friend class ConnectionPoolTest;
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  //_PULSAR_CONNECTION_POOL_HEADER_

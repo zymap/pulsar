@@ -20,6 +20,7 @@ package org.apache.pulsar.client.api;
 
 import java.util.Map;
 import java.util.Optional;
+<<<<<<< HEAD
 
 import org.apache.pulsar.common.api.EncryptionContext;
 
@@ -28,13 +29,24 @@ import org.apache.pulsar.common.api.EncryptionContext;
  * The message abstraction used in Pulsar.
  *
  *
+=======
+import org.apache.pulsar.common.api.EncryptionContext;
+
+/**
+ * The message abstraction used in Pulsar.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public interface Message<T> {
 
     /**
      * Return the properties attached to the message.
+<<<<<<< HEAD
      * <p>
      * Properties are application defined key/value pairs that will be attached to the message
+=======
+     *
+     * <p>Properties are application defined key/value pairs that will be attached to the message.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return an unmodifiable view of the properties map
      */
@@ -43,26 +55,42 @@ public interface Message<T> {
     /**
      * Check whether the message has a specific property attached.
      *
+<<<<<<< HEAD
      * @param name
      *            the name of the property to check
      * @return true if the message has the specified property
      * @return false if the properties is not defined
+=======
+     * @param name the name of the property to check
+     * @return true if the message has the specified property and false if the properties is not defined
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     boolean hasProperty(String name);
 
     /**
+<<<<<<< HEAD
      * Get the value of a specific property
      *
      * @param name
      *            the name of the property
+=======
+     * Get the value of a specific property.
+     *
+     * @param name the name of the property
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return the value of the property or null if the property was not defined
      */
     String getProperty(String name);
 
     /**
      * Get the raw payload of the message.
+<<<<<<< HEAD
      * <p>
      * Even when using the Schema and type-safe API, an application
+=======
+     *
+     * <p>Even when using the Schema and type-safe API, an application
+>>>>>>> f773c602c... Test pr 10 (#27)
      * has access to the underlying raw message payload.
      *
      * @return the byte array with the message payload
@@ -79,9 +107,16 @@ public interface Message<T> {
     /**
      * Get the unique message ID associated with this message.
      *
+<<<<<<< HEAD
      * The message id can be used to univocally refer to a message without having the keep the entire payload in memory.
      *
      * Only messages received from the consumer will have a message id assigned.
+=======
+     * <p>The message id can be used to univocally refer to a message without having the keep
+     * the entire payload in memory.
+     *
+     * <p>Only messages received from the consumer will have a message id assigned.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the message id null if this message was not received by this client instance
      */
@@ -126,15 +161,26 @@ public interface Message<T> {
     String getProducerName();
 
     /**
+<<<<<<< HEAD
      * Check whether the message has a key
      *
      * @return true if the key was set while creating the message
      * @return false if the key was not set while creating the message
+=======
+     * Check whether the message has a key.
+     *
+     * @return true if the key was set while creating the message and false if the key was not set
+     * while creating the message
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     boolean hasKey();
 
     /**
+<<<<<<< HEAD
      * Get the key of the message
+=======
+     * Get the key of the message.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the key of the message
      */
@@ -155,7 +201,26 @@ public interface Message<T> {
     byte[] getKeyBytes();
 
     /**
+<<<<<<< HEAD
      * Get the topic the message was published to
+=======
+     * Check whether the message has a ordering key.
+     *
+     * @return true if the ordering key was set while creating the message
+     *         false if the ordering key was not set while creating the message
+     */
+    boolean hasOrderingKey();
+
+    /**
+     * Get the ordering key of the message.
+     *
+     * @return the ordering key of the message
+     */
+    byte[] getOrderingKey();
+
+    /**
+     * Get the topic the message was published to.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the topic the message was published to
      */
@@ -172,12 +237,44 @@ public interface Message<T> {
     /**
      * Get message redelivery count, redelivery count maintain in pulsar broker. When client acknowledge message
      * timeout, broker will dispatch message again with message redelivery count in CommandMessage defined.
+<<<<<<< HEAD
      * <p>
      * Message redelivery increases monotonically in a broker, when topic switch ownership to a another broker
+=======
+     *
+     * <p>Message redelivery increases monotonically in a broker, when topic switch ownership to a another broker
+>>>>>>> f773c602c... Test pr 10 (#27)
      * redelivery count will be recalculated.
      *
      * @since 2.3.0
      * @return message redelivery count
      */
     int getRedeliveryCount();
+<<<<<<< HEAD
+=======
+
+    /**
+     * Get schema version of the message.
+     * @since 2.4.0
+     * @return Schema version of the message if the message is produced with schema otherwise null.
+     */
+    byte[] getSchemaVersion();
+
+    /**
+     * Check whether the message is replicated from other cluster.
+     *
+     * @since 2.4.0
+     * @return true if the message is replicated from other cluster.
+     *         false otherwise.
+     */
+    boolean isReplicated();
+
+    /**
+     * Get name of cluster, from which the message is replicated.
+     *
+     * @since 2.4.0
+     * @return the name of cluster, from which the message is replicated.
+     */
+    String getReplicatedFrom();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

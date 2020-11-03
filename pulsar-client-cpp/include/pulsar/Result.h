@@ -20,8 +20,12 @@
 #define ERROR_HPP_
 
 #include <iosfwd>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
@@ -76,6 +80,7 @@ enum Result
     ResultTopicTerminated,          /// Topic was already terminated
     ResultCryptoError,              /// Error when crypto operation fails
 
+<<<<<<< HEAD
     ResultIncompatibleSchema,  /// Specified schema is incompatible with the topic's schema
 };
 
@@ -86,5 +91,23 @@ const char* strResult(Result result);
 std::ostream& operator<<(std::ostream& s, pulsar::Result result);
 
 #pragma GCC visibility pop
+=======
+    ResultIncompatibleSchema,   /// Specified schema is incompatible with the topic's schema
+    ResultConsumerAssignError,  /// Error when a new consumer connected but can't assign messages to this
+                                /// consumer
+    ResultCumulativeAcknowledgementNotAllowedError,  /// Not allowed to call cumulativeAcknowledgement in
+                                                     /// Shared and Key_Shared subscription mode
+    ResultTransactionCoordinatorNotFoundError,       /// Transaction coordinator not found
+    ResultInvalidTxnStatusError,                     /// Invalid txn status error
+    ResultNotAllowedError,                           /// Not allowed
+    ResultTransactionConflict,                       /// Transaction ack conflict
+};
+
+// Return string representation of result code
+PULSAR_PUBLIC const char* strResult(Result result);
+
+PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, pulsar::Result result);
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #endif /* ERROR_HPP_ */

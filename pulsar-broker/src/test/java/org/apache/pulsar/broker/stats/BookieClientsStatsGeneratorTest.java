@@ -19,12 +19,19 @@
 package org.apache.pulsar.broker.stats;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.util.Map;
 
 import org.apache.bookkeeper.mledger.proto.PendingBookieOpsStats;
 import org.apache.pulsar.broker.service.BrokerTestBase;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.stats.BookieClientStatsGenerator;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.stats.JvmMetrics;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -53,7 +60,11 @@ public class BookieClientsStatsGeneratorTest extends BrokerTestBase {
     public void testBookieClientStatsGenerator() throws Exception {
         // should not generate any NPE or other exceptions..
         Map<String, Map<String, PendingBookieOpsStats>> stats = BookieClientStatsGenerator.generate(super.getPulsar());
+<<<<<<< HEAD
         assertEquals((boolean) stats.isEmpty(), true);
+=======
+        assertTrue(stats.isEmpty());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test

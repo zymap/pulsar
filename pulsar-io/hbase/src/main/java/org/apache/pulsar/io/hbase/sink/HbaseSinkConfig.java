@@ -23,26 +23,38 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+<<<<<<< HEAD
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 import org.apache.pulsar.io.core.annotations.FieldDoc;
 import org.apache.pulsar.io.hbase.HbaseAbstractConfig;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.io.Serializable;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.Map;
 
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @Accessors(chain = true)
 public class HbaseSinkConfig extends HbaseAbstractConfig implements Serializable {
+=======
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class HbaseSinkConfig extends HbaseAbstractConfig {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private static final long serialVersionUID = 1245636479605735555L;
 
@@ -65,13 +77,19 @@ public class HbaseSinkConfig extends HbaseAbstractConfig implements Serializable
     private List<String> qualifierNames;
 
     @FieldDoc(
+<<<<<<< HEAD
        required = false,
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
        defaultValue = "1000l",
        help = "The hbase operation time in milliseconds")
     private long batchTimeMs = 1000l;
 
     @FieldDoc(
+<<<<<<< HEAD
         required = false,
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         defaultValue = "200",
         help = "The batch size of write to the hbase table"
     )

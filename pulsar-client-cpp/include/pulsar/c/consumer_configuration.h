@@ -18,14 +18,23 @@
  */
 #pragma once
 
+<<<<<<< HEAD
 #include "consumer.h"
+=======
+#include <pulsar/defines.h>
+#include "consumer.h"
+#include "producer_configuration.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 typedef struct _pulsar_consumer_configuration pulsar_consumer_configuration_t;
 
 typedef enum {
@@ -43,7 +52,17 @@ typedef enum {
     /** Only one consumer is active on the subscription; Subscription can have N consumers
      *  connected one of which will get promoted to master if the current master becomes inactive
      */
+<<<<<<< HEAD
     pulsar_ConsumerFailover
+=======
+    pulsar_ConsumerFailover,
+
+    /**
+     * Multiple consumer will be able to use the same subscription and all messages with the same key
+     * will be dispatched to only one consumer
+     */
+    pulsar_ConsumerKeyShared
+>>>>>>> f773c602c... Test pr 10 (#27)
 } pulsar_consumer_type;
 
 typedef enum {
@@ -60,9 +79,16 @@ typedef enum {
 /// Callback definition for MessageListener
 typedef void (*pulsar_message_listener)(pulsar_consumer_t *consumer, pulsar_message_t *msg, void *ctx);
 
+<<<<<<< HEAD
 pulsar_consumer_configuration_t *pulsar_consumer_configuration_create();
 
 void pulsar_consumer_configuration_free(pulsar_consumer_configuration_t *consumer_configuration);
+=======
+PULSAR_PUBLIC pulsar_consumer_configuration_t *pulsar_consumer_configuration_create();
+
+PULSAR_PUBLIC void pulsar_consumer_configuration_free(
+    pulsar_consumer_configuration_t *consumer_configuration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Specify the consumer type. The consumer type enables
@@ -76,22 +102,42 @@ void pulsar_consumer_configuration_free(pulsar_consumer_configuration_t *consume
  * messages. When the primary consumer gets disconnected, one among the failover
  * consumers will be promoted to primary and will start getting messages.
  */
+<<<<<<< HEAD
 void pulsar_consumer_configuration_set_consumer_type(pulsar_consumer_configuration_t *consumer_configuration,
                                                      pulsar_consumer_type consumerType);
 
 pulsar_consumer_type pulsar_consumer_configuration_get_consumer_type(
     pulsar_consumer_configuration_t *consumer_configuration);
+=======
+PULSAR_PUBLIC void pulsar_consumer_configuration_set_consumer_type(
+    pulsar_consumer_configuration_t *consumer_configuration, pulsar_consumer_type consumerType);
+
+PULSAR_PUBLIC pulsar_consumer_type
+pulsar_consumer_configuration_get_consumer_type(pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC void pulsar_consumer_configuration_set_schema_info(
+    pulsar_consumer_configuration_t *consumer_configuration, pulsar_schema_type schemaType, const char *name,
+    const char *schema, pulsar_string_map_t *properties);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A message listener enables your application to configure how to process
  * and acknowledge messages delivered. A listener will be called in order
  * for every message received.
  */
+<<<<<<< HEAD
 void pulsar_consumer_configuration_set_message_listener(
     pulsar_consumer_configuration_t *consumer_configuration, pulsar_message_listener messageListener,
     void *ctx);
 
 int pulsar_consumer_configuration_has_message_listener(
+=======
+PULSAR_PUBLIC void pulsar_consumer_configuration_set_message_listener(
+    pulsar_consumer_configuration_t *consumer_configuration, pulsar_message_listener messageListener,
+    void *ctx);
+
+PULSAR_PUBLIC int pulsar_consumer_configuration_has_message_listener(
+>>>>>>> f773c602c... Test pr 10 (#27)
     pulsar_consumer_configuration_t *consumer_configuration);
 
 /**
@@ -115,10 +161,17 @@ int pulsar_consumer_configuration_has_message_listener(
  * @param size
  *            the new receiver queue size value
  */
+<<<<<<< HEAD
 void pulsar_consumer_configuration_set_receiver_queue_size(
     pulsar_consumer_configuration_t *consumer_configuration, int size);
 
 int pulsar_consumer_configuration_get_receiver_queue_size(
+=======
+PULSAR_PUBLIC void pulsar_consumer_configuration_set_receiver_queue_size(
+    pulsar_consumer_configuration_t *consumer_configuration, int size);
+
+PULSAR_PUBLIC int pulsar_consumer_configuration_get_receiver_queue_size(
+>>>>>>> f773c602c... Test pr 10 (#27)
     pulsar_consumer_configuration_t *consumer_configuration);
 
 /**
@@ -129,12 +182,17 @@ int pulsar_consumer_configuration_get_receiver_queue_size(
  *
  * @param maxTotalReceiverQueueSizeAcrossPartitions
  */
+<<<<<<< HEAD
 void pulsar_consumer_set_max_total_receiver_queue_size_across_partitions(
+=======
+PULSAR_PUBLIC void pulsar_consumer_set_max_total_receiver_queue_size_across_partitions(
+>>>>>>> f773c602c... Test pr 10 (#27)
     pulsar_consumer_configuration_t *consumer_configuration, int maxTotalReceiverQueueSizeAcrossPartitions);
 
 /**
  * @return the configured max total receiver queue size across partitions
  */
+<<<<<<< HEAD
 int pulsar_consumer_get_max_total_receiver_queue_size_across_partitions(
     pulsar_consumer_configuration_t *consumer_configuration);
 
@@ -142,6 +200,16 @@ void pulsar_consumer_set_consumer_name(pulsar_consumer_configuration_t *consumer
                                        const char *consumerName);
 
 const char *pulsar_consumer_get_consumer_name(pulsar_consumer_configuration_t *consumer_configuration);
+=======
+PULSAR_PUBLIC int pulsar_consumer_get_max_total_receiver_queue_size_across_partitions(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC void pulsar_consumer_set_consumer_name(pulsar_consumer_configuration_t *consumer_configuration,
+                                                     const char *consumerName);
+
+PULSAR_PUBLIC const char *pulsar_consumer_get_consumer_name(
+    pulsar_consumer_configuration_t *consumer_configuration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Set the timeout in milliseconds for unacknowledged messages, the timeout needs to be greater than
@@ -150,12 +218,18 @@ const char *pulsar_consumer_get_consumer_name(pulsar_consumer_configuration_t *c
  * redelivered.
  * @param timeout in milliseconds
  */
+<<<<<<< HEAD
 void pulsar_consumer_set_unacked_messages_timeout_ms(pulsar_consumer_configuration_t *consumer_configuration,
                                                      const uint64_t milliSeconds);
+=======
+PULSAR_PUBLIC void pulsar_consumer_set_unacked_messages_timeout_ms(
+    pulsar_consumer_configuration_t *consumer_configuration, const uint64_t milliSeconds);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * @return the configured timeout in milliseconds for unacked messages.
  */
+<<<<<<< HEAD
 long pulsar_consumer_get_unacked_messages_timeout_ms(pulsar_consumer_configuration_t *consumer_configuration);
 
 int pulsar_consumer_is_encryption_enabled(pulsar_consumer_configuration_t *consumer_configuration);
@@ -173,6 +247,91 @@ void pulsar_consumer_set_subscription_initial_position(
 
 void pulsar_consumer_configuration_set_property(pulsar_consumer_configuration_t *conf, const char *name,
                                                 const char *value);
+=======
+PULSAR_PUBLIC long pulsar_consumer_get_unacked_messages_timeout_ms(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+/**
+ * Set the delay to wait before re-delivering messages that have failed to be process.
+ * <p>
+ * When application uses {@link Consumer#negativeAcknowledge(Message)}, the failed message
+ * will be redelivered after a fixed timeout. The default is 1 min.
+ *
+ * @param redeliveryDelay
+ *            redelivery delay for failed messages
+ * @param timeUnit
+ *            unit in which the timeout is provided.
+ * @return the consumer builder instance
+ */
+PULSAR_PUBLIC void pulsar_configure_set_negative_ack_redelivery_delay_ms(
+    pulsar_consumer_configuration_t *consumer_configuration, long redeliveryDelayMillis);
+
+/**
+ * Get the configured delay to wait before re-delivering messages that have failed to be process.
+ *
+ * @param consumer_configuration the consumer conf object
+ * @return redelivery delay for failed messages
+ */
+PULSAR_PUBLIC long pulsar_configure_get_negative_ack_redelivery_delay_ms(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+/**
+ * Set time window in milliseconds for grouping message ACK requests. An ACK request is not sent
+ * to broker until the time window reaches its end, or the number of grouped messages reaches
+ * limit. Default is 100 milliseconds. If it's set to a non-positive value, ACK requests will be
+ * directly sent to broker without grouping.
+ *
+ * @param consumer_configuration the consumer conf object
+ * @param ackGroupMillis time of ACK grouping window in milliseconds.
+ */
+PULSAR_PUBLIC void pulsar_configure_set_ack_grouping_time_ms(
+    pulsar_consumer_configuration_t *consumer_configuration, long ackGroupingMillis);
+
+/**
+ * Get grouping time window in milliseconds.
+ *
+ * @param consumer_configuration the consumer conf object
+ * @return grouping time window in milliseconds.
+ */
+PULSAR_PUBLIC long pulsar_configure_get_ack_grouping_time_ms(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+/**
+ * Set max number of grouped messages within one grouping time window. If it's set to a
+ * non-positive value, number of grouped messages is not limited. Default is 1000.
+ *
+ * @param consumer_configuration the consumer conf object
+ * @param maxGroupingSize max number of grouped messages with in one grouping time window.
+ */
+PULSAR_PUBLIC void pulsar_configure_set_ack_grouping_max_size(
+    pulsar_consumer_configuration_t *consumer_configuration, long maxGroupingSize);
+
+/**
+ * Get max number of grouped messages within one grouping time window.
+ *
+ * @param consumer_configuration the consumer conf object
+ * @return max number of grouped messages within one grouping time window.
+ */
+PULSAR_PUBLIC long pulsar_configure_get_ack_grouping_max_size(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC int pulsar_consumer_is_encryption_enabled(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC int pulsar_consumer_is_read_compacted(pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC void pulsar_consumer_set_read_compacted(pulsar_consumer_configuration_t *consumer_configuration,
+                                                      int compacted);
+
+PULSAR_PUBLIC int pulsar_consumer_get_subscription_initial_position(
+    pulsar_consumer_configuration_t *consumer_configuration);
+
+PULSAR_PUBLIC void pulsar_consumer_set_subscription_initial_position(
+    pulsar_consumer_configuration_t *consumer_configuration, initial_position subscriptionInitialPosition);
+
+PULSAR_PUBLIC void pulsar_consumer_configuration_set_property(pulsar_consumer_configuration_t *conf,
+                                                              const char *name, const char *value);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 // const CryptoKeyReaderPtr getCryptoKeyReader()
 //
@@ -188,8 +347,11 @@ void pulsar_consumer_configuration_set_property(pulsar_consumer_configuration_t 
 // setCryptoFailureAction(ConsumerCryptoFailureAction
 // action);
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #ifdef __cplusplus
 }
 #endif

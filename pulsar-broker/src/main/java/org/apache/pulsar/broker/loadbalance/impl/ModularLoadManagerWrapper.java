@@ -18,7 +18,10 @@
  */
 package org.apache.pulsar.broker.loadbalance.impl;
 
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +34,10 @@ import org.apache.pulsar.broker.loadbalance.ResourceUnit;
 import org.apache.pulsar.common.naming.ServiceUnitId;
 import org.apache.pulsar.common.stats.Metrics;
 import org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.policies.data.loadbalancer.LocalBrokerData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.policies.data.loadbalancer.ServiceLookupData;
 import org.apache.pulsar.zookeeper.ZooKeeperCache.Deserializer;
 
@@ -67,6 +74,7 @@ public class ModularLoadManagerWrapper implements LoadManager {
     @Override
     public Optional<ResourceUnit> getLeastLoaded(final ServiceUnitId serviceUnit) {
         Optional<String> leastLoadedBroker = loadManager.selectBrokerForAssignment(serviceUnit);
+<<<<<<< HEAD
         if (leastLoadedBroker.isPresent()) {
             return Optional.of(new SimpleResourceUnit(String.format("http://%s", leastLoadedBroker.get()),
                     new PulsarResourceDescription()));
@@ -78,6 +86,24 @@ public class ModularLoadManagerWrapper implements LoadManager {
     @Override
     public List<Metrics> getLoadBalancingMetrics() {
         return Collections.emptyList();
+=======
+        return leastLoadedBroker.map(s -> new SimpleResourceUnit(getBrokerWebServiceUrl(s),
+                new PulsarResourceDescription()));
+    }
+
+    private String getBrokerWebServiceUrl(String broker) {
+        LocalBrokerData localData = (loadManager).getBrokerLocalData(broker);
+        if (localData != null) {
+            return localData.getWebServiceUrl() != null ? localData.getWebServiceUrl()
+                    : localData.getWebServiceUrlTls();
+        }
+        return String.format("http://%s", broker);
+    }
+    
+    @Override
+    public List<Metrics> getLoadBalancingMetrics() {
+        return loadManager.getLoadBalancingMetrics();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

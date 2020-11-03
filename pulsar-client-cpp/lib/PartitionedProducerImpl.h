@@ -107,6 +107,17 @@ class PartitionedProducerImpl : public ProducerImplBase,
 
     ProducerList producers_;
 
+<<<<<<< HEAD
+=======
+    // producersMutex_ is used to share producers_ and topicMetadata_
+    mutable std::mutex producersMutex_;
+
+    unsigned int getNumPartitions() const;
+    unsigned int getNumPartitionsWithLock() const;
+
+    ProducerImplPtr newInternalProducer(unsigned int partition) const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     MessageRoutingPolicyPtr routerPolicy_;
 
     // mutex_ is used to share state_, and numProducersCreated_
@@ -121,6 +132,18 @@ class PartitionedProducerImpl : public ProducerImplBase,
 
     std::atomic<int> flushedPartitions_;
     std::shared_ptr<Promise<Result, bool_type>> flushPromise_;
+<<<<<<< HEAD
+=======
+
+    ExecutorServicePtr listenerExecutor_;
+    DeadlineTimerPtr partitionsUpdateTimer_;
+    boost::posix_time::time_duration partitionsUpdateInterval_;
+    LookupServicePtr lookupServicePtr_;
+
+    void runPartitionUpdateTask();
+    void getPartitionMetadata();
+    void handleGetPartitions(const Result result, const LookupDataResultPtr& partitionMetadata);
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 
 }  // namespace pulsar

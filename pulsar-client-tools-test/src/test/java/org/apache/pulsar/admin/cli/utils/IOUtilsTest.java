@@ -23,12 +23,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+<<<<<<< HEAD
+=======
+import java.nio.charset.StandardCharsets;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
 import org.apache.pulsar.admin.cli.utils.IOUtils;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -127,7 +134,11 @@ public class IOUtilsTest {
             String data = "\n";
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
+<<<<<<< HEAD
             System.setIn(new ByteArrayInputStream(data.getBytes("UTF-8")));
+=======
+            System.setIn(new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)));
+>>>>>>> f773c602c... Test pr 10 (#27)
             ExecutorService executor = Executors.newSingleThreadExecutor();
             @SuppressWarnings("unchecked")
             Future<Void> future = (Future<Void>) executor.submit(() -> {
@@ -144,4 +155,8 @@ public class IOUtilsTest {
             // expected
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

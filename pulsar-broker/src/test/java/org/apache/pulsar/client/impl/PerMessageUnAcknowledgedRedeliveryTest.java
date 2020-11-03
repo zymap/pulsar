@@ -19,6 +19,10 @@
 package org.apache.pulsar.client.impl;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.util.concurrent.TimeUnit;
 
@@ -151,6 +155,51 @@ public class PerMessageUnAcknowledgedRedeliveryTest extends BrokerTestBase {
     }
 
     @Test(timeOut = testTimeout)
+<<<<<<< HEAD
+=======
+    public void testUnAckedMessageTrackerSize() throws Exception {
+        String key = "testUnAckedMessageTrackerSize";
+        final String topicName = "persistent://prop/use/ns-abc/topic-" + key;
+        final String subscriptionName = "my-ex-subscription-" + key;
+        final String messagePredicate = "my-message-" + key + "-";
+        final int totalMessages = 15;
+
+        // 1. producer connect
+        Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+            .enableBatching(false)
+            .messageRoutingMode(MessageRoutingMode.SinglePartition)
+            .create();
+
+        // 2. Create consumer,doesn't set the ackTimeout
+        Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subscriptionName)
+                .receiverQueueSize(50).subscriptionType(SubscriptionType.Shared).subscribe();
+
+        // 3. producer publish messages
+        for (int i = 0; i < totalMessages / 3; i++) {
+            String message = messagePredicate + i;
+            log.info("Producer produced: " + message);
+            producer.send(message.getBytes());
+        }
+
+        // 4. Receiver receives the message, doesn't ack
+        Message<byte[]> message = consumer.receive();
+        while (message != null) {
+            String data = new String(message.getData());
+            log.info("Consumer received : " + data);
+            message = consumer.receive(100, TimeUnit.MILLISECONDS);
+        }
+        UnAckedMessageTracker unAckedMessageTracker = ((ConsumerImpl<byte[]>) consumer).getUnAckedMessageTracker();
+        long size = unAckedMessageTracker.size();
+        log.info(key + " Unacked Message Tracker size is " + size);
+        // 5. If ackTimeout is not set, UnAckedMessageTracker is a disabled method
+        assertEquals(size, 0);
+        assertTrue(unAckedMessageTracker.add(null));
+        assertTrue(unAckedMessageTracker.remove(null));
+        assertEquals(unAckedMessageTracker.removeMessagesTill(null), 0);
+    }
+
+    @Test(timeOut = testTimeout)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testExclusiveAckedNormalTopic() throws Exception {
         String key = "testExclusiveAckedNormalTopic";
         final String topicName = "persistent://prop/use/ns-abc/topic-" + key;
@@ -360,7 +409,12 @@ public class PerMessageUnAcknowledgedRedeliveryTest extends BrokerTestBase {
         final String messagePredicate = "my-message-" + key + "-";
         final int totalMessages = 15;
         final int numberOfPartitions = 3;
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName, numberOfPartitions);
 
         // 1. producer connect

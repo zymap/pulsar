@@ -119,6 +119,7 @@ function Versions(props) {
               )}
             </tbody>
           </table>
+<<<<<<< HEAD
           <p>
           <translate>
             You can find past versions of this project on{' '}
@@ -126,6 +127,8 @@ function Versions(props) {
             <a href={`${siteConfig.baseUrl}download`}>Apache</a>.
           </translate>
           </p>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         </div>
       </Container>
     </div>

@@ -23,33 +23,53 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.util.Rate;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.service.BrokerServiceException;
 import org.apache.pulsar.broker.service.Consumer;
 import org.apache.pulsar.broker.service.Dispatcher;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+<<<<<<< HEAD
 import org.apache.pulsar.utils.CopyOnWriteArrayList;
 
 
 public interface NonPersistentDispatcher extends Dispatcher{
+=======
+import org.apache.pulsar.common.stats.Rate;
+
+
+public interface NonPersistentDispatcher extends Dispatcher {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void addConsumer(Consumer consumer) throws BrokerServiceException;
 
     void removeConsumer(Consumer consumer) throws BrokerServiceException ;
 
     boolean isConsumerConnected();
+<<<<<<< HEAD
     
     CopyOnWriteArrayList<Consumer> getConsumers();
+=======
+
+    List<Consumer> getConsumers();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     boolean canUnsubscribe(Consumer consumer);
 
     CompletableFuture<Void> close() ;
 
+<<<<<<< HEAD
     CompletableFuture<Void> disconnectAllConsumers();
+=======
+    CompletableFuture<Void> disconnectAllConsumers(boolean isResetCursor);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void reset();
 
     SubType getType();
+<<<<<<< HEAD
     
     void sendMessages(List<Entry> entries);
     
@@ -57,6 +77,15 @@ public interface NonPersistentDispatcher extends Dispatcher{
     
     boolean hasPermits();
     
+=======
+
+    void sendMessages(List<Entry> entries);
+
+    Rate getMessageDropRate();
+
+    boolean hasPermits();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     default void redeliverUnacknowledgedMessages(Consumer consumer) {
         // No-op

@@ -336,11 +336,21 @@ public class LoadSimulationClient {
     public static void main(String[] args) throws Exception {
         final MainArguments mainArguments = new MainArguments();
         final JCommander jc = new JCommander(mainArguments);
+<<<<<<< HEAD
         try {
             jc.parse(args);
         } catch (ParameterException e) {
             jc.usage();
             throw e;
+=======
+        jc.setProgramName("pulsar-perf simulation-client");
+        try {
+            jc.parse(args);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());
+            jc.usage();
+            System.exit(-1);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         (new LoadSimulationClient(mainArguments)).run();
     }

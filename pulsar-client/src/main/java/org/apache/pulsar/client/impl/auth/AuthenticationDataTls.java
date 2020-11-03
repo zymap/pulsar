@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl.auth;
 
+<<<<<<< HEAD
 import java.security.KeyManagementException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -29,6 +30,32 @@ public class AuthenticationDataTls implements AuthenticationDataProvider {
 
     protected final X509Certificate[] certificates;
     protected final PrivateKey privateKey;
+=======
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.function.Supplier;
+
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.pulsar.client.api.AuthenticationDataProvider;
+import org.apache.pulsar.common.util.FileModifiedTimeUpdater;
+import org.apache.pulsar.common.util.SecurityUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class AuthenticationDataTls implements AuthenticationDataProvider {
+    protected X509Certificate[] tlsCertificates;
+    protected PrivateKey tlsPrivateKey;
+    private FileModifiedTimeUpdater certFile, keyFile;
+    // key and cert using stream
+    private InputStream certStream, keyStream;
+    private Supplier<ByteArrayInputStream> certStreamProvider, keyStreamProvider, trustStoreStreamProvider;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public AuthenticationDataTls(String certFilePath, String keyFilePath) throws KeyManagementException {
         if (certFilePath == null) {
@@ -37,10 +64,41 @@ public class AuthenticationDataTls implements AuthenticationDataProvider {
         if (keyFilePath == null) {
             throw new IllegalArgumentException("keyFilePath must not be null");
         }
+<<<<<<< HEAD
         certificates = SecurityUtility.loadCertificatesFromPemFile(certFilePath);
         privateKey = SecurityUtility.loadPrivateKeyFromPemFile(keyFilePath);
     }
 
+=======
+        this.certFile = new FileModifiedTimeUpdater(certFilePath);
+        this.keyFile = new FileModifiedTimeUpdater(keyFilePath);
+        this.tlsCertificates = SecurityUtility.loadCertificatesFromPemFile(certFilePath);
+        this.tlsPrivateKey = SecurityUtility.loadPrivateKeyFromPemFile(keyFilePath);
+    }
+
+    public AuthenticationDataTls(Supplier<ByteArrayInputStream> certStreamProvider,
+            Supplier<ByteArrayInputStream> keyStreamProvider) throws KeyManagementException {
+        this(certStreamProvider, keyStreamProvider, null);
+    }
+
+    public AuthenticationDataTls(Supplier<ByteArrayInputStream> certStreamProvider,
+            Supplier<ByteArrayInputStream> keyStreamProvider, Supplier<ByteArrayInputStream> trustStoreStreamProvider)
+            throws KeyManagementException {
+        if (certStreamProvider == null || certStreamProvider.get() == null) {
+            throw new IllegalArgumentException("certStream provider or stream must not be null");
+        }
+        if (keyStreamProvider == null || keyStreamProvider.get() == null) {
+            throw new IllegalArgumentException("keyStream provider or stream must not be null");
+        }
+        this.certStreamProvider = certStreamProvider;
+        this.keyStreamProvider = keyStreamProvider;
+        this.trustStoreStreamProvider = trustStoreStreamProvider;
+        this.certStream = certStreamProvider.get();
+        this.keyStream = keyStreamProvider.get();
+        this.tlsCertificates = SecurityUtility.loadCertificatesFromPemStream(certStream);
+        this.tlsPrivateKey = SecurityUtility.loadPrivateKeyFromPemStream(keyStream);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
     /*
      * TLS
      */
@@ -51,13 +109,60 @@ public class AuthenticationDataTls implements AuthenticationDataProvider {
     }
 
     @Override
+<<<<<<< HEAD
     public X509Certificate[] getTlsCertificates() {
         return certificates;
+=======
+    public Certificate[] getTlsCertificates() {
+        if (certFile != null && certFile.checkAndRefresh()) {
+            try {
+                this.tlsCertificates = SecurityUtility.loadCertificatesFromPemFile(certFile.getFileName());
+            } catch (KeyManagementException e) {
+                LOG.error("Unable to refresh authData for cert {}: ", certFile.getFileName(), e);
+            }
+        } else if (certStreamProvider != null && certStreamProvider.get() != null
+                && !certStreamProvider.get().equals(certStream)) {
+            try {
+                certStream = certStreamProvider.get();
+                tlsCertificates = SecurityUtility.loadCertificatesFromPemStream(certStream);
+            } catch (KeyManagementException e) {
+                LOG.error("Unable to refresh authData from cert stream ", e);
+            }
+        }
+        return this.tlsCertificates;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public PrivateKey getTlsPrivateKey() {
+<<<<<<< HEAD
         return privateKey;
     }
 
+=======
+        if (keyFile != null && keyFile.checkAndRefresh()) {
+            try {
+                this.tlsPrivateKey = SecurityUtility.loadPrivateKeyFromPemFile(keyFile.getFileName());
+            } catch (KeyManagementException e) {
+                LOG.error("Unable to refresh authData for cert {}: ", keyFile.getFileName(), e);
+            }
+        } else if (keyStreamProvider != null && keyStreamProvider.get() != null
+                && !keyStreamProvider.get().equals(keyStream)) {
+            try {
+                keyStream = keyStreamProvider.get();
+                tlsPrivateKey = SecurityUtility.loadPrivateKeyFromPemStream(keyStream);
+            } catch (KeyManagementException e) {
+                LOG.error("Unable to refresh authData from key stream ", e);
+            }
+        }
+        return this.tlsPrivateKey;
+    }
+
+    @Override
+    public InputStream getTlsTrustStoreStream() {
+        return trustStoreStreamProvider != null ? trustStoreStreamProvider.get() : null;
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationDataTls.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

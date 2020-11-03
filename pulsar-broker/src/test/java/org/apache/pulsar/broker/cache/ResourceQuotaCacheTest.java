@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.broker.cache;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
+=======
+import static org.mockito.Mockito.any;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -37,7 +41,13 @@ import org.apache.pulsar.common.policies.data.ResourceQuota;
 import org.apache.pulsar.zookeeper.LocalZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
+<<<<<<< HEAD
 import org.apache.zookeeper.MockZooKeeper;
+=======
+import org.apache.pulsar.zookeeper.ZookeeperBkClientFactoryImpl;
+import org.apache.zookeeper.MockZooKeeper;
+import org.apache.zookeeper.ZooKeeper;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -49,12 +59,21 @@ public class ResourceQuotaCacheTest {
     private LocalZooKeeperCacheService localCache;
     private NamespaceBundleFactory bundleFactory;
     private OrderedScheduler executor;
+<<<<<<< HEAD
+=======
+    private MockZooKeeper zkc;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @BeforeMethod
     public void setup() throws Exception {
         pulsar = mock(PulsarService.class);
         executor = OrderedScheduler.newSchedulerBuilder().numThreads(1).name("test").build();
+<<<<<<< HEAD
         zkCache = new LocalZooKeeperCache(MockZooKeeper.newInstance(), executor);
+=======
+        zkc = MockZooKeeper.newInstance();
+        zkCache = new LocalZooKeeperCache(zkc, 30, executor);
+>>>>>>> f773c602c... Test pr 10 (#27)
         localCache = new LocalZooKeeperCacheService(zkCache, null);
 
         // set mock pulsar localzkcache
@@ -70,8 +89,15 @@ public class ResourceQuotaCacheTest {
     }
 
     @AfterMethod
+<<<<<<< HEAD
     public void teardown() {
         executor.shutdown();
+=======
+    public void teardown() throws Exception{
+        executor.shutdown();
+        zkCache.stop();
+        zkc.shutdown();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test

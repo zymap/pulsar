@@ -18,7 +18,10 @@
  */
 package org.apache.pulsar.discovery.service.server;
 
+<<<<<<< HEAD
 import static org.apache.bookkeeper.test.PortManager.nextFreePort;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
@@ -42,8 +45,11 @@ public class DiscoveryServiceWebTest {
 
     @Test
     public void testWebDiscoveryServiceStarter() throws Exception {
+<<<<<<< HEAD
 
         int port = nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         File testConfigFile = new File("tmp." + System.currentTimeMillis() + ".properties");
         if (testConfigFile.exists()) {
             testConfigFile.delete();
@@ -51,7 +57,11 @@ public class DiscoveryServiceWebTest {
         PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(testConfigFile)));
         printWriter.println("zookeeperServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
         printWriter.println("configurationStoreServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
+<<<<<<< HEAD
         printWriter.println("webServicePort=" + port);
+=======
+        printWriter.println("webServicePort=8080");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter.close();
         testConfigFile.deleteOnExit();
         final ServiceConfig config = PulsarConfigurationLoader.create(testConfigFile.getAbsolutePath(), ServiceConfig.class);
@@ -69,7 +79,10 @@ public class DiscoveryServiceWebTest {
     public void testConfigurationBackwardCompat() throws Exception {
         DiscoveryService service = Mockito.mock(DiscoveryService.class);
 
+<<<<<<< HEAD
         int port = nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         File testConfigFile = new File("tmp." + System.currentTimeMillis() + ".properties");
         if (testConfigFile.exists()) {
             testConfigFile.delete();
@@ -77,7 +90,11 @@ public class DiscoveryServiceWebTest {
         PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(testConfigFile)));
         printWriter.println("zookeeperServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
         printWriter.println("globalZookeeperServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
+<<<<<<< HEAD
         printWriter.println("webServicePort=" + port);
+=======
+        printWriter.println("webServicePort=8080");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter.close();
         testConfigFile.deleteOnExit();
 
@@ -93,7 +110,11 @@ public class DiscoveryServiceWebTest {
         PrintWriter printWriter2 = new PrintWriter(new OutputStreamWriter(new FileOutputStream(testConfigFile)));
         printWriter2.println("zookeeperServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
         printWriter2.println("configurationStoreServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
+<<<<<<< HEAD
         printWriter2.println("webServicePort=" + port);
+=======
+        printWriter2.println("webServicePort=8080");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter2.close();
         config = PulsarConfigurationLoader.create(testConfigFile.getAbsolutePath(), ServiceConfig.class);
         // have zookeeperServers and configurationStoreServers, config is valid
@@ -106,7 +127,11 @@ public class DiscoveryServiceWebTest {
         }
         PrintWriter printWriter3 = new PrintWriter(new OutputStreamWriter(new FileOutputStream(testConfigFile)));
         printWriter3.println("zookeeperServers=z1.pulsar.com,z2.pulsar.com,z3.pulsar.com");
+<<<<<<< HEAD
         printWriter3.println("webServicePort=" + port);
+=======
+        printWriter3.println("webServicePort=8080");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter3.close();
         config = PulsarConfigurationLoader.create(testConfigFile.getAbsolutePath(), ServiceConfig.class);
         // only have zookeeperServers

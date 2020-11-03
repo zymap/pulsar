@@ -20,6 +20,7 @@
 package org.apache.pulsar.common.policies.data;
 
 /**
+<<<<<<< HEAD
  * Subscription authorization for Pulsar policies
  */
 public enum SubscriptionAuthMode {
@@ -27,5 +28,14 @@ public enum SubscriptionAuthMode {
     None,
 
     /** Subscription name with auth role prefix can be used by the role */
+=======
+ * Subscription authorization for Pulsar policies.
+ */
+public enum SubscriptionAuthMode {
+    /** Every subscription name can be used by every role. */
+    None,
+
+    /** Subscription name with auth role prefix can be used by the role. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     Prefix,
 }

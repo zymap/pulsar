@@ -19,6 +19,10 @@
 #ifndef LIB_COMPRESSIONCODEC_H_
 #define LIB_COMPRESSIONCODEC_H_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Producer.h>
 
 #include "SharedBuffer.h"
@@ -26,9 +30,12 @@
 
 #include <map>
 
+<<<<<<< HEAD
 // Make symbol visible to unit tests
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 using namespace pulsar;
 namespace pulsar {
 
@@ -37,8 +44,14 @@ class CompressionCodecNone;
 class CompressionCodecLZ4;
 class CompressionCodecZLib;
 class CompressionCodecZstd;
+<<<<<<< HEAD
 
 class CompressionCodecProvider {
+=======
+class CompressionCodecSnappy;
+
+class PULSAR_PUBLIC CompressionCodecProvider {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     static CompressionType convertType(proto::CompressionType type);
     static proto::CompressionType convertType(CompressionType type);
@@ -50,9 +63,16 @@ class CompressionCodecProvider {
     static CompressionCodecLZ4 compressionCodecLZ4_;
     static CompressionCodecZLib compressionCodecZLib_;
     static CompressionCodecZstd compressionCodecZstd_;
+<<<<<<< HEAD
 };
 
 class CompressionCodec {
+=======
+    static CompressionCodecSnappy compressionCodecSnappy_;
+};
+
+class PULSAR_PUBLIC CompressionCodec {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~CompressionCodec() {}
 
@@ -81,7 +101,11 @@ class CompressionCodec {
     virtual bool decode(const SharedBuffer& encoded, uint32_t uncompressedSize, SharedBuffer& decoded) = 0;
 };
 
+<<<<<<< HEAD
 class CompressionCodecNone : public CompressionCodec {
+=======
+class PULSAR_PUBLIC CompressionCodecNone : public CompressionCodec {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     SharedBuffer encode(const SharedBuffer& raw);
 
@@ -89,6 +113,9 @@ class CompressionCodecNone : public CompressionCodec {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* LIB_COMPRESSIONCODEC_H_ */

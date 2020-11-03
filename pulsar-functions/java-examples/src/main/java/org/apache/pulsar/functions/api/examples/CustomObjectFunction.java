@@ -23,7 +23,11 @@ import org.apache.pulsar.functions.api.Function;
 import org.apache.pulsar.functions.api.examples.serde.CustomObject;
 
 /**
+<<<<<<< HEAD
  * Function that deals with custom objects
+=======
+ * Function that deals with custom objects.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class CustomObjectFunction implements Function<CustomObject, CustomObject> {
 

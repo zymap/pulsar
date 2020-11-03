@@ -3,6 +3,7 @@ id: io-netty
 title: Netty Tcp or Udp Connector
 sidebar_label: Netty Tcp or Udp Connector
 ---
+<<<<<<< HEAD
 
 ## Source
 
@@ -18,3 +19,5 @@ Otherwise, if the connector is running in process or thread mode, the instances 
 | `host` | `false` | `127.0.0.1` | The host name or address that the source instance to listen on. |
 | `port` | `false` | `10999` | The port that the source instance to listen on. |
 | `numberOfThreads` | `false` | `1` | The number of threads of Netty Tcp Server to accept incoming connections and handle the traffic of the accepted connections. |
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

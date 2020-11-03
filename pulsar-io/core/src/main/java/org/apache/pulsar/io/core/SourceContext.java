@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.io.core;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 
 public interface SourceContext {
@@ -45,11 +46,28 @@ public interface SourceContext {
 
     /**
      * Get the output topic of the source
+=======
+import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
+
+/**
+ * Interface for a source connector providing information about environment where it is running.
+ * It also allows to propagate information, such as logs, metrics, states, back to the Pulsar environment.
+ */
+public interface SourceContext extends ConnectorContext {
+
+    /**
+     * Get the output topic of the source.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return output topic name
      */
     String getOutputTopic();
 
     /**
+<<<<<<< HEAD
      * The tenant this source belongs to
      * @return the tenant this source belongs to
      */
@@ -72,4 +90,32 @@ public interface SourceContext {
      * @return the logger object
      */
     Logger getLogger();
+=======
+     * The name of the source that we are executing.
+     *
+     * @return The Source name
+     */
+    String getSourceName();
+
+    /**
+     * New output message using schema for serializing to the topic
+     *
+     * @param topicName The name of the topic for output message
+     * @param schema provide a way to convert between serialized data and domain objects
+     * @param <O>
+     * @return the message builder instance
+     * @throws PulsarClientException
+     */
+    <O> TypedMessageBuilder<O> newOutputMessage(String topicName, Schema<O> schema) throws PulsarClientException;
+
+    /**
+     * Create a ConsumerBuilder with the schema.
+     *
+     * @param schema provide a way to convert between serialized data and domain objects
+     * @param <O>
+     * @return the consumer builder instance
+     * @throws PulsarClientException
+     */
+    <O> ConsumerBuilder<O> newConsumerBuilder(Schema<O> schema) throws PulsarClientException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

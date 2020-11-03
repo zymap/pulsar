@@ -27,6 +27,7 @@
 
 #ifndef LIB_BATCHMESSAGECONTAINER_H_
 #define LIB_BATCHMESSAGECONTAINER_H_
+<<<<<<< HEAD
 #include <string>
 #include <vector>
 #include <utility>
@@ -134,5 +135,40 @@ std::ostream& operator<<(std::ostream& os, const BatchMessageContainer& b) {
        << "] [averageBatchSize = " << b.averageBatchSize_ << "]}";
     return os;
 }
+=======
+
+#include "BatchMessageContainerBase.h"
+#include "MessageAndCallbackBatch.h"
+
+namespace pulsar {
+
+class BatchMessageContainer : public BatchMessageContainerBase {
+   public:
+    BatchMessageContainer(const ProducerImpl& producer);
+
+    ~BatchMessageContainer();
+
+    size_t getNumBatches() const override { return 1; }
+
+    bool isFirstMessageToAdd(const Message& msg) const override { return batch_.empty(); }
+
+    bool add(const Message& msg, const SendCallback& callback) override;
+
+    void clear() override;
+
+    Result createOpSendMsg(OpSendMsg& opSendMsg, const FlushCallback& flushCallback) const override;
+
+    std::vector<Result> createOpSendMsgs(std::vector<OpSendMsg>& opSendMsgs,
+                                         const FlushCallback& flushCallback) const override;
+
+    void serialize(std::ostream& os) const override;
+
+   private:
+    MessageAndCallbackBatch batch_;
+    size_t numberOfBatchesSent_ = 0;
+    double averageBatchSize_ = 0;
+};
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar
 #endif /* LIB_BATCHMESSAGECONTAINER_H_ */

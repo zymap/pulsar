@@ -26,14 +26,22 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
       <artifactId>pulsar-io</artifactId>
+<<<<<<< HEAD
       <version>2.3.0</version>
+=======
+      <version>2.7.0-SNAPSHOT</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
   </parent>
 
   <artifactId>pulsar-io-mongo</artifactId>
   <name>Pulsar IO :: MongoDB</name>
 
   <properties>
+<<<<<<< HEAD
     <mongo-driver.version>3.8.2</mongo-driver.version>
+=======
+    <mongo-reactivestreams.version>1.12.0</mongo-reactivestreams.version>
+>>>>>>> f773c602c... Test pr 10 (#27)
   </properties>
 
   <dependencies>
@@ -44,8 +52,13 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
+<<<<<<< HEAD
       <artifactId>mongodb-driver-async</artifactId>
       <version>${mongo-driver.version}</version>
+=======
+      <artifactId>mongodb-driver-reactivestreams</artifactId>
+      <version>${mongo-reactivestreams.version}</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -63,12 +76,15 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+<<<<<<< HEAD
     <dependency>
       <groupId>${project.parent.groupId}</groupId>
       <artifactId>buildtools</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
   </dependencies>
 
   <build>

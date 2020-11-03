@@ -30,6 +30,10 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.websocket.DeploymentException;
 
+<<<<<<< HEAD
+=======
+import lombok.Setter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.common.util.OrderedScheduler;
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.broker.ServiceConfiguration;
@@ -61,8 +65,11 @@ import io.netty.util.concurrent.DefaultThreadFactory;
  */
 public class WebSocketService implements Closeable {
 
+<<<<<<< HEAD
     public static final int MaxTextFrameSize = 1024 * 1024;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     AuthenticationService authenticationService;
     AuthorizationService authorizationService;
     PulsarClient pulsarClient;
@@ -77,6 +84,10 @@ public class WebSocketService implements Closeable {
     private ServiceConfiguration config;
     private ConfigurationCacheService configurationCacheService;
 
+<<<<<<< HEAD
+=======
+    @Setter
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ClusterData localCluster;
     private final ConcurrentOpenHashMap<String, ConcurrentOpenHashSet<ProducerHandler>> topicProducerMap;
     private final ConcurrentOpenHashMap<String, ConcurrentOpenHashSet<ConsumerHandler>> topicConsumerMap;
@@ -101,8 +112,15 @@ public class WebSocketService implements Closeable {
 
         if (isNotBlank(config.getConfigurationStoreServers())) {
             this.globalZkCache = new GlobalZooKeeperCache(getZooKeeperClientFactory(),
+<<<<<<< HEAD
                     (int) config.getZooKeeperSessionTimeoutMillis(), config.getConfigurationStoreServers(),
                     this.orderedExecutor, this.executor);
+=======
+                    (int) config.getZooKeeperSessionTimeoutMillis(),
+                    (int) TimeUnit.MILLISECONDS.toSeconds(config.getZooKeeperSessionTimeoutMillis()),
+                    config.getConfigurationStoreServers(), this.orderedExecutor, this.executor,
+                    config.getZooKeeperCacheExpirySeconds());
+>>>>>>> f773c602c... Test pr 10 (#27)
             try {
                 this.globalZkCache.start();
             } catch (IOException e) {

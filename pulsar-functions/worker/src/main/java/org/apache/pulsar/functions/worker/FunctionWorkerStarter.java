@@ -51,7 +51,11 @@ public class FunctionWorkerStarter {
 
         if (workerArguments.help) {
             commander.usage();
+<<<<<<< HEAD
             System.exit(-1);
+=======
+            System.exit(1);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return;
         }
 
@@ -65,6 +69,7 @@ public class FunctionWorkerStarter {
         final Worker worker = new Worker(workerConfig);
         try {
             worker.start();
+<<<<<<< HEAD
         }catch(Exception e){
             log.error("Failed to start function worker", e);
             worker.stop();
@@ -72,6 +77,15 @@ public class FunctionWorkerStarter {
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("Stopping function worker service ..");
+=======
+        } catch (Throwable th) {
+            log.error("Encountered error in function worker.", th);
+            worker.stop();
+            Runtime.getRuntime().halt(1);
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Stopping function worker service...");
+>>>>>>> f773c602c... Test pr 10 (#27)
             worker.stop();
         }));
     }

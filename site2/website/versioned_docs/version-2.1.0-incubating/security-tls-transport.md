@@ -42,15 +42,23 @@ The first step is to create the certificate for the CA. The CA will be used to s
 Create a directory for your CA, and place [this openssl configuration file](https://github.com/apache/incubator-pulsar/tree/master/site2/website/static/examples/openssl.cnf) in the directory. You may want to modify the default answers for company name and department in the configuration file. Export the location of the CA directory to the environment variable, CA_HOME. The configuration file uses this environment variable to find the rest of the files and directories needed for the CA.
 
 ```bash
+<<<<<<< HEAD
 $ mkdir my-ca
 $ cd my-ca
 $ wget https://raw.githubusercontent.com/apache/pulsar/master/site2/website/static/examples/openssl.cnf
 $ export CA_HOME=$(pwd)
+=======
+mkdir my-ca
+cd my-ca
+wget https://raw.githubusercontent.com/apache/pulsar/master/site2/website/static/examples/openssl.cnf
+export CA_HOME=$(pwd)
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 Create the necessary directories, keys and certs.
 
 ```bash
+<<<<<<< HEAD
 $ mkdir certs crl newcerts private
 $ chmod 700 private/
 $ touch index.txt
@@ -61,6 +69,18 @@ $ openssl req -config openssl.cnf -key private/ca.key.pem \
       -new -x509 -days 7300 -sha256 -extensions v3_ca \
       -out certs/ca.cert.pem
 $ chmod 444 certs/ca.cert.pem
+=======
+mkdir certs crl newcerts private
+chmod 700 private/
+touch index.txt
+echo 1000 > serial
+openssl genrsa -aes256 -out private/ca.key.pem 4096
+chmod 400 private/ca.key.pem
+openssl req -config openssl.cnf -key private/ca.key.pem \
+    -new -x509 -days 7300 -sha256 -extensions v3_ca \
+    -out certs/ca.cert.pem
+chmod 444 certs/ca.cert.pem
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 After answering the question prompts, this will store CA-related files in the `./my-ca` directory. Within that directory:
@@ -83,28 +103,48 @@ The following commands will ask you a few questions and then create the certific
 
 First generate the key.
 ```bash
+<<<<<<< HEAD
 $ openssl genrsa -out broker.key.pem 2048
+=======
+openssl genrsa -out broker.key.pem 2048
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 The broker expects the key to be in [PKCS 8](https://en.wikipedia.org/wiki/PKCS_8) format, so convert it.
 
 ```bash
+<<<<<<< HEAD
 $ openssl pkcs8 -topk8 -inform PEM -outform PEM \
       -in broker.key.pem -out broker.key-pk8.pem -nocrypt
+=======
+openssl pkcs8 -topk8 -inform PEM -outform PEM \
+    -in broker.key.pem -out broker.key-pk8.pem -nocrypt
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 Generate the certificate request...
 
 ```bash
+<<<<<<< HEAD
 $ openssl req -config openssl.cnf \
       -key broker.key.pem -new -sha256 -out broker.csr.pem
+=======
+openssl req -config openssl.cnf \
+    -key broker.key.pem -new -sha256 -out broker.csr.pem
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 ... and sign it with the certificate authority.
 ```bash
+<<<<<<< HEAD
 $ openssl ca -config openssl.cnf -extensions server_cert \
       -days 1000 -notext -md sha256 \
       -in broker.csr.pem -out broker.cert.pem
+=======
+openssl ca -config openssl.cnf -extensions server_cert \
+    -days 1000 -notext -md sha256 \
+    -in broker.csr.pem -out broker.cert.pem
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 At this point, you have a cert, `broker.cert.pem`, and a key, `broker.key-pk8.pem`, which can be used along with `ca.cert.pem` to configure TLS transport encryption for your broker and proxy nodes.

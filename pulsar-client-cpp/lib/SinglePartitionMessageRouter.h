@@ -19,16 +19,26 @@
 #ifndef PULSAR_SINGLE_PARTITION_MESSAGE_ROUTER_HEADER_
 #define PULSAR_SINGLE_PARTITION_MESSAGE_ROUTER_HEADER_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/MessageRoutingPolicy.h>
 #include <include/pulsar/ProducerConfiguration.h>
 #include "Hash.h"
 #include <pulsar/TopicMetadata.h>
 #include "MessageRouterBase.h"
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 namespace pulsar {
 
 class SinglePartitionMessageRouter : public MessageRouterBase {
+=======
+namespace pulsar {
+
+class PULSAR_PUBLIC SinglePartitionMessageRouter : public MessageRouterBase {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     SinglePartitionMessageRouter(const int partitionIndex,
                                  ProducerConfiguration::HashingScheme hashingScheme);
@@ -40,5 +50,8 @@ class SinglePartitionMessageRouter : public MessageRouterBase {
 };
 
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // PULSAR_SINGLE_PARTITION_MESSAGE_ROUTER_HEADER_

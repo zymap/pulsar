@@ -23,9 +23,12 @@ import static org.testng.Assert.assertEquals;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.pulsar.functions.api.utils.JavaSerDe;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 /**
@@ -35,8 +38,11 @@ public class JavaSerDeTest {
 
     @Data
     @AllArgsConstructor
+<<<<<<< HEAD
     @EqualsAndHashCode
     @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static class TestObject implements Serializable {
 
         private int intField;

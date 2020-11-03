@@ -1,6 +1,10 @@
 ---
 id: version-2.1.0-incubating-io-quickstart
+<<<<<<< HEAD
 title: Tutorial: Connecting Pulsar with Apache Cassandra
+=======
+title: "Tutorial: Connecting Pulsar with Apache Cassandra"
+>>>>>>> f773c602c... Test pr 10 (#27)
 sidebar_label: Getting started
 original_id: io-quickstart
 ---
@@ -229,6 +233,13 @@ Pulsar provides the [CLI](reference-cli-tools.md) for running and managing Pulsa
 
 We can run following command to sink a sink connector with type `cassandra` and config file `examples/cassandra-sink.yml`.
 
+<<<<<<< HEAD
+=======
+#### Note
+
+> The `sink-type` parameter of the currently built-in connectors is determined by the setting of the `name` parameter specified in the pulsar-io.yaml file.
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```shell
 bin/pulsar-admin sink create \
     --tenant public \

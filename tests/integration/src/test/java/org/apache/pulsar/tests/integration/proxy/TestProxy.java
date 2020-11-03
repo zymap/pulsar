@@ -25,6 +25,10 @@ import java.util.Collections;
 import lombok.Cleanup;
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.MessageId;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.Schema;
@@ -55,6 +59,10 @@ public class TestProxy extends PulsarTestSuite {
             .withEnv("clusterName", clusterName);
 
         specBuilder.externalService("proxy-via-url", proxyViaURL);
+<<<<<<< HEAD
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         return super.beforeSetupCluster(clusterName, specBuilder);
     }
 
@@ -108,4 +116,29 @@ public class TestProxy extends PulsarTestSuite {
         testProxy(proxyViaURL.getPlainTextServiceUrl(), proxyViaURL.getHttpServiceUrl());
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testProxyRequestBodyRedirect() throws Exception {
+        // See GH issue #5360, this ensures that we properly get a request with a body to be processed
+        final String tenant = "proxy-test-" + randomName(10);
+        final String namespace = tenant + "/ns1";
+        final String topic = "persistent://" + namespace + "/topic1";
+
+        @Cleanup
+        PulsarAdmin admin = PulsarAdmin.builder()
+                .serviceHttpUrl(pulsarCluster.getPlainTextServiceUrl())
+                .build();
+
+        admin.tenants().createTenant(tenant,
+                new TenantInfo(Collections.emptySet(), Collections.singleton(pulsarCluster.getClusterName())));
+
+        admin.namespaces().createNamespace(namespace, Collections.singleton(pulsarCluster.getClusterName()));
+
+        for (int i = 0; i < 10; i++) {
+            // Ensure we the command works even if re-directs happen with a request body
+            admin.topics().createSubscription(topic, "test-" + i, MessageId.earliest);
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

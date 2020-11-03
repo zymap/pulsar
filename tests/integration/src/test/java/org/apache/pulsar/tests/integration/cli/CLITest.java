@@ -18,6 +18,14 @@
  */
 package org.apache.pulsar.tests.integration.cli;
 
+<<<<<<< HEAD
+=======
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
@@ -35,7 +43,10 @@ import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertThat;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -94,6 +105,15 @@ public class CLITest extends PulsarTestSuite {
     public void testTopicTerminationOnTopicsWithoutConnectedConsumers() throws Exception {
         String topicName = "persistent://public/default/test-topic-termination";
         BrokerContainer container = pulsarCluster.getAnyBroker();
+<<<<<<< HEAD
+=======
+        container.execCmd(
+                PulsarCluster.ADMIN_SCRIPT,
+                "topics",
+                "create",
+                topicName);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         ContainerExecResult result = container.execCmd(
             PulsarCluster.CLIENT_SCRIPT,
             "produce",
@@ -160,7 +180,11 @@ public class CLITest extends PulsarTestSuite {
             "schemas",
             "get",
             topicName);
+<<<<<<< HEAD
         assertTrue(result.getStdout().contains("\"type\" : \"STRING\""));
+=======
+        assertTrue(result.getStdout().contains("\"type\": \"STRING\""));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // delete the schema
         result = container.execCmd(
@@ -299,4 +323,46 @@ public class CLITest extends PulsarTestSuite {
         client.close();
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testListNonPersistentTopicsCmd() throws Exception {
+        String persistentTopic = "test-list-non-persistent-topic";
+        ContainerExecResult result = pulsarCluster.runAdminCommandOnAnyBroker("topics", "create", persistentTopic);
+        assertEquals(result.getExitCode(), 0);
+        HttpGet get = new HttpGet(pulsarCluster.getHttpServiceUrl() + "/admin/v2/non-persistent/public/default");
+        try (CloseableHttpClient client = HttpClients.createDefault();
+             CloseableHttpResponse response = client.execute(get)) {
+            assertFalse(EntityUtils.toString(response.getEntity()).contains(persistentTopic));
+        }
+    }
+
+    @Test
+    public void testGenerateDocForModule() throws Exception {
+        String[] moduleNames = {
+                "clusters",
+                "tenants",
+                "brokers",
+                "broker-stats",
+                "namespaces",
+                "topics",
+                "schemas",
+                "bookies",
+                "functions",
+                "ns-isolation-policy",
+                "resource-quotas",
+                "functions",
+                "sources",
+                "sinks"
+        };
+        BrokerContainer container = pulsarCluster.getAnyBroker();
+        for (int i = 0; i < moduleNames.length; i++) {
+            ContainerExecResult result = container.execCmd(
+                    PulsarCluster.ADMIN_SCRIPT,
+                    "documents", "generate", moduleNames[i]);
+            Assert.assertTrue(result.getStdout().contains("------------\n\n# " + moduleNames[i]));
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

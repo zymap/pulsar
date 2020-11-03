@@ -39,7 +39,10 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class DistributedIdGeneratorTest {
 
     private MockZooKeeper zkc;

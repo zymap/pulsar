@@ -35,6 +35,7 @@ import org.apache.pulsar.policies.data.loadbalancer.ResourceUsage;
 import org.apache.pulsar.policies.data.loadbalancer.SystemResourceUsage;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
 public class LookupDataTest {
 
@@ -42,15 +43,29 @@ public class LookupDataTest {
     void withConstructor() {
 		LookupData data = new LookupData("pulsar://localhost:8888", "pulsar://localhost:8884", "http://localhost:8080",
 				"http://localhost:8081");
+=======
+public class LookupDataTest {
+
+    @Test
+    public void withConstructor() {
+        LookupData data = new LookupData("pulsar://localhost:8888", "pulsar://localhost:8884", "http://localhost:8080",
+                                         "http://localhost:8081");
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(data.getBrokerUrl(), "pulsar://localhost:8888");
         assertEquals(data.getHttpUrl(), "http://localhost:8080");
     }
 
     @SuppressWarnings("unchecked")
     @Test
+<<<<<<< HEAD
     void serializeToJsonTest() throws Exception {
 		LookupData data = new LookupData("pulsar://localhost:8888", "pulsar://localhost:8884", "http://localhost:8080",
 				"http://localhost:8081");
+=======
+    public void serializeToJsonTest() throws Exception {
+        LookupData data = new LookupData("pulsar://localhost:8888", "pulsar://localhost:8884", "http://localhost:8080",
+                                         "http://localhost:8081");
+>>>>>>> f773c602c... Test pr 10 (#27)
         ObjectMapper mapper = ObjectMapperFactory.getThreadLocal();
         String json = mapper.writeValueAsString(data);
 
@@ -63,9 +78,15 @@ public class LookupDataTest {
         assertEquals(jsonMap.get("httpUrl"), "http://localhost:8080");
         assertEquals(jsonMap.get("httpUrlTls"), "http://localhost:8081");
     }
+<<<<<<< HEAD
     
     @Test
     void testUrlEncoder() {
+=======
+
+    @Test
+    public void testUrlEncoder() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         final String str = "specialCharacters_+&*%{}() \\/$@#^%";
         final String urlEncoded = Codec.encode(str);
         final String uriEncoded = urlEncoded.replaceAll("//+", "%20");

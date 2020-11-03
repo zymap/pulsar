@@ -22,10 +22,20 @@ import java.util.SortedSet;
 
 import org.apache.pulsar.common.policies.data.BrokerStatus;
 
+<<<<<<< HEAD
 public abstract class AutoFailoverPolicy {
 
     /**
      * Checks to see whether the new namespace ownership should be failed over to the secondary brokers
+=======
+/**
+ * Basic defintion of an auto-failover policy.
+ */
+public abstract class AutoFailoverPolicy {
+
+    /**
+     * Checks to see whether the new namespace ownership should be failed over to the secondary brokers.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param brokerStatus
      * @return
@@ -35,7 +45,11 @@ public abstract class AutoFailoverPolicy {
     public abstract boolean shouldFailoverToSecondary(int totalPrimaryCandidates);
 
     /**
+<<<<<<< HEAD
      * Determine whether a broker is considered available or not
+=======
+     * Determine whether a broker is considered available or not.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param brokerStatus
      * @return

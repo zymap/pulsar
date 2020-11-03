@@ -22,14 +22,23 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 #include <functional>
 #include <boost/date_time/microsec_time_clock.hpp>
 #include <lib/BrokerConsumerStatsImpl.h>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 namespace pulsar {
 class PartitionedBrokerConsumerStatsImpl : public BrokerConsumerStatsImplBase {
+=======
+namespace pulsar {
+class PULSAR_PUBLIC PartitionedBrokerConsumerStatsImpl : public BrokerConsumerStatsImplBase {
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     std::vector<BrokerConsumerStats> statsList_;
     static const std::string DELIMITER;
@@ -87,5 +96,8 @@ class PartitionedBrokerConsumerStatsImpl : public BrokerConsumerStatsImplBase {
 };
 typedef std::shared_ptr<PartitionedBrokerConsumerStatsImpl> PartitionedBrokerConsumerStatsPtr;
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // PULSAR_CPP_BROKERCONSUMERSTATSIMPL_H

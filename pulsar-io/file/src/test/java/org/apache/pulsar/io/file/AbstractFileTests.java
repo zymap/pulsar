@@ -25,7 +25,10 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+<<<<<<< HEAD
 import java.nio.file.Paths;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
@@ -46,12 +49,16 @@ import org.testng.annotations.BeforeMethod;
 
 public abstract class AbstractFileTests {
 
+<<<<<<< HEAD
     public static final String TMP_DIR = "/tmp/foo";
     
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected BlockingQueue<File> workQueue;
     protected BlockingQueue<File> inProcess;
     protected BlockingQueue<File> recentlyProcessed;
     protected BlockingQueue<File> producedFiles;
+<<<<<<< HEAD
     
     protected TestFileGenerator generatorThread; 
     protected FileListingThread listingThread;
@@ -69,15 +76,36 @@ public abstract class AbstractFileTests {
         
         workQueue = Mockito.spy(new LinkedBlockingQueue<>());
         inProcess = Mockito.spy(new LinkedBlockingQueue<>());         
+=======
+
+    protected TestFileGenerator generatorThread;
+    protected FileListingThread listingThread;
+    protected ExecutorService executor;
+
+    protected Path directory;
+
+    @BeforeMethod
+    public void init() throws IOException {
+        // Create the directory we are going to read from
+        directory = Files.createTempDirectory("pulsar-io-file-tests", getPermissions());
+
+        workQueue = Mockito.spy(new LinkedBlockingQueue<>());
+        inProcess = Mockito.spy(new LinkedBlockingQueue<>());
+>>>>>>> f773c602c... Test pr 10 (#27)
         recentlyProcessed = Mockito.spy(new LinkedBlockingQueue<>());
         producedFiles = Mockito.spy(new LinkedBlockingQueue<>());
         executor = Executors.newFixedThreadPool(10);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @AfterMethod
     public void tearDown() throws Exception {
         // Shutdown all of the processing threads
         stopThreads();
+<<<<<<< HEAD
         
         // Delete the directory and all the files
         cleanUp();
@@ -90,6 +118,18 @@ public abstract class AbstractFileTests {
             return;
         }
         
+=======
+
+        // Delete the directory and all the files
+        cleanUp();
+    }
+
+    protected final void cleanUp() throws IOException {
+        if (!Files.exists(directory, LinkOption.NOFOLLOW_LINKS)) {
+            return;
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
            @Override
            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -104,17 +144,26 @@ public abstract class AbstractFileTests {
            }
         });
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected void stopThreads() throws Exception {
         executor.shutdown();
         try {
             if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
                 executor.shutdownNow();
+<<<<<<< HEAD
             } 
+=======
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (InterruptedException e) {
             executor.shutdownNow();
         }
     }
+<<<<<<< HEAD
     
     protected final void generateFiles(int numFiles) throws IOException, InterruptedException, ExecutionException {
         generateFiles(numFiles, 1, TMP_DIR);
@@ -124,15 +173,34 @@ public abstract class AbstractFileTests {
         generateFiles(numFiles, numLines, TMP_DIR);
     }
     
+=======
+
+    protected final void generateFiles(int numFiles) throws IOException, InterruptedException, ExecutionException {
+        generateFiles(numFiles, 1, directory.toString());
+    }
+
+    protected final void generateFiles(int numFiles, int numLines) throws IOException, InterruptedException, ExecutionException {
+        generateFiles(numFiles, numLines, directory.toString());
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected final void generateFiles(int numFiles, int numLines, String directory) throws IOException, InterruptedException, ExecutionException {
         generatorThread = new TestFileGenerator(producedFiles, numFiles, 1, numLines, directory, "prefix", ".txt", getPermissions());
         Future<?> f = executor.submit(generatorThread);
         f.get();
     }
+<<<<<<< HEAD
    
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected static final FileAttribute<Set<PosixFilePermission>> getPermissions() {
         Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
         return PosixFilePermissions.asFileAttribute(perms);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

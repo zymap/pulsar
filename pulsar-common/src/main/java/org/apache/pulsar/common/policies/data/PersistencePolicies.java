@@ -19,7 +19,15 @@
 package org.apache.pulsar.common.policies.data;
 
 import com.google.common.base.MoreObjects;
+<<<<<<< HEAD
 
+=======
+import java.util.Objects;
+
+/**
+ * Configuration of bookkeeper persistence policies.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PersistencePolicies {
     private int bookkeeperEnsemble;
     private int bookkeeperWriteQuorum;
@@ -55,6 +63,14 @@ public class PersistencePolicies {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hash(bookkeeperEnsemble, bookkeeperWriteQuorum,
+                bookkeeperAckQuorum, managedLedgerMaxMarkDeleteRate);
+    }
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof PersistencePolicies) {
             PersistencePolicies other = (PersistencePolicies) obj;

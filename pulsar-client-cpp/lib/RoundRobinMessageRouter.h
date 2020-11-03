@@ -19,6 +19,10 @@
 #ifndef PULSAR_RR_MESSAGE_ROUTER_HEADER_
 #define PULSAR_RR_MESSAGE_ROUTER_HEADER_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/MessageRoutingPolicy.h>
 #include <pulsar/ProducerConfiguration.h>
 #include <pulsar/TopicMetadata.h>
@@ -26,9 +30,14 @@
 #include "Hash.h"
 #include "MessageRouterBase.h"
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 namespace pulsar {
 class RoundRobinMessageRouter : public MessageRouterBase {
+=======
+namespace pulsar {
+class PULSAR_PUBLIC RoundRobinMessageRouter : public MessageRouterBase {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     RoundRobinMessageRouter(ProducerConfiguration::HashingScheme hashingScheme);
     virtual ~RoundRobinMessageRouter();
@@ -40,5 +49,8 @@ class RoundRobinMessageRouter : public MessageRouterBase {
 };
 typedef std::unique_lock<std::mutex> Lock;
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // PULSAR_RR_MESSAGE_ROUTER_HEADER_

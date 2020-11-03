@@ -22,11 +22,17 @@ import org.apache.bookkeeper.common.annotation.InterfaceAudience.LimitedPrivate;
 import org.apache.bookkeeper.common.annotation.InterfaceStability.Unstable;
 
 /**
+<<<<<<< HEAD
  *
  * The Index Entry in OffloadIndexBlock.
  * It consists of the message entry id, the code storage block part id for this message entry,
  * and the offset in code storage block for this message id.
  *
+=======
+ * The Index Entry in OffloadIndexBlock.
+ * It consists of the message entry id, the code storage block part id for this message entry,
+ * and the offset in code storage block for this message id.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 @Unstable
 @LimitedPrivate

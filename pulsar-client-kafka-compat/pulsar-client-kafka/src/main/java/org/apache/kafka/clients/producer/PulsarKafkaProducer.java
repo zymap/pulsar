@@ -19,6 +19,10 @@
 package org.apache.kafka.clients.producer;
 
 import java.nio.charset.StandardCharsets;
+<<<<<<< HEAD
+=======
+import java.time.Duration;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,11 +38,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.kafka.common.Cluster;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+<<<<<<< HEAD
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.pulsar.client.api.CompressionType;
@@ -53,6 +62,27 @@ import org.apache.pulsar.client.kafka.compat.KafkaMessageRouter;
 import org.apache.pulsar.client.kafka.compat.MessageIdUtils;
 import org.apache.pulsar.client.kafka.compat.PulsarClientKafkaConfig;
 import org.apache.pulsar.client.kafka.compat.PulsarProducerKafkaConfig;
+=======
+import org.apache.kafka.common.errors.ProducerFencedException;
+import org.apache.kafka.common.serialization.Serializer;
+import org.apache.pulsar.client.api.ProducerBuilder;
+import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.CompressionType;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.impl.MessageIdImpl;
+import org.apache.pulsar.client.impl.TypedMessageBuilderImpl;
+import org.apache.pulsar.client.kafka.compat.PulsarClientKafkaConfig;
+import org.apache.pulsar.client.kafka.compat.PulsarKafkaSchema;
+import org.apache.pulsar.client.kafka.compat.PulsarProducerKafkaConfig;
+import org.apache.pulsar.client.kafka.compat.KafkaMessageRouter;
+import org.apache.pulsar.client.kafka.compat.KafkaProducerInterceptorWrapper;
+import org.apache.pulsar.client.util.MessageIdUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
 
@@ -61,12 +91,18 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
 
     private final ConcurrentMap<String, org.apache.pulsar.client.api.Producer<byte[]>> producers = new ConcurrentHashMap<>();
 
+<<<<<<< HEAD
     private final Serializer<K> keySerializer;
     private final Serializer<V> valueSerializer;
+=======
+    private final Schema<K> keySchema;
+    private final Schema<V> valueSchema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final Partitioner partitioner;
     private volatile Cluster cluster = Cluster.empty();
 
+<<<<<<< HEAD
     public PulsarKafkaProducer(Map<String, Object> configs) {
         this(configs, null, null);
     }
@@ -106,15 +142,82 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
             this.valueSerializer.configure(producerConfig.originals(), true);
         } else {
             this.valueSerializer = valueSerializer;
+=======
+    private List<ProducerInterceptor<K, V>> interceptors;
+
+    private final Properties properties;
+
+    public PulsarKafkaProducer(Map<String, Object> configs) {
+        this(new ProducerConfig(configs), null, null);
+    }
+
+    public PulsarKafkaProducer(Map<String, Object> configs, Serializer<K> keySerializer,
+                               Serializer<V> valueSerializer) {
+        this(new ProducerConfig(configs), new PulsarKafkaSchema<>(keySerializer), new PulsarKafkaSchema<>(valueSerializer));
+    }
+
+    public PulsarKafkaProducer(Map<String, Object> configs, Schema<K> keySchema, Schema<V> valueSchema) {
+        this(new ProducerConfig(configs), keySchema, valueSchema);
+    }
+
+    public PulsarKafkaProducer(Properties properties) {
+        this(new ProducerConfig(properties), null, null);
+    }
+
+    public PulsarKafkaProducer(Properties properties, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        this(new ProducerConfig(properties), new PulsarKafkaSchema<>(keySerializer), new PulsarKafkaSchema<>(valueSerializer));
+    }
+
+    public PulsarKafkaProducer(Properties properties, Schema<K> keySchema, Schema<V> valueSchema) {
+        this(new ProducerConfig(properties), keySchema, valueSchema);
+    }
+
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    private PulsarKafkaProducer(ProducerConfig producerConfig, Schema<K> keySchema, Schema<V> valueSchema) {
+
+        if (keySchema == null) {
+            Serializer<K> kafkaKeySerializer = producerConfig.getConfiguredInstance(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, Serializer.class);
+            kafkaKeySerializer.configure(producerConfig.originals(), true);
+            this.keySchema = new PulsarKafkaSchema<>(kafkaKeySerializer);
+        } else {
+            this.keySchema = keySchema;
+            producerConfig.ignore(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG);
+        }
+
+        if (valueSchema == null) {
+            Serializer<V> kafkaValueSerializer = producerConfig.getConfiguredInstance(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Serializer.class);
+            kafkaValueSerializer.configure(producerConfig.originals(), false);
+            this.valueSchema = new PulsarKafkaSchema<>(kafkaValueSerializer);
+        } else {
+            this.valueSchema = valueSchema;
+>>>>>>> f773c602c... Test pr 10 (#27)
             producerConfig.ignore(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG);
         }
 
         partitioner = producerConfig.getConfiguredInstance(ProducerConfig.PARTITIONER_CLASS_CONFIG, Partitioner.class);
         partitioner.configure(producerConfig.originals());
 
+<<<<<<< HEAD
         String serviceUrl = producerConfig.getList(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG).get(0);
         try {
             client = PulsarClientKafkaConfig.getClientBuilder(properties).serviceUrl(serviceUrl).build();
+=======
+        this.properties = new Properties();
+        producerConfig.originals().forEach((k, v) -> properties.put(k, v));
+
+        long keepAliveIntervalMs = Long.parseLong(properties.getProperty(ProducerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG, "30000"));
+
+        String serviceUrl = producerConfig.getList(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG).get(0);
+        try {
+            // Support Kafka's ProducerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG in ms.
+            // If passed in value is greater than Integer.MAX_VALUE in second will throw IllegalArgumentException.
+            int keepAliveInterval = Math.toIntExact(keepAliveIntervalMs / 1000);
+            client = PulsarClientKafkaConfig.getClientBuilder(properties).serviceUrl(serviceUrl).keepAliveInterval(keepAliveInterval, TimeUnit.SECONDS).build();
+        } catch (ArithmeticException e) {
+            String errorMessage = String.format("Invalid value %d for 'connections.max.idle.ms'. Please use a value smaller than %d000 milliseconds.", keepAliveIntervalMs, Integer.MAX_VALUE);
+            logger.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (PulsarClientException e) {
             throw new RuntimeException(e);
         }
@@ -135,6 +238,7 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
 
         pulsarProducerBuilder.messageRouter(new KafkaMessageRouter(lingerMs));
 
+<<<<<<< HEAD
         int sendTimeoutMillis = Integer.parseInt(properties.getProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "60000"));
         pulsarProducerBuilder.sendTimeout(sendTimeoutMillis, TimeUnit.MILLISECONDS);
 
@@ -146,6 +250,46 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
         // Kafka, on the other hand, still blocks for "max.block.ms" time and then gives error.
         boolean shouldBlockPulsarProducer = sendTimeoutMillis > 0 || blockOnBufferFull;
         pulsarProducerBuilder.blockIfQueueFull(shouldBlockPulsarProducer);
+=======
+        int sendTimeoutMillis = Integer.parseInt(properties.getProperty(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "30000"));
+        pulsarProducerBuilder.sendTimeout(sendTimeoutMillis, TimeUnit.MILLISECONDS);
+
+        // Kafka blocking semantic when blockOnBufferFull=false is different from Pulsar client
+        // Pulsar throws error immediately when the queue is full and blockIfQueueFull=false
+        // Kafka, on the other hand, still blocks for "max.block.ms" time and then gives error.
+        Boolean sendTimeOutConfigured = sendTimeoutMillis > 0;
+        boolean shouldBlockPulsarProducer = Boolean.getBoolean(properties
+                .getProperty(PulsarProducerKafkaConfig.BLOCK_IF_PRODUCER_QUEUE_FULL, sendTimeOutConfigured.toString()));
+        pulsarProducerBuilder.blockIfQueueFull(shouldBlockPulsarProducer);
+
+        interceptors = (List) producerConfig.getConfiguredInstances(
+                ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, ProducerInterceptor.class);
+    }
+
+    @Override
+    public void initTransactions() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void beginTransaction() throws ProducerFencedException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> map, String s) throws ProducerFencedException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void commitTransaction() throws ProducerFencedException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void abortTransaction() throws ProducerFencedException {
+        throw new UnsupportedOperationException();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -169,7 +313,11 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
         }
 
         TypedMessageBuilder<byte[]> messageBuilder = producer.newMessage();
+<<<<<<< HEAD
         int messageSize = buildMessage(messageBuilder, record);;
+=======
+        int messageSize = buildMessage(messageBuilder, record);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         CompletableFuture<RecordMetadata> future = new CompletableFuture<>();
         messageBuilder.sendAsync().thenAccept((messageId) -> {
@@ -223,11 +371,32 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
         }
     }
 
+<<<<<<< HEAD
     private org.apache.pulsar.client.api.Producer<byte[]> createNewProducer(String topic) {
         try {
             // Add the partitions info for the new topic
             cluster = cluster.withPartitions(readPartitionsInfo(topic));
             return pulsarProducerBuilder.clone().topic(topic).create();
+=======
+    @Override
+    public void close(Duration duration) {
+        close(duration.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    private org.apache.pulsar.client.api.Producer<byte[]> createNewProducer(String topic) {
+        try {
+            // Add the partitions info for the new topic
+            synchronized (this){
+                cluster = cluster.withPartitions(readPartitionsInfo(topic));
+            }
+            List<org.apache.pulsar.client.api.ProducerInterceptor> wrappedInterceptors = interceptors.stream()
+                    .map(interceptor -> new KafkaProducerInterceptorWrapper(interceptor, keySchema, valueSchema, topic))
+                    .collect(Collectors.toList());
+            return pulsarProducerBuilder.clone()
+                    .topic(topic)
+                    .intercept(wrappedInterceptors.toArray(new org.apache.pulsar.client.api.ProducerInterceptor[wrappedInterceptors.size()]))
+                    .create();
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (PulsarClientException e) {
             throw new RuntimeException(e);
         }
@@ -259,11 +428,22 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
             builder.eventTime(record.timestamp());
         }
 
+<<<<<<< HEAD
         byte[] value = valueSerializer.serialize(record.topic(), record.value());
         builder.value(value);
 
         if (record.partition() != null) {
             // Partition was explicitely set on the record
+=======
+        if (valueSchema instanceof PulsarKafkaSchema) {
+            ((PulsarKafkaSchema<V>) valueSchema).setTopic(record.topic());
+        }
+        byte[] value = valueSchema.encode(record.value());
+        builder.value(value);
+
+        if (record.partition() != null) {
+            // Partition was explicitly set on the record
+>>>>>>> f773c602c... Test pr 10 (#27)
             builder.property(KafkaMessageRouter.PARTITION_ID, record.partition().toString());
         } else {
             // Get the partition id from the partitioner
@@ -276,12 +456,23 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
 
     private String getKey(String topic, K key) {
         // If key is a String, we can use it as it is, otherwise, serialize to byte[] and encode in base64
+<<<<<<< HEAD
         if (keySerializer instanceof StringSerializer) {
             return (String) key;
         } else {
             byte[] keyBytes = keySerializer.serialize(topic, key);
             return Base64.getEncoder().encodeToString(keyBytes);
         }
+=======
+        if (key instanceof String) {
+            return (String) key;
+        }
+        if (keySchema instanceof PulsarKafkaSchema) {
+            ((PulsarKafkaSchema) keySchema).setTopic(topic);
+        }
+        byte[] keyBytes = keySchema.encode(key);
+        return Base64.getEncoder().encodeToString(keyBytes);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private RecordMetadata getRecordMetadata(String topic, TypedMessageBuilder<byte[]> msgBuilder, MessageId messageId,
@@ -294,6 +485,13 @@ public class PulsarKafkaProducer<K, V> implements Producer<K, V> {
 
         TopicPartition tp = new TopicPartition(topic, partition);
         TypedMessageBuilderImpl<byte[]> mb = (TypedMessageBuilderImpl<byte[]>) msgBuilder;
+<<<<<<< HEAD
         return new RecordMetadata(tp, offset, 0, mb.getPublishTime(), 0, mb.hasKey() ? mb.getKey().length() : 0, size);
     }
+=======
+        return new RecordMetadata(tp, offset, 0L, mb.getPublishTime(), 0L, mb.hasKey() ? mb.getKey().length() : 0, size);
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(PulsarKafkaProducer.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

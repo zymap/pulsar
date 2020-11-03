@@ -45,5 +45,14 @@
       <outputDirectory>offloaders</outputDirectory>
       <fileMode>644</fileMode>
     </file>
+<<<<<<< HEAD
+=======
+
+    <file>
+      <source>${basedir}/../../tiered-storage/file-system/target/tiered-storage-file-system-${project.version}.nar</source>
+      <outputDirectory>offloaders</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+>>>>>>> f773c602c... Test pr 10 (#27)
   </files>
 </assembly>

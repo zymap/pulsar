@@ -20,14 +20,22 @@ package org.apache.pulsar.io.netty.server;
 
 import org.apache.pulsar.io.netty.NettySource;
 import org.apache.pulsar.io.netty.NettySourceConfig;
+<<<<<<< HEAD
 import org.junit.Test;
+=======
+import org.testng.annotations.Test;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+=======
+import static org.testng.Assert.assertNotNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Tests for Netty Tcp or Udp Server
@@ -86,7 +94,11 @@ public class NettyServerTest {
         assertNotNull(nettyTcpServer);
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerConstructorWhenHostIsNotSet() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -96,7 +108,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerConstructorWhenPortIsNotSet() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -106,7 +122,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerConstructorWhenNumberOfThreadsIsNotSet() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -116,7 +136,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = NullPointerException.class)
+=======
+    @Test(expectedExceptions = NullPointerException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerConstructorWhenNettyTcpSourceIsNotSet() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -126,7 +150,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerWhenHostIsSetAsBlank() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -137,7 +165,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerWhenPortIsSetAsZero() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -148,7 +180,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerWhenPortIsSetLowerThan1024() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))
@@ -159,7 +195,11 @@ public class NettyServerTest {
                 .build();
     }
 
+<<<<<<< HEAD
     @Test(expected = IllegalArgumentException.class)
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testNettyTcpServerWhenNumberOfThreadsIsSetAsZero() {
         new NettyServer.Builder()
                 .setType(NettyServer.Type.valueOf(TCP))

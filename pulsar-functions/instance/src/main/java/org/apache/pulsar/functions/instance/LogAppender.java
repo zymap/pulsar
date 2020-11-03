@@ -21,7 +21,10 @@ package org.apache.pulsar.functions.instance;
 import org.apache.logging.log4j.core.*;
 import org.apache.pulsar.client.api.CompressionType;
 import org.apache.pulsar.client.api.Producer;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.ProducerBuilder;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.PulsarClient;
 
 import java.io.Serializable;
@@ -47,7 +50,14 @@ public class LogAppender implements Appender {
 
     @Override
     public void append(LogEvent logEvent) {
+<<<<<<< HEAD
         producer.sendAsync(logEvent.getMessage().getFormattedMessage().getBytes());
+=======
+        producer.newMessage()
+                .value(logEvent.getMessage().getFormattedMessage().getBytes())
+                .property("loglevel", logEvent.getLevel().name())
+                .sendAsync();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

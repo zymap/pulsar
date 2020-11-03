@@ -26,6 +26,10 @@ package org.apache.bookkeeper.test;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+<<<<<<< HEAD
+=======
+import java.util.List;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.bookkeeper.zookeeper.ZooKeeperClient;
@@ -44,18 +48,29 @@ public class ZooKeeperUtil {
     static final Logger LOG = LoggerFactory.getLogger(ZooKeeperUtil.class);
 
     // ZooKeeper related variables
+<<<<<<< HEAD
     protected final static Integer zooKeeperPort = PortManager.nextFreePort();
     private final InetSocketAddress zkaddr;
+=======
+    protected int zooKeeperPort;
+    private InetSocketAddress zkaddr;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     protected ZooKeeperServer zks;
     protected ZooKeeper zkc; // zookeeper client
     protected NIOServerCnxnFactory serverFactory;
     protected File ZkTmpDir;
+<<<<<<< HEAD
     private final String connectString;
 
     public ZooKeeperUtil() {
         zkaddr = new InetSocketAddress(zooKeeperPort);
         connectString = "localhost:" + zooKeeperPort;
+=======
+    private String connectString;
+
+    public ZooKeeperUtil() {
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public ZooKeeper getZooKeeperClient() {
@@ -80,6 +95,13 @@ public class ZooKeeperUtil {
         serverFactory.configure(zkaddr, 100);
         serverFactory.startup(zks);
 
+<<<<<<< HEAD
+=======
+        zooKeeperPort = serverFactory.getLocalPort();
+        zkaddr = new InetSocketAddress(zooKeeperPort);
+        connectString = "localhost:" + zooKeeperPort;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         boolean b = ClientBase.waitForServerUp(getZooKeeperConnectString(), ClientBase.CONNECTION_TIMEOUT);
         LOG.debug("Server up: " + b);
 
@@ -92,6 +114,38 @@ public class ZooKeeperUtil {
         zkc.create("/ledgers/available", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
 
+<<<<<<< HEAD
+=======
+    public void startServer(String path) throws Exception {
+        LOG.debug("Running ZK server");
+        // ServerStats.registerAsConcrete();
+        ClientBase.setupTestEnv();
+        ZkTmpDir = File.createTempFile("zookeeper", "test");
+        ZkTmpDir.delete();
+        ZkTmpDir.mkdir();
+
+        zks = new ZooKeeperServer(ZkTmpDir, ZkTmpDir, ZooKeeperServer.DEFAULT_TICK_TIME);
+        serverFactory = new NIOServerCnxnFactory();
+        serverFactory.configure(zkaddr, 100);
+        serverFactory.startup(zks);
+
+        zooKeeperPort = serverFactory.getLocalPort();
+        connectString = "localhost:" + zooKeeperPort;
+        boolean b = ClientBase.waitForServerUp(getZooKeeperConnectString(), ClientBase.CONNECTION_TIMEOUT);
+        LOG.debug("Server up: " + b);
+
+        // create a zookeeper client
+        LOG.debug("Instantiate ZK Client");
+        zkc = ZooKeeperClient.newBuilder().connectString(getZooKeeperConnectString()).build();
+        if (path != "") {
+            zkc.create(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        }
+        // initialize the zk client with values
+        zkc.create(path + "/ledgers", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        zkc.create(path +"/ledgers/available", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @SuppressWarnings("deprecation")
     public void sleepServer(final int seconds, final CountDownLatch l) throws InterruptedException, IOException {
         Thread[] allthreads = new Thread[Thread.activeCount()];

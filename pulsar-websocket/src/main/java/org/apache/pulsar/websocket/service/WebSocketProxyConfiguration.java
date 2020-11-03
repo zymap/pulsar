@@ -28,6 +28,14 @@ import org.apache.pulsar.common.configuration.PulsarConfiguration;
 
 import com.google.common.collect.Sets;
 
+<<<<<<< HEAD
+=======
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class WebSocketProxyConfiguration implements PulsarConfiguration {
 
     // Number of threads used by Proxy server
@@ -57,6 +65,7 @@ public class WebSocketProxyConfiguration implements PulsarConfiguration {
     private String configurationStoreServers;
     // Zookeeper session timeout in milliseconds
     private long zooKeeperSessionTimeoutMillis = 30000;
+<<<<<<< HEAD
 
     // Port to use to server HTTP request
     private Integer webServicePort = 8080;
@@ -64,6 +73,19 @@ public class WebSocketProxyConfiguration implements PulsarConfiguration {
     private Integer webServicePortTls;
     // Hostname or IP address the service binds on, default is 0.0.0.0.
     private String bindAddress;
+=======
+    // ZooKeeper cache expiry time in seconds
+    private int zooKeeperCacheExpirySeconds = 300;
+
+    // Port to use to server HTTP request
+    private Optional<Integer> webServicePort = Optional.of(8080);
+    // Port to use to server HTTPS request
+    private Optional<Integer> webServicePortTls = Optional.empty();
+    // Hostname or IP address the service binds on, default is 0.0.0.0.
+    private String bindAddress;
+    // The maximum size of a text message during parsing in WebSocket proxy
+    private int webSocketMaxTextFrameSize = 1024 * 1024;
+>>>>>>> f773c602c... Test pr 10 (#27)
     // --- Authentication ---
     // Enable authentication
     private boolean authenticationEnabled;
@@ -93,7 +115,11 @@ public class WebSocketProxyConfiguration implements PulsarConfiguration {
     private int webSocketNumIoThreads = Runtime.getRuntime().availableProcessors();
 
     // Number of threads to use in HTTP server
+<<<<<<< HEAD
     private int numHttpServerThreads = Runtime.getRuntime().availableProcessors();
+=======
+    private int numHttpServerThreads = Math.max(6, Runtime.getRuntime().availableProcessors());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     // Number of connections per Broker in Pulsar Client used in WebSocket proxy
     private int webSocketConnectionsPerBroker = Runtime.getRuntime().availableProcessors();
@@ -119,6 +145,7 @@ public class WebSocketProxyConfiguration implements PulsarConfiguration {
     // Specify whether Client certificates are required for TLS
     // Reject the Connection if the Client Certificate is not trusted.
     private boolean tlsRequireTrustedClientCertOnConnect = false;
+<<<<<<< HEAD
 
     private Properties properties = new Properties();
 
@@ -407,4 +434,10 @@ public class WebSocketProxyConfiguration implements PulsarConfiguration {
     public void setTlsRequireTrustedClientCertOnConnect(boolean tlsRequireTrustedClientCertOnConnect) {
         this.tlsRequireTrustedClientCertOnConnect = tlsRequireTrustedClientCertOnConnect;
     }
+=======
+    // Tls cert refresh duration in seconds (set 0 to check on every new connection) 
+    private long tlsCertRefreshCheckDurationSec = 300;
+
+    private Properties properties = new Properties();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

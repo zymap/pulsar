@@ -19,28 +19,50 @@
 
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 typedef struct _pulsar_reader_configuration pulsar_reader_configuration_t;
 
 typedef void (*pulsar_reader_listener)(pulsar_reader_t *reader, pulsar_message_t *msg, void *ctx);
 
+<<<<<<< HEAD
 pulsar_reader_configuration_t *pulsar_reader_configuration_create();
 
 void pulsar_reader_configuration_free(pulsar_reader_configuration_t *configuration);
+=======
+PULSAR_PUBLIC pulsar_reader_configuration_t *pulsar_reader_configuration_create();
+
+PULSAR_PUBLIC void pulsar_reader_configuration_free(pulsar_reader_configuration_t *configuration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A message listener enables your application to configure how to process
  * messages. A listener will be called in order for every message received.
  */
+<<<<<<< HEAD
 void pulsar_reader_configuration_set_reader_listener(pulsar_reader_configuration_t *configuration,
                                                      pulsar_reader_listener listener, void *ctx);
 
 int pulsar_reader_configuration_has_reader_listener(pulsar_reader_configuration_t *configuration);
+=======
+PULSAR_PUBLIC void pulsar_reader_configuration_set_reader_listener(
+    pulsar_reader_configuration_t *configuration, pulsar_reader_listener listener, void *ctx);
+
+PULSAR_PUBLIC int pulsar_reader_configuration_has_reader_listener(
+    pulsar_reader_configuration_t *configuration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Sets the size of the reader receive queue.
@@ -63,6 +85,7 @@ int pulsar_reader_configuration_has_reader_listener(pulsar_reader_configuration_
  * @param size
  *            the new receiver queue size value
  */
+<<<<<<< HEAD
 void pulsar_reader_configuration_set_receiver_queue_size(pulsar_reader_configuration_t *configuration,
                                                          int size);
 
@@ -85,6 +108,30 @@ void pulsar_reader_configuration_set_read_compacted(pulsar_reader_configuration_
 int pulsar_reader_configuration_is_read_compacted(pulsar_reader_configuration_t *configuration);
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC void pulsar_reader_configuration_set_receiver_queue_size(
+    pulsar_reader_configuration_t *configuration, int size);
+
+PULSAR_PUBLIC int pulsar_reader_configuration_get_receiver_queue_size(
+    pulsar_reader_configuration_t *configuration);
+
+PULSAR_PUBLIC void pulsar_reader_configuration_set_reader_name(pulsar_reader_configuration_t *configuration,
+                                                               const char *readerName);
+
+PULSAR_PUBLIC const char *pulsar_reader_configuration_get_reader_name(
+    pulsar_reader_configuration_t *configuration);
+
+PULSAR_PUBLIC void pulsar_reader_configuration_set_subscription_role_prefix(
+    pulsar_reader_configuration_t *configuration, const char *subscriptionRolePrefix);
+
+PULSAR_PUBLIC const char *pulsar_reader_configuration_get_subscription_role_prefix(
+    pulsar_reader_configuration_t *configuration);
+
+PULSAR_PUBLIC void pulsar_reader_configuration_set_read_compacted(
+    pulsar_reader_configuration_t *configuration, int readCompacted);
+
+PULSAR_PUBLIC int pulsar_reader_configuration_is_read_compacted(pulsar_reader_configuration_t *configuration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #ifdef __cplusplus
 }

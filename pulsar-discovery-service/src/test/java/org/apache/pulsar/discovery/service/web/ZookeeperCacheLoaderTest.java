@@ -39,7 +39,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
+<<<<<<< HEAD
 import com.google.common.collect.Sets;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class ZookeeperCacheLoaderTest extends BaseZKStarterTest {
 
@@ -63,7 +66,11 @@ public class ZookeeperCacheLoaderTest extends BaseZKStarterTest {
     @Test
     public void testZookeeperCacheLoader() throws InterruptedException, KeeperException, Exception {
 
+<<<<<<< HEAD
         DiscoveryZooKeeperClientFactoryImpl.zk = mockZookKeeper;
+=======
+        DiscoveryZooKeeperClientFactoryImpl.zk = mockZooKeeper;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         @SuppressWarnings("resource")
         ZookeeperCacheLoader zkLoader = new ZookeeperCacheLoader(new DiscoveryZooKeeperClientFactoryImpl(), "", 30_000);

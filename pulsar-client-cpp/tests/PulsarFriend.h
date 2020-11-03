@@ -18,7 +18,13 @@
  */
 
 #include <lib/ProducerImpl.h>
+<<<<<<< HEAD
 #include <lib/ConsumerImpl.h>
+=======
+#include <lib/PartitionedProducerImpl.h>
+#include <lib/ConsumerImpl.h>
+#include <lib/ClientImpl.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <string>
 
 using std::string;
@@ -37,6 +43,24 @@ class PulsarFriend {
         return std::static_pointer_cast<ProducerStatsImpl>(producerImpl->producerStatsBasePtr_);
     }
 
+<<<<<<< HEAD
+=======
+    static std::vector<ProducerImpl::MessageQueue*> getProducerMessageQueue(Producer producer,
+                                                                            ConsumerTopicType type) {
+        ProducerImplBasePtr producerBaseImpl = producer.impl_;
+        if (type == Partitioned) {
+            std::vector<ProducerImpl::MessageQueue*> queues;
+            for (const auto& producer :
+                 std::static_pointer_cast<PartitionedProducerImpl>(producerBaseImpl)->producers_) {
+                queues.emplace_back(&producer->pendingMessagesQueue_);
+            }
+            return queues;
+        } else {
+            return {&std::static_pointer_cast<ProducerImpl>(producerBaseImpl)->pendingMessagesQueue_};
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     template <typename T>
     static unsigned long sum(std::map<T, unsigned long> m) {
         unsigned long sum = 0;
@@ -56,11 +80,27 @@ class PulsarFriend {
         return *producerImpl;
     }
 
+<<<<<<< HEAD
+=======
+    static void producerFailMessages(Producer producer, Result result) {
+        producer.producerFailMessages(result);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static ConsumerImpl& getConsumerImpl(Consumer consumer) {
         ConsumerImpl* consumerImpl = static_cast<ConsumerImpl*>(consumer.impl_.get());
         return *consumerImpl;
     }
 
+<<<<<<< HEAD
+=======
+    static std::shared_ptr<ClientImpl> getClientImplPtr(Client client) { return client.impl_; }
+
+    static void setNegativeAckEnabled(Consumer consumer, bool enabled) {
+        consumer.impl_->setNegativeAcknowledgeEnabledForTesting(enabled);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static ClientConnectionWeakPtr getClientConnection(HandlerBase& handler) { return handler.connection_; }
 
     static boost::posix_time::ptime& getFirstBackoffTime(Backoff& backoff) {

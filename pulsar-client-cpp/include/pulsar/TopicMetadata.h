@@ -19,13 +19,21 @@
 #ifndef TOPIC_METADATA_HPP_
 #define TOPIC_METADATA_HPP_
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 /**
  * Metadata of a topic that can be used for message routing.
  */
+<<<<<<< HEAD
 class TopicMetadata {
+=======
+class PULSAR_PUBLIC TopicMetadata {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~TopicMetadata() {}
 
@@ -33,6 +41,9 @@ class TopicMetadata {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* TOPIC_METADATA_HPP_ */

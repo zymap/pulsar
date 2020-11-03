@@ -20,17 +20,30 @@ package org.apache.pulsar.common.compression;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+<<<<<<< HEAD
+=======
+import io.netty.buffer.ByteBuf;
+import io.netty.util.concurrent.FastThreadLocal;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+<<<<<<< HEAD
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.util.concurrent.FastThreadLocal;
 
 /**
  * ZLib Compression
+=======
+import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
+
+/**
+ * ZLib Compression.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class CompressionCodecZLib implements CompressionCodec {
 
@@ -64,7 +77,11 @@ public class CompressionCodecZLib implements CompressionCodec {
         int length = source.readableBytes();
 
         int sizeEstimate = (int) Math.ceil(source.readableBytes() * 1.001) + 14;
+<<<<<<< HEAD
         ByteBuf compressed = PooledByteBufAllocator.DEFAULT.heapBuffer(sizeEstimate);
+=======
+        ByteBuf compressed = PulsarByteBufAllocator.DEFAULT.heapBuffer(sizeEstimate);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         int offset = 0;
         if (source.hasArray()) {
@@ -98,7 +115,11 @@ public class CompressionCodecZLib implements CompressionCodec {
 
     @Override
     public ByteBuf decode(ByteBuf encoded, int uncompressedLength) throws IOException {
+<<<<<<< HEAD
         ByteBuf uncompressed = PooledByteBufAllocator.DEFAULT.heapBuffer(uncompressedLength, uncompressedLength);
+=======
+        ByteBuf uncompressed = PulsarByteBufAllocator.DEFAULT.heapBuffer(uncompressedLength, uncompressedLength);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         int len = encoded.readableBytes();
 

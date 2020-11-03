@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.websocket;
 
+<<<<<<< HEAD
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Closeable;
@@ -30,17 +31,38 @@ import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+=======
+import com.google.common.base.Splitter;
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.authentication.AuthenticationDataHttps;
 import org.apache.pulsar.broker.authentication.AuthenticationDataSource;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.naming.TopicName;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.util.Codec;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.google.common.base.Splitter;
+=======
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static com.google.common.base.Preconditions.checkArgument;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public abstract class AbstractWebSocketHandler extends WebSocketAdapter implements Closeable {
 
@@ -137,13 +159,21 @@ public abstract class AbstractWebSocketHandler extends WebSocketAdapter implemen
 
     public void close(WebSocketError error) {
         log.warn("[{}] Closing WebSocket session for topic {} - code: [{}], reason: [{}]",
+<<<<<<< HEAD
                 getSession().getRemoteAddress(), topic, error);
+=======
+                getSession().getRemoteAddress(), topic, error.getCode(), error.getDescription());
+>>>>>>> f773c602c... Test pr 10 (#27)
         getSession().close(error.getCode(), error.getDescription());
     }
 
     public void close(WebSocketError error, String message) {
         log.warn("[{}] Closing WebSocket session for topic {} - code: [{}], reason: [{}]",
+<<<<<<< HEAD
                 getSession().getRemoteAddress(), topic, error, message);
+=======
+                getSession().getRemoteAddress(), topic, error.getCode(), error.getDescription() + ": " + message);
+>>>>>>> f773c602c... Test pr 10 (#27)
         getSession().close(error.getCode(), error.getDescription() + ": " + message);
     }
 
@@ -181,7 +211,22 @@ public abstract class AbstractWebSocketHandler extends WebSocketAdapter implemen
         final String domain = parts.get(domainIndex);
         final NamespaceName namespace = isV2Format ? NamespaceName.get(parts.get(5), parts.get(6)) :
                 NamespaceName.get( parts.get(4), parts.get(5), parts.get(6));
+<<<<<<< HEAD
         final String name = parts.get(7);
+=======
+        //The topic name which contains slashes is also split ， so it needs to be jointed
+        int startPosition = 7;
+        boolean isConsumer = "consumer".equals(parts.get(2)) || "consumer".equals(parts.get(3));
+        int endPosition = isConsumer ? parts.size() -1 : parts.size();
+        StringBuilder topicName = new StringBuilder(parts.get(startPosition));
+        while (++startPosition < endPosition) {
+            if(StringUtils.isEmpty(parts.get(startPosition))){
+               continue;
+            }
+            topicName.append("/").append(parts.get(startPosition));
+        }
+        final String name = Codec.decode(topicName.toString());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         return TopicName.get(domain, namespace, name);
     }

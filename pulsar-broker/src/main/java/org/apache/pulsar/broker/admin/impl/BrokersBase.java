@@ -22,6 +22,10 @@ import static org.apache.pulsar.broker.service.BrokerService.BROKER_SERVICE_CONF
 
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -29,21 +33,38 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
+=======
+import javax.ws.rs.DELETE;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+<<<<<<< HEAD
+=======
+import javax.ws.rs.core.Response;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.bookkeeper.conf.ClientConfiguration;
 import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.broker.ServiceConfiguration;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.broker.PulsarService.State;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.admin.AdminResource;
 import org.apache.pulsar.broker.loadbalance.LoadManager;
 import org.apache.pulsar.broker.namespace.NamespaceService;
 import org.apache.pulsar.broker.service.BrokerService;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.broker.service.Subscription;
+import org.apache.pulsar.broker.service.Topic;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.web.RestException;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageId;
@@ -66,16 +87,36 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+<<<<<<< HEAD
 
+=======
+/**
+ * Broker admin base.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class BrokersBase extends AdminResource {
     private static final Logger LOG = LoggerFactory.getLogger(BrokersBase.class);
     private int serviceConfigZkVersion = -1;
 
     @GET
     @Path("/{cluster}")
+<<<<<<< HEAD
     @ApiOperation(value = "Get the list of active brokers (web service addresses) in the cluster.", response = String.class, responseContainer = "Set")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
             @ApiResponse(code = 404, message = "Cluster doesn't exist") })
+=======
+    @ApiOperation(
+        value = "Get the list of active brokers (web service addresses) in the cluster."
+                + "If authorization is not enabled, any cluster name is valid.",
+        response = String.class,
+        responseContainer = "Set")
+    @ApiResponses(
+        value = {
+            @ApiResponse(code = 307, message = "Current broker doesn't serve this cluster"),
+            @ApiResponse(code = 401, message = "Authentication required"),
+            @ApiResponse(code = 403, message = "This operation requires super-user access"),
+            @ApiResponse(code = 404, message = "Cluster does not exist: cluster={clustername}") })
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Set<String> getActiveBrokers(@PathParam("cluster") String cluster) throws Exception {
         validateSuperUserAccess();
         validateClusterOwnership(cluster);
@@ -84,18 +125,33 @@ public class BrokersBase extends AdminResource {
             // Add Native brokers
             return pulsar().getLocalZkCache().getChildren(LoadManager.LOADBALANCE_BROKERS_ROOT);
         } catch (Exception e) {
+<<<<<<< HEAD
             LOG.error(String.format("[%s] Failed to get active broker list: cluster=%s", clientAppId(), cluster), e);
+=======
+            LOG.error("[{}] Failed to get active broker list: cluster={}", clientAppId(), cluster, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             throw new RestException(e);
         }
     }
 
     @GET
+<<<<<<< HEAD
     @Path("/{cluster}/{broker}/ownedNamespaces")
     @ApiOperation(value = "Get the list of namespaces served by the specific broker", response = NamespaceOwnershipStatus.class, responseContainer = "Map")
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
             @ApiResponse(code = 404, message = "Cluster doesn't exist") })
     public Map<String, NamespaceOwnershipStatus> getOwnedNamespaes(@PathParam("cluster") String cluster,
             @PathParam("broker") String broker) throws Exception {
+=======
+    @Path("/{clusterName}/{broker-webserviceurl}/ownedNamespaces")
+    @ApiOperation(value = "Get the list of namespaces served by the specific broker", response = NamespaceOwnershipStatus.class, responseContainer = "Map")
+    @ApiResponses(value = {
+        @ApiResponse(code = 307, message = "Current broker doesn't serve the cluster"),
+        @ApiResponse(code = 403, message = "Don't have admin permission"),
+        @ApiResponse(code = 404, message = "Cluster doesn't exist") })
+    public Map<String, NamespaceOwnershipStatus> getOwnedNamespaces(@PathParam("clusterName") String cluster,
+            @PathParam("broker-webserviceurl") String broker) throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         validateSuperUserAccess();
         validateClusterOwnership(cluster);
         validateBrokerName(broker);
@@ -113,20 +169,54 @@ public class BrokersBase extends AdminResource {
     @POST
     @Path("/configuration/{configName}/{configValue}")
     @ApiOperation(value = "Update dynamic serviceconfiguration into zk only. This operation requires Pulsar super-user privileges.")
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 204, message = "Service configuration updated successfully"),
             @ApiResponse(code = 403, message = "You don't have admin permission to update service-configuration"),
             @ApiResponse(code = 404, message = "Configuration not found"),
             @ApiResponse(code = 412, message = "Configuration can't be updated dynamically") })
+=======
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "Service configuration updated successfully"),
+        @ApiResponse(code = 403, message = "You don't have admin permission to update service-configuration"),
+        @ApiResponse(code = 404, message = "Configuration not found"),
+        @ApiResponse(code = 412, message = "Invalid dynamic-config value"),
+        @ApiResponse(code = 500, message = "Internal server error")})
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void updateDynamicConfiguration(@PathParam("configName") String configName, @PathParam("configValue") String configValue) throws Exception {
         validateSuperUserAccess();
         updateDynamicConfigurationOnZk(configName, configValue);
     }
 
+<<<<<<< HEAD
     @GET
     @Path("/configuration/values")
     @ApiOperation(value = "Get value of all dynamic configurations' value overridden on local config")
     @ApiResponses(value = { @ApiResponse(code = 404, message = "Configuration not found") })
     public Map<String, String> getAllDynamicConfigurations() throws Exception {
+=======
+    @DELETE
+    @Path("/configuration/{configName}")
+    @ApiOperation(value = "Delete dynamic serviceconfiguration into zk only. This operation requires Pulsar super-user privileges.")
+    @ApiResponses(value = { @ApiResponse(code = 204, message = "Service configuration updated successfully"),
+            @ApiResponse(code = 403, message = "You don't have admin permission to update service-configuration"),
+            @ApiResponse(code = 412, message = "Invalid dynamic-config value"),
+            @ApiResponse(code = 500, message = "Internal server error") })
+    public void deleteDynamicConfiguration(@PathParam("configName") String configName) throws Exception {
+        validateSuperUserAccess();
+        deleteDynamicConfigurationOnZk(configName);
+    }
+
+    @GET
+    @Path("/configuration/values")
+    @ApiOperation(value = "Get value of all dynamic configurations' value overridden on local config")
+    @ApiResponses(value = {
+        @ApiResponse(code = 403, message = "You don't have admin permission to view configuration"),
+        @ApiResponse(code = 404, message = "Configuration not found"),
+        @ApiResponse(code = 500, message = "Internal server error")})
+    public Map<String, String> getAllDynamicConfigurations() throws Exception {
+        validateSuperUserAccess();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         ZooKeeperDataCache<Map<String, String>> dynamicConfigurationCache = pulsar().getBrokerService()
                 .getDynamicConfigurationCache();
         Map<String, String> configurationMap = null;
@@ -146,10 +236,29 @@ public class BrokersBase extends AdminResource {
     @GET
     @Path("/configuration")
     @ApiOperation(value = "Get all updatable dynamic configurations's name")
+<<<<<<< HEAD
     public List<String> getDynamicConfigurationName() {
         return BrokerService.getDynamicConfiguration();
     }
 
+=======
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "You don't have admin permission to get configuration")})
+    public List<String> getDynamicConfigurationName() {
+        validateSuperUserAccess();
+        return BrokerService.getDynamicConfiguration();
+    }
+
+    @GET
+    @Path("/configuration/runtime")
+    @ApiOperation(value = "Get all runtime configurations. This operation requires Pulsar super-user privileges.")
+    @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission") })
+    public Map<String, String> getRuntimeConfiguration() {
+        validateSuperUserAccess();
+        return pulsar().getBrokerService().getRuntimeConfiguration();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * if {@link ServiceConfiguration}-field is allowed to be modified dynamically, update configuration-map into zk, so
      * all other brokers get the watch and can see the change and take appropriate action on the change.
@@ -202,6 +311,7 @@ public class BrokersBase extends AdminResource {
     @GET
     @Path("/internal-configuration")
     @ApiOperation(value = "Get the internal configuration data", response = InternalConfigurationData.class)
+<<<<<<< HEAD
     public InternalConfigurationData getInternalConfigurationData() {
         ClientConfiguration conf = new ClientConfiguration();
         return new InternalConfigurationData(
@@ -209,14 +319,62 @@ public class BrokersBase extends AdminResource {
             pulsar().getConfiguration().getConfigurationStoreServers(),
             conf.getZkLedgersRootPath(),
             pulsar().getWorkerConfig().map(wc -> wc.getStateStorageServiceUrl()).orElse(null));
+=======
+    @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission") })
+    public InternalConfigurationData getInternalConfigurationData() {
+        validateSuperUserAccess();
+        return pulsar().getInternalConfigurationData();
+    }
+
+    @GET
+    @Path("/backlog-quota-check")
+    @ApiOperation(value = "An REST endpoint to trigger backlogQuotaCheck")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Everything is OK"),
+            @ApiResponse(code = 403, message = "Don't have admin permission"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    public void backlogQuotaCheck(@Suspended AsyncResponse asyncResponse) {
+        validateSuperUserAccess();
+        pulsar().getBrokerService().executor().execute(()->{
+            try {
+                pulsar().getBrokerService().monitorBacklogQuota();
+                asyncResponse.resume(Response.noContent().build());
+            } catch (Exception e) {
+                LOG.error("trigger backlogQuotaCheck fail", e);
+                asyncResponse.resume(new RestException(e));
+            }
+        });
+    }
+
+    @GET
+    @Path("/ready")
+    @ApiOperation(value = "Check if the broker is fully initialized")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Broker is ready"),
+            @ApiResponse(code = 500, message = "Broker is not ready") })
+    public void isReady(@Suspended AsyncResponse asyncResponse) {
+        if (pulsar().getState() == State.Started) {
+            asyncResponse.resume(Response.ok("ok").build());
+        } else {
+            asyncResponse.resume(Response.serverError().build());
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
     @Path("/health")
     @ApiOperation(value = "Run a healthcheck against the broker")
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Everything is OK"),
                             @ApiResponse(code = 403, message = "Don't have admin permission"),
                             @ApiResponse(code = 404, message = "Cluster doesn't exist") })
+=======
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Everything is OK"),
+        @ApiResponse(code = 403, message = "Don't have admin permission"),
+        @ApiResponse(code = 404, message = "Cluster doesn't exist"),
+        @ApiResponse(code = 500, message = "Internal server error")})
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void healthcheck(@Suspended AsyncResponse asyncResponse) throws Exception {
         validateSuperUserAccess();
         String heartbeatNamespace = NamespaceService.getHeartbeatNamespace(
@@ -226,6 +384,23 @@ public class BrokersBase extends AdminResource {
         PulsarClient client = pulsar().getClient();
 
         String messageStr = UUID.randomUUID().toString();
+<<<<<<< HEAD
+=======
+        // create non-partitioned topic manually and close the previous reader if present.
+        try {
+            pulsar().getBrokerService().getTopic(topic, true).get().ifPresent(t -> {
+                for (Subscription value : t.getSubscriptions().values()) {
+                    try {
+                        value.deleteForcefully();
+                    } catch (Exception e) {
+                        LOG.warn("Failed to delete previous subscription {} for health check", value.getName(), e);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            LOG.warn("Failed to try to delete subscriptions for health check", e);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         CompletableFuture<Producer<String>> producerFuture =
             client.newProducer(Schema.STRING).topic(topic).createAsync();
         CompletableFuture<Reader<String>> readerFuture = client.newReader(Schema.STRING)
@@ -297,5 +472,37 @@ public class BrokersBase extends AdminResource {
                         });
             });
     }
+<<<<<<< HEAD
+=======
+
+    private synchronized void deleteDynamicConfigurationOnZk(String configName) {
+        try {
+            if (BrokerService.isDynamicConfiguration(configName)) {
+                ZooKeeperDataCache<Map<String, String>> dynamicConfigurationCache = pulsar().getBrokerService()
+                        .getDynamicConfigurationCache();
+                Map<String, String> configurationMap = dynamicConfigurationCache.get(BROKER_SERVICE_CONFIGURATION_PATH)
+                        .orElse(null);
+                if (configurationMap != null && configurationMap.containsKey(configName)) {
+                    configurationMap.remove(configName);
+                    byte[] content = ObjectMapperFactory.getThreadLocal().writeValueAsBytes(configurationMap);
+                    dynamicConfigurationCache.invalidate(BROKER_SERVICE_CONFIGURATION_PATH);
+                    serviceConfigZkVersion = localZk()
+                            .setData(BROKER_SERVICE_CONFIGURATION_PATH, content, serviceConfigZkVersion).getVersion();
+                }
+                LOG.info("[{}] Deleted Service configuration {}", clientAppId(), configName);
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("[{}] Can't update non-dynamic configuration {}", clientAppId(), configName);
+                }
+                throw new RestException(Status.PRECONDITION_FAILED, " Can't update non-dynamic configuration");
+            }
+        } catch (RestException re) {
+            throw re;
+        } catch (Exception ie) {
+            LOG.error("[{}] Failed to update configuration {}, {}", clientAppId(), configName, ie.getMessage(), ie);
+            throw new RestException(ie);
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 

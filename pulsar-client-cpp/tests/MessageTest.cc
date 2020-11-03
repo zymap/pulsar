@@ -47,8 +47,13 @@ TEST(MessageTest, testMessageContents) {
 TEST(MessageTest, testAllocatedContents) {
     MessageBuilder msgBuilder;
     std::string str = "content";
+<<<<<<< HEAD
     char* content = new char[str.size()];
     strcpy(content, str.c_str());
+=======
+    char* content = new char[str.length() + 1];
+    strncpy(content, str.c_str(), str.length());
+>>>>>>> f773c602c... Test pr 10 (#27)
     msgBuilder.setAllocatedContent(content, str.length());
     Message msg = msgBuilder.build();
     ASSERT_FALSE(strncmp("content", (char*)msg.getData(), msg.getLength()));

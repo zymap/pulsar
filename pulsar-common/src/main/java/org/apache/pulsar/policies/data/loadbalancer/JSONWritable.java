@@ -18,10 +18,16 @@
  */
 package org.apache.pulsar.policies.data.loadbalancer;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Helper class used to conveniently convert a data class to a JSON.
@@ -30,7 +36,11 @@ public class JSONWritable {
 
     /**
      * Get the JSON of this object as a byte[].
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return A byte[] of this object's JSON.
      * @throws JsonProcessingException
      */
@@ -41,7 +51,11 @@ public class JSONWritable {
 
     /**
      * Get the JSON of this object as a String.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return A String of this object's JSON.
      * @throws JsonProcessingException
      */

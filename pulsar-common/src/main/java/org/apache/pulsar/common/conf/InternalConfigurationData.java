@@ -21,11 +21,23 @@ package org.apache.pulsar.common.conf;
 import com.google.common.base.MoreObjects;
 import java.util.Objects;
 
+<<<<<<< HEAD
+=======
+/**
+ * Internal configuration data.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class InternalConfigurationData {
 
     private String zookeeperServers;
     private String configurationStoreServers;
+<<<<<<< HEAD
     private String ledgersRootPath;
+=======
+    @Deprecated
+    private String ledgersRootPath;
+    private String bookkeeperMetadataServiceUri;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private String stateStorageServiceUrl;
 
     public InternalConfigurationData() {
@@ -34,10 +46,18 @@ public class InternalConfigurationData {
     public InternalConfigurationData(String zookeeperServers,
                                      String configurationStoreServers,
                                      String ledgersRootPath,
+<<<<<<< HEAD
+=======
+                                     String bookkeeperMetadataServiceUri,
+>>>>>>> f773c602c... Test pr 10 (#27)
                                      String stateStorageServiceUrl) {
         this.zookeeperServers = zookeeperServers;
         this.configurationStoreServers = configurationStoreServers;
         this.ledgersRootPath = ledgersRootPath;
+<<<<<<< HEAD
+=======
+        this.bookkeeperMetadataServiceUri = bookkeeperMetadataServiceUri;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.stateStorageServiceUrl = stateStorageServiceUrl;
     }
 
@@ -49,10 +69,22 @@ public class InternalConfigurationData {
         return configurationStoreServers;
     }
 
+<<<<<<< HEAD
+=======
+    /** @deprecated */
+    @Deprecated
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String getLedgersRootPath() {
         return ledgersRootPath;
     }
 
+<<<<<<< HEAD
+=======
+    public String getBookkeeperMetadataServiceUri() {
+        return bookkeeperMetadataServiceUri;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String getStateStorageServiceUrl() {
         return stateStorageServiceUrl;
     }
@@ -66,12 +98,24 @@ public class InternalConfigurationData {
         return Objects.equals(zookeeperServers, other.zookeeperServers)
             && Objects.equals(configurationStoreServers, other.configurationStoreServers)
             && Objects.equals(ledgersRootPath, other.ledgersRootPath)
+<<<<<<< HEAD
+=======
+            && Objects.equals(bookkeeperMetadataServiceUri, other.bookkeeperMetadataServiceUri)
+>>>>>>> f773c602c... Test pr 10 (#27)
             && Objects.equals(stateStorageServiceUrl, other.stateStorageServiceUrl);
     }
 
     @Override
     public int hashCode() {
+<<<<<<< HEAD
         return Objects.hash(zookeeperServers, configurationStoreServers, ledgersRootPath, stateStorageServiceUrl);
+=======
+        return Objects.hash(zookeeperServers,
+                configurationStoreServers,
+                ledgersRootPath,
+                bookkeeperMetadataServiceUri,
+                stateStorageServiceUrl);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -80,6 +124,10 @@ public class InternalConfigurationData {
             .add("zookeeperServers", zookeeperServers)
             .add("configurationStoreServers", configurationStoreServers)
             .add("ledgersRootPath", ledgersRootPath)
+<<<<<<< HEAD
+=======
+            .add("bookkeeperMetadataServiceUri", bookkeeperMetadataServiceUri)
+>>>>>>> f773c602c... Test pr 10 (#27)
             .add("stateStorageServiceUrl", stateStorageServiceUrl)
             .toString();
     }

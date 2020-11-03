@@ -19,6 +19,10 @@
 #include <pulsar/MessageBuilder.h>
 
 #include <memory>
+<<<<<<< HEAD
+=======
+#include <stdexcept>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #include "MessageImpl.h"
 #include "SharedBuffer.h"
@@ -28,6 +32,10 @@
 DECLARE_LOG_OBJECT()
 
 #include "ObjectPool.h"
+<<<<<<< HEAD
+=======
+#include "TimeUtils.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 using namespace pulsar;
 
@@ -94,6 +102,15 @@ MessageBuilder& MessageBuilder::setPartitionKey(const std::string& partitionKey)
     return *this;
 }
 
+<<<<<<< HEAD
+=======
+MessageBuilder& MessageBuilder::setOrderingKey(const std::string& orderingKey) {
+    checkMetadata();
+    impl_->metadata.set_ordering_key(orderingKey);
+    return *this;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 MessageBuilder& MessageBuilder::setEventTimestamp(uint64_t eventTimestamp) {
     checkMetadata();
     impl_->metadata.set_event_time(eventTimestamp);
@@ -102,13 +119,30 @@ MessageBuilder& MessageBuilder::setEventTimestamp(uint64_t eventTimestamp) {
 
 MessageBuilder& MessageBuilder::setSequenceId(int64_t sequenceId) {
     if (sequenceId < 0) {
+<<<<<<< HEAD
         throw "sequenceId needs to be >= 0";
+=======
+        throw std::invalid_argument("sequenceId needs to be >= 0");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     checkMetadata();
     impl_->metadata.set_sequence_id(sequenceId);
     return *this;
 }
 
+<<<<<<< HEAD
+=======
+MessageBuilder& MessageBuilder::setDeliverAfter(std::chrono::milliseconds delay) {
+    return setDeliverAt(TimeUtils::currentTimeMillis() + delay.count());
+}
+
+MessageBuilder& MessageBuilder::setDeliverAt(uint64_t deliveryTimestamp) {
+    checkMetadata();
+    impl_->metadata.set_deliver_at_time(deliveryTimestamp);
+    return *this;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 MessageBuilder& MessageBuilder::setReplicationClusters(const std::vector<std::string>& clusters) {
     checkMetadata();
     google::protobuf::RepeatedPtrField<std::string> r(clusters.begin(), clusters.end());

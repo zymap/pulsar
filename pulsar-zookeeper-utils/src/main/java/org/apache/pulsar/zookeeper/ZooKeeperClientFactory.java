@@ -39,7 +39,13 @@ public interface ZooKeeperClientFactory {
     /**
      * Return a future yielding a connected ZooKeeper client
      *
+<<<<<<< HEAD
      * @param conf
+=======
+     * @param serverList
+     * @param sessionType
+     * @param zkSessionTimeoutMillis
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      */
     CompletableFuture<ZooKeeper> create(String serverList, SessionType sessionType, int zkSessionTimeoutMillis);

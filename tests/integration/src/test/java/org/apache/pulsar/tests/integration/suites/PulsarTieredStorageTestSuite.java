@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.tests.integration.suites;
 
+<<<<<<< HEAD
 import static java.util.stream.Collectors.joining;
 
 import java.util.stream.Stream;
@@ -25,14 +26,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.tests.integration.containers.BrokerContainer;
 import org.apache.pulsar.tests.integration.containers.S3Container;
 import org.apache.pulsar.tests.integration.topologies.PulsarCluster;
+=======
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.tests.integration.containers.BrokerContainer;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.tests.integration.topologies.PulsarClusterSpec;
 import org.apache.pulsar.tests.integration.topologies.PulsarClusterTestBase;
 import org.testng.ITest;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+<<<<<<< HEAD
 @Slf4j
 public class PulsarTieredStorageTestSuite extends PulsarClusterTestBase implements ITest {
+=======
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
+
+@Slf4j
+public abstract class PulsarTieredStorageTestSuite extends PulsarClusterTestBase implements ITest {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     protected static final int ENTRIES_PER_LEDGER = 1024;
 
@@ -49,6 +64,7 @@ public class PulsarTieredStorageTestSuite extends PulsarClusterTestBase implemen
             .clusterName(clusterName)
             .build();
 
+<<<<<<< HEAD
         log.info("Setting up cluster {} with {} bookies, {} brokers",
                 spec.clusterName(), spec.numBookies(), spec.numBrokers());
 
@@ -65,6 +81,9 @@ public class PulsarTieredStorageTestSuite extends PulsarClusterTestBase implemen
         pulsarCluster.start();
 
         log.info("Cluster {} is setup", spec.clusterName());
+=======
+        setupCluster(spec);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterSuite
@@ -77,4 +96,17 @@ public class PulsarTieredStorageTestSuite extends PulsarClusterTestBase implemen
     public String getTestName() {
         return "tiered-storage-test-suite";
     }
+<<<<<<< HEAD
+=======
+
+    protected abstract Map<String, String> getEnv();
+
+    @Override
+    protected void beforeStartCluster() throws Exception {
+        super.beforeStartCluster();
+        for (BrokerContainer brokerContainer : pulsarCluster.getBrokers()) {
+            getEnv().forEach(brokerContainer::withEnv);
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

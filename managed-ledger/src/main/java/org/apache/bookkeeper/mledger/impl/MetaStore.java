@@ -22,6 +22,10 @@ import java.util.List;
 import org.apache.bookkeeper.mledger.ManagedLedgerException.MetaStoreException;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedCursorInfo;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.metadata.api.Stat;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Interface that describes the operations that the ManagedLedger need to do on the metadata store.
@@ -29,6 +33,7 @@ import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo;
 public interface MetaStore {
 
     @SuppressWarnings("checkstyle:javadoctype")
+<<<<<<< HEAD
     interface Stat {
         int getVersion();
         long getCreationTimestamp();
@@ -36,6 +41,8 @@ public interface MetaStore {
     }
 
     @SuppressWarnings("checkstyle:javadoctype")
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     interface UpdateLedgersIdsCallback {
         void updateLedgersIdsComplete(MetaStoreException status, Stat stat);
     }
@@ -64,12 +71,20 @@ public interface MetaStore {
      *            the name of the ManagedLedger
      * @param mlInfo
      *            managed ledger info
+<<<<<<< HEAD
      * @param version
+=======
+     * @param stat
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            version object associated with current state
      * @param callback
      *            callback object
      */
+<<<<<<< HEAD
     void asyncUpdateLedgerIds(String ledgerName, ManagedLedgerInfo mlInfo, Stat version,
+=======
+    void asyncUpdateLedgerIds(String ledgerName, ManagedLedgerInfo mlInfo, Stat stat,
+>>>>>>> f773c602c... Test pr 10 (#27)
             MetaStoreCallback<Void> callback);
 
     /**
@@ -98,12 +113,20 @@ public interface MetaStore {
      *            the name of the ManagedLedger
      * @param cursorName
      * @param info
+<<<<<<< HEAD
      * @param version
+=======
+     * @param stat
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param callback
      *            the callback
      * @throws MetaStoreException
      */
+<<<<<<< HEAD
     void asyncUpdateCursorInfo(String ledgerName, String cursorName, ManagedCursorInfo info, Stat version,
+=======
+    void asyncUpdateCursorInfo(String ledgerName, String cursorName, ManagedCursorInfo info, Stat stat,
+>>>>>>> f773c602c... Test pr 10 (#27)
             MetaStoreCallback<Void> callback);
 
     /**

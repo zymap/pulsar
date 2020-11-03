@@ -102,12 +102,22 @@ RUN curl -L -O https://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.gz && \
     rm -rf /libtool-2.4.6.tar.gz /libtool-2.4.6
 
 # Compile log4cxx
+<<<<<<< HEAD
 RUN git clone https://github.com/apache/logging-log4cxx.git && \
     cd logging-log4cxx && \
     ./autogen.sh && \
     CXXFLAGS=-fPIC ./configure && \
     make && make install && \
     rm -rf /logging-log4cxx
+=======
+RUN curl -O -L https://github.com/apache/logging-log4cxx/archive/v0.11.0.tar.gz && \
+    tar xvfz v0.11.0.tar.gz && \
+    cd logging-log4cxx-0.11.0 && \
+    ./autogen.sh && \
+    CXXFLAGS=-fPIC ./configure && \
+    make && make install && \
+    rm -rf /v0.11.0.tar.gz /logging-log4cxx-0.11.0
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Compile expat
 RUN curl -O -L  https://github.com/libexpat/libexpat/archive/R_2_2_0.tar.gz && \
@@ -149,7 +159,22 @@ RUN curl -O -L https://github.com/facebook/zstd/releases/download/v1.3.7/zstd-1.
     make install && \
     rm -rf /zstd-1.3.7 /zstd-1.3.7.tar.gz
 
+<<<<<<< HEAD
 RUN pip install twine
+=======
+# Snappy
+RUN curl -O -L https://github.com/google/snappy/releases/download/1.1.3/snappy-1.1.3.tar.gz && \
+    tar xvfz snappy-1.1.3.tar.gz && \
+    cd snappy-1.1.3 && \
+    CXXFLAGS="-fPIC -O3" ./configure && \
+    make && make install && \
+    rm -rf /snappy-1.1.3 /snappy-1.1.3.tar.gz
+
+RUN pip install twine
+RUN pip install fastavro
+RUN pip install six
+RUN pip install enum34
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 
 ENV PYTHON_INCLUDE_DIR /opt/python/${PYTHON_SPEC}/include

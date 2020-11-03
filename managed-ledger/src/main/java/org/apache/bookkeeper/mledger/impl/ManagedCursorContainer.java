@@ -21,15 +21,25 @@ package org.apache.bookkeeper.mledger.impl;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Lists;
+<<<<<<< HEAD
+=======
+import org.apache.bookkeeper.mledger.ManagedCursor;
+import org.apache.bookkeeper.mledger.Position;
+import org.apache.commons.lang3.tuple.Pair;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.locks.StampedLock;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.Position;
 import org.apache.commons.lang3.tuple.Pair;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Contains all the cursors for a ManagedLedger.
@@ -45,7 +55,11 @@ import org.apache.commons.lang3.tuple.Pair;
  * care about ledgers to be deleted.
  *
  */
+<<<<<<< HEAD
 class ManagedCursorContainer implements Iterable<ManagedCursor> {
+=======
+public class ManagedCursorContainer implements Iterable<ManagedCursor> {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private static class Item {
         final ManagedCursor cursor;
@@ -59,10 +73,19 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
         }
     }
 
+<<<<<<< HEAD
     private final ArrayList<Item> heap = Lists.newArrayList();
 
     // Maps a cursor to its position in the heap
     private final ConcurrentMap<String, Item> cursors = new ConcurrentSkipListMap<String, Item>();
+=======
+    // Used to keep track of slowest cursor. Contains all of all the cursors except for non-durable cursors
+    // Since we do need to keep track of non-durable cursors.
+    private final ArrayList<Item> heap = Lists.newArrayList();
+
+    // Maps a cursor to its position in the heap
+    private final ConcurrentMap<String, Item> cursors = new ConcurrentSkipListMap<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final StampedLock rwLock = new StampedLock();
 
@@ -72,8 +95,17 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
             // Append a new entry at the end of the list
             Item item = new Item(cursor, heap.size());
             cursors.put(cursor.getName(), item);
+<<<<<<< HEAD
             heap.add(item);
             siftUp(item);
+=======
+
+            // don't need to add non-durable cursors
+            if (cursor.isDurable()) {
+                heap.add(item);
+                siftUp(item);
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } finally {
             rwLock.unlockWrite(stamp);
         }
@@ -94,12 +126,23 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
         try {
             Item item = cursors.remove(name);
 
+<<<<<<< HEAD
             // Move the item to the right end of the heap to be removed
             Item lastItem = heap.get(heap.size() - 1);
             swap(item, lastItem);
             heap.remove(item.idx);
             // Update the heap
             siftDown(lastItem);
+=======
+            if (item.cursor.isDurable()) {
+                // Move the item to the right end of the heap to be removed
+                Item lastItem = heap.get(heap.size() - 1);
+                swap(item, lastItem);
+                heap.remove(item.idx);
+                // Update the heap
+                siftDown(lastItem);
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } finally {
             rwLock.unlockWrite(stamp);
         }
@@ -122,6 +165,7 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
                 return null;
             }
 
+<<<<<<< HEAD
             PositionImpl previousSlowestConsumer = heap.get(0).position;
 
             // When the cursor moves forward, we need to push it toward the
@@ -136,6 +180,26 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
 
             PositionImpl newSlowestConsumer = heap.get(0).position;
             return Pair.of(previousSlowestConsumer, newSlowestConsumer);
+=======
+
+            if (item.cursor.isDurable()) {
+                PositionImpl previousSlowestConsumer = heap.get(0).position;
+
+                // When the cursor moves forward, we need to push it toward the
+                // bottom of the tree and push it up if a reset was done
+
+                item.position = (PositionImpl) newPosition;
+                if (item.idx == 0 || getParent(item).position.compareTo(item.position) <= 0) {
+                    siftDown(item);
+                } else {
+                    siftUp(item);
+                }
+
+                PositionImpl newSlowestConsumer = heap.get(0).position;
+                    return Pair.of(previousSlowestConsumer, newSlowestConsumer);
+            }
+            return null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         } finally {
             rwLock.unlockWrite(stamp);
         }
@@ -164,8 +228,37 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
         }
     }
 
+<<<<<<< HEAD
     public boolean isEmpty() {
         long stamp = rwLock.tryOptimisticRead();
+=======
+    /**
+     *  Check whether there are any cursors
+     * @return true is there are no cursors and false if there are
+     */
+    public boolean isEmpty() {
+        long stamp = rwLock.tryOptimisticRead();
+        boolean isEmpty = cursors.isEmpty();
+        if (!rwLock.validate(stamp)) {
+            // Fallback to read lock
+            stamp = rwLock.readLock();
+            try {
+                isEmpty = cursors.isEmpty();
+            } finally {
+                rwLock.unlockRead(stamp);
+            }
+        }
+
+        return isEmpty;
+    }
+
+    /**
+     * Check whether that are any durable cursors
+     * @return true if there are durable cursors and false if there are not
+     */
+    public boolean hasDurableCursors() {
+        long stamp = rwLock.tryOptimisticRead();
+>>>>>>> f773c602c... Test pr 10 (#27)
         boolean isEmpty = heap.isEmpty();
         if (!rwLock.validate(stamp)) {
             // Fallback to read lock
@@ -177,7 +270,11 @@ class ManagedCursorContainer implements Iterable<ManagedCursor> {
             }
         }
 
+<<<<<<< HEAD
         return isEmpty;
+=======
+        return !isEmpty;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

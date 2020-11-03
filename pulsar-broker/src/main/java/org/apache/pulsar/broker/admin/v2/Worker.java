@@ -18,19 +18,35 @@
  */
 package org.apache.pulsar.broker.admin.v2;
 
+<<<<<<< HEAD
+=======
+import com.sun.org.apache.xpath.internal.operations.Bool;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.broker.admin.AdminResource;
 import org.apache.pulsar.common.functions.WorkerInfo;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.io.ConnectorDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.worker.WorkerService;
 import org.apache.pulsar.functions.worker.rest.api.WorkerImpl;
 
 import javax.ws.rs.GET;
+<<<<<<< HEAD
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+=======
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +80,11 @@ public class Worker extends AdminResource implements Supplier<WorkerService> {
     @Path("/cluster")
     @Produces(MediaType.APPLICATION_JSON)
     public List<WorkerInfo> getCluster() {
+<<<<<<< HEAD
         return worker.getCluster();
+=======
+        return worker.getCluster(clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -79,7 +99,11 @@ public class Worker extends AdminResource implements Supplier<WorkerService> {
     @Path("/cluster/leader")
     @Produces(MediaType.APPLICATION_JSON)
     public WorkerInfo getClusterLeader() {
+<<<<<<< HEAD
         return worker.getClusterLeader();
+=======
+        return worker.getClusterLeader(clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -94,6 +118,53 @@ public class Worker extends AdminResource implements Supplier<WorkerService> {
     @Path("/assignments")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Collection<String>> getAssignments() {
+<<<<<<< HEAD
         return worker.getAssignments();
+=======
+        return worker.getAssignments(clientAppId());
+    }
+
+    @GET
+    @ApiOperation(
+            value = "Fetches a list of supported Pulsar IO connectors currently running in cluster mode",
+            response = List.class
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "The requester doesn't have admin permissions"),
+            @ApiResponse(code = 400, message = "Invalid request"),
+            @ApiResponse(code = 408, message = "Request timeout")
+    })
+    @Path("/connectors")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ConnectorDefinition> getConnectorsList() throws IOException {
+        return worker.getListOfConnectors(clientAppId());
+    }
+
+    @PUT
+    @ApiOperation(
+            value = "Triggers a rebalance of functions to workers"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "The requester doesn't have admin permissions"),
+            @ApiResponse(code = 400, message = "Invalid request"),
+            @ApiResponse(code = 408, message = "Request timeout")
+    })
+    @Path("/rebalance")
+    public void rebalance() {
+        worker.rebalance(uri.getRequestUri(), clientAppId());
+    }
+
+    @GET
+    @ApiOperation(
+            value = "Checks if this node is the leader and is ready to service requests",
+            response = Boolean.class
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 503, message = "Worker service is not running")
+    })
+    @Path("/cluster/leader/ready")
+    public Boolean isLeaderReady() {
+        return worker.isLeaderReady(clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

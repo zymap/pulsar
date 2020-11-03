@@ -19,17 +19,29 @@
 #ifndef _PULSAR_BACKOFF_HEADER_
 #define _PULSAR_BACKOFF_HEADER_
 #include <boost/date_time/posix_time/posix_time.hpp>
+<<<<<<< HEAD
 #include <stdlib.h> /* srand, rand */
 #include <algorithm>
 #include <time.h> /* time */
 
 #pragma GCC visibility push(default)
+=======
+#include <boost/random/mersenne_twister.hpp>
+#include <stdlib.h> /* srand, rand */
+#include <algorithm>
+#include <time.h> /* time */
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
 typedef boost::posix_time::time_duration TimeDuration;
 
+<<<<<<< HEAD
 class Backoff {
+=======
+class PULSAR_PUBLIC Backoff {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     Backoff(const TimeDuration&, const TimeDuration&, const TimeDuration&);
     TimeDuration next();
@@ -41,12 +53,20 @@ class Backoff {
     TimeDuration next_;
     TimeDuration mandatoryStop_;
     boost::posix_time::ptime firstBackoffTime_;
+<<<<<<< HEAD
     bool mandatoryStopMade_;
     unsigned int randomSeed_;
+=======
+    boost::random::mt19937 rng_;
+    bool mandatoryStopMade_;
+>>>>>>> f773c602c... Test pr 10 (#27)
     friend class PulsarFriend;
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  //_PULSAR_BACKOFF_HEADER_

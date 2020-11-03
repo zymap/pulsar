@@ -22,6 +22,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
 
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -83,12 +87,24 @@ public class AuthenticationService implements Closeable {
 
     public String authenticateHttpRequest(HttpServletRequest request) throws AuthenticationException {
         // Try to validate with any configured provider
+<<<<<<< HEAD
+=======
+        AuthenticationException authenticationException = null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         AuthenticationDataSource authData = new AuthenticationDataHttps(request);
         for (AuthenticationProvider provider : providers.values()) {
             try {
                 return provider.authenticate(authData);
             } catch (AuthenticationException e) {
+<<<<<<< HEAD
                 // Ignore the exception because we don't know which authentication method is expected here.
+=======
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Authentication failed for provider " + provider.getAuthMethodName() + ": " + e.getMessage(), e);
+                }
+                // Store the exception so we can throw it later instead of a generic one
+                authenticationException = e;
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
 
@@ -98,13 +114,36 @@ public class AuthenticationService implements Closeable {
                 return anonymousUserRole;
             }
             // If at least a provider was configured, then the authentication needs to be provider
+<<<<<<< HEAD
             throw new AuthenticationException("Authentication required");
+=======
+            if (authenticationException != null) {
+                throw authenticationException;
+            } else {
+                throw new AuthenticationException("Authentication required");
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             // No authentication required
             return "<none>";
         }
     }
 
+<<<<<<< HEAD
+=======
+    public AuthenticationProvider getAuthenticationProvider(String authMethodName) {
+        return providers.get(authMethodName);
+    }
+
+    // called when authn enabled, but no authentication provided
+    public Optional<String> getAnonymousUserRole() {
+        if (StringUtils.isNotBlank(anonymousUserRole)) {
+            return Optional.of(anonymousUserRole);
+        }
+        return Optional.empty();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public void close() throws IOException {
         for (AuthenticationProvider provider : providers.values()) {

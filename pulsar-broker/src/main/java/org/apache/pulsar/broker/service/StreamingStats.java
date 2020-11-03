@@ -64,8 +64,14 @@ public class StreamingStats {
         statsStream.writePair("msgRateOut", stats.msgRateOut);
         statsStream.writePair("msgThroughputOut", stats.msgThroughputOut);
         statsStream.writePair("msgRateRedeliver", stats.msgRateRedeliver);
+<<<<<<< HEAD
 
         if (PulsarApi.CommandSubscribe.SubType.Shared.equals(subType)) {
+=======
+        statsStream.writePair("avgMessagesPerEntry", stats.avgMessagesPerEntry);
+
+        if (Subscription.isIndividualAckMode(subType)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             statsStream.writePair("unackedMessages", stats.unackedMessages);
             statsStream.writePair("blockedConsumerOnUnackedMsgs", stats.blockedConsumerOnUnackedMsgs);
         }

@@ -20,7 +20,13 @@ package org.apache.pulsar.zookeeper;
 
 import java.io.Closeable;
 import java.util.concurrent.Executors;
+<<<<<<< HEAD
 import java.util.concurrent.ScheduledExecutorService;
+=======
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 
 import org.apache.zookeeper.AsyncCallback.StatCallback;
@@ -43,12 +49,23 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable, Closeable {
 
     public interface ShutdownService {
+<<<<<<< HEAD
+=======
+        default void run() {
+            shutdown(0);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         void shutdown(int exitCode);
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ZooKeeperSessionWatcher.class);
 
+<<<<<<< HEAD
     private final ShutdownService shutdownService;
+=======
+    private final ZookeeperSessionExpiredHandler sessionExpiredHandler;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final ZooKeeper zk;
     // Maximum time to wait for ZK session to be re-connected to quorum (set to 5/6 of SessionTimeout)
     private final long monitorTimeoutMillis;
@@ -60,17 +77,32 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
     private long disconnectedAt = 0;
     private boolean shuttingDown = false;
     private volatile boolean zkOperationCompleted = false;
+<<<<<<< HEAD
 
     public ZooKeeperSessionWatcher(ZooKeeper zk, long zkSessionTimeoutMillis, ShutdownService shutdownService) {
         this.zk = zk;
         this.monitorTimeoutMillis = zkSessionTimeoutMillis * 5 / 6;
         this.tickTimeMillis = zkSessionTimeoutMillis / 15;
         this.shutdownService = shutdownService;
+=======
+    private ScheduledFuture<?> task;
+
+    public ZooKeeperSessionWatcher(ZooKeeper zk, long zkSessionTimeoutMillis, ZookeeperSessionExpiredHandler sessionExpiredHandler) {
+        this.zk = zk;
+        this.monitorTimeoutMillis = zkSessionTimeoutMillis * 5 / 6;
+        this.tickTimeMillis = zkSessionTimeoutMillis / 15;
+        this.sessionExpiredHandler = sessionExpiredHandler;
+        this.sessionExpiredHandler.setWatcher(this);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void start() {
         scheduler = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("pulsar-zk-session-watcher"));
+<<<<<<< HEAD
         scheduler.scheduleAtFixedRate(this, tickTimeMillis, tickTimeMillis, TimeUnit.MILLISECONDS);
+=======
+        task = scheduler.scheduleAtFixedRate(this, tickTimeMillis, tickTimeMillis, TimeUnit.MILLISECONDS);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public Watcher.Event.KeeperState getKeeperState() {
@@ -93,9 +125,13 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
         case None:
             if (eventState == Watcher.Event.KeeperState.Expired) {
                 LOG.error("ZooKeeper session already expired, invoking shutdown");
+<<<<<<< HEAD
                 close();
                 shuttingDown = true;
                 shutdownService.shutdown(-1);
+=======
+                sessionExpiredHandler.onSessionExpired();
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             break;
         default:
@@ -128,11 +164,22 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
         try {
             zkOperationCompleted = false;
             if (zk != null) {
+<<<<<<< HEAD
                 zk.exists("/", false, this, null);
                 try {
                     this.wait(tickTimeMillis);
                 } catch (InterruptedException e) {
                     LOG.info("ZooKeeperSessionWatcher interrupted");
+=======
+                try {
+                    zk.exists("/", false, this, null);
+                    this.wait(tickTimeMillis);
+                } catch (RejectedExecutionException | InterruptedException e) {
+                    LOG.info("ZooKeeperSessionWatcher interrupted");
+                    if (task != null) {
+                        task.cancel(true);
+                    }
+>>>>>>> f773c602c... Test pr 10 (#27)
                     return;
                 }
             }
@@ -141,10 +188,15 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
                 keeperState = Watcher.Event.KeeperState.Disconnected;
             }
             if (keeperState == Watcher.Event.KeeperState.Expired) {
+<<<<<<< HEAD
                 LOG.error("zoo keeper session expired, invoking shutdown service");
                 close();
                 shuttingDown = true;
                 shutdownService.shutdown(-1);
+=======
+                LOG.error("zookeeper session expired, invoking shutdown service");
+                sessionExpiredHandler.onSessionExpired();
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else if (keeperState == Watcher.Event.KeeperState.Disconnected) {
                 if (disconnectedAt == 0) {
                     // this is the first disconnect, we should monitor the time out from now, so we record the time of
@@ -156,9 +208,13 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
                         - TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - disconnectedAt);
                 if (timeRemainingMillis <= 0) {
                     LOG.error("timeout expired for reconnecting, invoking shutdown service");
+<<<<<<< HEAD
                     close();
                     shuttingDown = true;
                     shutdownService.shutdown(-1);
+=======
+                    sessionExpiredHandler.onSessionExpired();
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } else {
                     LOG.warn("zoo keeper disconnected, waiting to reconnect, time remaining = {} seconds",
                             TimeUnit.MILLISECONDS.toSeconds(timeRemainingMillis));
@@ -179,5 +235,9 @@ public class ZooKeeperSessionWatcher implements Watcher, StatCallback, Runnable,
         if (scheduler != null) {
             scheduler.shutdownNow();
         }
+<<<<<<< HEAD
+=======
+        shuttingDown = true;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

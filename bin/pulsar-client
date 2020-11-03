@@ -19,7 +19,11 @@
 #
 
 BINDIR=$(dirname "$0")
+<<<<<<< HEAD
 PULSAR_HOME=`cd $BINDIR/..;pwd`
+=======
+PULSAR_HOME=`cd -P $BINDIR/..;pwd`
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 DEFAULT_CLIENT_CONF=$PULSAR_HOME/conf/client.conf
 DEFAULT_LOG_CONF=$PULSAR_HOME/conf/log4j2.yaml
@@ -98,10 +102,18 @@ OPTS="$OPTS $PULSAR_EXTRA_OPTS"
 # log directory & file
 PULSAR_LOG_DIR=${PULSAR_LOG_DIR:-"$PULSAR_HOME/logs"}
 PULSAR_LOG_APPENDER=${PULSAR_LOG_APPENDER:-"Console"}
+<<<<<<< HEAD
+=======
+PULSAR_LOG_LEVEL=${PULSAR_LOG_LEVEL:-"info"}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #Configure log configuration system properties
 OPTS="$OPTS -Dpulsar.log.dir=$PULSAR_LOG_DIR"
 OPTS="$OPTS -Dpulsar.log.appender=$PULSAR_LOG_APPENDER"
+<<<<<<< HEAD
+=======
+OPTS="$OPTS -Dpulsar.log.level=$PULSAR_LOG_LEVEL"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #Change to PULSAR_HOME to support relative paths
 cd "$PULSAR_HOME"

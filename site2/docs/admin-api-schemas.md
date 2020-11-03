@@ -4,6 +4,7 @@ title: Managing Schemas
 sidebar_label: Schemas
 ---
 
+<<<<<<< HEAD
 Schemas, like other entities in Pulsar, can be managed using the [admin API](admin-api-overview.md). 
 
 ## Schema resources
@@ -96,3 +97,5 @@ $ pulsar-admin schemas delete <topic-name>
 #### REST API
 
 {@inject: endpoint|DELETE|/admin/v2/schemas/:tenant/:namespace/:topic/schema|operation/deleteSchema}
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

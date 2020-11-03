@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import com.google.common.base.Objects;
@@ -28,6 +29,52 @@ public class BrokerNamespaceIsolationData {
     public List<String> namespaceRegex; //isolated namespace regex
 
     @Override
+=======
+import com.google.common.base.Objects;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
+
+/**
+ * The namespace isolation data for a given broker.
+ */
+@ApiModel(
+    value = "BrokerNamespaceIsolationData",
+    description = "The namespace isolation data for a given broker"
+)
+public class BrokerNamespaceIsolationData {
+
+    @ApiModelProperty(
+        name = "brokerName",
+        value = "The broker name",
+        example = "broker1:8080"
+    )
+    public String brokerName;
+    @ApiModelProperty(
+            name = "policyName",
+            value = "Policy name",
+            example = "my-policy"
+        )
+    public String policyName;
+    @ApiModelProperty(
+            name = "isPrimary",
+            value = "Is Primary broker",
+            example = "true/false"
+        )
+    public boolean isPrimary;
+    @ApiModelProperty(
+        name = "namespaceRegex",
+        value = "The namespace-isolation policies attached to this broker"
+    )
+    public List<String> namespaceRegex; //isolated namespace regex
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(brokerName, namespaceRegex);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof BrokerNamespaceIsolationData) {
             BrokerNamespaceIsolationData other = (BrokerNamespaceIsolationData) obj;

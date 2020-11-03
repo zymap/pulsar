@@ -30,6 +30,10 @@ import com.google.common.collect.Sets;
 
 import java.lang.reflect.Field;
 import java.net.URL;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +44,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.loadbalance.LoadManager;
@@ -188,8 +195,15 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
         final String topic = "non-persistent://my-property/my-ns/partitioned-topic";
         admin.topics().createPartitionedTopic(topic, numPartitions);
 
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("pulsar://localhost:" + BROKER_PORT)
                 .statsInterval(0, TimeUnit.SECONDS).build();
+=======
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(pulsar.getBrokerServiceUrl())
+                .statsInterval(0, TimeUnit.SECONDS)
+                .build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Consumer<byte[]> consumer = client.newConsumer().topic(topic).subscriptionName("subscriber-1")
                 .subscriptionType(type).subscribe();
 
@@ -435,7 +449,11 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
         assertNotNull(topicRef);
 
         rolloverPerIntervalStats(pulsar);
+<<<<<<< HEAD
         stats = topicRef.getStats();
+=======
+        stats = topicRef.getStats(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
         subStats = stats.getSubscriptions().values().iterator().next();
 
         // subscription stats
@@ -453,7 +471,11 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
         Thread.sleep(timeWaitToSync);
 
         rolloverPerIntervalStats(pulsar);
+<<<<<<< HEAD
         stats = topicRef.getStats();
+=======
+        stats = topicRef.getStats(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
         subStats = stats.getSubscriptions().values().iterator().next();
 
         assertTrue(subStats.msgRateOut > 0);
@@ -517,7 +539,11 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             assertNotNull(replicatorR3);
 
             rolloverPerIntervalStats(replicationPulasr);
+<<<<<<< HEAD
             stats = topicRef.getStats();
+=======
+            stats = topicRef.getStats(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
             subStats = stats.getSubscriptions().values().iterator().next();
 
             // subscription stats
@@ -588,7 +614,11 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             Thread.sleep(timeWaitToSync);
 
             rolloverPerIntervalStats(replicationPulasr);
+<<<<<<< HEAD
             stats = topicRef.getStats();
+=======
+            stats = topicRef.getStats(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
             subStats = stats.getSubscriptions().values().iterator().next();
 
             assertTrue(subStats.msgRateOut > 0);
@@ -645,7 +675,12 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             AtomicReference<LoadManager> loadManagerRef = (AtomicReference<LoadManager>) field.get(pulsar);
             LoadManager manager = LoadManager.create(pulsar);
             manager.start();
+<<<<<<< HEAD
             loadManagerRef.set(manager);
+=======
+            LoadManager oldLoadManager = loadManagerRef.getAndSet(manager);
+            oldLoadManager.stop();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             NamespaceBundle fdqn = pulsar.getNamespaceService().getBundle(TopicName.get(topicName));
             LoadManager loadManager = pulsar.getLoadManager().get();
@@ -677,7 +712,10 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
     /**
      * verifies: broker should reject non-persistent topic loading if broker is not enable for non-persistent topic
      *
+<<<<<<< HEAD
      * @param loadManagerName
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws Exception
      */
     @Test
@@ -734,7 +772,12 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             AtomicReference<LoadManager> loadManagerRef = (AtomicReference<LoadManager>) field.get(pulsar);
             LoadManager manager = LoadManager.create(pulsar);
             manager.start();
+<<<<<<< HEAD
             loadManagerRef.set(manager);
+=======
+            LoadManager oldLoadManager = loadManagerRef.getAndSet(manager);
+            oldLoadManager.stop();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             NamespaceBundle fdqn = pulsar.getNamespaceService().getBundle(TopicName.get(topicName));
             LoadManager loadManager = pulsar.getLoadManager().get();
@@ -807,7 +850,11 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
 
             NonPersistentTopic topic = (NonPersistentTopic) pulsar.getBrokerService().getOrCreateTopic(topicName).get();
             pulsar.getBrokerService().updateRates();
+<<<<<<< HEAD
             NonPersistentTopicStats stats = topic.getStats();
+=======
+            NonPersistentTopicStats stats = topic.getStats(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
             NonPersistentPublisherStats npStats = stats.getPublishers().get(0);
             NonPersistentSubscriptionStats sub1Stats = stats.getSubscriptions().get("subscriber-1");
             NonPersistentSubscriptionStats sub2Stats = stats.getSubscriptions().get("subscriber-2");
@@ -865,6 +912,7 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
 
         void setupReplicationCluster() throws Exception {
             log.info("--- Starting ReplicatorTestBase::setup ---");
+<<<<<<< HEAD
             int globalZKPort = PortManager.nextFreePort();
             globalZkS = new ZookeeperServerTest(globalZKPort);
             globalZkS.start();
@@ -876,12 +924,22 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
 
             int webServicePort1 = PortManager.nextFreePort();
 
+=======
+            globalZkS = new ZookeeperServerTest(0);
+            globalZkS.start();
+
+            // Start region 1
+            bkEnsemble1 = new LocalBookkeeperEnsemble(3, 0, () -> 0);
+            bkEnsemble1.start();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             // NOTE: we have to instantiate a new copy of System.getProperties() to make sure pulsar1 and pulsar2 have
             // completely
             // independent config objects instead of referring to the same properties object
             ServiceConfiguration config1 = new ServiceConfiguration();
             config1.setClusterName(configClusterName);
             config1.setAdvertisedAddress("localhost");
+<<<<<<< HEAD
             config1.setWebServicePort(webServicePort1);
             config1.setZookeeperServers("127.0.0.1:" + zkPort1);
             config1.setConfigurationStoreServers("127.0.0.1:" + globalZKPort + "/foo");
@@ -890,16 +948,32 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
                     inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
             config1.setBrokerServicePort(PortManager.nextFreePort());
             config1.setBacklogQuotaCheckIntervalInSeconds(TIME_TO_CHECK_BACKLOG_QUOTA);
+=======
+            config1.setWebServicePort(Optional.of(0));
+            config1.setZookeeperServers("127.0.0.1:" + bkEnsemble1.getZookeeperPort());
+            config1.setConfigurationStoreServers("127.0.0.1:" + globalZkS.getZookeeperPort() + "/foo");
+            config1.setBrokerDeleteInactiveTopicsEnabled(isBrokerServicePurgeInactiveTopic());
+            config1.setBrokerDeleteInactiveTopicsFrequencySeconds(
+                    inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
+            config1.setBrokerServicePort(Optional.of(0));
+            config1.setBacklogQuotaCheckIntervalInSeconds(TIME_TO_CHECK_BACKLOG_QUOTA);
+            config1.setAllowAutoTopicCreationType("non-partitioned");
+>>>>>>> f773c602c... Test pr 10 (#27)
             pulsar1 = new PulsarService(config1);
             pulsar1.start();
             ns1 = pulsar1.getBrokerService();
 
+<<<<<<< HEAD
             url1 = new URL("http://127.0.0.1:" + webServicePort1);
+=======
+            url1 = new URL(pulsar1.getWebServiceAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
             admin1 = PulsarAdmin.builder().serviceHttpUrl(url1.toString()).build();
 
             // Start region 2
 
             // Start zk & bks
+<<<<<<< HEAD
             int zkPort2 = PortManager.nextFreePort();
             bkEnsemble2 = new LocalBookkeeperEnsemble(3, zkPort2, () -> PortManager.nextFreePort());
             bkEnsemble2.start();
@@ -916,16 +990,38 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
                     inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
             config2.setBrokerServicePort(PortManager.nextFreePort());
             config2.setBacklogQuotaCheckIntervalInSeconds(TIME_TO_CHECK_BACKLOG_QUOTA);
+=======
+            bkEnsemble2 = new LocalBookkeeperEnsemble(3, 0, () -> 0);
+            bkEnsemble2.start();
+
+            config2 = new ServiceConfiguration();
+            config2.setClusterName("r2");
+            config2.setWebServicePort(Optional.of(0));
+            config2.setAdvertisedAddress("localhost");
+            config2.setZookeeperServers("127.0.0.1:" + bkEnsemble2.getZookeeperPort());
+            config2.setConfigurationStoreServers("127.0.0.1:" + globalZkS.getZookeeperPort() + "/foo");
+            config2.setBrokerDeleteInactiveTopicsEnabled(isBrokerServicePurgeInactiveTopic());
+            config2.setBrokerDeleteInactiveTopicsFrequencySeconds(
+                    inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
+            config2.setBrokerServicePort(Optional.of(0));
+            config2.setBacklogQuotaCheckIntervalInSeconds(TIME_TO_CHECK_BACKLOG_QUOTA);
+            config2.setAllowAutoTopicCreationType("non-partitioned");
+>>>>>>> f773c602c... Test pr 10 (#27)
             pulsar2 = new PulsarService(config2);
             pulsar2.start();
             ns2 = pulsar2.getBrokerService();
 
+<<<<<<< HEAD
             url2 = new URL("http://127.0.0.1:" + webServicePort2);
+=======
+            url2 = new URL(pulsar2.getWebServiceAddress());
+>>>>>>> f773c602c... Test pr 10 (#27)
             admin2 = PulsarAdmin.builder().serviceHttpUrl(url2.toString()).build();
 
             // Start region 3
 
             // Start zk & bks
+<<<<<<< HEAD
             int zkPort3 = PortManager.nextFreePort();
             bkEnsemble3 = new LocalBookkeeperEnsemble(3, zkPort3, () -> PortManager.nextFreePort());
             bkEnsemble3.start();
@@ -941,10 +1037,27 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             config3.setBrokerServicePurgeInactiveFrequencyInSeconds(
                     inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
             config3.setBrokerServicePort(PortManager.nextFreePort());
+=======
+            bkEnsemble3 = new LocalBookkeeperEnsemble(3, 0, () -> 0);
+            bkEnsemble3.start();
+
+            config3 = new ServiceConfiguration();
+            config3.setClusterName("r3");
+            config3.setWebServicePort(Optional.of(0));
+            config3.setAdvertisedAddress("localhost");
+            config3.setZookeeperServers("127.0.0.1:" + bkEnsemble3.getZookeeperPort());
+            config3.setConfigurationStoreServers("127.0.0.1:" + globalZkS.getZookeeperPort() + "/foo");
+            config3.setBrokerDeleteInactiveTopicsEnabled(isBrokerServicePurgeInactiveTopic());
+            config3.setBrokerDeleteInactiveTopicsFrequencySeconds(
+                    inSec(getBrokerServicePurgeInactiveFrequency(), TimeUnit.SECONDS));
+            config3.setBrokerServicePort(Optional.of(0));
+            config3.setAllowAutoTopicCreationType("non-partitioned");
+>>>>>>> f773c602c... Test pr 10 (#27)
             pulsar3 = new PulsarService(config3);
             pulsar3.start();
             ns3 = pulsar3.getBrokerService();
 
+<<<<<<< HEAD
             url3 = new URL("http://127.0.0.1:" + webServicePort3);
             admin3 = PulsarAdmin.builder().serviceHttpUrl(url3.toString()).build();
 
@@ -954,6 +1067,17 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             admin1.clusters().createCluster("r2", new ClusterData(url2.toString(), null, pulsar2.getBrokerServiceUrl(),
                     pulsar1.getBrokerServiceUrlTls()));
             admin1.clusters().createCluster("r3", new ClusterData(url3.toString(), null, pulsar3.getBrokerServiceUrl(),
+=======
+            url3 = new URL(pulsar3.getWebServiceAddress());
+            admin3 = PulsarAdmin.builder().serviceHttpUrl(url3.toString()).build();
+
+            // Provision the global namespace
+            admin1.clusters().createCluster("r1", new ClusterData(url1.toString(), null, pulsar1.getSafeBrokerServiceUrl(),
+                    pulsar1.getBrokerServiceUrlTls()));
+            admin1.clusters().createCluster("r2", new ClusterData(url2.toString(), null, pulsar2.getSafeBrokerServiceUrl(),
+                    pulsar1.getBrokerServiceUrlTls()));
+            admin1.clusters().createCluster("r3", new ClusterData(url3.toString(), null, pulsar3.getSafeBrokerServiceUrl(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                     pulsar1.getBrokerServiceUrlTls()));
 
             admin1.clusters().createCluster("global", new ClusterData("http://global:8080"));
@@ -966,9 +1090,15 @@ public class NonPersistentTopicTest extends ProducerConsumerBase {
             assertEquals(admin2.clusters().getCluster("r1").getServiceUrl(), url1.toString());
             assertEquals(admin2.clusters().getCluster("r2").getServiceUrl(), url2.toString());
             assertEquals(admin2.clusters().getCluster("r3").getServiceUrl(), url3.toString());
+<<<<<<< HEAD
             assertEquals(admin2.clusters().getCluster("r1").getBrokerServiceUrl(), pulsar1.getBrokerServiceUrl());
             assertEquals(admin2.clusters().getCluster("r2").getBrokerServiceUrl(), pulsar2.getBrokerServiceUrl());
             assertEquals(admin2.clusters().getCluster("r3").getBrokerServiceUrl(), pulsar3.getBrokerServiceUrl());
+=======
+            assertEquals(admin2.clusters().getCluster("r1").getBrokerServiceUrl(), pulsar1.getSafeBrokerServiceUrl());
+            assertEquals(admin2.clusters().getCluster("r2").getBrokerServiceUrl(), pulsar2.getSafeBrokerServiceUrl());
+            assertEquals(admin2.clusters().getCluster("r3").getBrokerServiceUrl(), pulsar3.getSafeBrokerServiceUrl());
+>>>>>>> f773c602c... Test pr 10 (#27)
             Thread.sleep(100);
             log.info("--- ReplicatorTestBase::setup completed ---");
 

@@ -33,9 +33,13 @@ Message Consumer_receive(Consumer& consumer) {
 
     while (true) {
         Py_BEGIN_ALLOW_THREADS
+<<<<<<< HEAD
         // Use 100ms timeout to periodically check whether the
         // interpreter was interrupted
         res = consumer.receive(msg, 100);
+=======
+        res = consumer.receive(msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
         Py_END_ALLOW_THREADS
 
         if (res != ResultTimeout) {
@@ -67,6 +71,7 @@ Message Consumer_receive_timeout(Consumer& consumer, int timeoutMs) {
 }
 
 void Consumer_acknowledge(Consumer& consumer, const Message& msg) {
+<<<<<<< HEAD
     Result res;
     Py_BEGIN_ALLOW_THREADS
     res = consumer.acknowledge(msg);
@@ -100,6 +105,29 @@ void Consumer_acknowledge_cumulative_message_id(Consumer& consumer, const Messag
     Py_END_ALLOW_THREADS
 
     CHECK_RESULT(res);
+=======
+    consumer.acknowledgeAsync(msg, nullptr);
+}
+
+void Consumer_acknowledge_message_id(Consumer& consumer, const MessageId& msgId) {
+    consumer.acknowledgeAsync(msgId, nullptr);
+}
+
+void Consumer_negative_acknowledge(Consumer& consumer, const Message& msg) {
+    consumer.negativeAcknowledge(msg);
+}
+
+void Consumer_negative_acknowledge_message_id(Consumer& consumer, const MessageId& msgId) {
+     consumer.negativeAcknowledge(msgId);
+}
+
+void Consumer_acknowledge_cumulative(Consumer& consumer, const Message& msg) {
+    consumer.acknowledgeCumulativeAsync(msg, nullptr);
+}
+
+void Consumer_acknowledge_cumulative_message_id(Consumer& consumer, const MessageId& msgId) {
+    consumer.acknowledgeCumulativeAsync(msgId, nullptr);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 void Consumer_close(Consumer& consumer) {
@@ -128,6 +156,18 @@ void Consumer_seek(Consumer& consumer, const MessageId& msgId) {
     CHECK_RESULT(res);
 }
 
+<<<<<<< HEAD
+=======
+void Consumer_seek_timestamp(Consumer& consumer, uint64_t timestamp) {
+    Result res;
+    Py_BEGIN_ALLOW_THREADS
+    res = consumer.seek(timestamp);
+    Py_END_ALLOW_THREADS
+
+    CHECK_RESULT(res);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 void export_consumer() {
     using namespace boost::python;
 
@@ -142,10 +182,19 @@ void export_consumer() {
             .def("acknowledge", &Consumer_acknowledge_message_id)
             .def("acknowledge_cumulative", &Consumer_acknowledge_cumulative)
             .def("acknowledge_cumulative", &Consumer_acknowledge_cumulative_message_id)
+<<<<<<< HEAD
+=======
+            .def("negative_acknowledge", &Consumer_negative_acknowledge)
+            .def("negative_acknowledge", &Consumer_negative_acknowledge_message_id)
+>>>>>>> f773c602c... Test pr 10 (#27)
             .def("close", &Consumer_close)
             .def("pause_message_listener", &Consumer_pauseMessageListener)
             .def("resume_message_listener", &Consumer_resumeMessageListener)
             .def("redeliver_unacknowledged_messages", &Consumer::redeliverUnacknowledgedMessages)
             .def("seek", &Consumer_seek)
+<<<<<<< HEAD
+=======
+            .def("seek", &Consumer_seek_timestamp)
+>>>>>>> f773c602c... Test pr 10 (#27)
             ;
 }

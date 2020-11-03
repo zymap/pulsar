@@ -30,7 +30,11 @@ func NewClient(options ClientOptions) (Client, error) {
 }
 
 // Opaque interface that represents the authentication credentials
+<<<<<<< HEAD
 type Authentication interface {}
+=======
+type Authentication interface{}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 // Create new Authentication provider with specified auth token
 func NewAuthenticationToken(token string) Authentication {
@@ -103,16 +107,31 @@ type Client interface {
 	// This method will block until the producer is created successfully
 	CreateProducer(ProducerOptions) (Producer, error)
 
+<<<<<<< HEAD
+=======
+	CreateProducerWithSchema(ProducerOptions, Schema) (Producer, error)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// Create a `Consumer` by subscribing to a topic.
 	//
 	// If the subscription does not exist, a new subscription will be created and all messages published after the
 	// creation will be retained until acknowledged, even if the consumer is not connected
 	Subscribe(ConsumerOptions) (Consumer, error)
 
+<<<<<<< HEAD
+=======
+	SubscribeWithSchema(ConsumerOptions, Schema) (Consumer, error)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// Create a Reader instance.
 	// This method will block until the reader is created successfully.
 	CreateReader(ReaderOptions) (Reader, error)
 
+<<<<<<< HEAD
+=======
+	CreateReaderWithSchema(ReaderOptions, Schema) (Reader, error)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// Fetch the list of partitions for a given topic
 	//
 	// If the topic is partitioned, this will return a list of partition names.

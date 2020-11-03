@@ -62,3 +62,10 @@ def mbps(bytes_per_seconds):
 def safe_intcomma(n):
     if not n: return 0
     else: return intcomma(n)
+<<<<<<< HEAD
+=======
+
+@register.filter(name='times')
+def times(number):
+    return range(1, number + 1)
+>>>>>>> f773c602c... Test pr 10 (#27)

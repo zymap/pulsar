@@ -21,7 +21,11 @@ package org.apache.pulsar.client.impl;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.Producer;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.ProducerInterceptor;
+=======
+import org.apache.pulsar.client.api.interceptor.ProducerInterceptor;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+<<<<<<< HEAD
  * A container that holds the list{@link org.apache.pulsar.client.api.ProducerInterceptor}
  * and wraps calls to the chain of custom interceptors.
  */
@@ -40,6 +45,18 @@ public class ProducerInterceptors<T> implements Closeable {
     private final List<ProducerInterceptor<T>> interceptors;
 
     public ProducerInterceptors(List<ProducerInterceptor<T>> interceptors) {
+=======
+ * A container that holds the list{@link ProducerInterceptor}
+ * and wraps calls to the chain of custom interceptors.
+ */
+public class ProducerInterceptors implements Closeable {
+
+    private static final Logger log = LoggerFactory.getLogger(ProducerInterceptors.class);
+
+    private final List<ProducerInterceptor> interceptors;
+
+    public ProducerInterceptors(List<ProducerInterceptor> interceptors) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.interceptors = interceptors;
     }
 
@@ -58,6 +75,7 @@ public class ProducerInterceptors<T> implements Closeable {
      * @param message the message from client
      * @return the message to send to topic/partition
      */
+<<<<<<< HEAD
     public Message<T> beforeSend(Producer<T> producer, Message<T> message) {
         Message<T> interceptorMessage = message;
         for (int i = 0; i < interceptors.size(); i++) {
@@ -66,6 +84,19 @@ public class ProducerInterceptors<T> implements Closeable {
             } catch (Exception e) {
                 if (message != null && producer != null) {
                     log.warn("Error executing interceptor beforeSend callback for messageId: {}, topicName:{} ", message.getMessageId(), producer.getTopic(), e);
+=======
+    public Message beforeSend(Producer producer, Message message) {
+        Message interceptorMessage = message;
+        for (ProducerInterceptor interceptor : interceptors) {
+            if (!interceptor.eligible(message)) {
+                continue;
+            }
+            try {
+                interceptorMessage = interceptor.beforeSend(producer, interceptorMessage);
+            } catch (Throwable e) {
+                if (producer != null) {
+                    log.warn("Error executing interceptor beforeSend callback for topicName:{} ", producer.getTopic(), e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } else {
                     log.warn("Error Error executing interceptor beforeSend callback ", e);
                 }
@@ -87,11 +118,22 @@ public class ProducerInterceptors<T> implements Closeable {
      * @param msgId The message id that broker returned. Null if has error occurred.
      * @param exception The exception thrown during processing of this message. Null if no error occurred.
      */
+<<<<<<< HEAD
     public void onSendAcknowledgement(Producer<T> producer, Message<T> message, MessageId msgId, Throwable exception) {
         for (int i = 0; i < interceptors.size(); i++) {
             try {
                 interceptors.get(i).onSendAcknowledgement(producer, message, msgId, exception);
             } catch (Exception e) {
+=======
+    public void onSendAcknowledgement(Producer producer, Message message, MessageId msgId, Throwable exception) {
+        for (ProducerInterceptor interceptor : interceptors) {
+            if (!interceptor.eligible(message)) {
+                continue;
+            }
+            try {
+                interceptor.onSendAcknowledgement(producer, message, msgId, exception);
+            } catch (Throwable e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 log.warn("Error executing interceptor onSendAcknowledgement callback ", e);
             }
         }
@@ -99,10 +141,17 @@ public class ProducerInterceptors<T> implements Closeable {
 
     @Override
     public void close() throws IOException {
+<<<<<<< HEAD
         for (int i = 0; i < interceptors.size(); i++) {
             try {
                 interceptors.get(i).close();
             } catch (Exception e) {
+=======
+        for (ProducerInterceptor interceptor : interceptors) {
+            try {
+                interceptor.close();
+            } catch (Throwable e) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 log.error("Fail to close producer interceptor ", e);
             }
         }

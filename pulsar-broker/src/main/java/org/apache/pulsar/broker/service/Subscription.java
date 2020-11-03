@@ -27,6 +27,10 @@ import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.api.proto.PulsarMarkers.ReplicatedSubscriptionsSnapshot;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public interface Subscription {
 
@@ -36,7 +40,15 @@ public interface Subscription {
 
     void addConsumer(Consumer consumer) throws BrokerServiceException;
 
+<<<<<<< HEAD
     void removeConsumer(Consumer consumer) throws BrokerServiceException;
+=======
+    default void removeConsumer(Consumer consumer) throws BrokerServiceException {
+        removeConsumer(consumer, false);
+    }
+
+    void removeConsumer(Consumer consumer, boolean isResetCursor) throws BrokerServiceException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void consumerFlow(Consumer consumer, int additionalNumberOfMessages);
 
@@ -44,9 +56,21 @@ public interface Subscription {
 
     String getTopicName();
 
+<<<<<<< HEAD
     Dispatcher getDispatcher();
 
     long getNumberOfEntriesInBacklog();
+=======
+    boolean isReplicated();
+
+    Dispatcher getDispatcher();
+
+    long getNumberOfEntriesInBacklog(boolean getPreciseBacklog);
+
+    default long getNumberOfEntriesDelayed() {
+        return 0;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     List<Consumer> getConsumers();
 
@@ -54,6 +78,11 @@ public interface Subscription {
 
     CompletableFuture<Void> delete();
 
+<<<<<<< HEAD
+=======
+    CompletableFuture<Void> deleteForcefully();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     CompletableFuture<Void> disconnect();
 
     CompletableFuture<Void> doUnsubscribe(Consumer consumer);
@@ -83,4 +112,22 @@ public interface Subscription {
     String getTypeString();
 
     void addUnAckedMessages(int unAckMessages);
+<<<<<<< HEAD
+=======
+
+    default void processReplicatedSubscriptionSnapshot(ReplicatedSubscriptionsSnapshot snapshot) {
+        // Default is no-op
+    }
+
+    CompletableFuture<Void> endTxn(long txnidMostBits, long txnidLeastBits, int txnAction);
+
+    // Subscription utils
+    static boolean isCumulativeAckMode(SubType subType) {
+        return SubType.Exclusive.equals(subType) || SubType.Failover.equals(subType);
+    }
+
+    static boolean isIndividualAckMode(SubType subType) {
+        return SubType.Shared.equals(subType) || SubType.Key_Shared.equals(subType);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

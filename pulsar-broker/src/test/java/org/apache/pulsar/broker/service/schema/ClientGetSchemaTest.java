@@ -31,6 +31,10 @@ import org.apache.pulsar.client.api.ProducerConsumerBase;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -43,6 +47,11 @@ public class ClientGetSchemaTest extends ProducerConsumerBase {
     private static final String topicString = "my-property/my-ns/topic-string";
     private static final String topicJson = "my-property/my-ns/topic-json";
     private static final String topicAvro = "my-property/my-ns/topic-avro";
+<<<<<<< HEAD
+=======
+    private static final String topicJsonNotNull = "my-property/my-ns/topic-json-not-null";
+    private static final String topicAvroNotNull = "my-property/my-ns/topic-avro-not-null";
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     List<Producer<?>> producers = new ArrayList<>();
 
@@ -62,6 +71,14 @@ public class ClientGetSchemaTest extends ProducerConsumerBase {
         producers.add(pulsarClient.newProducer(Schema.STRING).topic(topicString).create());
         producers.add(pulsarClient.newProducer(Schema.AVRO(MyClass.class)).topic(topicAvro).create());
         producers.add(pulsarClient.newProducer(Schema.JSON(MyClass.class)).topic(topicJson).create());
+<<<<<<< HEAD
+=======
+        producers.add(pulsarClient.newProducer(Schema.AVRO(SchemaDefinition.<MyClass>builder().withPojo(MyClass.class).build())).topic(topicAvro).create());
+        producers.add(pulsarClient.newProducer(Schema.JSON(SchemaDefinition.<MyClass>builder().withPojo(MyClass.class).build())).topic(topicJson).create());
+        producers.add(pulsarClient.newProducer(Schema.AVRO(SchemaDefinition.<MyClass>builder().withPojo(MyClass.class).withAlwaysAllowNull(false).build())).topic(topicAvroNotNull).create());
+        producers.add(pulsarClient.newProducer(Schema.JSON(SchemaDefinition.<MyClass>builder().withPojo(MyClass.class).withAlwaysAllowNull(false).build())).topic(topicJsonNotNull).create());
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterClass
@@ -78,8 +95,15 @@ public class ClientGetSchemaTest extends ProducerConsumerBase {
 
     @DataProvider(name = "serviceUrl")
     public String[] serviceUrls() {
+<<<<<<< HEAD
         return new String[] { "pulsar://" + pulsar.getAdvertisedAddress() + ":" + BROKER_PORT,
                 "http://" + pulsar.getAdvertisedAddress() + ":" + BROKER_WEBSERVICE_PORT };
+=======
+        return new String[] {
+                pulsar.getBrokerServiceUrl(),
+                pulsar.getWebServiceAddress()
+        };
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(dataProvider = "serviceUrl")

@@ -29,17 +29,28 @@ import org.testng.annotations.Test;
 
 /**
  */
+<<<<<<< HEAD
 @Test
 public class PartitionKeyTest extends BrokerTestBase {
     @BeforeMethod
     @Override
     protected void setup() throws Exception {
+=======
+public class PartitionKeyTest extends BrokerTestBase {
+    @BeforeMethod
+    @Override
+    public void setup() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super.baseSetup();
     }
 
     @AfterMethod
     @Override
+<<<<<<< HEAD
     protected void cleanup() throws Exception {
+=======
+    public void cleanup() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super.internalCleanup();
     }
 

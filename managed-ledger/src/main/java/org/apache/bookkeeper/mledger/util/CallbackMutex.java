@@ -62,7 +62,11 @@ public class CallbackMutex {
         if (log.isDebugEnabled()) {
             owner = null;
             position = null;
+<<<<<<< HEAD
             log.debug(">>> Lock {} released token={} at {}", this.hashCode(),
+=======
+            log.debug(">>> Lock {} released at {}", this.hashCode(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                     Thread.currentThread().getStackTrace()[2]);
         }
 

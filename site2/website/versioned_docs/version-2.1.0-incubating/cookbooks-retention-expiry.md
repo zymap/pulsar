@@ -203,10 +203,17 @@ Map<BacklogQuota.BacklogQuotaType,BacklogQuota> quotas =
 
 #### pulsar-admin
 
+<<<<<<< HEAD
 Use the [`remove-backlog-quotas`](reference-pulsar-admin.md#pulsar-admin-namespaces-remove-backlog-quota) subcommand and specify a namespace. Here's an example:
 
 ```shell
 $ pulsar-admin namespaces remove-backlog-quotas my-tenant/my-ns
+=======
+Use the [`remove-backlog-quota`](reference-pulsar-admin.md#pulsar-admin-namespaces-remove-backlog-quota) subcommand and specify a namespace. Here's an example:
+
+```shell
+$ pulsar-admin namespaces remove-backlog-quota my-tenant/my-ns
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 #### REST API

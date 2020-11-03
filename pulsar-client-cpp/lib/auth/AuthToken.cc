@@ -20,6 +20,10 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <functional>
+<<<<<<< HEAD
+=======
+#include <stdexcept>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #include <sstream>
 #include <fstream>
@@ -52,7 +56,11 @@ static std::string readFromFile(const std::string &tokenFilePath) {
 static std::string readFromEnv(const std::string &envVarName) {
     char *value = getenv(envVarName.c_str());
     if (!value) {
+<<<<<<< HEAD
         throw "Failed to read environment variable " + envVarName;
+=======
+        throw std::runtime_error("Failed to read environment variable " + envVarName);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     return std::string(value);
 }
@@ -74,7 +82,11 @@ AuthenticationPtr AuthToken::create(ParamMap &params) {
         std::string envVarName = params["env"];
         return create(std::bind(&readFromEnv, envVarName));
     } else {
+<<<<<<< HEAD
         throw "Invalid configuration for token provider";
+=======
+        throw std::runtime_error("Invalid configuration for token provider");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }
 
@@ -109,7 +121,11 @@ AuthenticationPtr AuthToken::create(const TokenSupplier &tokenSupplier) {
 
 const std::string AuthToken::getAuthMethodName() const { return "token"; }
 
+<<<<<<< HEAD
 Result AuthToken::getAuthData(AuthenticationDataPtr &authDataContent) const {
+=======
+Result AuthToken::getAuthData(AuthenticationDataPtr &authDataContent) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     authDataContent = authDataToken_;
     return ResultOk;
 }

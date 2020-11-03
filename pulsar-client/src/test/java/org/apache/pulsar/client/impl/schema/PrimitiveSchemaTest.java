@@ -22,14 +22,28 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
+<<<<<<< HEAD
 import io.netty.buffer.Unpooled;
 import java.nio.ByteBuffer;
+=======
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import java.nio.ByteBuffer;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.Schema;
+<<<<<<< HEAD
 import org.apache.pulsar.client.impl.schema.ByteBufSchema;
 import org.apache.pulsar.client.impl.schema.ByteBufferSchema;
 import org.apache.pulsar.client.impl.schema.ByteSchema;
@@ -41,6 +55,10 @@ import org.apache.pulsar.client.impl.schema.LongSchema;
 import org.apache.pulsar.client.impl.schema.ShortSchema;
 import org.apache.pulsar.client.impl.schema.StringSchema;
 import org.apache.pulsar.common.schema.SchemaType;
+=======
+import org.apache.pulsar.common.schema.SchemaType;
+import org.testng.annotations.DataProvider;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 /**
@@ -49,7 +67,11 @@ import org.testng.annotations.Test;
 @Slf4j
 public class PrimitiveSchemaTest {
 
+<<<<<<< HEAD
     final private Map<Schema, List<Object>> testData = new HashMap() {
+=======
+    private static final Map<Schema, List<Object>> testData = new HashMap() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         {
             put(BooleanSchema.of(), Arrays.asList(false, true));
             put(StringSchema.utf8(), Arrays.asList("my string"));
@@ -62,6 +84,7 @@ public class PrimitiveSchemaTest {
             put(BytesSchema.of(), Arrays.asList("my string".getBytes(UTF_8)));
             put(ByteBufferSchema.of(), Arrays.asList(ByteBuffer.allocate(10).put("my string".getBytes(UTF_8))));
             put(ByteBufSchema.of(), Arrays.asList(Unpooled.wrappedBuffer("my string".getBytes(UTF_8))));
+<<<<<<< HEAD
         }
     };
 
@@ -77,14 +100,85 @@ public class PrimitiveSchemaTest {
 
     @Test
     public void allSchemasShouldRoundtripInput() {
+=======
+            put(DateSchema.of(), Arrays.asList(new Date(new java.util.Date().getTime() - 10000), new Date(new java.util.Date().getTime())));
+            put(TimeSchema.of(), Arrays.asList(new Time(new java.util.Date().getTime() - 10000), new Time(new java.util.Date().getTime())));
+            put(TimestampSchema.of(), Arrays.asList(new Timestamp(new java.util.Date().getTime()), new Timestamp(new java.util.Date().getTime())));
+            put(InstantSchema.of(), Arrays.asList(Instant.now(), Instant.now().minusSeconds(60*23L)));
+            put(LocalDateSchema.of(), Arrays.asList(LocalDate.now(), LocalDate.now().minusDays(2)));
+            put(LocalTimeSchema.of(), Arrays.asList(LocalTime.now(), LocalTime.now().minusHours(2)));
+            put(LocalDateTimeSchema.of(), Arrays.asList(LocalDateTime.now(), LocalDateTime.now().minusDays(2), LocalDateTime.now().minusWeeks(10)));
+        }
+    };
+
+    private static final Map<Schema, List<Object>> testData2 = new HashMap() {
+        {
+            put(Schema.BOOL, Arrays.asList(false, true));
+            put(Schema.STRING, Arrays.asList("my string"));
+            put(Schema.INT8, Arrays.asList((byte) 32767, (byte) -32768));
+            put(Schema.INT16, Arrays.asList((short) 32767, (short) -32768));
+            put(Schema.INT32, Arrays.asList((int) 423412424, (int) -41243432));
+            put(Schema.INT64, Arrays.asList(922337203685477580L, -922337203685477581L));
+            put(Schema.FLOAT, Arrays.asList(5678567.12312f, -5678567.12341f));
+            put(Schema.DOUBLE, Arrays.asList(5678567.12312d, -5678567.12341d));
+            put(Schema.BYTES, Arrays.asList("my string".getBytes(UTF_8)));
+            put(Schema.BYTEBUFFER, Arrays.asList(ByteBuffer.allocate(10).put("my string".getBytes(UTF_8))));
+            put(Schema.DATE, Arrays.asList(new Date(new java.util.Date().getTime() - 10000), new Date(new java.util.Date().getTime())));
+            put(Schema.TIME, Arrays.asList(new Time(new java.util.Date().getTime() - 10000), new Time(new java.util.Date().getTime())));
+            put(Schema.TIMESTAMP, Arrays.asList(new Timestamp(new java.util.Date().getTime() - 10000), new Timestamp(new java.util.Date().getTime())));
+            put(Schema.INSTANT, Arrays.asList(Instant.now(), Instant.now().minusSeconds(60*23L)));
+            put(Schema.LOCAL_DATE, Arrays.asList(LocalDate.now(), LocalDate.now().minusDays(2)));
+            put(Schema.LOCAL_TIME, Arrays.asList(LocalTime.now(), LocalTime.now().minusHours(2)));
+            put(Schema.LOCAL_DATE_TIME, Arrays.asList(LocalDateTime.now(), LocalDateTime.now().minusDays(2), LocalDateTime.now().minusWeeks(10)));
+        }
+    };
+
+    @DataProvider(name = "schemas")
+    public Object[][] schemas() {
+        return new Object[][] { { testData }, { testData2 } };
+    }
+
+    @Test(dataProvider = "schemas")
+    public void allSchemasShouldSupportNull(Map<Schema, List<Object>> testData) {
+        for (Schema<?> schema : testData.keySet()) {
+            byte[] bytes = null;
+            ByteBuf byteBuf =  null;
+            try {
+                assertNull(schema.encode(null),
+                    "Should support null in " + schema.getSchemaInfo().getName() + " serialization");
+                assertNull(schema.decode(bytes),
+                    "Should support null in " + schema.getSchemaInfo().getName() + " deserialization");
+                assertNull(((AbstractSchema) schema).decode(byteBuf),
+                    "Should support null in " + schema.getSchemaInfo().getName() + " deserialization");
+            } catch (NullPointerException npe) {
+                throw new NullPointerException("NPE when using schema " + schema + " : " + npe.getMessage());
+            }
+        }
+    }
+
+    @Test(dataProvider = "schemas")
+    public void allSchemasShouldRoundtripInput(Map<Schema, List<Object>> testData) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         for (Map.Entry<Schema, List<Object>> test : testData.entrySet()) {
             log.info("Test schema {}", test.getKey());
             for (Object value : test.getValue()) {
                 log.info("Encode : {}", value);
+<<<<<<< HEAD
                 assertEquals(value,
                     test.getKey().decode(test.getKey().encode(value)),
                     "Should get the original " + test.getKey().getSchemaInfo().getName() +
                         " after serialization and deserialization");
+=======
+                try {
+                    assertEquals(value,
+                        test.getKey().decode(test.getKey().encode(value)),
+                        "Should get the original " + test.getKey().getSchemaInfo().getName() +
+                            " after serialization and deserialization");
+                } catch (NullPointerException npe) {
+                    throw new NullPointerException("NPE when using schema " + test.getKey()
+                        + " : " + npe.getMessage());
+                }
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
     }
@@ -102,6 +196,16 @@ public class PrimitiveSchemaTest {
         assertEquals(SchemaType.BYTES, BytesSchema.of().getSchemaInfo().getType());
         assertEquals(SchemaType.BYTES, ByteBufferSchema.of().getSchemaInfo().getType());
         assertEquals(SchemaType.BYTES, ByteBufSchema.of().getSchemaInfo().getType());
+<<<<<<< HEAD
+=======
+        assertEquals(SchemaType.DATE, DateSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.TIME, TimeSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.TIMESTAMP, TimestampSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.INSTANT, InstantSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.LOCAL_DATE, LocalDateSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.LOCAL_TIME, LocalTimeSchema.of().getSchemaInfo().getType());
+        assertEquals(SchemaType.LOCAL_DATE_TIME, LocalDateTimeSchema.of().getSchemaInfo().getType());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 

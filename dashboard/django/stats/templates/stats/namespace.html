@@ -53,6 +53,10 @@
 </div>
 {% endif %}
 
+<<<<<<< HEAD
+=======
+{% if topics.results %}
+>>>>>>> f773c602c... Test pr 10 (#27)
 <table>
 <thead>
     <tr>
@@ -91,6 +95,14 @@
 </table>
 
 {% table_footer topics %}
+<<<<<<< HEAD
 
+=======
+{% else %}
+<form method="GET" action="{% url 'deleteNamespace' namespace.name %}">
+    <input type="submit" value="Delete this namespace"/>
+</form>
+{% endif %}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 {% endblock %}

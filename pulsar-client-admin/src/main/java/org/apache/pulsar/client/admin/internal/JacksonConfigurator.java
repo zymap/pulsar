@@ -17,13 +17,22 @@
  * under the License.
  */
 package org.apache.pulsar.client.admin.internal;
+<<<<<<< HEAD
+=======
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Provides custom configuration for jackson.
  */

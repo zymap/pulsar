@@ -153,7 +153,11 @@ public final class ServiceUnitZkUtils {
         String brokerUrl = null;
         try {
             byte[] data = zkc.getData(path, false, null);
+<<<<<<< HEAD
             if (data.length == 0) {
+=======
+            if (data == null || data.length == 0) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 // skip, ephemeral node will not have zero byte
                 return;
             }
@@ -178,8 +182,13 @@ public final class ServiceUnitZkUtils {
      *
      * @param zkc
      *            the <code>ZooKeeper</code> connected session object
+<<<<<<< HEAD
      * @param nsname
      *            the name space name
+=======
+     * @param path
+     *            the namespace path
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param value
      *            the broker url that serves the name space.
      * @return

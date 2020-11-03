@@ -18,5 +18,13 @@
 #
 
 name: kinesis
+<<<<<<< HEAD
 description: Kinesis sink connector
 sinkClass: org.apache.pulsar.io.kinesis.KinesisSink
+=======
+description: Kinesis connectors
+sinkClass: org.apache.pulsar.io.kinesis.KinesisSink
+sourceClass: org.apache.pulsar.io.kinesis.KinesisSource
+sourceConfigClass: org.apache.pulsar.io.kinesis.KinesisSourceConfig
+sinkConfigClass: org.apache.pulsar.io.kinesis.KinesisSinkConfig
+>>>>>>> f773c602c... Test pr 10 (#27)

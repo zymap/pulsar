@@ -20,6 +20,7 @@ package org.apache.pulsar.common.policies.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+<<<<<<< HEAD
 import java.util.Map;
 
 import org.apache.pulsar.common.policies.impl.AutoFailoverPolicyFactory;
@@ -31,6 +32,52 @@ public class AutoFailoverPolicyData {
     public Map<String, String> parameters;
 
     @Override
+=======
+import com.google.common.base.Objects;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.util.Map;
+import org.apache.pulsar.common.policies.impl.AutoFailoverPolicyFactory;
+
+/**
+ * The auto failover policy configuration data.
+ */
+@ApiModel(
+    value = "AutoFailoverPolicyData",
+    description = "The auto failover policy configuration data"
+)
+public class AutoFailoverPolicyData {
+    @ApiModelProperty(
+        name = "policy_type",
+        value = "The auto failover policy type",
+        allowableValues = "min_available"
+    )
+    @SuppressWarnings("checkstyle:MemberName")
+    public AutoFailoverPolicyType policy_type;
+    @ApiModelProperty(
+        name = "parameters",
+        value =
+              "The parameters applied to the auto failover policy specified by `policy_type`.\n"
+            + "The parameters for 'min_available' are :\n"
+            + "  - 'min_limit': the limit of minimal number of available brokers in primary"
+                 + " group before auto failover\n"
+            + "  - 'usage_threshold': the resource usage threshold. If the usage of a broker"
+                 + " is beyond this value, it would be marked as unavailable\n",
+        example =
+              "{\n"
+            + "  \"min_limit\": 3,\n"
+            + "  \"usage_threshold\": 80\n"
+            + "}\n"
+    )
+    public Map<String, String> parameters;
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(policy_type, parameters);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof AutoFailoverPolicyData) {
             AutoFailoverPolicyData other = (AutoFailoverPolicyData) obj;

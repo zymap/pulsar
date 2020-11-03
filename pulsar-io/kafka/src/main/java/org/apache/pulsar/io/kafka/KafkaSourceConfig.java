@@ -21,7 +21,11 @@ package org.apache.pulsar.io.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+<<<<<<< HEAD
 import lombok.*;
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 
 import java.io.File;
@@ -31,10 +35,13 @@ import java.util.Map;
 import org.apache.pulsar.io.core.annotations.FieldDoc;
 
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class KafkaSourceConfig implements Serializable {
 

@@ -18,10 +18,14 @@
  */
 package org.apache.bookkeeper.mledger.offload.jcloud.impl;
 
+<<<<<<< HEAD
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.ByteString;
+=======
+import com.google.common.collect.Maps;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -37,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+<<<<<<< HEAD
 import java.util.stream.Collectors;
 
 import org.apache.bookkeeper.client.BookKeeper;
@@ -50,6 +55,23 @@ import org.apache.bookkeeper.mledger.offload.jcloud.OffloadIndexEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+=======
+
+import org.apache.bookkeeper.client.api.DigestType;
+import org.apache.bookkeeper.client.api.LedgerMetadata;
+import org.apache.bookkeeper.mledger.offload.jcloud.OffloadIndexBlock;
+import org.apache.bookkeeper.mledger.offload.jcloud.OffloadIndexEntry;
+import org.apache.bookkeeper.net.BookieSocketAddress;
+import org.apache.bookkeeper.proto.DataFormats;
+import org.apache.bookkeeper.proto.DataFormats.LedgerMetadataFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.bookkeeper.mledger.offload.OffloadUtils.buildLedgerMetadataFormat;
+import static org.apache.bookkeeper.mledger.offload.OffloadUtils.parseLedgerMetadata;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class OffloadIndexBlockImpl implements OffloadIndexBlock {
     private static final Logger log = LoggerFactory.getLogger(OffloadIndexBlockImpl.class);
 
@@ -109,8 +131,13 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         if (messageEntryId > segmentMetadata.getLastEntryId()) {
             log.warn("Try to get entry: {}, which beyond lastEntryId {}, return null",
                 messageEntryId, segmentMetadata.getLastEntryId());
+<<<<<<< HEAD
             throw new IndexOutOfBoundsException("Entry index: " + messageEntryId +
                 " beyond lastEntryId: " + segmentMetadata.getLastEntryId());
+=======
+            throw new IndexOutOfBoundsException("Entry index: " + messageEntryId
+                + " beyond lastEntryId: " + segmentMetadata.getLastEntryId());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         // find the greatest mapping Id whose entryId <= messageEntryId
         return this.indexEntries.floorEntry(messageEntryId).getValue();
@@ -136,6 +163,7 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         return this.dataHeaderLength;
     }
 
+<<<<<<< HEAD
     private static byte[] buildLedgerMetadataFormat(LedgerMetadata metadata) {
         LedgerMetadataFormat.Builder builder = LedgerMetadataFormat.newBuilder();
         builder.setQuorumSize(metadata.getWriteQuorumSize())
@@ -162,6 +190,8 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         return builder.build().toByteArray();
     }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Get the content of the index block as InputStream.
      * Read out in format:
@@ -213,10 +243,17 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         private long length;
         private DataFormats.LedgerMetadataFormat.DigestType digestType;
         private long ctime;
+<<<<<<< HEAD
         private byte[] password;
         private State state;
         private Map<String, byte[]> customMetadata = Maps.newHashMap();
         private TreeMap<Long, ArrayList<BookieSocketAddress>> ensembles = new TreeMap<Long, ArrayList<BookieSocketAddress>>();
+=======
+        private State state;
+        private Map<String, byte[]> customMetadata = Maps.newHashMap();
+        private TreeMap<Long, ArrayList<BookieSocketAddress>> ensembles =
+                new TreeMap<Long, ArrayList<BookieSocketAddress>>();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         InternalLedgerMetadata(LedgerMetadataFormat ledgerMetadataFormat) {
             this.ensembleSize = ledgerMetadataFormat.getEnsembleSize();
@@ -226,8 +263,13 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
             this.length = ledgerMetadataFormat.getLength();
             this.digestType = ledgerMetadataFormat.getDigestType();
             this.ctime = ledgerMetadataFormat.getCtime();
+<<<<<<< HEAD
             this.state = State.CLOSED;
             this.password = ledgerMetadataFormat.getPassword().toByteArray();
+=======
+            this.state = org.apache.bookkeeper.client.api.LedgerMetadata.State.valueOf(
+                    ledgerMetadataFormat.getState().toString());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             if (ledgerMetadataFormat.getCustomMetadataCount() > 0) {
                 ledgerMetadataFormat.getCustomMetadataList().forEach(
@@ -248,6 +290,7 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         }
 
         @Override
+<<<<<<< HEAD
         public boolean hasPassword() { return true; }
 
         @Override
@@ -260,6 +303,8 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         public int getMetadataFormatVersion() { return 2; }
 
         @Override
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         public int getEnsembleSize() {
             return this.ensembleSize;
         }
@@ -326,8 +371,43 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         }
 
         @Override
+<<<<<<< HEAD
         public String toSafeString() {
             return toString();
+=======
+        public long getCToken() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getMetadataFormatVersion() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public byte[] getPassword() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public State getState() {
+            return this.state;
+        }
+
+        @Override
+        public boolean hasPassword() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public String toSafeString() {
+            // TODO Auto-generated method stub
+            return null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -358,7 +438,11 @@ public class OffloadIndexBlockImpl implements OffloadIndexBlock {
         }
         this.segmentMetadata = parseLedgerMetadata(metadataBytes);
 
+<<<<<<< HEAD
         for (int i = 0; i < indexEntryCount; i ++) {
+=======
+        for (int i = 0; i < indexEntryCount; i++) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             long entryId = dis.readLong();
             this.indexEntries.putIfAbsent(entryId, OffloadIndexEntryImpl.of(entryId, dis.readInt(),
                                                                             dis.readLong(), dataHeaderLength));

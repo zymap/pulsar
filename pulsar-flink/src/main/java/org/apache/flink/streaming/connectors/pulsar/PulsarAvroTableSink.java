@@ -27,28 +27,51 @@ import java.util.Arrays;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificRecord;
+<<<<<<< HEAD
+=======
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.formats.avro.AvroRowSerializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.connectors.pulsar.partitioner.PulsarKeyExtractor;
+<<<<<<< HEAD
 import org.apache.flink.table.sinks.AppendStreamTableSink;
 import org.apache.flink.table.sinks.TableSink;
 import org.apache.flink.types.Row;
+=======
+import org.apache.flink.streaming.connectors.pulsar.partitioner.PulsarPropertiesExtractor;
+import org.apache.flink.table.sinks.AppendStreamTableSink;
+import org.apache.flink.table.sinks.TableSink;
+import org.apache.flink.types.Row;
+import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * An append-only table sink to emit a streaming table as a Pulsar stream that serializes data in Avro format.
  */
 public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
 
+<<<<<<< HEAD
     protected final String serviceUrl;
     protected final String topic;
+=======
+    protected ClientConfigurationData clientConfigurationData;
+    protected ProducerConfigurationData producerConfigurationData;
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected final String routingKeyFieldName;
     protected SerializationSchema<Row> serializationSchema;
     protected String[] fieldNames;
     protected TypeInformation[] fieldTypes;
     protected PulsarKeyExtractor<Row> keyExtractor;
+<<<<<<< HEAD
+=======
+    protected PulsarPropertiesExtractor<Row> propertiesExtractor;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private Class<? extends SpecificRecord> recordClazz;
 
     /**
@@ -56,16 +79,50 @@ public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
      *
      * @param serviceUrl          pulsar service url
      * @param topic               topic in pulsar to which table is written
+<<<<<<< HEAD
      * @param producerConf        producer configuration
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param routingKeyFieldName routing key field name
      */
     public PulsarAvroTableSink(
             String serviceUrl,
             String topic,
+<<<<<<< HEAD
             String routingKeyFieldName,
             Class<? extends SpecificRecord> recordClazz) {
         this.serviceUrl = checkNotNull(serviceUrl, "Service url not set");
         this.topic = checkNotNull(topic, "Topic is null");
+=======
+            Authentication authentication,
+            String routingKeyFieldName,
+            Class<? extends SpecificRecord> recordClazz) {
+        checkArgument(StringUtils.isNotBlank(serviceUrl), "Service url not set");
+        checkArgument(StringUtils.isNotBlank(topic), "Topic is null");
+        checkNotNull(authentication, "authentication is null, set new AuthenticationDisabled() instead");
+
+        clientConfigurationData = new ClientConfigurationData();
+        producerConfigurationData = new ProducerConfigurationData();
+
+        clientConfigurationData.setServiceUrl(serviceUrl);
+        clientConfigurationData.setAuthentication(authentication);
+        producerConfigurationData.setTopicName(topic);
+        this.routingKeyFieldName = routingKeyFieldName;
+        this.recordClazz = recordClazz;
+    }
+
+    public PulsarAvroTableSink(
+            ClientConfigurationData clientConfigurationData,
+            ProducerConfigurationData producerConfigurationData,
+            String routingKeyFieldName,
+            Class<? extends SpecificRecord> recordClazz) {
+        this.clientConfigurationData = checkNotNull(clientConfigurationData, "client config can not be null");
+        this.producerConfigurationData = checkNotNull(producerConfigurationData, "producer config can not be null");
+
+        checkArgument(StringUtils.isNotBlank(clientConfigurationData.getServiceUrl()), "Service url not set");
+        checkArgument(StringUtils.isNotBlank(producerConfigurationData.getTopicName()), "Topic is null");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.routingKeyFieldName = routingKeyFieldName;
         this.recordClazz = recordClazz;
     }
@@ -76,10 +133,18 @@ public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
     protected FlinkPulsarProducer<Row> createFlinkPulsarProducer() {
         serializationSchema = new AvroRowSerializationSchema(recordClazz);
         return new FlinkPulsarProducer<Row>(
+<<<<<<< HEAD
                 serviceUrl,
                 topic,
                 serializationSchema,
                 keyExtractor);
+=======
+                clientConfigurationData,
+                producerConfigurationData,
+                serializationSchema,
+                keyExtractor,
+                propertiesExtractor);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -110,7 +175,12 @@ public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
 
     @Override
     public TableSink<Row> configure(String[] fieldNames, TypeInformation<?>[] fieldTypes) {
+<<<<<<< HEAD
         PulsarAvroTableSink sink = new PulsarAvroTableSink(serviceUrl, topic, routingKeyFieldName, recordClazz);
+=======
+        PulsarAvroTableSink sink = new PulsarAvroTableSink(
+                clientConfigurationData, producerConfigurationData, routingKeyFieldName, recordClazz);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         sink.fieldNames = checkNotNull(fieldNames, "Field names are null");
         sink.fieldTypes = checkNotNull(fieldTypes, "Field types are null");
@@ -123,6 +193,10 @@ public class PulsarAvroTableSink implements AppendStreamTableSink<Row> {
                 fieldNames,
                 fieldTypes,
                 recordClazz);
+<<<<<<< HEAD
+=======
+        sink.propertiesExtractor = PulsarPropertiesExtractor.EMPTY;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         return sink;
     }

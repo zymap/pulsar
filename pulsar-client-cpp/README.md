@@ -27,6 +27,10 @@
 - [Compilation](#compilation)
 	- [Compile on Ubuntu Server 16.04](#compile-on-ubuntu-server-1604)
 	- [Compile on Mac OS X](#compile-on-mac-os-x)
+<<<<<<< HEAD
+=======
+	- [Compile on Windows (Visual Studio)](#compile-on-windows)
+>>>>>>> f773c602c... Test pr 10 (#27)
 - [Tests](#tests)
 - [Requirements for Contributors](#requirements-for-contributors)
 
@@ -130,8 +134,13 @@ export OPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include/
 export OPENSSL_ROOT_DIR=/usr/local/opt/openssl/
 
 # For Protobuf
+<<<<<<< HEAD
 brew tap homebrew/versions
 brew install protobuf260 boost boost-python log4cxx jsoncpp
+=======
+brew install protobuf boost boost-python log4cxx jsoncpp
+// If you are using python3, you need to install boost-python3
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # For gtest
 cd $HOME
@@ -164,6 +173,39 @@ ${PULSAR_PATH}/pulsar-client-cpp/perf/perfProducer
 ${PULSAR_PATH}/pulsar-client-cpp/perf/perfConsumer
 ```
 
+<<<<<<< HEAD
+=======
+### Compile on Windows
+
+#### Install all dependencies:
+
+Clone and build all dependencies from source if a binary distro can't be found.
+
+- [Boost](https://github.com/boostorg/boost)
+- [LibCurl](https://github.com/curl/curl)
+- [zlib](https://github.com/madler/zlib)
+- [OpenSSL](https://github.com/openssl/openssl)
+- [ProtoBuf](https://github.com/protocolbuffers/protobuf)
+- [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32)
+- [LLVM](https://llvm.org/builds/) (for clang-tidy and clang-format)
+
+If you want to build and run the tests, then also install
+- [GTest and GMock](https://github.com/google/googletest)
+
+#### Compile Pulsar client library:
+
+```shell
+#If all dependencies are in your path, all that is necessary is
+${PULSAR_PATH}/pulsar-client-cpp/cmake .
+
+#if all dependencies are not in your path, then passing in a PROTOC_PATH and CMAKE_PREFIX_PATH is necessary
+${PULSAR_PATH}/pulsar-client-cpp/cmake -DPROTOC_PATH=C:/protobuf/bin/protoc -DCMAKE_PREFIX_PATH="C:/boost;C:/openssl;C:/zlib;C:/curl;C:/protobuf;C:/googletest;C:/dlfcn-win32" .
+
+#This will generate pulsar-cpp.sln. Open this in Visual Studio and build the desired configurations.
+```
+
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 ## Tests
 ```shell
 # Source code
@@ -171,11 +213,21 @@ ${PULSAR_PATH}/pulsar-client-cpp/tests/
 
 # Execution
 # Start standalone broker
+<<<<<<< HEAD
 export PULSAR_STANDALONE_CONF=${PULSAR_PATH}/pulsar-client-cpp/tests/standalone.conf
 ${PULSAR_PATH}/bin/pulsar standalone
 
 # Run the tests
 ${PULSAR_PATH}/pulsar-client-cpp/tests/main
+=======
+${PULSAR_PATH}/pulsar-test-service-start.sh
+
+# Run the tests
+${PULSAR_PATH}/pulsar-client-cpp/tests/main
+
+# When no longer needed, stop standalone broker
+${PULSAR_PATH}/pulsar-test-service-stop.sh
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 ## Requirements for Contributors

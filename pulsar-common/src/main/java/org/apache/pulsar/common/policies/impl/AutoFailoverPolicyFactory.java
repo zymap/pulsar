@@ -22,6 +22,12 @@ import org.apache.pulsar.common.policies.AutoFailoverPolicy;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyData;
 import org.apache.pulsar.common.policies.data.AutoFailoverPolicyType;
 
+<<<<<<< HEAD
+=======
+/**
+ * Factory to generate an instance of {@link AutoFailoverPolicy}.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class AutoFailoverPolicyFactory {
 
     public static AutoFailoverPolicy create(AutoFailoverPolicyData policyData) {

@@ -19,9 +19,20 @@
 package org.apache.bookkeeper.mledger;
 
 import com.google.common.annotations.Beta;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ManagedLedgerInfoCallback;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.OpenLedgerCallback;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.OpenReadOnlyCursorCallback;
+=======
+
+import java.util.function.Supplier;
+
+import org.apache.bookkeeper.mledger.AsyncCallbacks.DeleteLedgerCallback;
+import org.apache.bookkeeper.mledger.AsyncCallbacks.ManagedLedgerInfoCallback;
+import org.apache.bookkeeper.mledger.AsyncCallbacks.OpenLedgerCallback;
+import org.apache.bookkeeper.mledger.AsyncCallbacks.OpenReadOnlyCursorCallback;
+import org.apache.bookkeeper.stats.StatsProvider;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A factory to open/create managed ledgers and delete them.
@@ -77,10 +88,20 @@ public interface ManagedLedgerFactory {
      *            managed ledger configuration
      * @param callback
      *            callback object
+<<<<<<< HEAD
      * @param ctx
      *            opaque context
      */
     void asyncOpen(String name, ManagedLedgerConfig config, OpenLedgerCallback callback, Object ctx);
+=======
+     * @param mlOwnershipChecker
+     *            checks ml-ownership in case updating ml-metadata fails due to ownership conflict
+     * @param ctx
+     *            opaque context
+     */
+    void asyncOpen(String name, ManagedLedgerConfig config, OpenLedgerCallback callback,
+            Supplier<Boolean> mlOwnershipChecker, Object ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Open a {@link ReadOnlyCursor} positioned to the earliest entry for the specified managed ledger
@@ -97,7 +118,11 @@ public interface ManagedLedgerFactory {
     /**
      * Open a {@link ReadOnlyCursor} positioned to the earliest entry for the specified managed ledger
      *
+<<<<<<< HEAD
      * @param name
+=======
+     * @param managedLedgerName
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param startPosition
      *            set the cursor on that particular position. If setting to `PositionImpl.earliest` it will be
      *            positioned on the first available entry.
@@ -128,6 +153,27 @@ public interface ManagedLedgerFactory {
     void asyncGetManagedLedgerInfo(String name, ManagedLedgerInfoCallback callback, Object ctx);
 
     /**
+<<<<<<< HEAD
+=======
+     * Delete a managed ledger. If it's not open, it's metadata will get regardless deleted.
+     *
+     * @param name
+     * @throws InterruptedException
+     * @throws ManagedLedgerException
+     */
+    void delete(String name) throws InterruptedException, ManagedLedgerException;
+
+    /**
+     * Delete a managed ledger. If it's not open, it's metadata will get regardless deleted.
+     *
+     * @param name
+     * @throws InterruptedException
+     * @throws ManagedLedgerException
+     */
+    void asyncDelete(String name, DeleteLedgerCallback callback, Object ctx);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Releases all the resources maintained by the ManagedLedgerFactory.
      *
      * @throws ManagedLedgerException

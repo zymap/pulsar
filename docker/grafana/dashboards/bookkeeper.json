@@ -1435,7 +1435,13 @@
   ],
   "schemaVersion": 14,
   "style": "dark",
+<<<<<<< HEAD
   "tags": [],
+=======
+  "tags": [
+    "bookkeeper"
+  ],
+>>>>>>> f773c602c... Test pr 10 (#27)
   "templating": {
     "list": [
       {

@@ -18,6 +18,10 @@
  */
 #ifndef PULSAR_PRODUCERCONFIGURATION_H_
 #define PULSAR_PRODUCERCONFIGURATION_H_
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/CompressionType.h>
 #include <pulsar/MessageRoutingPolicy.h>
 #include <pulsar/Result.h>
@@ -29,6 +33,7 @@
 
 #include <set>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 namespace pulsar {
@@ -37,12 +42,24 @@ typedef std::function<void(Result, const Message& msg)> SendCallback;
 typedef std::function<void(Result)> CloseCallback;
 
 class ProducerConfigurationImpl;
+=======
+namespace pulsar {
+
+typedef std::function<void(Result, const MessageId& messageId)> SendCallback;
+typedef std::function<void(Result)> CloseCallback;
+
+struct ProducerConfigurationImpl;
+>>>>>>> f773c602c... Test pr 10 (#27)
 class PulsarWrapper;
 
 /**
  * Class that holds the configuration for a producer
  */
+<<<<<<< HEAD
 class ProducerConfiguration {
+=======
+class PULSAR_PUBLIC ProducerConfiguration {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     enum PartitionsRoutingMode
     {
@@ -56,6 +73,33 @@ class ProducerConfiguration {
         BoostHash,
         JavaStringHash
     };
+<<<<<<< HEAD
+=======
+    enum BatchingType
+    {
+        /**
+         * Default batching.
+         *
+         * <p>incoming single messages:
+         * (k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)
+         *
+         * <p>batched into single batch message:
+         * [(k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)]
+         */
+        DefaultBatching,
+
+        /**
+         * Key based batching.
+         *
+         * <p>incoming single messages:
+         * (k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)
+         *
+         * <p>batched into single batch message:
+         * [(k1, v1), (k1, v2), (k1, v3)], [(k2, v1), (k2, v2), (k2, v3)], [(k3, v1), (k3, v2), (k3, v3)]
+         */
+        KeyBasedBatching
+    };
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     ProducerConfiguration();
     ~ProducerConfiguration();
@@ -101,6 +145,11 @@ class ProducerConfiguration {
      * <li>{@link CompressionZLib}: ZLib Compression http://zlib.net/</li>
      * <li>{@link CompressionZSTD}: Zstandard Compression  https://facebook.github.io/zstd/ (Since Pulsar 2.3.
      * Zstd cannot be used if consumer applications are not in version >= 2.3 as well)</li>
+<<<<<<< HEAD
+=======
+     * <li>{@link CompressionSNAPPY}: Snappy Compression  https://google.github.io/snappy/ (Since Pulsar 2.4.
+     * Snappy cannot be used if consumer applications are not in version >= 2.4 as well)</li>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * </ul>
      */
     ProducerConfiguration& setCompressionType(CompressionType compressionType);
@@ -151,13 +200,26 @@ class ProducerConfiguration {
     ProducerConfiguration& setBatchingMaxPublishDelayMs(const unsigned long& batchingMaxPublishDelayMs);
     const unsigned long& getBatchingMaxPublishDelayMs() const;
 
+<<<<<<< HEAD
+=======
+    /**
+     * @see BatchingType
+     */
+    ProducerConfiguration& setBatchingType(BatchingType batchingType);
+    BatchingType getBatchingType() const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     const CryptoKeyReaderPtr getCryptoKeyReader() const;
     ProducerConfiguration& setCryptoKeyReader(CryptoKeyReaderPtr cryptoKeyReader);
 
     ProducerCryptoFailureAction getCryptoFailureAction() const;
     ProducerConfiguration& setCryptoFailureAction(ProducerCryptoFailureAction action);
 
+<<<<<<< HEAD
     std::set<std::string>& getEncryptionKeys();
+=======
+    const std::set<std::string>& getEncryptionKeys() const;
+>>>>>>> f773c602c... Test pr 10 (#27)
     bool isEncryptionEnabled() const;
     ProducerConfiguration& addEncryptionKey(std::string key);
 
@@ -203,5 +265,8 @@ class ProducerConfiguration {
     std::shared_ptr<ProducerConfigurationImpl> impl_;
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PULSAR_PRODUCERCONFIGURATION_H_ */

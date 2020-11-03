@@ -26,8 +26,11 @@
 
 #include <list>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 typedef std::unique_lock<std::mutex> Lock;
 
 namespace pulsar {
@@ -154,6 +157,9 @@ class Void {};
 
 } /* namespace pulsar */
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* LIB_FUTURE_H_ */

@@ -20,6 +20,10 @@ package org.apache.pulsar.broker.service;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -142,7 +146,11 @@ public class ResendRequestTest extends BrokerTestBase {
 
         // 9. Calling resend after acking all messages - expectin 0 messages
         consumer.redeliverUnacknowledgedMessages();
+<<<<<<< HEAD
         assertEquals(consumer.receive(2000, TimeUnit.MILLISECONDS), null);
+=======
+        assertNull(consumer.receive(2000, TimeUnit.MILLISECONDS));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 10. Checking message contents
         for (int i = 0; i < totalMessages; i++) {
@@ -420,7 +428,12 @@ public class ResendRequestTest extends BrokerTestBase {
         final String messagePredicate = "my-message-" + key + "-";
         final int totalMessages = 10;
         final int numberOfPartitions = 4;
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName, numberOfPartitions);
         // Special step to create partitioned topic
 
@@ -475,7 +488,12 @@ public class ResendRequestTest extends BrokerTestBase {
         final String messagePredicate = "my-message-" + key + "-";
         final int totalMessages = 10;
         final int numberOfPartitions = 3;
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName, numberOfPartitions);
         Random rn = new Random();
         // Special step to create partitioned topic
@@ -575,7 +593,12 @@ public class ResendRequestTest extends BrokerTestBase {
         final String messagePredicate = "my-message-" + key + "-";
         final int totalMessages = 10;
         final int numberOfPartitions = 3;
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName, numberOfPartitions);
         Random rn = new Random();
         // Special step to create partitioned topic
@@ -711,8 +734,13 @@ public class ResendRequestTest extends BrokerTestBase {
 
         message1 = consumer1.receive(500, TimeUnit.MILLISECONDS);
         message2 = consumer2.receive(500, TimeUnit.MILLISECONDS);
+<<<<<<< HEAD
         assertEquals(message1, null);
         assertEquals(message2, null);
+=======
+        assertNull(message1);
+        assertNull(message2);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @SuppressWarnings("unchecked")

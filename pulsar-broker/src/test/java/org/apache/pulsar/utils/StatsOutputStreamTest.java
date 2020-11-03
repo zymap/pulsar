@@ -19,6 +19,7 @@
 package org.apache.pulsar.utils;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.testng.Assert.fail;
 
 import java.nio.charset.Charset;
@@ -31,6 +32,17 @@ import org.testng.annotations.Test;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+=======
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.nio.charset.StandardCharsets;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class StatsOutputStreamTest {
 
     private ByteBuf buf;
@@ -147,6 +159,7 @@ public class StatsOutputStreamTest {
         assertEquals(str(), "[{\"a\":1},{\"b\":2}]");
     }
 
+<<<<<<< HEAD
     @SuppressWarnings("unchecked")
     @Test
     public void testCopyOnWriteArrayList() {
@@ -221,6 +234,10 @@ public class StatsOutputStreamTest {
 
     public String str() {
         String s = buf.toString(Charset.forName("utf-8"));
+=======
+    public String str() {
+        String s = buf.toString(StandardCharsets.UTF_8);
+>>>>>>> f773c602c... Test pr 10 (#27)
         reset();
         return s;
     }

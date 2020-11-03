@@ -22,6 +22,12 @@ import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
+<<<<<<< HEAD
+=======
+/**
+ * Information about subscription rate.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class SubscribeRate {
 
     public int subscribeThrottlingRatePerConsumer = -1;

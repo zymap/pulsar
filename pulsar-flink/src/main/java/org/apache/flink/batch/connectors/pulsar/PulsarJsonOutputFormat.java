@@ -19,6 +19,12 @@
 package org.apache.flink.batch.connectors.pulsar;
 
 import org.apache.flink.batch.connectors.pulsar.serialization.JsonSerializationSchema;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Pulsar Json Output Format to write Flink DataSets into a Pulsar topic in Json format.
@@ -27,8 +33,19 @@ public class PulsarJsonOutputFormat<T> extends BasePulsarOutputFormat<T> {
 
     private static final long serialVersionUID = 8499620770848461958L;
 
+<<<<<<< HEAD
     public PulsarJsonOutputFormat(String serviceUrl, String topicName) {
         super(serviceUrl, topicName);
+=======
+    public PulsarJsonOutputFormat(String serviceUrl, String topicName, Authentication authentication) {
+        super(serviceUrl, topicName, authentication);
+        this.serializationSchema = new JsonSerializationSchema();
+    }
+
+    public PulsarJsonOutputFormat(ClientConfigurationData clientConfigurationData,
+        ProducerConfigurationData producerConfigurationData) {
+        super(clientConfigurationData, producerConfigurationData);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.serializationSchema = new JsonSerializationSchema();
     }
 }

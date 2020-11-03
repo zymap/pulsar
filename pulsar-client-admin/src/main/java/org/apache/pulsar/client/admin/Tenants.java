@@ -19,6 +19,10 @@
 package org.apache.pulsar.client.admin;
 
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.admin.PulsarAdminException.ConflictException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
@@ -27,12 +31,20 @@ import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedExc
 import org.apache.pulsar.common.policies.data.TenantInfo;
 
 /**
+<<<<<<< HEAD
  * Admin interface for tenants management
+=======
+ * Admin interface for tenants management.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public interface Tenants {
     /**
      * Get the list of tenants.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -48,8 +60,26 @@ public interface Tenants {
     List<String> getTenants() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the config of the tenant.
      * <p>
+=======
+     * Get the list of tenants asynchronously.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>["my-tenant", "other-tenant", "third-tenant"]</code>
+     * </pre>
+     *
+     * @return the list of Pulsar tenants
+     */
+    CompletableFuture<List<String>> getTenantsAsync();
+
+    /**
+     * Get the config of the tenant.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get the admin configuration for a given tenant.
      *
      * @param tenant
@@ -66,8 +96,24 @@ public interface Tenants {
     TenantInfo getTenantInfo(String tenant) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Create a new tenant.
      * <p>
+=======
+     * Get the config of the tenant asynchronously.
+     * <p/>
+     * Get the admin configuration for a given tenant.
+     *
+     * @param tenant
+     *            Tenant name
+     * @return the tenant configuration
+     */
+    CompletableFuture<TenantInfo> getTenantInfoAsync(String tenant);
+
+    /**
+     * Create a new tenant.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Provisions a new tenant. This operation requires Pulsar super-user privileges.
      *
      * @param tenant
@@ -87,8 +133,25 @@ public interface Tenants {
     void createTenant(String tenant, TenantInfo config) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Update the admins for a tenant.
      * <p>
+=======
+     * Create a new tenant asynchronously.
+     * <p/>
+     * Provisions a new tenant. This operation requires Pulsar super-user privileges.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param config
+     *            Config data
+     */
+    CompletableFuture<Void> createTenantAsync(String tenant, TenantInfo config);
+
+    /**
+     * Update the admins for a tenant.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * This operation requires Pulsar super-user privileges.
      *
      * @param tenant
@@ -106,8 +169,25 @@ public interface Tenants {
     void updateTenant(String tenant, TenantInfo config) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Delete an existing tenant.
      * <p>
+=======
+     * Update the admins for a tenant asynchronously.
+     * <p/>
+     * This operation requires Pulsar super-user privileges.
+     *
+     * @param tenant
+     *            Tenant name
+     * @param config
+     *            Config data
+     */
+    CompletableFuture<Void> updateTenantAsync(String tenant, TenantInfo config);
+
+    /**
+     * Delete an existing tenant.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Delete a tenant and all namespaces and topics under it.
      *
      * @param tenant
@@ -123,4 +203,17 @@ public interface Tenants {
      *             Unexpected error
      */
     void deleteTenant(String tenant) throws PulsarAdminException;
+<<<<<<< HEAD
+=======
+
+    /**
+     * Delete an existing tenant asynchronously.
+     * <p/>
+     * Delete a tenant and all namespaces and topics under it.
+     *
+     * @param tenant
+     *            Tenant name
+     */
+    CompletableFuture<Void> deleteTenantAsync(String tenant);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -35,10 +35,21 @@ echo "---- Build Pulsar C++ client using image $IMAGE"
 
 docker pull $IMAGE
 
+<<<<<<< HEAD
 DOCKER_CMD="docker run -i -v $ROOT_DIR:/pulsar $IMAGE"
+=======
+VOLUME_OPTION=${VOLUME_OPTION:-"-v $ROOT_DIR:/pulsar"}
+COMMAND="cd /pulsar/pulsar-client-cpp && cmake . $CMAKE_ARGS && make format"
+
+DOCKER_CMD="docker run -i ${VOLUME_OPTION} ${IMAGE}"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Remove any cached CMake relate file from previous builds
 find . -name CMakeCache.txt | xargs rm -f
 find . -name CMakeFiles | xargs rm -rf
 
+<<<<<<< HEAD
 $DOCKER_CMD bash -c "cd /pulsar/pulsar-client-cpp && cmake . $CMAKE_ARGS && make format"
+=======
+$DOCKER_CMD bash -c "${COMMAND}"
+>>>>>>> f773c602c... Test pr 10 (#27)

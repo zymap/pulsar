@@ -119,14 +119,45 @@ class Context(object):
     pass
 
   @abstractmethod
+<<<<<<< HEAD
+=======
+  def get_partition_key(self):
+    """Returns partition key of the input message is one exists"""
+    pass
+
+
+  @abstractmethod
+>>>>>>> f773c602c... Test pr 10 (#27)
   def record_metric(self, metric_name, metric_value):
     """Records the metric_value. metric_value has to satisfy isinstance(metric_value, numbers.Number)"""
     pass
 
   @abstractmethod
+<<<<<<< HEAD
   def publish(self, topic_name, message, serde_class_name="serde.IdentitySerDe", properties=None, compression_type=None):
     """Publishes message to topic_name by first serializing the message using serde_class_name serde
     The message will have properties specified if any"""
+=======
+  def publish(self, topic_name, message, serde_class_name="serde.IdentitySerDe", properties=None, compression_type=None, callback=None, message_conf=None):
+    """Publishes message to topic_name by first serializing the message using serde_class_name serde
+    The message will have properties specified if any
+
+    The available options for message_conf:
+
+      properties,
+      partition_key,
+      sequence_id,
+      replication_clusters,
+      disable_replication,
+      event_timestamp
+
+    """
+    pass
+
+  @abstractmethod
+  def get_input_topics(self):
+    """Returns the input topics of function"""
+>>>>>>> f773c602c... Test pr 10 (#27)
     pass
 
   @abstractmethod
@@ -155,6 +186,14 @@ class Context(object):
     pass
 
   @abstractmethod
+<<<<<<< HEAD
+=======
+  def del_counter(self, key):
+    """delete the counter of a given key in the managed state"""
+    pass
+
+  @abstractmethod
+>>>>>>> f773c602c... Test pr 10 (#27)
   def put_state(self, key, value):
     """update the value of a given key in the managed state"""
     pass

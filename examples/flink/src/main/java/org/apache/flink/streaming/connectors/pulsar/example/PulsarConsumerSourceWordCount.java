@@ -35,6 +35,11 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.pulsar.FlinkPulsarProducer;
 import org.apache.flink.streaming.connectors.pulsar.PulsarSourceBuilder;
+<<<<<<< HEAD
+=======
+import org.apache.flink.streaming.connectors.pulsar.partitioner.PulsarPropertiesExtractor;
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Implements a streaming wordcount program on pulsar topics.
@@ -97,8 +102,15 @@ public class PulsarConsumerSourceWordCount {
             wc.addSink(new FlinkPulsarProducer<>(
                 serviceUrl,
                 outputTopic,
+<<<<<<< HEAD
                 wordWithCount -> wordWithCount.toString().getBytes(UTF_8),
                 wordWithCount -> wordWithCount.word
+=======
+                new AuthenticationDisabled(),
+                wordWithCount -> wordWithCount.toString().getBytes(UTF_8),
+                wordWithCount -> wordWithCount.word,
+                null
+>>>>>>> f773c602c... Test pr 10 (#27)
             )).setParallelism(parallelism);
         } else {
             // print the results with a single thread, rather than in parallel

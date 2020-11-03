@@ -18,6 +18,11 @@
  */
 #include <lib/ConsumerConfigurationImpl.h>
 
+<<<<<<< HEAD
+=======
+#include <stdexcept>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 const static std::string emptyString;
@@ -33,6 +38,15 @@ ConsumerConfiguration& ConsumerConfiguration::operator=(const ConsumerConfigurat
     return *this;
 }
 
+<<<<<<< HEAD
+=======
+ConsumerConfiguration ConsumerConfiguration::clone() const {
+    ConsumerConfiguration newConf;
+    newConf.impl_.reset(new ConsumerConfigurationImpl(*this->impl_));
+    return newConf;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 ConsumerConfiguration& ConsumerConfiguration::setSchema(const SchemaInfo& schemaInfo) {
     impl_->schemaInfo = schemaInfo;
     return *this;
@@ -86,12 +100,47 @@ void ConsumerConfiguration::setConsumerName(const std::string& consumerName) {
 long ConsumerConfiguration::getUnAckedMessagesTimeoutMs() const { return impl_->unAckedMessagesTimeoutMs; }
 
 void ConsumerConfiguration::setUnAckedMessagesTimeoutMs(const uint64_t milliSeconds) {
+<<<<<<< HEAD
     if (milliSeconds < 10000) {
         throw "Consumer Config Exception: Unacknowledged message timeout should be greater than 10 seconds.";
+=======
+    if (milliSeconds < 10000 && milliSeconds != 0) {
+        throw std::invalid_argument(
+            "Consumer Config Exception: Unacknowledged message timeout should be greater than 10 seconds.");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     impl_->unAckedMessagesTimeoutMs = milliSeconds;
 }
 
+<<<<<<< HEAD
+=======
+long ConsumerConfiguration::getTickDurationInMs() const { return impl_->tickDurationInMs; }
+
+void ConsumerConfiguration::setTickDurationInMs(const uint64_t milliSeconds) {
+    impl_->tickDurationInMs = milliSeconds;
+}
+
+void ConsumerConfiguration::setNegativeAckRedeliveryDelayMs(long redeliveryDelayMillis) {
+    impl_->negativeAckRedeliveryDelayMs = redeliveryDelayMillis;
+}
+
+long ConsumerConfiguration::getNegativeAckRedeliveryDelayMs() const {
+    return impl_->negativeAckRedeliveryDelayMs;
+}
+
+void ConsumerConfiguration::setAckGroupingTimeMs(long ackGroupingMillis) {
+    impl_->ackGroupingTimeMs = ackGroupingMillis;
+}
+
+long ConsumerConfiguration::getAckGroupingTimeMs() const { return impl_->ackGroupingTimeMs; }
+
+void ConsumerConfiguration::setAckGroupingMaxSize(long maxGroupingSize) {
+    impl_->ackGroupingMaxSize = maxGroupingSize;
+}
+
+long ConsumerConfiguration::getAckGroupingMaxSize() const { return impl_->ackGroupingMaxSize; }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 bool ConsumerConfiguration::isEncryptionEnabled() const { return (impl_->cryptoKeyReader != NULL); }
 
 const CryptoKeyReaderPtr ConsumerConfiguration::getCryptoKeyReader() const { return impl_->cryptoKeyReader; }

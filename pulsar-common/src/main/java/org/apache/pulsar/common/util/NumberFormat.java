@@ -20,6 +20,12 @@ package org.apache.pulsar.common.util;
 
 import io.netty.buffer.ByteBuf;
 
+<<<<<<< HEAD
+=======
+/**
+ * Custom number formatter for {@code io.netty.buffer.ByteBuf}.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class NumberFormat {
 
     static void format(ByteBuf out, long num) {

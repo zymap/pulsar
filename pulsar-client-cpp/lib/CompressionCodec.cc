@@ -20,6 +20,10 @@
 #include "CompressionCodecLZ4.h"
 #include "CompressionCodecZLib.h"
 #include "CompressionCodecZstd.h"
+<<<<<<< HEAD
+=======
+#include "CompressionCodecSnappy.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #include <cassert>
 
@@ -30,6 +34,10 @@ CompressionCodecNone CompressionCodecProvider::compressionCodecNone_;
 CompressionCodecLZ4 CompressionCodecProvider::compressionCodecLZ4_;
 CompressionCodecZLib CompressionCodecProvider::compressionCodecZLib_;
 CompressionCodecZstd CompressionCodecProvider::compressionCodecZstd_;
+<<<<<<< HEAD
+=======
+CompressionCodecSnappy CompressionCodecProvider::compressionCodecSnappy_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 CompressionCodec& CompressionCodecProvider::getCodec(CompressionType compressionType) {
     switch (compressionType) {
@@ -39,6 +47,11 @@ CompressionCodec& CompressionCodecProvider::getCodec(CompressionType compression
             return compressionCodecZLib_;
         case CompressionZSTD:
             return compressionCodecZstd_;
+<<<<<<< HEAD
+=======
+        case CompressionSNAPPY:
+            return compressionCodecSnappy_;
+>>>>>>> f773c602c... Test pr 10 (#27)
         default:
             return compressionCodecNone_;
     }
@@ -54,6 +67,11 @@ CompressionType CompressionCodecProvider::convertType(proto::CompressionType typ
             return CompressionZLib;
         case proto::ZSTD:
             return CompressionZSTD;
+<<<<<<< HEAD
+=======
+        case proto::SNAPPY:
+            return CompressionSNAPPY;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }
 
@@ -67,6 +85,11 @@ proto::CompressionType CompressionCodecProvider::convertType(CompressionType typ
             return proto::ZLIB;
         case CompressionZSTD:
             return proto::ZSTD;
+<<<<<<< HEAD
+=======
+        case CompressionSNAPPY:
+            return proto::SNAPPY;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }
 

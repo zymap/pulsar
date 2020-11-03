@@ -17,12 +17,26 @@
 # under the License.
 #
 
+<<<<<<< HEAD
 FROM apachepulsar/pulsar:latest
+=======
+FROM busybox as pulsar-all
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ARG PULSAR_IO_DIR
 ARG PULSAR_OFFLOADER_TARBALL
 
+<<<<<<< HEAD
 ADD ${PULSAR_IO_DIR} /pulsar/connectors
 
 ADD ${PULSAR_OFFLOADER_TARBALL} /
 RUN mv /apache-pulsar-offloaders-*/offloaders /pulsar/offloaders
+=======
+ADD ${PULSAR_IO_DIR} /connectors
+ADD ${PULSAR_OFFLOADER_TARBALL} /
+RUN mv /apache-pulsar-offloaders-*/offloaders /offloaders
+
+FROM apachepulsar/pulsar:latest
+COPY --from=pulsar-all /connectors /pulsar/connectors
+COPY --from=pulsar-all /offloaders /pulsar/offloaders
+>>>>>>> f773c602c... Test pr 10 (#27)

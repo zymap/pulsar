@@ -27,7 +27,11 @@ services:
       - 8080
       - 6650 
     environment:
+<<<<<<< HEAD
       - PULSAR_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+=======
+      - BOOKIE_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+>>>>>>> f773c602c... Test pr 10 (#27)
     command: >
       /bin/bash -c
       "bin/apply-config-from-env.py conf/standalone.conf

@@ -25,6 +25,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.netty.util.concurrent.FastThreadLocal;
 
+<<<<<<< HEAD
+=======
+@SuppressWarnings("checkstyle:JavadocType")
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ObjectMapperFactory {
     public static ObjectMapper create() {
         ObjectMapper mapper = new ObjectMapper();

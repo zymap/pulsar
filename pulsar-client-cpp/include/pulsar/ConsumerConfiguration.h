@@ -21,6 +21,10 @@
 
 #include <functional>
 #include <memory>
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 #include <pulsar/ConsumerType.h>
 #include <pulsar/Message.h>
@@ -29,7 +33,10 @@
 #include <pulsar/CryptoKeyReader.h>
 #include <pulsar/InitialPosition.h>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 class Consumer;
@@ -42,12 +49,20 @@ typedef std::function<void(Result, const Message& msg)> ReceiveCallback;
 /// Callback definition for MessageListener
 typedef std::function<void(Consumer consumer, const Message& msg)> MessageListener;
 
+<<<<<<< HEAD
 class ConsumerConfigurationImpl;
+=======
+struct ConsumerConfigurationImpl;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Class specifying the configuration of a consumer.
  */
+<<<<<<< HEAD
 class ConsumerConfiguration {
+=======
+class PULSAR_PUBLIC ConsumerConfiguration {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     ConsumerConfiguration();
     ~ConsumerConfiguration();
@@ -55,6 +70,15 @@ class ConsumerConfiguration {
     ConsumerConfiguration& operator=(const ConsumerConfiguration&);
 
     /**
+<<<<<<< HEAD
+=======
+     * Create a new instance of ConsumerConfiguration with the same
+     * initial settings as the current one.
+     */
+    ConsumerConfiguration clone() const;
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Declare the schema of the data that this consumer will be accepting.
      *
      * The schema will be checked against the schema of the topic, and the
@@ -149,6 +173,66 @@ class ConsumerConfiguration {
      */
     long getUnAckedMessagesTimeoutMs() const;
 
+<<<<<<< HEAD
+=======
+    void setTickDurationInMs(const uint64_t milliSeconds);
+
+    long getTickDurationInMs() const;
+
+    /**
+     * Set the delay to wait before re-delivering messages that have failed to be process.
+     * <p>
+     * When application uses {@link Consumer#negativeAcknowledge(Message)}, the failed message
+     * will be redelivered after a fixed timeout. The default is 1 min.
+     *
+     * @param redeliveryDelay
+     *            redelivery delay for failed messages
+     * @param timeUnit
+     *            unit in which the timeout is provided.
+     * @return the consumer builder instance
+     */
+    void setNegativeAckRedeliveryDelayMs(long redeliveryDelayMillis);
+
+    /**
+     * Get the configured delay to wait before re-delivering messages that have failed to be process.
+     *
+     * @return redelivery delay for failed messages
+     */
+    long getNegativeAckRedeliveryDelayMs() const;
+
+    /**
+     * Set time window in milliseconds for grouping message ACK requests. An ACK request is not sent
+     * to broker until the time window reaches its end, or the number of grouped messages reaches
+     * limit. Default is 100 milliseconds. If it's set to a non-positive value, ACK requests will be
+     * directly sent to broker without grouping.
+     *
+     * @param ackGroupMillis time of ACK grouping window in milliseconds.
+     */
+    void setAckGroupingTimeMs(long ackGroupingMillis);
+
+    /**
+     * Get grouping time window in milliseconds.
+     *
+     * @return grouping time window in milliseconds.
+     */
+    long getAckGroupingTimeMs() const;
+
+    /**
+     * Set max number of grouped messages within one grouping time window. If it's set to a
+     * non-positive value, number of grouped messages is not limited. Default is 1000.
+     *
+     * @param maxGroupingSize max number of grouped messages with in one grouping time window.
+     */
+    void setAckGroupingMaxSize(long maxGroupingSize);
+
+    /**
+     * Get max number of grouped messages within one grouping time window.
+     *
+     * @return max number of grouped messages within one grouping time window.
+     */
+    long getAckGroupingMaxSize() const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Set the time duration for which the broker side consumer stats will be cached in the client.
      * @param cacheTimeInMs in milliseconds
@@ -223,5 +307,8 @@ class ConsumerConfiguration {
     std::shared_ptr<ConsumerConfigurationImpl> impl_;
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PULSAR_CONSUMERCONFIGURATION_H_ */

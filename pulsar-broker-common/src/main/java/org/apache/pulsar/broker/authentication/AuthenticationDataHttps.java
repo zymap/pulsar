@@ -34,7 +34,10 @@ public class AuthenticationDataHttps extends AuthenticationDataHttp {
     /*
      * TLS
      */
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public boolean hasDataFromTls() {
         return (certificates != null);

@@ -18,6 +18,11 @@
  */
 #include <lib/ProducerConfigurationImpl.h>
 
+<<<<<<< HEAD
+=======
+#include <stdexcept>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 const static std::string emptyString;
@@ -67,7 +72,11 @@ CompressionType ProducerConfiguration::getCompressionType() const { return impl_
 
 ProducerConfiguration& ProducerConfiguration::setMaxPendingMessages(int maxPendingMessages) {
     if (maxPendingMessages <= 0) {
+<<<<<<< HEAD
         throw "maxPendingMessages needs to be greater than 0";
+=======
+        throw std::invalid_argument("maxPendingMessages needs to be greater than 0");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     impl_->maxPendingMessages = maxPendingMessages;
     return *this;
@@ -77,7 +86,11 @@ int ProducerConfiguration::getMaxPendingMessages() const { return impl_->maxPend
 
 ProducerConfiguration& ProducerConfiguration::setMaxPendingMessagesAcrossPartitions(int maxPendingMessages) {
     if (maxPendingMessages <= 0) {
+<<<<<<< HEAD
         throw "maxPendingMessages needs to be greater than 0";
+=======
+        throw std::invalid_argument("maxPendingMessages needs to be greater than 0");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     impl_->maxPendingMessagesAcrossPartitions = maxPendingMessages;
     return *this;
@@ -131,7 +144,11 @@ const bool& ProducerConfiguration::getBatchingEnabled() const { return impl_->ba
 ProducerConfiguration& ProducerConfiguration::setBatchingMaxMessages(
     const unsigned int& batchingMaxMessages) {
     if (batchingMaxMessages <= 1) {
+<<<<<<< HEAD
         throw "batchingMaxMessages needs to be greater than 1";
+=======
+        throw std::invalid_argument("batchingMaxMessages needs to be greater than 1");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     impl_->batchingMaxMessages = batchingMaxMessages;
     return *this;
@@ -160,6 +177,22 @@ const unsigned long& ProducerConfiguration::getBatchingMaxPublishDelayMs() const
     return impl_->batchingMaxPublishDelayMs;
 }
 
+<<<<<<< HEAD
+=======
+ProducerConfiguration& ProducerConfiguration::setBatchingType(BatchingType batchingType) {
+    if (batchingType < ProducerConfiguration::DefaultBatching ||
+        batchingType > ProducerConfiguration::KeyBasedBatching) {
+        throw std::invalid_argument("Unsupported batching type: " + std::to_string(batchingType));
+    }
+    impl_->batchingType = batchingType;
+    return *this;
+}
+
+ProducerConfiguration::BatchingType ProducerConfiguration::getBatchingType() const {
+    return impl_->batchingType;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 const CryptoKeyReaderPtr ProducerConfiguration::getCryptoKeyReader() const { return impl_->cryptoKeyReader; }
 
 ProducerConfiguration& ProducerConfiguration::setCryptoKeyReader(CryptoKeyReaderPtr cryptoKeyReader) {
@@ -176,7 +209,13 @@ ProducerConfiguration& ProducerConfiguration::setCryptoFailureAction(ProducerCry
     return *this;
 }
 
+<<<<<<< HEAD
 std::set<std::string>& ProducerConfiguration::getEncryptionKeys() { return impl_->encryptionKeys; }
+=======
+const std::set<std::string>& ProducerConfiguration::getEncryptionKeys() const {
+    return impl_->encryptionKeys;
+}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 bool ProducerConfiguration::isEncryptionEnabled() const {
     return (!impl_->encryptionKeys.empty() && (impl_->cryptoKeyReader != NULL));

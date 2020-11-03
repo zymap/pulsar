@@ -262,6 +262,11 @@ class BlockingQueue {
 
     iterator end() { return queue_.end(); }
 
+<<<<<<< HEAD
+=======
+    int reservedSpots() const { return reservedSpots_; }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     void releaseReservedSpot() {
         Lock lock(mutex_);

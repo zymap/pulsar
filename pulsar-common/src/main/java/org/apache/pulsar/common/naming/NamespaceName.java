@@ -20,15 +20,27 @@ package org.apache.pulsar.common.naming;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+<<<<<<< HEAD
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+<<<<<<< HEAD
 
+=======
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Parser of a value from the namespace field provided in configuration.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class NamespaceName implements ServiceUnitId {
 
     private final String namespace;
@@ -45,6 +57,11 @@ public class NamespaceName implements ServiceUnitId {
                 }
             });
 
+<<<<<<< HEAD
+=======
+    public static final NamespaceName SYSTEM_NAMESPACE = NamespaceName.get("pulsar/system");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static NamespaceName get(String tenant, String namespace) {
         validateNamespaceName(tenant, namespace);
         return get(tenant + '/' + namespace);
@@ -127,7 +144,11 @@ public class NamespaceName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Compose the topic name from namespace + topic
+=======
+     * Compose the topic name from namespace + topic.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param domain
      * @param topic
@@ -175,7 +196,11 @@ public class NamespaceName implements ServiceUnitId {
             NamedEntity.checkName(namespace);
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(
+<<<<<<< HEAD
                     String.format("Invalid namespace format. namespace: %s/%s/%s", tenant, namespace), e);
+=======
+                    String.format("Invalid namespace format. namespace: %s/%s", tenant, namespace), e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -208,7 +233,11 @@ public class NamespaceName implements ServiceUnitId {
     }
 
     /**
+<<<<<<< HEAD
      * Returns true if this is a V2 namespace prop/namespace-name
+=======
+     * Returns true if this is a V2 namespace prop/namespace-name.
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return true if v2
      */
     public boolean isV2() {

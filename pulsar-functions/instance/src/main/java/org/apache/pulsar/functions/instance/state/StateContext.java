@@ -19,6 +19,10 @@
 package org.apache.pulsar.functions.instance.state;
 
 import java.nio.ByteBuffer;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A state context per function.
@@ -31,7 +35,11 @@ public interface StateContext {
      * @param key key to increment
      * @param amount the amount incremented
      */
+<<<<<<< HEAD
     void incr(String key, long amount) throws Exception;
+=======
+    CompletableFuture<Void> incrCounter(String key, long amount) throws Exception;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Update the given <i>key</i> to the provide <i>value</i>.
@@ -47,9 +55,22 @@ public interface StateContext {
      * instead.
      *
      * @param key key to update.
+<<<<<<< HEAD
      * @param value value to update
      */
     void put(String key, ByteBuffer value) throws Exception;
+=======
+     * @param value value to update; if null the key is deleted
+     */
+    CompletableFuture<Void> put(String key, ByteBuffer value) throws Exception;
+
+    /**
+     * Deletes the <i>value</i> at the given <i>key</i>
+     *
+     * @param key to delete
+     */
+    CompletableFuture<Void> delete(String key);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Get the value of a given <i>key</i>.
@@ -57,7 +78,11 @@ public interface StateContext {
      * @param key key to retrieve
      * @return a completable future representing the retrieve result.
      */
+<<<<<<< HEAD
     ByteBuffer getValue(String key) throws Exception;
+=======
+    CompletableFuture<ByteBuffer> get(String key) throws Exception;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Get the amount of a given <i>key</i>.
@@ -65,6 +90,10 @@ public interface StateContext {
      * @param key key to retrieve
      * @return a completable future representing the retrieve result.
      */
+<<<<<<< HEAD
     long getAmount(String key) throws Exception;
+=======
+    CompletableFuture<Long> getCounter(String key) throws Exception;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 }

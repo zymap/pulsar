@@ -32,6 +32,7 @@ public class NamespaceBundleStats implements Comparable<NamespaceBundleStats> {
     public long cacheSize;
 
     // Consider the throughput equal if difference is less than 100 KB/s
+<<<<<<< HEAD
     private static double ThroughputDifferenceThreshold = 1e5;
     // Consider the msgRate equal if the difference is less than 100
     private static double MsgRateDifferenceThreshold = 100;
@@ -39,6 +40,15 @@ public class NamespaceBundleStats implements Comparable<NamespaceBundleStats> {
     private static long TopicConnectionDifferenceThreshold = 500;
     // Consider the cache size equal if the difference is less than 100 kb
     private static long CacheSizeDifferenceThreshold = 100000;
+=======
+    private final static double throughputDifferenceThreshold = 1e5;
+    // Consider the msgRate equal if the difference is less than 100
+    private final static double msgRateDifferenceThreshold = 100;
+    // Consider the total topics/producers/consumers equal if the difference is less than 500
+    private final static long topicConnectionDifferenceThreshold = 500;
+    // Consider the cache size equal if the difference is less than 100 kb
+    private final static long cacheSizeDifferenceThreshold = 100000;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public NamespaceBundleStats() {
         reset();
@@ -83,7 +93,11 @@ public class NamespaceBundleStats implements Comparable<NamespaceBundleStats> {
     public int compareByMsgRate(NamespaceBundleStats other) {
         double thisMsgRate = this.msgRateIn + this.msgRateOut;
         double otherMsgRate = other.msgRateIn + other.msgRateOut;
+<<<<<<< HEAD
         if (Math.abs(thisMsgRate - otherMsgRate) > MsgRateDifferenceThreshold) {
+=======
+        if (Math.abs(thisMsgRate - otherMsgRate) > msgRateDifferenceThreshold) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Double.compare(thisMsgRate, otherMsgRate);
         }
         return 0;
@@ -92,28 +106,44 @@ public class NamespaceBundleStats implements Comparable<NamespaceBundleStats> {
     public int compareByTopicConnections(NamespaceBundleStats other) {
         long thisTopicsAndConnections = this.topics + this.consumerCount + this.producerCount;
         long otherTopicsAndConnections = other.topics + other.consumerCount + other.producerCount;
+<<<<<<< HEAD
         if (Math.abs(thisTopicsAndConnections - otherTopicsAndConnections) > TopicConnectionDifferenceThreshold) {
+=======
+        if (Math.abs(thisTopicsAndConnections - otherTopicsAndConnections) > topicConnectionDifferenceThreshold) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Long.compare(thisTopicsAndConnections, otherTopicsAndConnections);
         }
         return 0;
     }
 
     public int compareByCacheSize(NamespaceBundleStats other) {
+<<<<<<< HEAD
         if (Math.abs(this.cacheSize - other.cacheSize) > CacheSizeDifferenceThreshold) {
+=======
+        if (Math.abs(this.cacheSize - other.cacheSize) > cacheSizeDifferenceThreshold) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Long.compare(this.cacheSize, other.cacheSize);
         }
         return 0;
     }
 
     public int compareByBandwidthIn(NamespaceBundleStats other) {
+<<<<<<< HEAD
         if (Math.abs(this.msgThroughputIn - other.msgThroughputIn) > ThroughputDifferenceThreshold) {
+=======
+        if (Math.abs(this.msgThroughputIn - other.msgThroughputIn) > throughputDifferenceThreshold) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Double.compare(this.msgThroughputIn, other.msgThroughputIn);
         }
         return 0;
     }
 
     public int compareByBandwidthOut(NamespaceBundleStats other) {
+<<<<<<< HEAD
         if (Math.abs(this.msgThroughputOut - other.msgThroughputOut) > ThroughputDifferenceThreshold) {
+=======
+        if (Math.abs(this.msgThroughputOut - other.msgThroughputOut) > throughputDifferenceThreshold) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Double.compare(this.msgThroughputOut, other.msgThroughputOut);
         }
         return 0;

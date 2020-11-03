@@ -18,6 +18,15 @@
  */
 package org.apache.pulsar.common.stats;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import io.netty.buffer.PoolArenaMetric;
+import io.netty.buffer.PoolChunkListMetric;
+import io.netty.buffer.PoolChunkMetric;
+import io.netty.buffer.PooledByteBufAllocator;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.lang.management.BufferPoolMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -31,11 +40,15 @@ import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -45,6 +58,11 @@ import io.netty.buffer.PoolChunkMetric;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.util.internal.PlatformDependent;
 
+=======
+/**
+ * This class is responsible for providing JVM metrics.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class JvmMetrics {
 
     private static final Logger log = LoggerFactory.getLogger(JvmMetrics.class);
@@ -55,7 +73,12 @@ public class JvmMetrics {
     private final static Map<String, Class<? extends JvmGCMetricsLogger>> gcLoggerMap = new HashMap<>();
     static {
         try {
+<<<<<<< HEAD
             directMemoryUsage = PlatformDependent.class.getDeclaredField("DIRECT_MEMORY_COUNTER");
+=======
+            directMemoryUsage = io.netty.util.internal.PlatformDependent.class
+                .getDeclaredField("DIRECT_MEMORY_COUNTER");
+>>>>>>> f773c602c... Test pr 10 (#27)
             directMemoryUsage.setAccessible(true);
         } catch (Exception e) {
             log.warn("Failed to access netty DIRECT_MEMORY_COUNTER field {}", e.getMessage());
@@ -111,15 +134,25 @@ public class JvmMetrics {
         m.put("jvm_total_memory", r.totalMemory());
 
         m.put("jvm_direct_memory_used", getJvmDirectMemoryUsed());
+<<<<<<< HEAD
         m.put("jvm_max_direct_memory", PlatformDependent.maxDirectMemory());
         m.put("jvm_thread_cnt", getThreadCount());
         
+=======
+        m.put("jvm_max_direct_memory", io.netty.util.internal.PlatformDependent.maxDirectMemory());
+        m.put("jvm_thread_cnt", getThreadCount());
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.gcLogger.logMetrics(m);
 
         long totalAllocated = 0;
         long totalUsed = 0;
 
         for (PoolArenaMetric arena : PooledByteBufAllocator.DEFAULT.directArenas()) {
+<<<<<<< HEAD
+=======
+            this.gcLogger.logMetrics(m);
+>>>>>>> f773c602c... Test pr 10 (#27)
             for (PoolChunkListMetric list : arena.chunkLists()) {
                 for (PoolChunkMetric chunk : list) {
                     int size = chunk.chunkSize();
@@ -134,6 +167,11 @@ public class JvmMetrics {
         m.put(this.componentName + "_default_pool_allocated", totalAllocated);
         m.put(this.componentName + "_default_pool_used", totalUsed);
 
+<<<<<<< HEAD
+=======
+        this.gcLogger.logMetrics(m);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         return Lists.newArrayList(m);
     }
 

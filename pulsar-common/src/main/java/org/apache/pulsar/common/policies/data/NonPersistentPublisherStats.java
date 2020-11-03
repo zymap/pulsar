@@ -21,11 +21,19 @@ package org.apache.pulsar.common.policies.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+<<<<<<< HEAD
+=======
+ * Non-persistent publisher statistics.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class NonPersistentPublisherStats extends PublisherStats {
     /**
      * for non-persistent topic: broker drops msg if publisher publishes messages more than configured max inflight
+<<<<<<< HEAD
      * messages per connection
+=======
+     * messages per connection.
+>>>>>>> f773c602c... Test pr 10 (#27)
      **/
     public double msgDropRate;
 
@@ -35,4 +43,8 @@ public class NonPersistentPublisherStats extends PublisherStats {
         this.msgDropRate += stats.msgDropRate;
         return this;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

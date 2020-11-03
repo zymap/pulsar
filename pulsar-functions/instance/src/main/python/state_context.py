@@ -106,9 +106,15 @@ class BKManagedStateContext(StateContext):
 
     def __init__(self, state_storage_serviceurl, table_ns, table_name):
         client_settings = StorageClientSettings(
+<<<<<<< HEAD
           service_uri=state_storage_serviceurl)
         admin_client = admin.client.Client(
           storage_client_settings=client_settings)
+=======
+            service_uri=state_storage_serviceurl)
+        admin_client = admin.client.Client(
+            storage_client_settings=client_settings)
+>>>>>>> f773c602c... Test pr 10 (#27)
         # create namespace and table if needed
         ns = admin_client.namespace(table_ns)
         try:
@@ -126,7 +132,12 @@ class BKManagedStateContext(StateContext):
             ns.create(
                 stream_name=table_name,
                 stream_config=table_conf)
+<<<<<<< HEAD
         self.__client__ = kv.Client(namespace=table_ns)
+=======
+        self.__client__ = kv.Client(storage_client_settings=client_settings,
+                                    namespace=table_ns)
+>>>>>>> f773c602c... Test pr 10 (#27)
         self.__table__ = self.__client__.table(table_name=table_name)
 
     def incr(self, key, amount):
@@ -154,3 +165,9 @@ class BKManagedStateContext(StateContext):
 
     def put(self, key, value):
         return self.__table__.put_str(key, value)
+<<<<<<< HEAD
+=======
+
+    def delete_key(self, key):
+        return self.__table__.delete_str(key)
+>>>>>>> f773c602c... Test pr 10 (#27)

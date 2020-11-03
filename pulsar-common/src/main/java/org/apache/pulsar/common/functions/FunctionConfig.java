@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Collection;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.TreeMap;
 
 import lombok.*;
@@ -32,22 +33,58 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @Builder(toBuilder=true)
+=======
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+
+/**
+ * Configuration of Pulsar Function.
+ */
+@Data
+@Builder(toBuilder = true)
+>>>>>>> f773c602c... Test pr 10 (#27)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FunctionConfig {
 
+<<<<<<< HEAD
+=======
+    /**
+     * Definition of possible processing guarantees.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public enum ProcessingGuarantees {
         ATLEAST_ONCE,
         ATMOST_ONCE,
         EFFECTIVELY_ONCE
     }
 
+<<<<<<< HEAD
     public enum Runtime {
         JAVA,
         PYTHON
     }
 
+=======
+    /**
+     * Definition of possible runtime environments.
+     */
+    public enum Runtime {
+        JAVA,
+        PYTHON,
+        GO
+    }
+
+    // Any flags that you want to pass to the runtime.
+    // note that in thread mode, these flags will have no impact
+    private String runtimeFlags;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private String tenant;
     private String namespace;
     private String name;
@@ -56,6 +93,7 @@ public class FunctionConfig {
     private Map<String, String> customSerdeInputs;
     private String topicsPattern;
     private Map<String, String> customSchemaInputs;
+<<<<<<< HEAD
 
     /**
      * A generalized way of specifying inputs
@@ -67,13 +105,39 @@ public class FunctionConfig {
     /**
      * Represents either a builtin schema type (eg: 'avro', 'json', ect) or the class name for a Schema
      * implementation
+=======
+    private Map<String, String> customSchemaOutputs;
+
+    /**
+     * A generalized way of specifying inputs.
+     */
+    private Map<String, ConsumerConfig> inputSpecs;
+
+    private String output;
+
+    // Any configuration that need to be applied for producers
+    private ProducerConfig producerConfig;
+
+    /**
+     * Represents either a builtin schema type (eg: 'avro', 'json', ect) or the class name for a Schema
+     * implementation.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private String outputSchemaType;
 
     private String outputSerdeClassName;
     private String logTopic;
     private ProcessingGuarantees processingGuarantees;
+<<<<<<< HEAD
     private Boolean retainOrdering;
+=======
+    // Do we want function instances to process data in the same order as in the input topics
+    // This essentially means that every partition of input topic is consumed by only one instance
+    private Boolean retainOrdering;
+    // Do we want the same function instance to process all data keyed by the input topic's message key
+    private Boolean retainKeyOrdering;
+    private Boolean forwardSourceMessageProperty;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private Map<String, Object> userConfig;
     // This is a map of secretName(aka how the secret is going to be
     // accessed in the function via context) to an object that
@@ -93,6 +157,21 @@ public class FunctionConfig {
     private Long timeoutMs;
     private String jar;
     private String py;
+<<<<<<< HEAD
     // Whether the subscriptions the functions created/used should be deleted when the functions is deleted
     private Boolean cleanupSubscription;
+=======
+    private String go;
+    // Whether the subscriptions the functions created/used should be deleted when the functions is deleted
+    private Boolean cleanupSubscription;
+    // This is an arbitrary string that can be interpreted by the function runtime
+    // to change behavior at runtime. Currently, this primarily used by the KubernetesManifestCustomizer
+    // interface
+    private String customRuntimeOptions;
+    // Max pending async requests per instance to avoid large number of concurrent requests.
+    // Only used in AsyncFunction. Default: 1000.
+    private Integer maxPendingAsyncRequests;
+
+    private SubscriptionInitialPosition subscriptionPosition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

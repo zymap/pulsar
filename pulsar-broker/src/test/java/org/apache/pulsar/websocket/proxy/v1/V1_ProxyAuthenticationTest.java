@@ -25,6 +25,10 @@ import static org.mockito.Mockito.spy;
 import com.google.common.collect.Sets;
 
 import java.net.URI;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +40,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.v1.V1_ProducerConsumerBase;
 import org.apache.pulsar.websocket.WebSocketService;
 import org.apache.pulsar.websocket.proxy.SimpleConsumerSocket;
@@ -56,7 +63,10 @@ import org.testng.annotations.Test;
 
 public class V1_ProxyAuthenticationTest extends V1_ProducerConsumerBase {
 
+<<<<<<< HEAD
     private int port;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ProxyServer proxyServer;
     private WebSocketService service;
     private WebSocketClient consumeClient;
@@ -67,9 +77,14 @@ public class V1_ProxyAuthenticationTest extends V1_ProducerConsumerBase {
         super.internalSetup();
         super.producerBaseSetup();
 
+<<<<<<< HEAD
         port = PortManager.nextFreePort();
         WebSocketProxyConfiguration config = new WebSocketProxyConfiguration();
         config.setWebServicePort(port);
+=======
+        WebSocketProxyConfiguration config = new WebSocketProxyConfiguration();
+        config.setWebServicePort(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setClusterName("use");
         config.setAuthenticationEnabled(true);
         // If this is not set, 500 error occurs.
@@ -119,8 +134,13 @@ public class V1_ProxyAuthenticationTest extends V1_ProducerConsumerBase {
 
     public void socketTest() throws Exception {
         final String topic = "prop/use/my-ns/my-topic1";
+<<<<<<< HEAD
         final String consumerUri = "ws://localhost:" + port + "/ws/consumer/persistent/" + topic + "/my-sub";
         final String producerUri = "ws://localhost:" + port + "/ws/producer/persistent/" + topic;
+=======
+        final String consumerUri = "ws://localhost:" + proxyServer.getListenPortHTTP().get() + "/ws/consumer/persistent/" + topic + "/my-sub";
+        final String producerUri = "ws://localhost:" + proxyServer.getListenPortHTTP().get() + "/ws/producer/persistent/" + topic;
+>>>>>>> f773c602c... Test pr 10 (#27)
         URI consumeUri = URI.create(consumerUri);
         URI produceUri = URI.create(producerUri);
 
@@ -170,8 +190,13 @@ public class V1_ProxyAuthenticationTest extends V1_ProducerConsumerBase {
     @Test(timeOut=10000)
     public void statsTest() throws Exception {
         final String topic = "prop/use/my-ns/my-topic2";
+<<<<<<< HEAD
         final String consumerUri = "ws://localhost:" + port + "/ws/consumer/persistent/" + topic + "/my-sub";
         final String producerUri = "ws://localhost:" + port + "/ws/producer/persistent/" + topic;
+=======
+        final String consumerUri = "ws://localhost:" + proxyServer.getListenPortHTTP().get() + "/ws/consumer/persistent/" + topic + "/my-sub";
+        final String producerUri = "ws://localhost:" + proxyServer.getListenPortHTTP().get() + "/ws/producer/persistent/" + topic;
+>>>>>>> f773c602c... Test pr 10 (#27)
         URI consumeUri = URI.create(consumerUri);
         URI produceUri = URI.create(producerUri);
 
@@ -180,7 +205,11 @@ public class V1_ProxyAuthenticationTest extends V1_ProducerConsumerBase {
         WebSocketClient produceClient = new WebSocketClient();
         SimpleProducerSocket produceSocket = new SimpleProducerSocket();
 
+<<<<<<< HEAD
         final String baseUrl = "http://localhost:" + port + "/admin/proxy-stats/";
+=======
+        final String baseUrl = "http://localhost:" + proxyServer.getListenPortHTTP().get() + "/admin/proxy-stats/";
+>>>>>>> f773c602c... Test pr 10 (#27)
         Client client = ClientBuilder.newClient();
 
         try {

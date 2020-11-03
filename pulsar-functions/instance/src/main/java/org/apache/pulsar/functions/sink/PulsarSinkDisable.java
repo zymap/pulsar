@@ -43,7 +43,11 @@ public class PulsarSinkDisable<T> implements Sink<T> {
 
     @Override
     public void write(Record<T> record) throws Exception {
+<<<<<<< HEAD
         // No-op
+=======
+        record.ack();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 }

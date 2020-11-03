@@ -21,6 +21,12 @@ package org.apache.bookkeeper.mledger.impl;
 import com.google.common.base.Predicate;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.FindEntryCallback;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntryCallback;
+<<<<<<< HEAD
+=======
+
+import java.util.Optional;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.Position;
@@ -64,6 +70,12 @@ class OpFindNewest implements ReadEntryCallback {
         switch (state) {
         case checkFirst:
             if (!condition.apply(entry)) {
+<<<<<<< HEAD
+=======
+                // If no entry is found that matches the condition, it is expected to pass null to the callback.
+                // Otherwise, a message before the expiration date will be deleted due to message TTL.
+                // cf. https://github.com/apache/pulsar/issues/5579
+>>>>>>> f773c602c... Test pr 10 (#27)
                 callback.findEntryComplete(null, OpFindNewest.this.ctx);
                 return;
             } else {
@@ -107,7 +119,11 @@ class OpFindNewest implements ReadEntryCallback {
 
     @Override
     public void readEntryFailed(ManagedLedgerException exception, Object ctx) {
+<<<<<<< HEAD
         callback.findEntryFailed(exception, OpFindNewest.this.ctx);
+=======
+        callback.findEntryFailed(exception, Optional.ofNullable(searchPosition), OpFindNewest.this.ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void find() {

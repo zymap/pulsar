@@ -19,8 +19,11 @@
 #ifndef PRODUCERCRYPTOFAILUREACTION_H_
 #define PRODUCERCRYPTOFAILUREACTION_H_
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 enum class ProducerCryptoFailureAction
@@ -31,6 +34,9 @@ enum class ProducerCryptoFailureAction
 
 } /* namespace pulsar */
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PRODUCERCRYPTOFAILUREACTION_H_ */

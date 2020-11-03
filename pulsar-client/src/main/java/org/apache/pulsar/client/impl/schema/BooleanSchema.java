@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.client.impl.schema;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.Schema;
+=======
+import io.netty.buffer.ByteBuf;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SchemaSerializationException;
 import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
@@ -26,18 +30,36 @@ import org.apache.pulsar.common.schema.SchemaType;
 /**
  * A schema for `Boolean`.
  */
+<<<<<<< HEAD
 public class BooleanSchema implements Schema<Boolean> {
+=======
+public class BooleanSchema extends AbstractSchema<Boolean> {
+
+    private static final BooleanSchema INSTANCE;
+    private static final SchemaInfo SCHEMA_INFO;
+
+    static {
+        SCHEMA_INFO = new SchemaInfo()
+                .setName("Boolean")
+                .setType(SchemaType.BOOLEAN)
+                .setSchema(new byte[0]);
+        INSTANCE = new BooleanSchema();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static BooleanSchema of() {
         return INSTANCE;
     }
 
+<<<<<<< HEAD
     private static final BooleanSchema INSTANCE = new BooleanSchema();
     private static final SchemaInfo SCHEMA_INFO = new SchemaInfo()
             .setName("Boolean")
             .setType(SchemaType.BOOLEAN)
             .setSchema(new byte[0]);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public void validate(byte[] message) {
         if (message.length != 1) {
@@ -64,6 +86,17 @@ public class BooleanSchema implements Schema<Boolean> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public Boolean decode(ByteBuf byteBuf) {
+        if (null == byteBuf) {
+            return null;
+        }
+        return byteBuf.getBoolean(0);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaInfo getSchemaInfo() {
         return SCHEMA_INFO;
     }

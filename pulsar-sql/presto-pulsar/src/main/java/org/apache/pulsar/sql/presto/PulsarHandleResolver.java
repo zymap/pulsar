@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.ColumnHandle;
 import com.facebook.presto.spi.ConnectorHandleResolver;
 import com.facebook.presto.spi.ConnectorSplit;
@@ -28,6 +29,21 @@ import com.facebook.presto.spi.connector.ConnectorTransactionHandle;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+=======
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
+import io.prestosql.spi.connector.ColumnHandle;
+import io.prestosql.spi.connector.ConnectorHandleResolver;
+import io.prestosql.spi.connector.ConnectorSplit;
+import io.prestosql.spi.connector.ConnectorTableHandle;
+import io.prestosql.spi.connector.ConnectorTableLayoutHandle;
+import io.prestosql.spi.connector.ConnectorTransactionHandle;
+
+/**
+ * This class helps to resolve classes for the Presto connector.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarHandleResolver implements ConnectorHandleResolver {
     @Override
     public Class<? extends ConnectorTableHandle> getTableHandleClass() {
@@ -57,8 +73,13 @@ public class PulsarHandleResolver implements ConnectorHandleResolver {
 
     static PulsarColumnHandle convertColumnHandle(ColumnHandle columnHandle) {
         requireNonNull(columnHandle, "columnHandle is null");
+<<<<<<< HEAD
         checkArgument(columnHandle instanceof PulsarColumnHandle, "columnHandle is not an instance of " +
                 "PulsarColumnHandle");
+=======
+        checkArgument(columnHandle instanceof PulsarColumnHandle, "columnHandle is not an instance of "
+            + "PulsarColumnHandle");
+>>>>>>> f773c602c... Test pr 10 (#27)
         return (PulsarColumnHandle) columnHandle;
     }
 
@@ -70,8 +91,13 @@ public class PulsarHandleResolver implements ConnectorHandleResolver {
 
     static PulsarTableLayoutHandle convertLayout(ConnectorTableLayoutHandle layout) {
         requireNonNull(layout, "layout is null");
+<<<<<<< HEAD
         checkArgument(layout instanceof PulsarTableLayoutHandle, "layout is not an instance of " +
                 "PulsarTableLayoutHandle");
+=======
+        checkArgument(layout instanceof PulsarTableLayoutHandle, "layout is not an instance of "
+            + "PulsarTableLayoutHandle");
+>>>>>>> f773c602c... Test pr 10 (#27)
         return (PulsarTableLayoutHandle) layout;
     }
 

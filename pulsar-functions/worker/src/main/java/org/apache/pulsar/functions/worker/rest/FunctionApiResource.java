@@ -24,9 +24,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+<<<<<<< HEAD
 import org.apache.pulsar.broker.web.AuthenticationFilter;
 import org.apache.pulsar.functions.worker.WorkerService;
 import org.apache.pulsar.functions.worker.rest.api.FunctionsImpl;
+=======
+import org.apache.pulsar.broker.authentication.AuthenticationDataHttps;
+import org.apache.pulsar.broker.web.AuthenticationFilter;
+import org.apache.pulsar.functions.worker.WorkerService;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class FunctionApiResource implements Supplier<WorkerService> {
 
@@ -53,4 +59,11 @@ public class FunctionApiResource implements Supplier<WorkerService> {
                 ? (String) httpRequest.getAttribute(AuthenticationFilter.AuthenticatedRoleAttributeName)
                 : null;
     }
+<<<<<<< HEAD
+=======
+
+    public AuthenticationDataHttps clientAuthData() {
+        return (AuthenticationDataHttps) httpRequest.getAttribute(AuthenticationFilter.AuthenticatedDataAttributeName);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

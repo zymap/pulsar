@@ -21,3 +21,7 @@
 
 PROTOC=${PROTOC:-protoc}
 ${PROTOC} --java_out=src/main/java src/main/proto/PulsarApi.proto
+<<<<<<< HEAD
+=======
+${PROTOC} --java_out=src/main/java src/main/proto/PulsarMarkers.proto
+>>>>>>> f773c602c... Test pr 10 (#27)
