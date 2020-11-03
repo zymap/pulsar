@@ -66,5 +66,9 @@ jobs:
           github_email: 'zhangyong1025.zy@gmail.com'
           github_repos: 'zymap/pulsar'
 
+      - name: Echo
+        if: always()
+        run: echo ${{ toJson(github) }}
+
 
 

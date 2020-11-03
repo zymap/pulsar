@@ -72,7 +72,7 @@ cherrypick() {
 pr_close_prompt_args() {
     readonly PR_NUMBER=$(jq -r '.number' "${GITHUB_EVENT_PATH}")
     readonly PR_INFO=$(curl -s --request GET \
-        --url https://api.github.com/repos/zymap/my-action/pulls/${PR_NUMBER} \
+        --url https://api.github.com/repos/${GITHUB_REPOS}/pulls/${PR_NUMBER} \
         --header "Authorization: token ${GITHUB_TOKEN}" \
         --header 'Accept: application/vnd.github.sailor-v-preview+json')
 }
