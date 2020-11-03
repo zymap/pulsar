@@ -17,6 +17,10 @@
  * under the License.
  */
 #include "HandlerBase.h"
+<<<<<<< HEAD
+=======
+#include "TimeUtils.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #include <cassert>
 
@@ -31,10 +35,18 @@ HandlerBase::HandlerBase(const ClientImplPtr& client, const std::string& topic, 
       topic_(topic),
       connection_(),
       mutex_(),
+<<<<<<< HEAD
       creationTimestamp_(now()),
       operationTimeut_(seconds(client->conf().getOperationTimeoutSeconds())),
       state_(Pending),
       backoff_(backoff),
+=======
+      creationTimestamp_(TimeUtils::now()),
+      operationTimeut_(seconds(client->conf().getOperationTimeoutSeconds())),
+      state_(Pending),
+      backoff_(backoff),
+      epoch_(0),
+>>>>>>> f773c602c... Test pr 10 (#27)
       timer_(client->getIOExecutorProvider()->get()->createDeadlineTimer()) {}
 
 HandlerBase::~HandlerBase() { timer_->cancel(); }
@@ -139,10 +151,15 @@ void HandlerBase::handleTimeout(const boost::system::error_code& ec, HandlerBase
         LOG_DEBUG(handler->getName() << "Ignoring timer cancelled event, code[" << ec << "]");
         return;
     } else {
+<<<<<<< HEAD
+=======
+        handler->epoch_++;
+>>>>>>> f773c602c... Test pr 10 (#27)
         handler->grabCnx();
     }
 }
 
+<<<<<<< HEAD
 ptime now() { return microsec_clock::universal_time(); }
 
 int64_t currentTimeMillis() {
@@ -151,4 +168,6 @@ int64_t currentTimeMillis() {
     time_duration diff = now() - time_t_epoch;
     return diff.total_milliseconds();
 }
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

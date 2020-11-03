@@ -1,6 +1,14 @@
 module.exports = {
   committers: [
     {
+<<<<<<< HEAD
+=======
+      name: 'Ali Ahmed',
+      apacheId: 'aahmed',
+      roles: 'Committer'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Boyang Jerry Peng',
       apacheId: 'jerrypeng',
       org: 'Streamlio',
@@ -18,17 +26,48 @@ module.exports = {
       roles: 'Committer, PMC'
     },
     {
+<<<<<<< HEAD
+=======
+      name: 'Fangbin Sun',
+      apacheId: 'sunfangbin',
+      roles: 'Committer'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Francis Christopher Liu',
       apacheId: 'toffer',
       roles: 'Committer, PMC'
     },
     {
+<<<<<<< HEAD
+=======
+      name: 'Guangning E',
+      apacheId: 'guangning',
+      roles: 'Committer'
+    },
+    {
+      name: 'Hang Chen',
+      apacheId: 'chenhang',
+      org: 'BIGO Technology',
+      roles: 'Committer'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Hiroyuki Sakai',
       apacheId: 'hrsakai',
       org: 'Yahoo Japan Corporation',
       roles: 'Committer, PMC'
     },
     {
+<<<<<<< HEAD
+=======
+      name: 'Huanli Meng',
+      apacheId: 'huanlimeng',
+      org: 'StreamNative',
+      roles: 'Committer'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Ivan Brendan Kelly',
       apacheId: 'ivank',
       org: 'Streamlio',
@@ -41,9 +80,21 @@ module.exports = {
       roles: 'Committer, PMC'
     },
     {
+<<<<<<< HEAD
       name: 'Jia Zhai',
       apacheId: 'zhaijia',
       org: 'Streamlio',
+=======
+      name: 'Jennifer Huang',
+      apacheId: 'hjf',
+      org: 'StreamNative',
+      roles: 'Committer'
+    },
+    {
+      name: 'Jia Zhai',
+      apacheId: 'zhaijia',
+      org: 'StreamNative',
+>>>>>>> f773c602c... Test pr 10 (#27)
       roles: 'Committer, PMC'
     },
     {
@@ -93,6 +144,14 @@ module.exports = {
       roles: 'Committer, PMC'
     },
     {
+<<<<<<< HEAD
+=======
+      name: 'Penghui Li',
+      apacheId: 'penghui',
+      roles: 'Committer, PMC'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Rajan Dhabalia',
       apacheId: 'rdhabalia',
       org: 'Yahoo',
@@ -125,10 +184,29 @@ module.exports = {
     {
       name: 'Sijie Guo',
       apacheId: 'sijie',
+<<<<<<< HEAD
       org: 'Streamlio',
       roles: 'Committer, PMC'
     },
     {
+=======
+      org: 'StreamNative',
+      roles: 'Committer, PMC'
+    },
+    {
+      name: 'Xiaolong Ran',
+      apacheId: 'rxl',
+      org: 'StreamNative',
+      roles: 'Committer'
+    },
+    {
+        name: 'Yu Liu',
+        apacheId: 'liuyu',
+        org: 'StreamNative',
+        roles: 'Committer'
+    },
+    {
+>>>>>>> f773c602c... Test pr 10 (#27)
       name: 'Yuki Shiga',
       apacheId: 'yushiga',
       org: 'Yahoo Japan Corporation',

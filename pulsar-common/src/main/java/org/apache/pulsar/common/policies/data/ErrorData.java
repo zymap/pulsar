@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
+=======
+/**
+ * Class holding data in case of error responses.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ErrorData {
     public String reason;
 

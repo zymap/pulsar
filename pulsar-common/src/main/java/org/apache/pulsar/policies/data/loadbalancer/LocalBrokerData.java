@@ -18,15 +18,27 @@
  */
 package org.apache.pulsar.policies.data.loadbalancer;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.collect.Maps;
+import java.util.Collections;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
+=======
+import java.util.Optional;
+import java.util.Set;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Contains all the data that is maintained locally on each broker.
  */
@@ -38,8 +50,13 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
     private final String webServiceUrlTls;
     private final String pulsarServiceUrl;
     private final String pulsarServiceUrlTls;
+<<<<<<< HEAD
     private boolean persistentTopicsEnabled=true;
     private boolean nonPersistentTopicsEnabled=true;
+=======
+    private boolean persistentTopicsEnabled = true;
+    private boolean nonPersistentTopicsEnabled = true;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     // Most recently available system resource usage.
     private ResourceUsage cpu;
@@ -78,8 +95,19 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
     // The version string that this broker is running, obtained from the Maven build artifact in the POM
     private String brokerVersionString;
     // This place-holder requires to identify correct LoadManagerReport type while deserializing
+<<<<<<< HEAD
     public static final String loadReportType = LocalBrokerData.class.getSimpleName();
 
+=======
+    @SuppressWarnings("checkstyle:ConstantName")
+    public static final String loadReportType = LocalBrokerData.class.getSimpleName();
+
+    // the external protocol data advertised by protocol handlers.
+    private Map<String, String> protocols;
+    //
+    private Map<String, AdvertisedListener> advertisedListeners;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     // For JSON only.
     public LocalBrokerData() {
         this(null, null, null, null);
@@ -90,11 +118,24 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
      */
     public LocalBrokerData(final String webServiceUrl, final String webServiceUrlTls, final String pulsarServiceUrl,
             final String pulsarServiceUrlTls) {
+<<<<<<< HEAD
+=======
+        this(webServiceUrl, webServiceUrlTls, pulsarServiceUrl, pulsarServiceUrlTls,
+                Collections.unmodifiableMap(Collections.emptyMap()));
+    }
+
+    public LocalBrokerData(final String webServiceUrl, final String webServiceUrlTls, final String pulsarServiceUrl,
+                           final String pulsarServiceUrlTls, Map<String, AdvertisedListener> advertisedListeners) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.webServiceUrl = webServiceUrl;
         this.webServiceUrlTls = webServiceUrlTls;
         this.pulsarServiceUrl = pulsarServiceUrl;
         this.pulsarServiceUrlTls = pulsarServiceUrlTls;
+<<<<<<< HEAD
         lastStats = new HashMap<>();
+=======
+        lastStats = Maps.newConcurrentMap();
+>>>>>>> f773c602c... Test pr 10 (#27)
         lastUpdate = System.currentTimeMillis();
         cpu = new ResourceUsage();
         memory = new ResourceUsage();
@@ -104,6 +145,11 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
         bundles = new HashSet<>();
         lastBundleGains = new HashSet<>();
         lastBundleLosses = new HashSet<>();
+<<<<<<< HEAD
+=======
+        protocols = new HashMap<>();
+        this.advertisedListeners = Collections.unmodifiableMap(Maps.newHashMap(advertisedListeners));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -200,6 +246,36 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
                 bandwidthOut.percentUsage()) / 100;
     }
 
+<<<<<<< HEAD
+=======
+    public String printResourceUsage() {
+        return String.format(
+                "cpu: %.2f%%, memory: %.2f%%, directMemory: %.2f%%, bandwidthIn: %.2f%%, bandwidthOut: %.2f%%",
+                cpu.percentUsage(), memory.percentUsage(), directMemory.percentUsage(), bandwidthIn.percentUsage(),
+                bandwidthOut.percentUsage());
+    }
+
+    public double getMaxResourceUsageWithWeight(final double cpuWeight, final double memoryWeight,
+                                                final double directMemoryWeight, final double bandwithInWeight,
+                                                final double bandWithOutWeight) {
+        return max(cpu.percentUsage() * cpuWeight, memory.percentUsage() * memoryWeight,
+                directMemory.percentUsage() * directMemoryWeight, bandwidthIn.percentUsage() * bandwithInWeight,
+                bandwidthOut.percentUsage() * bandWithOutWeight) / 100;
+    }
+
+    private static double max(double... args) {
+        double max = Double.NEGATIVE_INFINITY;
+
+        for (double d : args) {
+            if (d > max) {
+                max = d;
+            }
+        }
+
+        return max;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static float max(float...args) {
         float max = Float.NEGATIVE_INFINITY;
 
@@ -426,4 +502,28 @@ public class LocalBrokerData extends JSONWritable implements LoadManagerReport {
         return getLastStats();
     }
 
+<<<<<<< HEAD
+=======
+    public void setProtocols(Map<String, String> protocols) {
+        this.protocols = protocols;
+    }
+
+    @Override
+    public Map<String, String> getProtocols() {
+        return protocols;
+    }
+
+    @Override
+    public Optional<String> getProtocol(String protocol) {
+        return Optional.ofNullable(protocols.get(protocol));
+    }
+
+    public Map<String, AdvertisedListener> getAdvertisedListeners() {
+        return advertisedListeners;
+    }
+
+    public void setAdvertisedListeners(Map<String, AdvertisedListener> advertisedListeners) {
+        this.advertisedListeners = advertisedListeners;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

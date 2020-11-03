@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.common.api.raw;
 
+<<<<<<< HEAD
+=======
+import lombok.Getter;
+
+@Getter
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class RawMessageIdImpl implements RawMessageId {
 
     long ledgerId;

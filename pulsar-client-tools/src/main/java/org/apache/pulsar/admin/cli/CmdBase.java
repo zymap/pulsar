@@ -18,6 +18,11 @@
  */
 package org.apache.pulsar.admin.cli;
 
+<<<<<<< HEAD
+=======
+import com.beust.jcommander.DefaultUsageFormatter;
+import com.beust.jcommander.IUsageFormatter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -29,6 +34,10 @@ import org.apache.pulsar.client.admin.PulsarAdminException.ConnectException;
 public abstract class CmdBase {
     protected final JCommander jcommander;
     protected final PulsarAdmin admin;
+<<<<<<< HEAD
+=======
+    protected IUsageFormatter usageFormatter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @Parameter(names = { "-h", "--help" }, help = true, hidden = true)
     private boolean help;
@@ -36,17 +45,38 @@ public abstract class CmdBase {
     public CmdBase(String cmdName, PulsarAdmin admin) {
         this.admin = admin;
         jcommander = new JCommander();
+<<<<<<< HEAD
         jcommander.setProgramName("pulsar-admin " + cmdName);
     }
 
+=======
+        usageFormatter = new DefaultUsageFormatter(jcommander);
+        jcommander.setProgramName("pulsar-admin " + cmdName);
+    }
+
+    private void tryShowCommandUsage() {
+        try {
+            String chosenCommand = jcommander.getParsedCommand();
+            usageFormatter.usage(chosenCommand);
+        } catch (Exception e) {
+            // it is caused by an invalid command, the invalid command can not be parsed
+            System.err.println("Invalid command, please use `pulsar-admin --help` to check out how to use");
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean run(String[] args) {
         try {
             jcommander.parse(args);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.err.println();
+<<<<<<< HEAD
             String chosenCommand = jcommander.getParsedCommand();
             jcommander.usage(chosenCommand);
+=======
+            tryShowCommandUsage();
+>>>>>>> f773c602c... Test pr 10 (#27)
             return false;
         }
 

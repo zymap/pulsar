@@ -22,19 +22,46 @@ import static org.apache.pulsar.common.policies.data.Policies.defaultBundle;
 
 import com.google.common.base.Objects;
 
+<<<<<<< HEAD
 public class LocalPolicies {
 
     public BundlesData bundles;
+=======
+/**
+ * Local policies.
+ */
+public class LocalPolicies {
+
+    public BundlesData bundles;
+    // bookie affinity group for bookie-isolation
+    public BookieAffinityGroupData bookieAffinityGroup;
+    // namespace anti-affinity-group
+    public String namespaceAntiAffinityGroup;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public LocalPolicies() {
         bundles = defaultBundle();
     }
 
     @Override
+<<<<<<< HEAD
     public boolean equals(Object obj) {
         if (obj instanceof LocalPolicies) {
             LocalPolicies other = (LocalPolicies) obj;
             return Objects.equal(bundles, other.bundles);
+=======
+    public int hashCode() {
+        return Objects.hashCode(bundles, bookieAffinityGroup);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LocalPolicies) {
+            LocalPolicies other = (LocalPolicies) obj;
+            return Objects.equal(bundles, other.bundles)
+                    && Objects.equal(bookieAffinityGroup, other.bookieAffinityGroup)
+                    && Objects.equal(namespaceAntiAffinityGroup, other.namespaceAntiAffinityGroup);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         return false;
     }

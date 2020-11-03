@@ -5,10 +5,19 @@ test-results
 dependency-reduced-pom.xml
 logs
 /data
+<<<<<<< HEAD
+=======
+pulsar-broker/data/
+>>>>>>> f773c602c... Test pr 10 (#27)
 pulsar-broker/tmp.*
 pulsar-broker/src/test/resources/log4j2.yaml
 pulsar-functions/worker/test-tenant/
 pulsar-broker/src/test/resources/pulsar-functions-api-examples.jar
+<<<<<<< HEAD
+=======
+pulsar-functions/runtime/src/test/resources/
+pulsar-functions/worker/src/test/resources/
+>>>>>>> f773c602c... Test pr 10 (#27)
 *.log
 *.nar
 
@@ -60,10 +69,15 @@ deployment/terraform-ansible/aws/terraform.tfstate.backup
 **/.vagrant
 
 
+<<<<<<< HEAD
 pulsar-client-cpp/python/pkg/osx/**/*.bak
 pulsar-client-cpp/python/pkg/osx/**/build.sh
 pulsar-client-cpp/python/pkg/osx/**/*.whl
 pulsar-client-cpp/python/pkg/osx/**/*.template2
+=======
+pulsar-client-cpp/python/pkg/osx/*/*.bak
+pulsar-client-cpp/python/pkg/osx/*/*.whl
+>>>>>>> f773c602c... Test pr 10 (#27)
 pulsar-client-cpp/python/wheelhouse
 
 # CI generated files
@@ -78,7 +92,18 @@ docker.debug-info
 
 **/website/i18n/*
 **/website/translated_docs*
+<<<<<<< HEAD
+=======
+**/website/brodocs/index.html
+**/website/brodocs/navData.js
+**/website/brodocs/documents/*.md
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Avro
 examples/flink/src/main/java/org/apache/flink/avro/generated
 pulsar-flink/src/test/java/org/apache/flink/avro/generated
+<<<<<<< HEAD
+=======
+pulsar-client/src/test/java/org/apache/pulsar/client/avro/generated
+/build/
+>>>>>>> f773c602c... Test pr 10 (#27)

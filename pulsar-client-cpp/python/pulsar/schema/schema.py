@@ -23,6 +23,10 @@ import json
 import fastavro
 import _pulsar
 import io
+<<<<<<< HEAD
+=======
+import enum
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 
 class Schema(object):
@@ -78,9 +82,21 @@ class JsonSchema(Schema):
         super(JsonSchema, self).__init__(record_cls, _pulsar.SchemaType.JSON,
                                          record_cls.schema(), 'JSON')
 
+<<<<<<< HEAD
     def encode(self, obj):
         self._validate_object_type(obj)
         return json.dumps(obj.__dict__, indent=True).encode('utf-8')
+=======
+    def _get_serialized_value(self, o):
+        if isinstance(o, enum.Enum):
+            return o.value
+        else:
+            return o.__dict__
+
+    def encode(self, obj):
+        self._validate_object_type(obj)
+        return json.dumps(obj.__dict__, default=self._get_serialized_value, indent=True).encode('utf-8')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     def decode(self, data):
         return self._record_cls(**json.loads(data))
@@ -92,10 +108,24 @@ class AvroSchema(Schema):
                                          record_cls.schema(), 'AVRO')
         self._schema = record_cls.schema()
 
+<<<<<<< HEAD
     def encode(self, obj):
         self._validate_object_type(obj)
         buffer = io.BytesIO()
         fastavro.schemaless_writer(buffer, self._schema, obj.__dict__)
+=======
+    def _get_serialized_value(self, x):
+        if isinstance(x, enum.Enum):
+            return x.name
+        else:
+            return x
+
+    def encode(self, obj):
+        self._validate_object_type(obj)
+        buffer = io.BytesIO()
+        m = {k: self._get_serialized_value(v) for k, v in obj.__dict__.items()}
+        fastavro.schemaless_writer(buffer, self._schema, m)
+>>>>>>> f773c602c... Test pr 10 (#27)
         return buffer.getvalue()
 
     def decode(self, data):

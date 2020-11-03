@@ -46,7 +46,11 @@ public class PulsarBoltTest extends ProducerConsumerBase {
 
     private static final int NO_OF_RETRIES = 10;
 
+<<<<<<< HEAD
     public final String serviceUrl = "http://127.0.0.1:" + BROKER_WEBSERVICE_PORT;
+=======
+    public String serviceUrl;
+>>>>>>> f773c602c... Test pr 10 (#27)
     public final String topic = "persistent://my-property/my-ns/my-topic1";
     public final String subscriptionName = "my-subscriber-name";
 
@@ -67,6 +71,11 @@ public class PulsarBoltTest extends ProducerConsumerBase {
         super.internalSetup();
         super.producerBaseSetup();
 
+<<<<<<< HEAD
+=======
+        serviceUrl = pulsar.getWebServiceAddress();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         pulsarBoltConf = new PulsarBoltConfiguration();
         pulsarBoltConf.setServiceUrl(serviceUrl);
         pulsarBoltConf.setTopic(topic);

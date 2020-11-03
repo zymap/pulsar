@@ -18,17 +18,34 @@
  */
 package org.apache.pulsar.client.admin;
 
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.common.policies.data.ResourceQuota;
 
+<<<<<<< HEAD
+=======
+/**
+ * Admin interface on interacting with resource quotas.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public interface ResourceQuotas {
 
     /**
      * Get default resource quota for new resource bundles.
+<<<<<<< HEAD
      * <p>
      * Get default resource quota for new resource bundles.
      * <p>
+=======
+     * <p/>
+     * Get default resource quota for new resource bundles.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response example:
      *
      * <pre>
@@ -52,10 +69,40 @@ public interface ResourceQuotas {
     ResourceQuota getDefaultResourceQuota() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Set default resource quota for new namespace bundles.
      * <p>
      * Set default resource quota for new namespace bundles.
      * <p>
+=======
+     * Get default resource quota for new resource bundles asynchronously.
+     * <p/>
+     * Get default resource quota for new resource bundles.
+     * <p/>
+     * Response example:
+     *
+     * <pre>
+     * <code>
+     *  {
+     *      "msgRateIn" : 10,
+     *      "msgRateOut" : 30,
+     *      "bandwidthIn" : 10000,
+     *      "bandwidthOut" : 30000,
+     *      "memory" : 100,
+     *      "dynamic" : true
+     *  }
+     * </code>
+     * </pre>
+     *
+     */
+    CompletableFuture<ResourceQuota> getDefaultResourceQuotaAsync();
+
+    /**
+     * Set default resource quota for new namespace bundles.
+     * <p/>
+     * Set default resource quota for new namespace bundles.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * The resource quota can be set with these properties:
      * <ul>
      * <li><code>msgRateIn</code> : The maximum incoming messages per second.
@@ -67,7 +114,11 @@ public interface ResourceQuotas {
      * </li>
      * </ul>
      *
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Request parameter example:
      *
      * <pre>
@@ -94,10 +145,54 @@ public interface ResourceQuotas {
     void setDefaultResourceQuota(ResourceQuota quota) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get resource quota of a namespace bundle.
      * <p>
      * Get resource quota of a namespace bundle.
      * <p>
+=======
+     * Set default resource quota for new namespace bundles asynchronously.
+     * <p/>
+     * Set default resource quota for new namespace bundles.
+     * <p/>
+     * The resource quota can be set with these properties:
+     * <ul>
+     * <li><code>msgRateIn</code> : The maximum incoming messages per second.
+     * <li><code>msgRateOut</code> : The maximum outgoing messages per second.
+     * <li><code>bandwidthIn</code> : The maximum inbound bandwidth used.
+     * <li><code>bandwidthOut</code> : The maximum outbound bandwidth used.
+     * <li><code>memory</code> : The maximum memory used.
+     * <li><code>dynamic</code> : allow the quota to be dynamically re-calculated.
+     * </li>
+     * </ul>
+     *
+     * <p/>
+     * Request parameter example:
+     *
+     * <pre>
+     * <code>
+     *  {
+     *      "msgRateIn" : 10,
+     *      "msgRateOut" : 30,
+     *      "bandwidthIn" : 10000,
+     *      "bandwidthOut" : 30000,
+     *      "memory" : 100,
+     *      "dynamic" : false
+     *  }
+     * </code>
+     * </pre>
+     *
+     * @param quota
+     *             The new ResourceQuota
+     */
+    CompletableFuture<Void> setDefaultResourceQuotaAsync(ResourceQuota quota);
+
+    /**
+     * Get resource quota of a namespace bundle.
+     * <p/>
+     * Get resource quota of a namespace bundle.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response example:
      *
      * <pre>
@@ -128,10 +223,45 @@ public interface ResourceQuotas {
     ResourceQuota getNamespaceBundleResourceQuota(String namespace, String bundle) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Set resource quota for a namespace bundle.
      * <p>
      * Set resource quota for a namespace bundle.
      * <p>
+=======
+     * Get resource quota of a namespace bundle asynchronously.
+     * <p/>
+     * Get resource quota of a namespace bundle.
+     * <p/>
+     * Response example:
+     *
+     * <pre>
+     * <code>
+     *  {
+     *      "msgRateIn" : 10,
+     *      "msgRateOut" : 30,
+     *      "bandwidthIn" : 10000,
+     *      "bandwidthOut" : 30000,
+     *      "memory" : 100,
+     *      "dynamic" : true
+     *  }
+     * </code>
+     * </pre>
+     *
+     * @param namespace
+     *             Namespace name
+     * @param bundle
+     *             Range of bundle {start}_{end}
+     *
+     */
+    CompletableFuture<ResourceQuota> getNamespaceBundleResourceQuotaAsync(String namespace, String bundle);
+
+    /**
+     * Set resource quota for a namespace bundle.
+     * <p/>
+     * Set resource quota for a namespace bundle.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * The resource quota can be set with these properties:
      * <ul>
      * <li><code>msgRateIn</code> : The maximum incoming messages per second.
@@ -143,7 +273,11 @@ public interface ResourceQuotas {
      * </li>
      * </ul>
      *
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Request parameter example:
      *
      * <pre>
@@ -177,10 +311,59 @@ public interface ResourceQuotas {
             throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Reset resource quota for a namespace bundle to default value.
      * <p>
      * Reset resource quota for a namespace bundle to default value.
      * <p>
+=======
+     * Set resource quota for a namespace bundle asynchronously.
+     * <p/>
+     * Set resource quota for a namespace bundle.
+     * <p/>
+     * The resource quota can be set with these properties:
+     * <ul>
+     * <li><code>msgRateIn</code> : The maximum incoming messages per second.
+     * <li><code>msgRateOut</code> : The maximum outgoing messages per second.
+     * <li><code>bandwidthIn</code> : The maximum inbound bandwidth used.
+     * <li><code>bandwidthOut</code> : The maximum outbound bandwidth used.
+     * <li><code>memory</code> : The maximum memory used.
+     * <li><code>dynamic</code> : allow the quota to be dynamically re-calculated.
+     * </li>
+     * </ul>
+     *
+     * <p/>
+     * Request parameter example:
+     *
+     * <pre>
+     * <code>
+     *  {
+     *      "msgRateIn" : 10,
+     *      "msgRateOut" : 30,
+     *      "bandwidthIn" : 10000,
+     *      "bandwidthOut" : 30000,
+     *      "memory" : 100,
+     *      "dynamic" : false
+     *  }
+     * </code>
+     * </pre>
+     *
+     * @param namespace
+     *             Namespace name
+     * @param bundle
+     *             Bundle range {start}_{end}
+     * @param quota
+     *             The new ResourceQuota
+     *
+     */
+    CompletableFuture<Void> setNamespaceBundleResourceQuotaAsync(String namespace, String bundle, ResourceQuota quota);
+
+    /**
+     * Reset resource quota for a namespace bundle to default value.
+     * <p/>
+     * Reset resource quota for a namespace bundle to default value.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * The resource quota policy will fall back to the default.
      *
      * @param namespace
@@ -196,5 +379,23 @@ public interface ResourceQuotas {
      *             Unexpected error
      */
     void resetNamespaceBundleResourceQuota(String namespace, String bundle) throws PulsarAdminException;
+<<<<<<< HEAD
+=======
+
+    /**
+     * Reset resource quota for a namespace bundle to default value asynchronously.
+     * <p/>
+     * Reset resource quota for a namespace bundle to default value.
+     * <p/>
+     * The resource quota policy will fall back to the default.
+     *
+     * @param namespace
+     *             Namespace name
+     * @param bundle
+     *             Bundle range {start}_{end}
+     *
+     */
+    CompletableFuture<Void> resetNamespaceBundleResourceQuotaAsync(String namespace, String bundle);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 

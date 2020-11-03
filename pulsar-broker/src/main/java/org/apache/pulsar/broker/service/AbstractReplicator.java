@@ -122,11 +122,15 @@ public abstract class AbstractReplicator {
                 log.info("[{}][{} -> {}] Replicator already being started. Replicator state: {}", topicName,
                         localCluster, remoteCluster, state);
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
             return;
         }
 
         log.info("[{}][{} -> {}] Starting replicator", topicName, localCluster, remoteCluster);
+<<<<<<< HEAD
         producerBuilder.createAsync().thenAccept(producer -> {
             readEntries(producer);
         }).exceptionally(ex -> {
@@ -146,6 +150,36 @@ public abstract class AbstractReplicator {
 
     }
 
+=======
+        openCursorAsync().thenAccept(v ->
+            producerBuilder.createAsync()
+                .thenAccept(this::readEntries)
+                .exceptionally(ex -> {
+                    retryCreateProducer(ex);
+                    return null;
+        })).exceptionally(ex -> {
+            retryCreateProducer(ex);
+            return null;
+        });
+    }
+
+    private void retryCreateProducer(Throwable ex) {
+        if (STATE_UPDATER.compareAndSet(this, State.Starting, State.Stopped)) {
+            long waitTimeMs = backOff.next();
+            log.warn("[{}][{} -> {}] Failed to create remote producer ({}), retrying in {} s", topicName,
+                localCluster, remoteCluster, ex.getMessage(), waitTimeMs / 1000.0);
+
+            // BackOff before retrying
+            brokerService.executor().schedule(this::startProducer, waitTimeMs, TimeUnit.MILLISECONDS);
+        } else {
+            log.warn("[{}][{} -> {}] Failed to create remote producer. Replicator state: {}", topicName,
+                localCluster, remoteCluster, STATE_UPDATER.get(this), ex);
+        }
+    }
+
+    protected abstract CompletableFuture<Void> openCursorAsync();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected synchronized CompletableFuture<Void> closeProducerAsync() {
         if (producer == null) {
             STATE_UPDATER.set(this, State.Stopped);
@@ -160,7 +194,11 @@ public abstract class AbstractReplicator {
         }).exceptionally(ex -> {
             long waitTimeMs = backOff.next();
             log.warn(
+<<<<<<< HEAD
                     "[{}][{} -> {}] Exception: '{}' occured while trying to close the producer. retrying again in {} s",
+=======
+                    "[{}][{} -> {}] Exception: '{}' occurred while trying to close the producer. retrying again in {} s",
+>>>>>>> f773c602c... Test pr 10 (#27)
                     topicName, localCluster, remoteCluster, ex.getMessage(), waitTimeMs / 1000.0);
             // BackOff before retrying
             brokerService.executor().schedule(this::closeProducerAsync, waitTimeMs, TimeUnit.MILLISECONDS);
@@ -242,7 +280,11 @@ public abstract class AbstractReplicator {
     private void validatePartitionedTopic(String topic, BrokerService brokerService) throws NamingException {
         TopicName topicName = TopicName.get(topic);
         String partitionedTopicPath = path(AdminResource.PARTITIONED_TOPIC_PATH_ZNODE,
+<<<<<<< HEAD
                 topicName.getNamespace().toString(), topicName.getDomain().toString(),
+=======
+                topicName.getNamespace(), topicName.getDomain().toString(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                 topicName.getEncodedLocalName());
         boolean isPartitionedTopic = false;
         try {

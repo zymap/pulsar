@@ -20,10 +20,20 @@ package org.apache.pulsar.common.policies.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+<<<<<<< HEAD
 public class NonPersistentReplicatorStats extends ReplicatorStats {
 
     /**
      * for non-persistent topic: broker drops msg for replicator if replicator connection is not writable
+=======
+/**
+ * Statistics for a non-persistent replicator.
+ */
+public class NonPersistentReplicatorStats extends ReplicatorStats {
+
+    /**
+     * for non-persistent topic: broker drops msg for replicator if replicator connection is not writable.
+>>>>>>> f773c602c... Test pr 10 (#27)
      **/
     public double msgDropRate;
 

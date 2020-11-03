@@ -29,7 +29,11 @@ void Producer_send(Producer& producer, const Message& message) {
     CHECK_RESULT(res);
 }
 
+<<<<<<< HEAD
 void Producer_sendAsyncCallback(PyObject* callback, Result res, const Message& msg) {
+=======
+void Producer_sendAsyncCallback(PyObject* callback, Result res, const MessageId& msgId) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     if (callback == Py_None) {
         return;
     }
@@ -37,7 +41,11 @@ void Producer_sendAsyncCallback(PyObject* callback, Result res, const Message& m
     PyGILState_STATE state = PyGILState_Ensure();
 
     try {
+<<<<<<< HEAD
         py::call<void>(callback, res, py::object(&msg));
+=======
+        py::call<void>(callback, res, py::object(&msgId));
+>>>>>>> f773c602c... Test pr 10 (#27)
     } catch (py::error_already_set e) {
         PyErr_Print();
     }
@@ -56,6 +64,18 @@ void Producer_sendAsync(Producer& producer, const Message& message, py::object c
     Py_END_ALLOW_THREADS
 }
 
+<<<<<<< HEAD
+=======
+void Producer_flush(Producer& producer) {
+    Result res;
+    Py_BEGIN_ALLOW_THREADS
+    res = producer.flush();
+    Py_END_ALLOW_THREADS
+
+    CHECK_RESULT(res);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 void Producer_close(Producer& producer) {
     Result res;
     Py_BEGIN_ALLOW_THREADS
@@ -89,6 +109,12 @@ void export_producer() {
                          "\n"
                          "@param msg message to publish\n")
             .def("send_async", &Producer_sendAsync)
+<<<<<<< HEAD
+=======
+            .def("flush", &Producer_flush,
+                 "Flush all the messages buffered in the client and wait until all messages have been\n"
+                         "successfully persisted\n")
+>>>>>>> f773c602c... Test pr 10 (#27)
             .def("close", &Producer_close)
             ;
 }

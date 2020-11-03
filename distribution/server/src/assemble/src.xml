@@ -38,6 +38,11 @@
         <include>**/pom.xml</include>
         <include>**/src/**</include>
         <include>**/pulsar-client-cpp/**</include>
+<<<<<<< HEAD
+=======
+        <include>**/pulsar-client-go/**</include>
+        <include>**/pulsar-function-go/**</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
         <include>**/conf/**</include>
         <include>**/bin/**</include>
         <include>**/*.txt</include>
@@ -76,6 +81,10 @@
         <exclude>**/python/dist/**</exclude>
         <exclude>**/pulsar-client-cpp/pkg/rpm/RPMS/**</exclude>
         <exclude>**/pulsar-client-cpp/pkg/rpm/SOURCES/**</exclude>
+<<<<<<< HEAD
+=======
+        <exclude>**/pulsar-client-cpp/pkg/deb/BUILD/**</exclude>
+>>>>>>> f773c602c... Test pr 10 (#27)
         <exclude>**/python/wheelhouse/**</exclude>
         <exclude>**/python/MANIFEST</exclude>
         <exclude>**/*.egg-info/**</exclude>
@@ -84,7 +93,10 @@
         <exclude>**/build/**</exclude>
         <exclude>**/file:/**</exclude>
         <exclude>**/SecurityAuth.audit*</exclude>
+<<<<<<< HEAD
         <exclude>**/site/**</exclude>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         <exclude>**/site2/**</exclude>
         <exclude>**/.idea/**</exclude>
         <exclude>**/*.a</exclude>

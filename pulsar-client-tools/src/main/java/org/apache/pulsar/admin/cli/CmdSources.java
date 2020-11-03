@@ -50,6 +50,10 @@ import org.apache.pulsar.admin.cli.utils.CmdUtils;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.common.functions.Resources;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.functions.UpdateOptions;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.io.ConnectorDefinition;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.common.io.SourceConfig;
@@ -72,7 +76,11 @@ public class CmdSources extends CmdBase {
     private final LocalSourceRunner localSourceRunner;
 
     public CmdSources(PulsarAdmin admin) {
+<<<<<<< HEAD
         super("source", admin);
+=======
+        super("sources", admin);
+>>>>>>> f773c602c... Test pr 10 (#27)
         createSource = new CreateSource();
         updateSource = new UpdateSource();
         deleteSource = new DeleteSource();
@@ -96,6 +104,10 @@ public class CmdSources extends CmdBase {
         jcommander.addCommand("restart", restartSource);
         jcommander.addCommand("localrun", localSourceRunner);
         jcommander.addCommand("available-sources", new ListBuiltInSources());
+<<<<<<< HEAD
+=======
+        jcommander.addCommand("reload", new ReloadBuiltInSources());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -105,7 +117,19 @@ public class CmdSources extends CmdBase {
     abstract class BaseCommand extends CliCommand {
         @Override
         void run() throws Exception {
+<<<<<<< HEAD
             processArguments();
+=======
+            try {
+                processArguments();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                System.err.println();
+                String chosenCommand = jcommander.getParsedCommand();
+                usageFormatter.usage(chosenCommand);
+                return;
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
             runCmd();
         }
 
@@ -118,6 +142,11 @@ public class CmdSources extends CmdBase {
     @Parameters(commandDescription = "Run a Pulsar IO source connector locally (rather than deploying it to the Pulsar cluster)")
     protected class LocalSourceRunner extends CreateSource {
 
+<<<<<<< HEAD
+=======
+        @Parameter(names = "--state-storage-service-url", description = "The URL for the state storage service (the default is Apache BookKeeper)")
+        protected String stateStorageServiceUrl;
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Parameter(names = "--brokerServiceUrl", description = "The URL for the Pulsar broker", hidden = true)
         protected String DEPRECATED_brokerServiceUrl;
         @Parameter(names = "--broker-service-url", description = "The URL for the Pulsar broker")
@@ -153,6 +182,14 @@ public class CmdSources extends CmdBase {
         @Parameter(names = "--tls-trust-cert-path", description = "tls trust cert file path")
         protected String tlsTrustCertFilePath;
 
+<<<<<<< HEAD
+=======
+        @Parameter(names = "--secrets-provider-classname", description = "Whats the classname for secrets provider")
+        protected String secretsProviderClassName;
+        @Parameter(names = "--secrets-provider-config", description = "Config that needs to be passed to secrets provider")
+        protected String secretsProviderConfig;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         private void mergeArgs() {
             if (!isBlank(DEPRECATED_brokerServiceUrl)) brokerServiceUrl = DEPRECATED_brokerServiceUrl;
             if (!isBlank(DEPRECATED_clientAuthPlugin)) clientAuthPlugin = DEPRECATED_clientAuthPlugin;
@@ -197,9 +234,15 @@ public class CmdSources extends CmdBase {
         @Override
         void runCmd() throws Exception {
             if (Utils.isFunctionPackageUrlSupported(this.sourceConfig.getArchive())) {
+<<<<<<< HEAD
                 admin.source().createSourceWithUrl(sourceConfig, sourceConfig.getArchive());
             } else {
                 admin.source().createSource(sourceConfig, sourceConfig.getArchive());
+=======
+                admin.sources().createSourceWithUrl(sourceConfig, sourceConfig.getArchive());
+            } else {
+                admin.sources().createSource(sourceConfig, sourceConfig.getArchive());
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             print("Created successfully");
         }
@@ -207,18 +250,42 @@ public class CmdSources extends CmdBase {
 
     @Parameters(commandDescription = "Update a Pulsar IO source connector")
     protected class UpdateSource extends SourceDetailsCommand {
+<<<<<<< HEAD
         @Override
         void runCmd() throws Exception {
             if (Utils.isFunctionPackageUrlSupported(sourceConfig.getArchive())) {
                 admin.source().updateSourceWithUrl(sourceConfig, sourceConfig.getArchive());
             } else {
                 admin.source().updateSource(sourceConfig, sourceConfig.getArchive());
+=======
+
+        @Parameter(names = "--update-auth-data", description = "Whether or not to update the auth data")
+        protected boolean updateAuthData;
+
+        @Override
+        void runCmd() throws Exception {
+            UpdateOptions updateOptions = new UpdateOptions();
+            updateOptions.setUpdateAuthData(updateAuthData);
+            if (Utils.isFunctionPackageUrlSupported(sourceConfig.getArchive())) {
+                admin.sources().updateSourceWithUrl(sourceConfig, sourceConfig.getArchive(), updateOptions);
+            } else {
+                admin.sources().updateSource(sourceConfig, sourceConfig.getArchive(), updateOptions);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             print("Updated successfully");
         }
 
         protected void validateSourceConfigs(SourceConfig sourceConfig) {
+<<<<<<< HEAD
             org.apache.pulsar.common.functions.Utils.inferMissingArguments(sourceConfig);
+=======
+            if (sourceConfig.getTenant() == null) {
+                sourceConfig.setTenant(PUBLIC_TENANT);
+            }
+            if (sourceConfig.getNamespace() == null) {
+                sourceConfig.setNamespace(DEFAULT_NAMESPACE);
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -278,6 +345,11 @@ public class CmdSources extends CmdBase {
         protected String DEPRECATED_sourceConfigString;
         @Parameter(names = "--source-config", description = "Source config key/values")
         protected String sourceConfigString;
+<<<<<<< HEAD
+=======
+        @Parameter(names = "--custom-runtime-options", description = "A string that encodes options to customize the runtime, see docs for configured runtime for details")
+        protected String customRuntimeOptions;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         protected SourceConfig sourceConfig;
 
@@ -371,13 +443,23 @@ public class CmdSources extends CmdBase {
                 sourceConfig.setConfigs(parseConfigs(sourceConfigString));
             }
 
+<<<<<<< HEAD
+=======
+            if (customRuntimeOptions != null) {
+                sourceConfig.setCustomRuntimeOptions(customRuntimeOptions);
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
             // check if source configs are valid
             validateSourceConfigs(sourceConfig);
         }
 
         protected Map<String, Object> parseConfigs(String str) {
+<<<<<<< HEAD
             Type type = new TypeToken<Map<String, String>>() {
             }.getType();
+=======
+            Type type = new TypeToken<Map<String, Object>>(){}.getType();
+>>>>>>> f773c602c... Test pr 10 (#27)
             return new Gson().fromJson(str, type);
         }
 
@@ -400,7 +482,11 @@ public class CmdSources extends CmdBase {
         protected String validateSourceType(String sourceType) throws IOException {
             Set<String> availableSources;
             try {
+<<<<<<< HEAD
                 availableSources = admin.source().getBuiltInSources().stream().map(ConnectorDefinition::getName).collect(Collectors.toSet());
+=======
+                availableSources = admin.sources().getBuiltInSources().stream().map(ConnectorDefinition::getName).collect(Collectors.toSet());
+>>>>>>> f773c602c... Test pr 10 (#27)
             } catch (PulsarAdminException e) {
                 throw new IOException(e);
             }
@@ -450,7 +536,11 @@ public class CmdSources extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             admin.source().deleteSource(tenant, namespace, sourceName);
+=======
+            admin.sources().deleteSource(tenant, namespace, sourceName);
+>>>>>>> f773c602c... Test pr 10 (#27)
             print("Delete source successfully");
         }
     }
@@ -460,7 +550,11 @@ public class CmdSources extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             SourceConfig sourceConfig = admin.source().getSource(tenant, namespace, sourceName);
+=======
+            SourceConfig sourceConfig = admin.sources().getSource(tenant, namespace, sourceName);
+>>>>>>> f773c602c... Test pr 10 (#27)
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             System.out.println(gson.toJson(sourceConfig));
         }
@@ -489,7 +583,11 @@ public class CmdSources extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             List<String> sources = admin.source().listSources(tenant, namespace);
+=======
+            List<String> sources = admin.sources().listSources(tenant, namespace);
+>>>>>>> f773c602c... Test pr 10 (#27)
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             System.out.println(gson.toJson(sources));
         }
@@ -504,9 +602,15 @@ public class CmdSources extends CmdBase {
         @Override
         void runCmd() throws Exception {
             if (isBlank(instanceId)) {
+<<<<<<< HEAD
                 print(admin.source().getSourceStatus(tenant, namespace, sourceName));
             } else {
                 print(admin.source().getSourceStatus(tenant, namespace, sourceName, Integer.parseInt(instanceId)));
+=======
+                print(admin.sources().getSourceStatus(tenant, namespace, sourceName));
+            } else {
+                print(admin.sources().getSourceStatus(tenant, namespace, sourceName, Integer.parseInt(instanceId)));
+>>>>>>> f773c602c... Test pr 10 (#27)
             };
         }
     }
@@ -521,12 +625,20 @@ public class CmdSources extends CmdBase {
         void runCmd() throws Exception {
             if (isNotBlank(instanceId)) {
                 try {
+<<<<<<< HEAD
                     admin.source().restartSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+=======
+                    admin.sources().restartSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (NumberFormatException e) {
                     System.err.println("instance-id must be a number");
                 }
             } else {
+<<<<<<< HEAD
                 admin.source().restartSource(tenant, namespace, sourceName);
+=======
+                admin.sources().restartSource(tenant, namespace, sourceName);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             System.out.println("Restarted successfully");
         }
@@ -542,12 +654,20 @@ public class CmdSources extends CmdBase {
         void runCmd() throws Exception {
             if (isNotBlank(instanceId)) {
                 try {
+<<<<<<< HEAD
                     admin.source().stopSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+=======
+                    admin.sources().stopSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (NumberFormatException e) {
                     System.err.println("instance-id must be a number");
                 }
             } else {
+<<<<<<< HEAD
                 admin.source().stopSource(tenant, namespace, sourceName);
+=======
+                admin.sources().stopSource(tenant, namespace, sourceName);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             System.out.println("Stopped successfully");
         }
@@ -563,12 +683,20 @@ public class CmdSources extends CmdBase {
         void runCmd() throws Exception {
             if (isNotBlank(instanceId)) {
                 try {
+<<<<<<< HEAD
                     admin.source().startSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+=======
+                    admin.sources().startSource(tenant, namespace, sourceName, Integer.parseInt(instanceId));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 } catch (NumberFormatException e) {
                     System.err.println("instance-id must be a number");
                 }
             } else {
+<<<<<<< HEAD
                 admin.source().startSource(tenant, namespace, sourceName);
+=======
+                admin.sources().startSource(tenant, namespace, sourceName);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
             System.out.println("Started successfully");
         }
@@ -578,7 +706,11 @@ public class CmdSources extends CmdBase {
     public class ListBuiltInSources extends BaseCommand {
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             admin.source().getBuiltInSources().stream().filter(x -> !StringUtils.isEmpty(x.getSourceClass()))
+=======
+            admin.sources().getBuiltInSources().stream().filter(x -> !StringUtils.isEmpty(x.getSourceClass()))
+>>>>>>> f773c602c... Test pr 10 (#27)
                     .forEach(connector -> {
                         System.out.println(connector.getName());
                         System.out.println(WordUtils.wrap(connector.getDescription(), 80));
@@ -586,4 +718,16 @@ public class CmdSources extends CmdBase {
                     });
         }
     }
+<<<<<<< HEAD
+=======
+
+    @Parameters(commandDescription = "Reload the available built-in connectors")
+    public class ReloadBuiltInSources extends BaseCommand {
+
+        @Override
+        void runCmd() throws Exception {
+            admin.sources().reloadBuiltInSources();
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

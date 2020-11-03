@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.admin;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedException;
@@ -305,4 +306,12 @@ public interface Sink {
      *
      */
     List<ConnectorDefinition> getBuiltInSinks() throws PulsarAdminException;
+=======
+/**
+ * @deprecated in favor of {@link Sinks}
+ */
+@Deprecated
+public interface Sink extends Sinks {
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

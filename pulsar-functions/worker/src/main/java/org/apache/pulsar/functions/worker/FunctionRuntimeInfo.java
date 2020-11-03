@@ -18,14 +18,21 @@
  */
 package org.apache.pulsar.functions.worker;
 
+<<<<<<< HEAD
 import lombok.*;
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 import org.apache.pulsar.functions.proto.Function.Instance;
 import org.apache.pulsar.functions.runtime.RuntimeSpawner;
 
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class FunctionRuntimeInfo {
 

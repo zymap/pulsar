@@ -34,7 +34,11 @@ import org.apache.pulsar.common.policies.data.LocalPolicies;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
+<<<<<<< HEAD
 import org.apache.pulsar.zookeeper.ZooKeeperChildrenCache;
+=======
+import org.apache.pulsar.zookeeper.ZooKeeperManagedLedgerCache;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -54,7 +58,11 @@ public class LocalZooKeeperCacheService {
     private final ZooKeeperCache cache;
 
     private ZooKeeperDataCache<NamespaceEphemeralData> ownerInfoCache;
+<<<<<<< HEAD
     private ZooKeeperChildrenCache managedLedgerListCache;
+=======
+    private ZooKeeperManagedLedgerCache managedLedgerListCache;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ResourceQuotaCache resourceQuotaCache;
     private ZooKeeperDataCache<LocalPolicies> policiesCache;
 
@@ -118,7 +126,11 @@ public class LocalZooKeeperCacheService {
             }
         };
 
+<<<<<<< HEAD
         this.managedLedgerListCache = new ZooKeeperChildrenCache(cache, MANAGED_LEDGER_ROOT);
+=======
+        this.managedLedgerListCache = new ZooKeeperManagedLedgerCache(cache, MANAGED_LEDGER_ROOT);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.resourceQuotaCache = new ResourceQuotaCache(cache);
         this.resourceQuotaCache.initZK();
     }
@@ -244,7 +256,17 @@ public class LocalZooKeeperCacheService {
         return this.policiesCache;
     }
 
+<<<<<<< HEAD
     public ZooKeeperChildrenCache managedLedgerListCache() {
         return this.managedLedgerListCache;
     }
+=======
+    public ZooKeeperManagedLedgerCache managedLedgerListCache() {
+        return this.managedLedgerListCache;
+    }
+
+    public CompletableFuture<Boolean> managedLedgerExists(String persistentPath) {
+        return cache.existsAsync(MANAGED_LEDGER_ROOT + "/" + persistentPath, cache);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

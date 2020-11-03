@@ -18,7 +18,12 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 public interface Hash {
+=======
+public interface Hash extends org.apache.pulsar.common.util.Hash {
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Generate the hash of a given String
      *

@@ -21,7 +21,11 @@ package org.apache.pulsar.functions.api.examples.serde;
 import lombok.*;
 
 /**
+<<<<<<< HEAD
  * This class simulates a user defined POJO
+=======
+ * This class simulates a user defined POJO.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 @Getter
 @Setter

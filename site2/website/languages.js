@@ -97,7 +97,11 @@ const languages = [
     tag: 'af',
   },
   {
+<<<<<<< HEAD
     enabled: false,
+=======
+    enabled: true,
+>>>>>>> f773c602c... Test pr 10 (#27)
     name: '한국어',
     tag: 'ko',
   },
@@ -118,8 +122,13 @@ const languages = [
   },
   {
     enabled: false,
+<<<<<<< HEAD
     name: 'Polskie',
     tag: 'pl',
+=======
+    name: 'Polski',
+    tag: 'pl-PL',
+>>>>>>> f773c602c... Test pr 10 (#27)
   },
   {
     enabled: false,
@@ -176,6 +185,14 @@ const languages = [
     name: '中文',
     tag: 'zh-CN',
   },
+<<<<<<< HEAD
   {enabled: false, name: '繁體中文', tag: 'zh-TW'},
+=======
+  {
+    enabled: true, 
+    name: '繁體中文', 
+    tag: 'zh-TW'
+  },
+>>>>>>> f773c602c... Test pr 10 (#27)
 ];
 module.exports = languages;

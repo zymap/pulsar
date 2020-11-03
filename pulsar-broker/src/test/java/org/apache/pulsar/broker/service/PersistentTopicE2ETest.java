@@ -24,10 +24,17 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+<<<<<<< HEAD
 
 import com.google.common.collect.Sets;
 
 import java.lang.reflect.Field;
+=======
+import com.google.common.collect.Sets;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +47,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
+=======
+import lombok.Cleanup;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.impl.EntryCacheImpl;
 import org.apache.bookkeeper.mledger.impl.ManagedLedgerFactoryImpl;
@@ -47,6 +61,10 @@ import org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl;
 import org.apache.pulsar.broker.service.persistent.PersistentDispatcherMultipleConsumers;
 import org.apache.pulsar.broker.service.persistent.PersistentSubscription;
 import org.apache.pulsar.broker.service.persistent.PersistentTopic;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.broker.service.schema.SchemaRegistry;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.CompressionType;
 import org.apache.pulsar.client.api.Consumer;
@@ -61,6 +79,7 @@ import org.apache.pulsar.client.api.PulsarClientException.ProducerBusyException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.api.TypedMessageBuilder;
+<<<<<<< HEAD
 import org.apache.pulsar.client.impl.ConsumerImpl;
 import org.apache.pulsar.client.impl.MessageIdImpl;
 import org.apache.pulsar.client.impl.ProducerImpl;
@@ -68,6 +87,21 @@ import org.apache.pulsar.client.impl.TypedMessageBuilderImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
+=======
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.impl.ConsumerImpl;
+import org.apache.pulsar.client.impl.LookupService;
+import org.apache.pulsar.client.impl.MessageIdImpl;
+import org.apache.pulsar.client.impl.ProducerImpl;
+import org.apache.pulsar.client.impl.PulsarClientImpl;
+import org.apache.pulsar.client.impl.TypedMessageBuilderImpl;
+import org.apache.pulsar.client.impl.schema.JSONSchema;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+import org.apache.pulsar.common.naming.TopicName;
+import org.apache.pulsar.common.policies.data.RetentionPolicies;
+import org.apache.pulsar.common.protocol.schema.SchemaData;
+import org.apache.pulsar.common.schema.SchemaType;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.stats.Metrics;
 import org.apache.pulsar.common.util.collections.ConcurrentLongPairSet;
 import org.apache.pulsar.policies.data.loadbalancer.NamespaceBundleStats;
@@ -79,7 +113,10 @@ import org.testng.annotations.Test;
 
 /**
  */
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PersistentTopicE2ETest extends BrokerTestBase {
     @BeforeMethod
     @Override
@@ -155,7 +192,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
 
         assertTrue(subRef.getDispatcher().isConsumerConnected());
         rolloverPerIntervalStats();
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs * 2);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs * 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. messages pushed before client receive
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
@@ -173,7 +214,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
 
         // 4. messages deleted on individual acks
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         for (int i = 0; i < numMsgs; i++) {
             msg = consumer.receive();
@@ -186,7 +231,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
 
         // 5. messages deleted on cumulative acks
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), 0);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 6. consumer unsubscribe
         consumer.unsubscribe();
@@ -299,8 +348,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         assertNotNull(curosr);
         // (4.2) Validate: validate cursor name
         assertEquals(subName, curosr.getName());
+<<<<<<< HEAD
         // (4.3) Validate: entryCache should have cached messages
         assertTrue(entryCache.getSize() != 0);
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         /************* Validation on empty active-cursor **************/
         // (5) Close consumer: which (1)removes activeConsumer and (2)clears the entry-cache
@@ -309,7 +361,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         // (5.1) Validate: active-consumer must be empty
         assertFalse(ledger.getActiveCursors().iterator().hasNext());
         // (5.2) Validate: Entry-cache must be cleared
+<<<<<<< HEAD
         assertTrue(entryCache.getSize() == 0);
+=======
+        assertEquals(entryCache.getSize(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     }
 
@@ -361,7 +417,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         PersistentSubscription subRef = topicRef.getSubscription(subName);
 
         // 1. cumulatively all threads drain the backlog
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), 0);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. flow control works the same as single consumer single thread
         Thread.sleep(ASYNC_EVENT_COMPLETION_WAIT);
@@ -550,7 +610,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         pulsarClient.newProducer().topic(topic).create();
         pulsarClient.close();
 
+<<<<<<< HEAD
         assertTrue(pulsar.getBrokerService().getTopicReference(topic) != null);
+=======
+        assertNotNull(pulsar.getBrokerService().getTopicReference(topic));
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertTrue(((ManagedLedgerFactoryImpl) pulsar.getManagedLedgerFactory()).getManagedLedgers()
                 .containsKey(topicName.getPersistenceNamingEncoding()));
 
@@ -603,6 +667,121 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         assertFalse(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
     }
 
+<<<<<<< HEAD
+=======
+    @Data
+    @ToString
+    @EqualsAndHashCode
+    private static class Foo {
+        private String field1;
+        private String field2;
+        private int field3;
+    }
+
+    private Optional<Topic> getTopic(String topicName) {
+        return pulsar.getBrokerService().getTopicReference(topicName);
+    }
+
+    private boolean topicHasSchema(String topicName) {
+        String base = TopicName.get(topicName).getPartitionedTopicName();
+        String schemaName = TopicName.get(base).getSchemaName();
+        SchemaRegistry.SchemaAndMetadata result = pulsar.getSchemaRegistryService().getSchema(schemaName).join();
+        return result != null && !result.schema.isDeleted();
+    }
+
+    @Test
+    public void testGCWillDeleteSchema() throws Exception {
+        // 1. Simple successful GC
+        String topicName = "persistent://prop/ns-abc/topic-1";
+        Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName).create();
+        producer.close();
+
+        Optional<Topic> topic = getTopic(topicName);
+        assertTrue(topic.isPresent());
+
+        byte[] data = JSONSchema.of(SchemaDefinition.builder()
+                .withPojo(Foo.class).build()).getSchemaInfo().getSchema();
+        SchemaData schemaData = SchemaData.builder()
+                .data(data)
+                .type(SchemaType.BYTES)
+                .user("foo").build();
+        topic.get().addSchema(schemaData).join();
+        assertTrue(topicHasSchema(topicName));
+        runGC();
+
+        topic = getTopic(topicName);
+        assertFalse(topic.isPresent());
+        assertFalse(topicHasSchema(topicName));
+
+        // 2. Topic is not GCed with live connection
+        topicName = "persistent://prop/ns-abc/topic-2";
+        String subName = "sub1";
+        Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subName).subscribe();
+        topic = getTopic(topicName);
+        assertTrue(topic.isPresent());
+        topic.get().addSchema(schemaData).join();
+        assertTrue(topicHasSchema(topicName));
+
+        runGC();
+        topic = getTopic(topicName);
+        assertTrue(topic.isPresent());
+        assertTrue(topicHasSchema(topicName));
+
+        // 3. Topic with subscription is not GCed even with no connections
+        consumer.close();
+
+        runGC();
+        topic = getTopic(topicName);
+        assertTrue(topic.isPresent());
+        assertTrue(topicHasSchema(topicName));
+
+        // 4. Topic can be GCed after unsubscribe
+        admin.topics().deleteSubscription(topicName, subName);
+
+        runGC();
+        topic = getTopic(topicName);
+        assertFalse(topic.isPresent());
+        assertFalse(topicHasSchema(topicName));
+    }
+
+    @Test
+    public void testDeleteSchema() throws Exception {
+        PulsarClientImpl httpProtocolClient = (PulsarClientImpl) PulsarClient.builder().serviceUrl(brokerUrl.toString()).build();
+        PulsarClientImpl binaryProtocolClient = (PulsarClientImpl) pulsarClient;
+        LookupService binaryLookupService = binaryProtocolClient.getLookup();
+        LookupService httpLookupService = httpProtocolClient.getLookup();
+
+        String topicName = "persistent://prop/ns-abc/topic-1";
+        //Topic is not GCed with live connection
+        @Cleanup
+        Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName).create();
+
+        Optional<Topic> topic = getTopic(topicName);
+        assertTrue(topic.isPresent());
+
+        byte[] data = JSONSchema.of(SchemaDefinition.builder()
+                .withPojo(Foo.class).build()).getSchemaInfo().getSchema();
+        SchemaData schemaData = SchemaData.builder()
+                .data(data)
+                .type(SchemaType.BYTES)
+                .user("foo").build();
+
+        topic.get().addSchema(schemaData).join();
+        assertTrue(topicHasSchema(topicName));
+
+        Assert.assertEquals(admin.schemas().getAllSchemas(topicName).size(), 1);
+        assertTrue(httpLookupService.getSchema(TopicName.get(topicName), ByteBuffer.allocate(8).putLong(0).array()).get().isPresent());
+        assertTrue(binaryLookupService.getSchema(TopicName.get(topicName), ByteBuffer.allocate(8).putLong(0).array()).get().isPresent());
+
+        topic.get().deleteSchema().join();
+        Assert.assertEquals(admin.schemas().getAllSchemas(topicName).size(), 0);
+        assertFalse(httpLookupService.getSchema(TopicName.get(topicName), ByteBuffer.allocate(8).putLong(0).array()).get().isPresent());
+        assertFalse(binaryLookupService.getSchema(TopicName.get(topicName), ByteBuffer.allocate(8).putLong(0).array()).get().isPresent());
+
+        assertFalse(topicHasSchema(topicName));
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * A topic that has retention policy set to non-0, should not be GCed until it has been inactive for at least the
      * retention time.
@@ -624,7 +803,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         assertNotNull(pulsar.getBrokerService().getTopicReference(topicName));
 
         // Remove retention
+<<<<<<< HEAD
         admin.namespaces().setRetention("prop/ns-abc", new RetentionPolicies(0, 10));
+=======
+        admin.namespaces().setRetention("prop/ns-abc", new RetentionPolicies());
+>>>>>>> f773c602c... Test pr 10 (#27)
         Thread.sleep(300);
 
         // 2. Topic is not GCed with live connection
@@ -667,7 +850,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         assertNotNull(pulsar.getBrokerService().getTopicReference(topicName));
 
         // Remove retention
+<<<<<<< HEAD
         admin.namespaces().setRetention("prop/ns-abc", new RetentionPolicies(0, 10));
+=======
+        admin.namespaces().setRetention("prop/ns-abc", new RetentionPolicies());
+>>>>>>> f773c602c... Test pr 10 (#27)
         Thread.sleep(300);
 
         // 2. Topic is not GCed with live connection
@@ -690,6 +877,56 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         assertFalse(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Set retention policy in default configuration.
+     * It should be effective.
+     */
+    @Test
+    public void testServiceConfigurationRetentionPolicy() throws Exception {
+        // set retention policy in service configuration
+        pulsar.getConfiguration().setDefaultRetentionSizeInMB(-1);
+        pulsar.getConfiguration().setDefaultRetentionTimeInMinutes(-1);
+
+        String namespaceName = "prop/ns-default-retention-policy";
+        admin.namespaces().createNamespace(namespaceName);
+
+        // 1. Simple successful GC
+        String topicName = "persistent://prop/ns-abc/topic-10";
+        Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName).create();
+        producer.close();
+
+        assertTrue(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
+        runGC();
+        // Should not have been deleted, since we have retention
+        assertTrue(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
+
+        // Remove retention
+        admin.namespaces().setRetention("prop/ns-abc", new RetentionPolicies());
+        Thread.sleep(300);
+
+        // 2. Topic is not GCed with live connection
+        String subName = "sub1";
+        Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subName).subscribe();
+
+        runGC();
+        assertTrue(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
+
+        // 3. Topic with subscription is not GCed even with no connections
+        consumer.close();
+
+        runGC();
+        assertTrue(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
+
+        // 4. Topic can be GCed after unsubscribe
+        admin.topics().deleteSubscription(topicName, subName);
+
+        runGC();
+        assertFalse(pulsar.getBrokerService().getTopicReference(topicName).isPresent());
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Test
     public void testMessageExpiry() throws Exception {
         int messageTTLSecs = 1;
@@ -722,13 +959,21 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         }
 
         rolloverPerIntervalStats();
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Thread.sleep(TimeUnit.SECONDS.toMillis(messageTTLSecs));
         runMessageExpiryCheck();
 
         // 1. check all messages expired for this unconnected subscription
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), 0);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // clean-up
         producer.close();
@@ -739,6 +984,104 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
     }
 
     @Test
+<<<<<<< HEAD
+=======
+    public void testMessageExpiryWithTopicMessageTTL() throws Exception {
+        int namespaceMessageTTLSecs = 10;
+        int topicMessageTTLSecs = 2;
+        String namespaceName = "prop/expiry-check-2";
+
+        this.conf.setSystemTopicEnabled(true);
+        this.conf.setTopicLevelPoliciesEnabled(true);
+        setup();
+
+        admin.namespaces().createNamespace(namespaceName);
+        admin.namespaces().setNamespaceReplicationClusters(namespaceName, Sets.newHashSet("test"));
+        admin.namespaces().setNamespaceMessageTTL(namespaceName, namespaceMessageTTLSecs);
+
+        final String topicName = "persistent://prop/expiry-check-2/topic2";
+        final String subName = "sub1";
+        final int numMsgs = 10;
+
+        admin.topics().createNonPartitionedTopic(topicName);
+        Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subName).subscribe();
+
+        // Set topic level message ttl.
+        Thread.sleep(3000);
+        admin.topics().setMessageTTL(topicName, topicMessageTTLSecs);
+
+        PersistentTopic topicRef = (PersistentTopic) pulsar.getBrokerService().getTopicReference(topicName).get();
+        PersistentSubscription subRef = topicRef.getSubscription(subName);
+
+        consumer.close();
+        assertFalse(subRef.getDispatcher().isConsumerConnected());
+
+        Producer<byte[]> producer = pulsarClient.newProducer()
+                .topic(topicName)
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.SinglePartition)
+                .create();
+        for (int i = 0; i < numMsgs; i++) {
+            String message = "my-message-" + i;
+            producer.send(message.getBytes());
+        }
+
+        rolloverPerIntervalStats();
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+
+        Thread.sleep(TimeUnit.SECONDS.toMillis(topicMessageTTLSecs));
+        runMessageExpiryCheck();
+
+        // 1. check all messages expired for this unconnected subscription
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+        producer.close();
+
+        // Set topic level message ttl.
+        Thread.sleep(3000);
+        admin.topics().removeMessageTTL(topicName);
+
+        consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subName).subscribe();
+
+        topicRef = (PersistentTopic) pulsar.getBrokerService().getTopicReference(topicName).get();
+        subRef = topicRef.getSubscription(subName);
+
+        consumer.close();
+        assertFalse(subRef.getDispatcher().isConsumerConnected());
+
+        producer = pulsarClient.newProducer()
+                .topic(topicName)
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.SinglePartition)
+                .create();
+        for (int i = 0; i < numMsgs; i++) {
+            String message = "my-message-" + i;
+            producer.send(message.getBytes());
+        }
+
+        Thread.sleep(TimeUnit.SECONDS.toMillis(topicMessageTTLSecs));
+        rolloverPerIntervalStats();
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+
+        Thread.sleep(TimeUnit.SECONDS.toMillis(namespaceMessageTTLSecs - topicMessageTTLSecs));
+        runMessageExpiryCheck();
+
+        // 1. check all messages expired for this unconnected subscription
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+
+        // clean-up
+        try {
+            producer.close();
+            consumer.close();
+            admin.topics().deleteSubscription(topicName, subName);
+            admin.topics().delete(topicName);
+            admin.namespaces().deleteNamespace(namespaceName);
+        } catch (PulsarAdminException e) {
+            Assert.assertEquals(e.getStatusCode(), 500);
+        }
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testMessageExpiryWithFewExpiredBacklog() throws Exception {
         int messageTTLSecs = 10;
         String namespaceName = "prop/expiry-check-1";
@@ -769,17 +1112,29 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         }
 
         rolloverPerIntervalStats();
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Thread.sleep(TimeUnit.SECONDS.toMillis(messageTTLSecs));
         runMessageExpiryCheck();
 
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), numMsgs);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), numMsgs);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Thread.sleep(TimeUnit.SECONDS.toMillis(messageTTLSecs / 2));
         runMessageExpiryCheck();
 
+<<<<<<< HEAD
         assertEquals(subRef.getNumberOfEntriesInBacklog(), 0);
+=======
+        assertEquals(subRef.getNumberOfEntriesInBacklog(false), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -1226,7 +1581,12 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         final String subName = "sub2";
 
         Message<String> msg;
+<<<<<<< HEAD
         int totalMessages = 10;
+=======
+        List<Message<String>> unackedMessages = new ArrayList<>();
+        int totalMessages = 20;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Consumer<String> consumer = pulsarClient.newConsumer(Schema.STRING)
                 .topic(topicName)
@@ -1245,12 +1605,20 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
             producer.send("my-message-" + i);
         }
 
+<<<<<<< HEAD
         // (2) Consume and ack messages except first message
         Message<String> unAckedMsg = null;
         for (int i = 0; i < totalMessages; i++) {
             msg = consumer.receive();
             if (i == 0) {
                 unAckedMsg = msg;
+=======
+        // (2) Consume and only ack last 10 messages
+        for (int i = 0; i < totalMessages; i++) {
+            msg = consumer.receive();
+            if (i >= 10) {
+                unackedMessages.add(msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else {
                 consumer.acknowledge(msg);
             }
@@ -1258,6 +1626,7 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
 
         consumer.redeliverUnacknowledgedMessages();
 
+<<<<<<< HEAD
         // Verify: msg [L:0] must be redelivered
         try {
             msg = consumer.receive(1, TimeUnit.SECONDS);
@@ -1265,6 +1634,19 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         } catch (Exception e) {
             fail("msg should be redelivered ", e);
         }
+=======
+        for (int i = 0; i < 10; i++) {
+            // Verify: msg [L:0] must be redelivered
+            try {
+                final Message<String> redeliveredMsg = consumer.receive(1, TimeUnit.SECONDS);
+                unackedMessages.removeIf(unackedMessage -> unackedMessage.getValue().equals(redeliveredMsg.getValue()));
+            } catch (Exception e) {
+                fail("msg should be redelivered ", e);
+            }
+        }
+        // Make sure that first 10 messages that we didn't acknowledge get redelivered.
+        assertEquals(unackedMessages.size(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // Verify no other messages are redelivered
         msg = consumer.receive(100, TimeUnit.MILLISECONDS);
@@ -1303,7 +1685,11 @@ public class PersistentTopicE2ETest extends BrokerTestBase {
         PersistentSubscription subRef = topicRef.getSubscription(subName);
         PersistentDispatcherMultipleConsumers dispatcher = (PersistentDispatcherMultipleConsumers) subRef
                 .getDispatcher();
+<<<<<<< HEAD
         Field replayMap = PersistentDispatcherMultipleConsumers.class.getDeclaredField("messagesToReplay");
+=======
+        Field replayMap = PersistentDispatcherMultipleConsumers.class.getDeclaredField("messagesToRedeliver");
+>>>>>>> f773c602c... Test pr 10 (#27)
         replayMap.setAccessible(true);
         ConcurrentLongPairSet messagesToReplay = new ConcurrentLongPairSet(64, 1);
 

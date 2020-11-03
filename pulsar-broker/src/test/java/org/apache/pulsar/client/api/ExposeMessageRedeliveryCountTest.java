@@ -24,6 +24,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 
 public class ExposeMessageRedeliveryCountTest extends ProducerConsumerBase {
@@ -50,7 +55,11 @@ public class ExposeMessageRedeliveryCountTest extends ProducerConsumerBase {
                 .topic(topic)
                 .subscriptionName("my-subscription")
                 .subscriptionType(SubscriptionType.Shared)
+<<<<<<< HEAD
                 .ackTimeout(3, TimeUnit.SECONDS)
+=======
+                .ackTimeout(1, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .receiverQueueSize(100)
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscribe();
@@ -87,7 +96,11 @@ public class ExposeMessageRedeliveryCountTest extends ProducerConsumerBase {
                 .topic(topic)
                 .subscriptionName("my-subscription")
                 .subscriptionType(SubscriptionType.Shared)
+<<<<<<< HEAD
                 .ackTimeout(3, TimeUnit.SECONDS)
+=======
+                .ackTimeout(1, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .receiverQueueSize(100)
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscribe();
@@ -114,4 +127,66 @@ public class ExposeMessageRedeliveryCountTest extends ProducerConsumerBase {
 
         admin.topics().deletePartitionedTopic(topic);
     }
+<<<<<<< HEAD
+=======
+
+    @Test(timeOut = 30000)
+    public void testRedeliveryCountWhenConsumerDisconnected() throws PulsarClientException, InterruptedException {
+
+        String topic = "persistent://my-property/my-ns/testRedeliveryCountWhenConsumerDisconnected";
+
+        Consumer<String> consumer0 = pulsarClient.newConsumer(Schema.STRING)
+                .topic(topic)
+                .subscriptionName("s1")
+                .subscriptionType(SubscriptionType.Shared)
+                .subscribe();
+
+        Consumer<String> consumer1 = pulsarClient.newConsumer(Schema.STRING)
+                .topic(topic)
+                .subscriptionName("s1")
+                .subscriptionType(SubscriptionType.Shared)
+                .subscribe();
+
+        Producer<String> producer = pulsarClient.newProducer(Schema.STRING)
+                .topic(topic)
+                .enableBatching(true)
+                .batchingMaxMessages(5)
+                .batchingMaxPublishDelay(1, TimeUnit.SECONDS)
+                .create();
+
+        final int messages = 10;
+        for (int i = 0; i < messages; i++) {
+            producer.send("my-message-" + i);
+        }
+
+        List<Message<String>> receivedMessagesForConsumer0 = new ArrayList<>();
+        List<Message<String>> receivedMessagesForConsumer1 = new ArrayList<>();
+
+        for (int i = 0; i < messages; i++) {
+            Message<String> msg = consumer0.receive(1, TimeUnit.SECONDS);
+            if (msg != null) {
+                receivedMessagesForConsumer0.add(msg);
+            } else {
+                break;
+            }
+        }
+
+        for (int i = 0; i < messages; i++) {
+            Message<String> msg = consumer1.receive(1, TimeUnit.SECONDS);
+            if (msg != null) {
+                receivedMessagesForConsumer1.add(msg);
+            } else {
+                break;
+            }        }
+
+        Assert.assertEquals(receivedMessagesForConsumer0.size() + receivedMessagesForConsumer1.size(), messages);
+
+        consumer0.close();
+
+        for (int i = 0; i < receivedMessagesForConsumer0.size(); i++) {
+            Assert.assertEquals(consumer1.receive().getRedeliveryCount(), 1);
+        }
+
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -19,12 +19,32 @@
 package org.apache.pulsar.functions.utils;
 
 import com.google.gson.Gson;
+<<<<<<< HEAD
 import org.apache.pulsar.common.functions.ConsumerConfig;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.common.functions.Resources;
 import org.apache.pulsar.common.io.SinkConfig;
 import org.apache.pulsar.functions.api.utils.IdentityFunction;
 import org.apache.pulsar.functions.proto.Function;
+=======
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import org.apache.pulsar.common.functions.ConsumerConfig;
+import org.apache.pulsar.common.functions.FunctionConfig;
+import org.apache.pulsar.common.functions.Resources;
+import org.apache.pulsar.common.io.ConnectorDefinition;
+import org.apache.pulsar.common.io.SinkConfig;
+import org.apache.pulsar.common.util.Reflections;
+import org.apache.pulsar.config.validation.ConfigValidationAnnotations;
+import org.apache.pulsar.functions.api.utils.IdentityFunction;
+import org.apache.pulsar.functions.proto.Function;
+import org.apache.pulsar.functions.utils.io.ConnectorUtils;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -33,12 +53,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.pulsar.common.functions.FunctionConfig.ProcessingGuarantees.EFFECTIVELY_ONCE;
+<<<<<<< HEAD
 import static org.testng.Assert.assertEquals;
+=======
+import static org.mockito.ArgumentMatchers.any;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.testng.Assert.*;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Unit test of {@link Reflections}.
  */
+<<<<<<< HEAD
 public class SinkConfigUtilsTest {
+=======
+@PrepareForTest(ConnectorUtils.class)
+@PowerMockIgnore({ "javax.management.*", "javax.ws.*", "org.apache.logging.log4j.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*", "org.springframework.context.*", "org.apache.log4j.*", "com.sun.org.apache.xerces.*", "javax.management.*" })
+public class SinkConfigUtilsTest extends PowerMockTestCase {
+
+    private ConnectorDefinition defn;
+
+    @Data
+    @Accessors(chain = true)
+    @NoArgsConstructor
+    public static class TestSinkConfig {
+        @ConfigValidationAnnotations.NotNull
+        private String configParameter;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @Test
     public void testConvertBackFidelity() throws IOException  {
@@ -50,6 +92,7 @@ public class SinkConfigUtilsTest {
         sinkConfig.setArchive("builtin://jdbc");
         sinkConfig.setSourceSubscriptionName("test-subscription");
         Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+<<<<<<< HEAD
         inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(true).serdeClassName("test-serde").build());
         sinkConfig.setInputSpecs(inputSpecs);
         sinkConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
@@ -57,6 +100,24 @@ public class SinkConfigUtilsTest {
         sinkConfig.setRetainOrdering(false);
         sinkConfig.setAutoAck(true);
         sinkConfig.setTimeoutMs(2000l);
+=======
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(true).receiverQueueSize(532).serdeClassName("test-serde").build());
+        sinkConfig.setInputSpecs(inputSpecs);
+        sinkConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
+
+        Map<String, String> producerConfigs = new HashMap<>();
+        producerConfigs.put("security.protocal", "SASL_PLAINTEXT");
+        Map<String, Object> configs = new HashMap<>();
+        configs.put("topic", "kafka");
+        configs.put("bootstrapServers", "server-1,server-2");
+        configs.put("producerConfigProperties", producerConfigs);
+
+        sinkConfig.setConfigs(configs);
+        sinkConfig.setRetainOrdering(false);
+        sinkConfig.setAutoAck(true);
+        sinkConfig.setTimeoutMs(2000l);
+        sinkConfig.setRuntimeFlags("-DKerberos");
+>>>>>>> f773c602c... Test pr 10 (#27)
         Function.FunctionDetails functionDetails = SinkConfigUtils.convert(sinkConfig, new SinkConfigUtils.ExtractedSinkDetails(null, null));
         SinkConfig convertedConfig = SinkConfigUtils.convertFromDetails(functionDetails);
         assertEquals(
@@ -120,6 +181,7 @@ public class SinkConfigUtilsTest {
         SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Processing Guarantess cannot be alterted")
     public void testMergeDifferentProcessingGuarantees() {
         SinkConfig sinkConfig = createSinkConfig();
@@ -132,6 +194,39 @@ public class SinkConfigUtilsTest {
         SinkConfig sinkConfig = createSinkConfig();
         SinkConfig newSinkConfig = createUpdatedSinkConfig("retainOrdering", true);
         SinkConfig mergedConfig = SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "isRegexPattern for input topic test-input cannot be altered")
+    public void testMergeDifferentInputSpecWithRegexChange() {
+        SinkConfig sinkConfig = createSinkConfig();
+        Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(false).serdeClassName("my-serde").build());
+        SinkConfig newSinkConfig = createUpdatedSinkConfig("inputSpecs", inputSpecs);
+        SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
+    }
+
+    @Test
+    public void testMergeDifferentInputSpec() {
+        SinkConfig sinkConfig = createSinkConfig();
+        Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(true).serdeClassName("test-serde").receiverQueueSize(58).build());
+        SinkConfig newSinkConfig = createUpdatedSinkConfig("inputSpecs", inputSpecs);
+        SinkConfig mergedConfig = SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
+        assertEquals(mergedConfig.getInputSpecs().get("test-input"), newSinkConfig.getInputSpecs().get("test-input"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Processing Guarantees cannot be altered")
+    public void testMergeDifferentProcessingGuarantees() {
+        SinkConfig sinkConfig = createSinkConfig();
+        SinkConfig newSinkConfig = createUpdatedSinkConfig("processingGuarantees", EFFECTIVELY_ONCE);
+        SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Retain Ordering cannot be altered")
+    public void testMergeDifferentRetainOrdering() {
+        SinkConfig sinkConfig = createSinkConfig();
+        SinkConfig newSinkConfig = createUpdatedSinkConfig("retainOrdering", true);
+        SinkConfigUtils.validateUpdate(sinkConfig, newSinkConfig);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -236,6 +331,43 @@ public class SinkConfigUtilsTest {
         );
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testMergeRuntimeFlags() {
+        SinkConfig sinkConfig = createSinkConfig();
+        SinkConfig newFunctionConfig = createUpdatedSinkConfig("runtimeFlags", "-Dfoo=bar2");
+        SinkConfig mergedConfig = SinkConfigUtils.validateUpdate(sinkConfig, newFunctionConfig);
+        assertEquals(
+                mergedConfig.getRuntimeFlags(), "-Dfoo=bar2"
+        );
+        mergedConfig.setRuntimeFlags(sinkConfig.getRuntimeFlags());
+        assertEquals(
+                new Gson().toJson(sinkConfig),
+                new Gson().toJson(mergedConfig)
+        );
+    }
+
+    @Test
+    public void testValidateConfig() throws IOException {
+        mockStatic(ConnectorUtils.class);
+        defn = new ConnectorDefinition();
+        defn.setSinkConfigClass(TestSinkConfig.class.getName());
+        PowerMockito.when(ConnectorUtils.getConnectorDefinition(any())).thenReturn(defn);
+
+        SinkConfig sinkConfig = createSinkConfig();
+
+        // Good config
+        sinkConfig.getConfigs().put("configParameter", "Test");
+        SinkConfigUtils.validateConnectorConfig(sinkConfig, Thread.currentThread().getContextClassLoader());
+
+        // Bad config
+        sinkConfig.getConfigs().put("configParameter", null);
+        Exception e = expectThrows(IllegalArgumentException.class, () -> SinkConfigUtils.validateConnectorConfig(sinkConfig, Thread.currentThread().getContextClassLoader()));
+        assertTrue(e.getMessage().contains("Could not validate sink config: Field 'configParameter' cannot be null!"));
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private SinkConfig createSinkConfig() {
         SinkConfig sinkConfig = new SinkConfig();
         sinkConfig.setTenant("test-tenant");

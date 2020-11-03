@@ -24,8 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+<<<<<<< HEAD
 
 import org.apache.pulsar.broker.PulsarServerException;
+=======
+import java.util.function.Consumer;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.zookeeper.ZooKeeperSessionWatcher.ShutdownService;
 import org.apache.zookeeper.ZooKeeper.States;
 import org.slf4j.ILoggerFactory;
@@ -40,16 +45,29 @@ public class MessagingServiceShutdownHook extends Thread implements ShutdownServ
     private static final String LogbackLoggerContextClassName = "ch.qos.logback.classic.LoggerContext";
 
     private PulsarService service = null;
+<<<<<<< HEAD
 
     public MessagingServiceShutdownHook(PulsarService service) {
         this.service = service;
+=======
+    private final Consumer<Integer> processTerminator;
+
+    public MessagingServiceShutdownHook(PulsarService service, Consumer<Integer> processTerminator) {
+        this.service = service;
+        this.processTerminator = processTerminator;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public void run() {
         if (service.getConfiguration() != null) {
+<<<<<<< HEAD
             LOG.info("messaging service shutdown hook started, lookup port="
                     + service.getConfiguration().getWebServicePort().get() + ", broker url=" + service.getBrokerServiceUrl());
+=======
+            LOG.info("messaging service shutdown hook started, lookup webservice="
+                    + service.getSafeWebServiceAddress() + ", broker url=" + service.getSafeBrokerServiceUrl());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         ExecutorService executor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("shutdown-thread"));
@@ -76,8 +94,14 @@ public class MessagingServiceShutdownHook extends Thread implements ShutdownServ
         } finally {
 
             immediateFlushBufferedLogs();
+<<<<<<< HEAD
             // always put system to halt immediately
             Runtime.getRuntime().halt(0);
+=======
+
+            // always put system to halt immediately
+            processTerminator.accept(0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -96,8 +120,12 @@ public class MessagingServiceShutdownHook extends Thread implements ShutdownServ
 
         LOG.info("Invoking Runtime.halt({})", exitCode);
         immediateFlushBufferedLogs();
+<<<<<<< HEAD
         Runtime.getRuntime().halt(exitCode);
 
+=======
+        processTerminator.accept(exitCode);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static void immediateFlushBufferedLogs() {

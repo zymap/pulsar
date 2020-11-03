@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.io.core;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -44,6 +45,15 @@ public interface SinkContext {
      * @param value The value of the metric
      */
     void recordMetric(String metricName, double value);
+=======
+import java.util.Collection;
+
+/**
+ * Interface for a sink connector providing information about environment where it is running.
+ * It also allows to propagate information, such as logs, metrics, states, back to the Pulsar environment.
+ */
+public interface SinkContext extends ConnectorContext {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Get a list of all input topics
@@ -52,6 +62,7 @@ public interface SinkContext {
     Collection<String> getInputTopics();
 
     /**
+<<<<<<< HEAD
      * The tenant this sink belongs to
      * @return the tenant this sink belongs to
      */
@@ -64,14 +75,19 @@ public interface SinkContext {
     String getNamespace();
 
     /**
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * The name of the sink that we are executing
      * @return The Sink name
      */
     String getSinkName();
 
+<<<<<<< HEAD
     /**
      * The logger object that can be used to log in a sink
      * @return the logger object
      */
     Logger getLogger();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

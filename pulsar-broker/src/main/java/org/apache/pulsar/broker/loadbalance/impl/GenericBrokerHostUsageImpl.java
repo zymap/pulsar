@@ -20,16 +20,25 @@ package org.apache.pulsar.broker.loadbalance.impl;
 
 import com.sun.management.OperatingSystemMXBean;
 
+<<<<<<< HEAD
+=======
+import java.lang.management.ManagementFactory;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.loadbalance.BrokerHostUsage;
 import org.apache.pulsar.policies.data.loadbalancer.ResourceUsage;
 import org.apache.pulsar.policies.data.loadbalancer.SystemResourceUsage;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Class that will return the broker host usage.
@@ -37,9 +46,12 @@ import java.util.concurrent.TimeUnit;
 public class GenericBrokerHostUsageImpl implements BrokerHostUsage {
     // The interval for host usage check command
     private static final int CPU_CHECK_MILLIS = 1000;
+<<<<<<< HEAD
     private static final Logger LOG = LoggerFactory.getLogger(GenericBrokerHostUsageImpl.class);
     private final int hostUsageCheckIntervalMin;
     private long lastCollection;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private double totalCpuLimit;
     private double cpuUsageSum = 0d;
     private int cpuUsageCount = 0;
@@ -47,6 +59,7 @@ public class GenericBrokerHostUsageImpl implements BrokerHostUsage {
     private SystemResourceUsage usage;
 
     public GenericBrokerHostUsageImpl(PulsarService pulsar) {
+<<<<<<< HEAD
         this.hostUsageCheckIntervalMin = pulsar.getConfiguration().getLoadBalancerHostUsageCheckIntervalMinutes();
         this.systemBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         this.lastCollection = 0L;
@@ -54,6 +67,21 @@ public class GenericBrokerHostUsageImpl implements BrokerHostUsage {
         this.totalCpuLimit = getTotalCpuLimit();
         pulsar.getLoadManagerExecutor().scheduleAtFixedRate(this::checkCpuLoad, 0, CPU_CHECK_MILLIS, TimeUnit.MILLISECONDS);
         pulsar.getLoadManagerExecutor().scheduleAtFixedRate(this::calculateBrokerHostUsage, 0, hostUsageCheckIntervalMin, TimeUnit.MINUTES);
+=======
+        this(
+            pulsar.getConfiguration().getLoadBalancerHostUsageCheckIntervalMinutes(),
+            pulsar.getLoadManagerExecutor()
+        );
+    }
+
+    public GenericBrokerHostUsageImpl(int hostUsageCheckIntervalMin,
+                                      ScheduledExecutorService executorService) {
+        this.systemBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        this.usage = new SystemResourceUsage();
+        this.totalCpuLimit = getTotalCpuLimit();
+        executorService.scheduleAtFixedRate(this::checkCpuLoad, 0, CPU_CHECK_MILLIS, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(this::doCalculateBrokerHostUsage, 0, hostUsageCheckIntervalMin, TimeUnit.MINUTES);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -66,7 +94,17 @@ public class GenericBrokerHostUsageImpl implements BrokerHostUsage {
         cpuUsageCount++;
     }
 
+<<<<<<< HEAD
     private void calculateBrokerHostUsage() {
+=======
+    @Override
+    public void calculateBrokerHostUsage() {
+        checkCpuLoad();
+        doCalculateBrokerHostUsage();
+    }
+
+    void doCalculateBrokerHostUsage() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         SystemResourceUsage usage = new SystemResourceUsage();
         usage.setCpu(getCpuUsage());
         usage.setMemory(getMemUsage());
@@ -75,7 +113,11 @@ public class GenericBrokerHostUsageImpl implements BrokerHostUsage {
     }
 
     private double getTotalCpuLimit() {
+<<<<<<< HEAD
         return (double) (100 * Runtime.getRuntime().availableProcessors());
+=======
+        return 100 * Runtime.getRuntime().availableProcessors();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private double getTotalCpuUsage() {

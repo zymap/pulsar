@@ -23,6 +23,15 @@ const createVariableInjectionPlugin = variables => {
       // rest api: rest:<name>:<path>
       } else if (keyparts[0] == 'rest') {
           return renderUrl(initializedPlugin, restApiUrl + "#", keyparts);
+<<<<<<< HEAD
+=======
+      } else if (keyparts[0] == 'functions') {
+          return renderUrl(initializedPlugin, functionsApiUrl + "#", keyparts);
+      } else if (keyparts[0] == 'source') {
+          return renderUrl(initializedPlugin, sourceApiUrl + "#", keyparts);
+      } else if (keyparts[0] == 'sink') {
+        return renderUrl(initializedPlugin, sinkApiUrl + "#", keyparts);
+>>>>>>> f773c602c... Test pr 10 (#27)
       } else {
         keyparts = key.split("|");
         // endpoint api: endpoint|<op>
@@ -65,6 +74,12 @@ const renderEndpoint = (initializedPlugin, baseUrl, keyparts) => {
 const url = 'https://pulsar.incubator.apache.org';
 const javadocUrl = url + '/api';
 const restApiUrl = url + '/en' + "/admin-rest-api";
+<<<<<<< HEAD
+=======
+const functionsApiUrl = url + '/en' + "/functions-rest-api";
+const sourceApiUrl = url + '/en' + "/source-rest-api";
+const sinkApiUrl = url + '/en' + "/sink-rest-api";
+>>>>>>> f773c602c... Test pr 10 (#27)
 const githubUrl = 'https://github.com/apache/incubator-pulsar';
 const baseUrl = '/';
 
@@ -73,6 +88,10 @@ const siteVariables = {
 
 const siteConfig = {
   title: 'Apache Pulsar' /* title for your website */,
+<<<<<<< HEAD
+=======
+  disableTitleTagline: true,
+>>>>>>> f773c602c... Test pr 10 (#27)
   tagline: '',
   url: url /* your website url */,
   baseUrl: baseUrl /* base url for your project */,
@@ -94,7 +113,12 @@ const siteConfig = {
     {doc: 'standalone', label: 'Docs'},
     {page: 'download', label: 'Download'},
     {doc: 'client-libraries', label: 'Clients'},
+<<<<<<< HEAD
     {page: 'admin-rest-api', label: 'REST API'},
+=======
+    {href: '#restapis', label: 'REST APIs'},
+    {href: '#cli', label: 'Cli'},
+>>>>>>> f773c602c... Test pr 10 (#27)
     {blog: true, label: 'Blog'},
     {href: '#community', label: 'Community'},
     {href: '#apache', label: 'Apache'},
@@ -168,8 +192,13 @@ const siteConfig = {
   githubUrl: githubUrl,
 
   projectDescription: `
+<<<<<<< HEAD
     Apache Pulsar is an open-source distributed pub-sub messaging system originally
     created at Yahoo and now part of the Apache Software Foundation
+=======
+    Apache Pulsar is a cloud-native, distributed messaging and streaming platform originally
+    created at Yahoo! and now a top-level Apache Software Foundation project
+>>>>>>> f773c602c... Test pr 10 (#27)
   `,
 
   markdownPlugins: [

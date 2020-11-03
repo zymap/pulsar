@@ -24,11 +24,20 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+<<<<<<< HEAD
+=======
+import io.jsonwebtoken.io.DecodingException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.io.IOException;
 import java.io.InputStream;
+<<<<<<< HEAD
+=======
+import java.nio.file.Files;
+import java.nio.file.Paths;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -42,6 +51,10 @@ import javax.crypto.SecretKey;
 
 import lombok.experimental.UtilityClass;
 
+<<<<<<< HEAD
+=======
+import org.apache.commons.codec.binary.Base64;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.url.URL;
 
 @UtilityClass
@@ -55,26 +68,55 @@ public class AuthTokenUtils {
         return Keys.hmacShaKeyFor(secretKey);
     }
 
+<<<<<<< HEAD
     public static PrivateKey decodePrivateKey(byte[] key) throws IOException {
         try {
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
             KeyFactory kf = KeyFactory.getInstance("RSA");
+=======
+    public static PrivateKey decodePrivateKey(byte[] key, SignatureAlgorithm algType) throws IOException {
+        try {
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
+            KeyFactory kf = KeyFactory.getInstance(keyTypeForSignatureAlgorithm(algType));
+>>>>>>> f773c602c... Test pr 10 (#27)
             return kf.generatePrivate(spec);
         } catch (Exception e) {
             throw new IOException("Failed to decode private key", e);
         }
     }
 
+<<<<<<< HEAD
     public static PublicKey decodePublicKey(byte[] key) throws IOException {
         try {
             X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
             KeyFactory kf = KeyFactory.getInstance("RSA");
+=======
+
+    public static PublicKey decodePublicKey(byte[] key, SignatureAlgorithm algType) throws IOException {
+        try {
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
+            KeyFactory kf = KeyFactory.getInstance(keyTypeForSignatureAlgorithm(algType));
+>>>>>>> f773c602c... Test pr 10 (#27)
             return kf.generatePublic(spec);
         } catch (Exception e) {
             throw new IOException("Failed to decode public key", e);
         }
     }
 
+<<<<<<< HEAD
+=======
+    private static String keyTypeForSignatureAlgorithm(SignatureAlgorithm alg) {
+        if (alg.getFamilyName().equals("RSA")) {
+            return "RSA";
+        } else if (alg.getFamilyName().equals("ECDSA")) {
+            return "EC";
+        } else {
+            String msg = "The " + alg.name() + " algorithm does not support Key Pairs.";
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static String encodeKeyBase64(Key key) {
         return Encoders.BASE64.encode(key.getEncoded());
     }
@@ -84,9 +126,13 @@ public class AuthTokenUtils {
                 .setSubject(subject)
                 .signWith(signingKey);
 
+<<<<<<< HEAD
         if (expiryTime.isPresent()) {
             builder.setExpiration(expiryTime.get());
         }
+=======
+        expiryTime.ifPresent(builder::setExpiration);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         return builder.compact();
     }
@@ -98,9 +144,30 @@ public class AuthTokenUtils {
             } catch (Exception e) {
                 throw new IOException(e);
             }
+<<<<<<< HEAD
         } else {
             // Assume the key content was passed in base64
             return Decoders.BASE64.decode(keyConfUrl);
+=======
+        } else if (Files.exists(Paths.get(keyConfUrl))) {
+            // Assume the key content was passed in a valid file path
+            try {
+                return Files.readAllBytes(Paths.get(keyConfUrl));
+            } catch (IOException e) {
+                throw new IOException(e);
+            }
+        } else if (Base64.isBase64(keyConfUrl.getBytes())) {
+            // Assume the key content was passed in base64
+            try {
+                return Decoders.BASE64.decode(keyConfUrl);
+            } catch (DecodingException e) {
+                String msg = "Illegal base64 character or Key file " + keyConfUrl + " doesn't exist";
+                throw new IOException(msg, e);
+            }
+        } else {
+            String msg = "Secret/Public Key file " + keyConfUrl + " doesn't exist";
+            throw new IllegalArgumentException(msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 }

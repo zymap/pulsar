@@ -22,6 +22,13 @@ package org.apache.pulsar.io.kafka.source;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.io.core.SourceContext;
 import org.apache.pulsar.io.kafka.KafkaAbstractSource;
 import org.apache.pulsar.io.kafka.KafkaSourceConfig;
@@ -31,9 +38,17 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+=======
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -113,6 +128,62 @@ public class KafkaAbstractSourceTest {
             public Logger getLogger() {
                 return null;
             }
+<<<<<<< HEAD
+=======
+
+            @Override
+            public String getSecret(String key) { return null; }
+
+            @Override
+            public void incrCounter(String key, long amount) {
+                
+            }
+
+            @Override
+            public CompletableFuture<Void> incrCounterAsync(String key, long amount) {
+                return null;
+            }
+
+            @Override
+            public long getCounter(String key) {
+                return 0;
+            }
+
+            @Override
+            public CompletableFuture<Long> getCounterAsync(String key) {
+                return null;
+            }
+
+            @Override
+            public void putState(String key, ByteBuffer value) {
+
+            }
+
+            @Override
+            public CompletableFuture<Void> putStateAsync(String key, ByteBuffer value) {
+                return null;
+            }
+
+            @Override
+            public ByteBuffer getState(String key) {
+                return null;
+            }
+
+            @Override
+            public CompletableFuture<ByteBuffer> getStateAsync(String key) {
+                return null;
+            }
+
+            @Override
+            public <O> TypedMessageBuilder<O> newOutputMessage(String topicName, Schema<O> schema) throws PulsarClientException {
+                return null;
+            }
+
+            @Override
+            public <O> ConsumerBuilder<O> newConsumerBuilder(Schema<O> schema) throws PulsarClientException {
+                return null;
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         };
         Map<String, Object> config = new HashMap<>();
         ThrowingRunnable openAndClose = ()->{

@@ -27,7 +27,10 @@ DECLARE_LOG_OBJECT()
 using namespace pulsar;
 
 int main() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     Client client("pulsar://localhost:6650");
 
     Consumer consumer;

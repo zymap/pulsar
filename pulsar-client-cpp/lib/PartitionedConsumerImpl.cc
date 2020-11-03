@@ -17,6 +17,10 @@
  * under the License.
  */
 #include "PartitionedConsumerImpl.h"
+<<<<<<< HEAD
+=======
+#include "MultiResultCallback.h"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 DECLARE_LOG_OBJECT()
 
@@ -43,11 +47,30 @@ PartitionedConsumerImpl::PartitionedConsumerImpl(ClientImplPtr client, const std
     consumerStrStream << "[Partitioned Consumer: " << topic_ << "," << subscriptionName << ","
                       << numPartitions << "]";
     if (conf.getUnAckedMessagesTimeoutMs() != 0) {
+<<<<<<< HEAD
         unAckedMessageTrackerPtr_.reset(
             new UnAckedMessageTrackerEnabled(conf.getUnAckedMessagesTimeoutMs(), client, *this));
     } else {
         unAckedMessageTrackerPtr_.reset(new UnAckedMessageTrackerDisabled());
     }
+=======
+        if (conf.getTickDurationInMs() > 0) {
+            unAckedMessageTrackerPtr_.reset(new UnAckedMessageTrackerEnabled(
+                conf.getUnAckedMessagesTimeoutMs(), conf.getTickDurationInMs(), client, *this));
+        } else {
+            unAckedMessageTrackerPtr_.reset(
+                new UnAckedMessageTrackerEnabled(conf.getUnAckedMessagesTimeoutMs(), client, *this));
+        }
+    } else {
+        unAckedMessageTrackerPtr_.reset(new UnAckedMessageTrackerDisabled());
+    }
+    auto partitionsUpdateInterval = static_cast<unsigned int>(client_->conf().getPartitionsUpdateInterval());
+    if (partitionsUpdateInterval > 0) {
+        partitionsUpdateTimer_ = listenerExecutor_->createDeadlineTimer();
+        partitionsUpdateInterval_ = boost::posix_time::seconds(partitionsUpdateInterval);
+        lookupServicePtr_ = client_->getLookup();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 PartitionedConsumerImpl::~PartitionedConsumerImpl() {}
@@ -65,6 +88,11 @@ Result PartitionedConsumerImpl::receive(Message& msg) {
         lock.unlock();
         return ResultAlreadyClosed;
     }
+<<<<<<< HEAD
+=======
+    // See comments in `receive(Message&, int)`
+    lock.unlock();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     if (messageListener_) {
         LOG_ERROR("Can not receive when a listener has been set");
@@ -82,6 +110,13 @@ Result PartitionedConsumerImpl::receive(Message& msg, int timeout) {
         lock.unlock();
         return ResultAlreadyClosed;
     }
+<<<<<<< HEAD
+=======
+    // We unlocked `mutex_` here to avoid starvation of methods which are trying to acquire `mutex_`.
+    // In addition, `messageListener_` won't change once constructed, `BlockingQueue::pop` and
+    // `UnAckedMessageTracker::add` are thread-safe, so they don't need `mutex_` to achieve thread-safety.
+    lock.unlock();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     if (messageListener_) {
         LOG_ERROR("Can not receive when a listener has been set");
@@ -157,14 +192,24 @@ void PartitionedConsumerImpl::handleUnsubscribeAsync(Result result, unsigned int
         callback(ResultUnknownError);
         return;
     }
+<<<<<<< HEAD
     assert(unsubscribedSoFar_ <= numPartitions_);
     assert(consumerIndex <= numPartitions_);
+=======
+    const auto numPartitions = getNumPartitionsWithLock();
+    assert(unsubscribedSoFar_ <= numPartitions);
+    assert(consumerIndex <= numPartitions);
+>>>>>>> f773c602c... Test pr 10 (#27)
     // this means we have successfully closed this partition consumer and no unsubscribe has failed so far
     LOG_INFO("Successfully Unsubscribed Consumer - " << consumerIndex << " for Subscription - "
                                                      << subscriptionName_ << " for Topic - "
                                                      << topicName_->toString());
     unsubscribedSoFar_++;
+<<<<<<< HEAD
     if (unsubscribedSoFar_ == numPartitions_) {
+=======
+    if (unsubscribedSoFar_ == numPartitions) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         LOG_DEBUG("Unsubscribed all of the partition consumer for subscription - " << subscriptionName_);
         setState(Closed);
         callback(ResultOk);
@@ -174,7 +219,15 @@ void PartitionedConsumerImpl::handleUnsubscribeAsync(Result result, unsigned int
 
 void PartitionedConsumerImpl::acknowledgeAsync(const MessageId& msgId, ResultCallback callback) {
     int32_t partition = msgId.partition();
+<<<<<<< HEAD
     assert(partition < numPartitions_ && partition >= 0 && consumers_.size() > partition);
+=======
+#ifndef NDEBUG
+    Lock consumersLock(consumersMutex_);
+    assert(partition < getNumPartitions() && partition >= 0 && consumers_.size() > partition);
+    consumersLock.unlock();
+#endif
+>>>>>>> f773c602c... Test pr 10 (#27)
     unAckedMessageTrackerPtr_->remove(msgId);
     consumers_[partition]->acknowledgeAsync(msgId, callback);
 }
@@ -183,14 +236,35 @@ void PartitionedConsumerImpl::acknowledgeCumulativeAsync(const MessageId& msgId,
     callback(ResultOperationNotSupported);
 }
 
+<<<<<<< HEAD
 void PartitionedConsumerImpl::start() {
     ExecutorServicePtr internalListenerExecutor = client_->getPartitionListenerExecutorProvider()->get();
     std::shared_ptr<ConsumerImpl> consumer;
     ConsumerConfiguration config;
+=======
+void PartitionedConsumerImpl::negativeAcknowledge(const MessageId& msgId) {
+    int32_t partition = msgId.partition();
+    unAckedMessageTrackerPtr_->remove(msgId);
+    consumers_[partition]->negativeAcknowledge(msgId);
+}
+
+unsigned int PartitionedConsumerImpl::getNumPartitions() const { return numPartitions_; }
+
+unsigned int PartitionedConsumerImpl::getNumPartitionsWithLock() const {
+    Lock consumersLock(consumersMutex_);
+    return getNumPartitions();
+}
+
+ConsumerConfiguration PartitionedConsumerImpl::getSinglePartitionConsumerConfig() const {
+    using namespace std::placeholders;
+
+    ConsumerConfiguration config = conf_.clone();
+>>>>>>> f773c602c... Test pr 10 (#27)
     // all the partitioned-consumer belonging to one partitioned topic should have same name
     config.setConsumerName(conf_.getConsumerName());
     config.setConsumerType(conf_.getConsumerType());
     config.setBrokerConsumerStatsCacheTimeInMs(conf_.getBrokerConsumerStatsCacheTimeInMs());
+<<<<<<< HEAD
     config.setMessageListener(std::bind(&PartitionedConsumerImpl::messageReceived, shared_from_this(),
                                         std::placeholders::_1, std::placeholders::_2));
 
@@ -212,6 +286,49 @@ void PartitionedConsumerImpl::start() {
 
         LOG_DEBUG("Creating Consumer for single Partition - " << topicPartitionName << "SubName - "
                                                               << subscriptionName_);
+=======
+
+    const auto shared_this = const_cast<PartitionedConsumerImpl*>(this)->shared_from_this();
+    config.setMessageListener(std::bind(&PartitionedConsumerImpl::messageReceived, shared_this, _1, _2));
+
+    // Apply total limit of receiver queue size across partitions
+    // NOTE: if it's called by handleGetPartitions(), the queue size of new internal consumers may be smaller
+    // than previous created internal consumers.
+    config.setReceiverQueueSize(
+        std::min(conf_.getReceiverQueueSize(),
+                 (int)(conf_.getMaxTotalReceiverQueueSizeAcrossPartitions() / getNumPartitions())));
+
+    return config;
+}
+
+ConsumerImplPtr PartitionedConsumerImpl::newInternalConsumer(unsigned int partition,
+                                                             const ConsumerConfiguration& config) const {
+    using namespace std::placeholders;
+
+    std::string topicPartitionName = topicName_->getTopicPartitionName(partition);
+    auto consumer = std::make_shared<ConsumerImpl>(client_, topicPartitionName, subscriptionName_, config,
+                                                   internalListenerExecutor_, Partitioned);
+
+    const auto shared_this = const_cast<PartitionedConsumerImpl*>(this)->shared_from_this();
+    consumer->getConsumerCreatedFuture().addListener(std::bind(
+        &PartitionedConsumerImpl::handleSinglePartitionConsumerCreated, shared_this, _1, _2, partition));
+    consumer->setPartitionIndex(partition);
+
+    LOG_DEBUG("Creating Consumer for single Partition - " << topicPartitionName << "SubName - "
+                                                          << subscriptionName_);
+    return consumer;
+}
+
+void PartitionedConsumerImpl::start() {
+    internalListenerExecutor_ = client_->getPartitionListenerExecutorProvider()->get();
+    const auto config = getSinglePartitionConsumerConfig();
+
+    // create consumer on each partition
+    // Here we don't need `consumersMutex` to protect `consumers_`, because `consumers_` can only be increased
+    // when `state_` is Ready
+    for (unsigned int i = 0; i < getNumPartitions(); i++) {
+        consumers_.push_back(newInternalConsumer(i, config));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
     for (ConsumerList::const_iterator consumer = consumers_.begin(); consumer != consumers_.end();
          consumer++) {
@@ -227,7 +344,12 @@ void PartitionedConsumerImpl::handleSinglePartitionConsumerCreated(
         // one of the consumer creation failed, and we are cleaning up
         return;
     }
+<<<<<<< HEAD
     assert(numConsumersCreated_ < numPartitions_);
+=======
+    const auto numPartitions = getNumPartitionsWithLock();
+    assert(numConsumersCreated_ < numPartitions);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     if (result != ResultOk) {
         state_ = Failed;
@@ -235,6 +357,7 @@ void PartitionedConsumerImpl::handleSinglePartitionConsumerCreated(
         partitionedConsumerCreatedPromise_.setFailed(result);
         // unsubscribed all of the successfully subscribed partitioned consumers
         closeAsync(nullCallbackForCleanup);
+<<<<<<< HEAD
         LOG_DEBUG("Unable to create Consumer for partition - " << partitionIndex << " Error - " << result);
         return;
     }
@@ -246,6 +369,22 @@ void PartitionedConsumerImpl::handleSinglePartitionConsumerCreated(
                                                                    << numPartitions_ << " Partitions.");
         state_ = Ready;
         lock.unlock();
+=======
+        LOG_ERROR("Unable to create Consumer for partition - " << partitionIndex << " Error - " << result);
+        return;
+    }
+
+    assert(partitionIndex < numPartitions && partitionIndex >= 0);
+    numConsumersCreated_++;
+    if (numConsumersCreated_ == numPartitions) {
+        LOG_INFO("Successfully Subscribed to Partitioned Topic - " << topicName_->toString() << " with - "
+                                                                   << numPartitions << " Partitions.");
+        state_ = Ready;
+        lock.unlock();
+        if (partitionsUpdateTimer_) {
+            runPartitionUpdateTask();
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         receiveMessages();
         partitionedConsumerCreatedPromise_.setValue(shared_from_this());
         return;
@@ -269,7 +408,11 @@ void PartitionedConsumerImpl::handleSinglePartitionConsumerClose(Result result, 
         }
         return;
     }
+<<<<<<< HEAD
     assert(partitionIndex < numPartitions_ && partitionIndex >= 0);
+=======
+    assert(partitionIndex < getNumPartitionsWithLock() && partitionIndex >= 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     if (numConsumersCreated_ > 0) {
         numConsumersCreated_--;
     }
@@ -291,6 +434,7 @@ void PartitionedConsumerImpl::closeAsync(ResultCallback callback) {
         return;
     }
     setState(Closed);
+<<<<<<< HEAD
     int consumerIndex = 0;
     unsigned int consumerAlreadyClosed = 0;
     // close successfully subscribed consumers
@@ -300,6 +444,19 @@ void PartitionedConsumerImpl::closeAsync(ResultCallback callback) {
             consumer->closeAsync(std::bind(&PartitionedConsumerImpl::handleSinglePartitionConsumerClose,
                                            shared_from_this(), std::placeholders::_1, consumerIndex,
                                            callback));
+=======
+    unsigned int consumerAlreadyClosed = 0;
+    // close successfully subscribed consumers
+    // Here we don't need `consumersMutex` to protect `consumers_`, because `consumers_` can only be increased
+    // when `state_` is Ready
+    for (auto& consumer : consumers_) {
+        if (!consumer->isClosed()) {
+            auto self = shared_from_this();
+            const auto partition = consumer->getPartitionIndex();
+            consumer->closeAsync([this, self, partition, callback](Result result) {
+                handleSinglePartitionConsumerClose(result, partition, callback);
+            });
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             if (++consumerAlreadyClosed == consumers_.size()) {
                 // everything is closed already. so we are good.
@@ -359,6 +516,10 @@ void PartitionedConsumerImpl::messageReceived(Consumer consumer, const Message& 
         }
         messages_.push(msg);
         if (messageListener_) {
+<<<<<<< HEAD
+=======
+            unAckedMessageTrackerPtr_->add(msg.getMessageId());
+>>>>>>> f773c602c... Test pr 10 (#27)
             listenerExecutor_->postWork(
                 std::bind(&PartitionedConsumerImpl::internalListener, shared_from_this(), consumer));
         }
@@ -419,6 +580,24 @@ void PartitionedConsumerImpl::redeliverUnacknowledgedMessages() {
     for (ConsumerList::const_iterator i = consumers_.begin(); i != consumers_.end(); i++) {
         (*i)->redeliverUnacknowledgedMessages();
     }
+<<<<<<< HEAD
+=======
+    unAckedMessageTrackerPtr_->clear();
+}
+
+void PartitionedConsumerImpl::redeliverUnacknowledgedMessages(const std::set<MessageId>& messageIds) {
+    if (messageIds.empty()) {
+        return;
+    }
+    if (conf_.getConsumerType() != ConsumerShared && conf_.getConsumerType() != ConsumerKeyShared) {
+        redeliverUnacknowledgedMessages();
+        return;
+    }
+    LOG_DEBUG("Sending RedeliverUnacknowledgedMessages command for partitioned consumer.");
+    for (ConsumerList::const_iterator i = consumers_.begin(); i != consumers_.end(); i++) {
+        (*i)->redeliverUnacknowledgedMessages(messageIds);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 const std::string& PartitionedConsumerImpl::getName() const { return partitionStr_; }
@@ -432,9 +611,16 @@ void PartitionedConsumerImpl::getBrokerConsumerStatsAsync(BrokerConsumerStatsCal
         callback(ResultConsumerNotInitialized, BrokerConsumerStats());
         return;
     }
+<<<<<<< HEAD
     PartitionedBrokerConsumerStatsPtr statsPtr =
         std::make_shared<PartitionedBrokerConsumerStatsImpl>(numPartitions_);
     LatchPtr latchPtr = std::make_shared<Latch>(numPartitions_);
+=======
+    const auto numPartitions = getNumPartitionsWithLock();
+    PartitionedBrokerConsumerStatsPtr statsPtr =
+        std::make_shared<PartitionedBrokerConsumerStatsImpl>(numPartitions);
+    LatchPtr latchPtr = std::make_shared<Latch>(numPartitions);
+>>>>>>> f773c602c... Test pr 10 (#27)
     ConsumerList consumerList = consumers_;
     lock.unlock();
     for (int i = 0; i < consumerList.size(); i++) {
@@ -467,4 +653,75 @@ void PartitionedConsumerImpl::seekAsync(const MessageId& msgId, ResultCallback c
     callback(ResultOperationNotSupported);
 }
 
+<<<<<<< HEAD
+=======
+void PartitionedConsumerImpl::seekAsync(uint64_t timestamp, ResultCallback callback) {
+    Lock stateLock(mutex_);
+    if (state_ != Ready) {
+        stateLock.unlock();
+        callback(ResultAlreadyClosed);
+        return;
+    }
+
+    // consumers_ could only be modified when state_ is Ready, so we needn't lock consumersMutex_ here
+    ConsumerList consumerList = consumers_;
+    stateLock.unlock();
+
+    MultiResultCallback multiResultCallback(callback, consumers_.size());
+    for (ConsumerList::const_iterator i = consumerList.begin(); i != consumerList.end(); i++) {
+        (*i)->seekAsync(timestamp, multiResultCallback);
+    }
+}
+
+void PartitionedConsumerImpl::runPartitionUpdateTask() {
+    partitionsUpdateTimer_->expires_from_now(partitionsUpdateInterval_);
+    partitionsUpdateTimer_->async_wait(
+        std::bind(&PartitionedConsumerImpl::getPartitionMetadata, shared_from_this()));
+}
+
+void PartitionedConsumerImpl::getPartitionMetadata() {
+    using namespace std::placeholders;
+    lookupServicePtr_->getPartitionMetadataAsync(topicName_)
+        .addListener(std::bind(&PartitionedConsumerImpl::handleGetPartitions, shared_from_this(), _1, _2));
+}
+
+void PartitionedConsumerImpl::handleGetPartitions(Result result,
+                                                  const LookupDataResultPtr& lookupDataResult) {
+    Lock stateLock(mutex_);
+    if (state_ != Ready) {
+        return;
+    }
+
+    if (!result) {
+        const auto newNumPartitions = static_cast<unsigned int>(lookupDataResult->getPartitions());
+        Lock consumersLock(consumersMutex_);
+        const auto currentNumPartitions = getNumPartitions();
+        assert(currentNumPartitions == consumers_.size());
+        if (newNumPartitions > currentNumPartitions) {
+            LOG_INFO("new partition count: " << newNumPartitions);
+            numPartitions_ = newNumPartitions;
+            const auto config = getSinglePartitionConsumerConfig();
+            for (unsigned int i = currentNumPartitions; i < newNumPartitions; i++) {
+                auto consumer = newInternalConsumer(i, config);
+                consumer->start();
+                consumers_.push_back(consumer);
+            }
+            // `runPartitionUpdateTask()` will be called in `handleSinglePartitionConsumerCreated()`
+            return;
+        }
+    } else {
+        LOG_WARN("Failed to getPartitionMetadata: " << strResult(result));
+    }
+
+    runPartitionUpdateTask();
+}
+
+void PartitionedConsumerImpl::setNegativeAcknowledgeEnabledForTesting(bool enabled) {
+    Lock lock(mutex_);
+    for (auto&& c : consumers_) {
+        c->setNegativeAcknowledgeEnabledForTesting(enabled);
+    }
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

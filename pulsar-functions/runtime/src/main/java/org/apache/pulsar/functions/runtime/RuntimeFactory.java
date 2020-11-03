@@ -19,14 +19,35 @@
 
 package org.apache.pulsar.functions.runtime;
 
+<<<<<<< HEAD
 import org.apache.pulsar.functions.instance.InstanceConfig;
 import org.apache.pulsar.functions.proto.Function;
+=======
+import org.apache.pulsar.functions.auth.FunctionAuthProvider;
+import org.apache.pulsar.functions.instance.AuthenticationConfig;
+import org.apache.pulsar.functions.instance.InstanceConfig;
+import org.apache.pulsar.functions.proto.Function;
+import org.apache.pulsar.functions.secretsproviderconfigurator.SecretsProviderConfigurator;
+import org.apache.pulsar.common.util.Reflections;
+import org.apache.pulsar.functions.worker.WorkerConfig;
+
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * A factory to create {@link Runtime}s to invoke functions.
  */
 public interface RuntimeFactory extends AutoCloseable {
 
+<<<<<<< HEAD
+=======
+    void initialize(WorkerConfig workerConfig,
+                    AuthenticationConfig authenticationConfig,
+                    SecretsProviderConfigurator secretsProviderConfigurator,
+                    Optional<FunctionAuthProvider> authProvider,
+                    Optional<RuntimeCustomizer> runtimeCustomizer) throws Exception;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Create a function container to execute a java instance.
      *
@@ -43,7 +64,27 @@ public interface RuntimeFactory extends AutoCloseable {
 
     default void doAdmissionChecks(Function.FunctionDetails functionDetails) { }
 
+<<<<<<< HEAD
     @Override
     void close();
 
 }
+=======
+    default Optional<? extends FunctionAuthProvider> getAuthProvider() {
+        return Optional.empty();
+    }
+
+    default Optional<? extends RuntimeCustomizer> getRuntimeCustomizer() {
+        return Optional.empty();
+    }
+
+    @Override
+    void close();
+
+    static RuntimeFactory getFuntionRuntimeFactory(String className) {
+        return Reflections.createInstance(className, RuntimeFactory.class, Thread.currentThread().getContextClassLoader());
+    }
+
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)

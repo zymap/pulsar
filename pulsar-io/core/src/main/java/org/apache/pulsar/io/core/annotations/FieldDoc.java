@@ -45,6 +45,17 @@ public @interface FieldDoc {
     String defaultValue();
 
     /**
+<<<<<<< HEAD
+=======
+     * Return if the field is a sensitive type or not.
+     * User name, password, access token are some examples of sensitive fields.
+     *
+     * @return true if the field is sensitive, otherwise false
+     */
+    boolean sensitive() default false;
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Return the description of this field.
      *
      * @return the help message of this field

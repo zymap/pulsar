@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.broker.service.nonpersistent;
 
+<<<<<<< HEAD
 import static org.apache.pulsar.broker.service.Consumer.getBatchSizeforEntry;
 
 import java.util.List;
@@ -26,16 +27,35 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.util.Rate;
+=======
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+
+import org.apache.bookkeeper.mledger.Entry;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.service.AbstractDispatcherMultipleConsumers;
 import org.apache.pulsar.broker.service.BrokerServiceException;
 import org.apache.pulsar.broker.service.BrokerServiceException.ConsumerBusyException;
 import org.apache.pulsar.broker.service.Consumer;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.service.RedeliveryTracker;
 import org.apache.pulsar.broker.service.RedeliveryTrackerDisabled;
 import org.apache.pulsar.broker.service.Subscription;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
 import org.apache.pulsar.utils.CopyOnWriteArrayList;
+=======
+import org.apache.pulsar.broker.service.EntryBatchSizes;
+import org.apache.pulsar.broker.service.RedeliveryTracker;
+import org.apache.pulsar.broker.service.RedeliveryTrackerDisabled;
+import org.apache.pulsar.broker.service.SendMessageInfo;
+import org.apache.pulsar.broker.service.Subscription;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
+import org.apache.pulsar.common.protocol.Commands;
+import org.apache.pulsar.common.stats.Rate;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +65,19 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
         implements NonPersistentDispatcher {
 
     private final NonPersistentTopic topic;
+<<<<<<< HEAD
     private final Subscription subscription;
 
     private CompletableFuture<Void> closeFuture = null;
     private final String name;
     private final Rate msgDrop;
+=======
+    protected final Subscription subscription;
+
+    private CompletableFuture<Void> closeFuture = null;
+    private final String name;
+    protected final Rate msgDrop;
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected static final AtomicIntegerFieldUpdater<NonPersistentDispatcherMultipleConsumers> TOTAL_AVAILABLE_PERMITS_UPDATER = AtomicIntegerFieldUpdater
             .newUpdater(NonPersistentDispatcherMultipleConsumers.class, "totalAvailablePermits");
     @SuppressWarnings("unused")
@@ -59,6 +87,10 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     private final RedeliveryTracker redeliveryTracker;
 
     public NonPersistentDispatcherMultipleConsumers(NonPersistentTopic topic, Subscription subscription) {
+<<<<<<< HEAD
+=======
+        super(subscription);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.topic = topic;
         this.subscription = subscription;
         this.name = topic.getName() + " / " + subscription.getName();
@@ -70,16 +102,23 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     @Override
     public synchronized void addConsumer(Consumer consumer) throws BrokerServiceException {
         if (IS_CLOSED_UPDATER.get(this) == TRUE) {
+<<<<<<< HEAD
             log.warn("[{}] Dispatcher is already closed. Closing consumer ", name, consumer);
+=======
+            log.warn("[{}] Dispatcher is already closed. Closing consumer {}", name, consumer);
+>>>>>>> f773c602c... Test pr 10 (#27)
             consumer.disconnect();
             return;
         }
 
+<<<<<<< HEAD
         if (isConsumersExceededOnTopic()) {
             log.warn("[{}] Attempting to add consumer to topic which reached max consumers limit", name);
             throw new ConsumerBusyException("Topic reached max consumers limit");
         }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (isConsumersExceededOnSubscription()) {
             log.warn("[{}] Attempting to add consumer to subscription which reached max consumers limit", name);
             throw new ConsumerBusyException("Subscription reached max consumers limit");
@@ -89,6 +128,7 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
         consumerSet.add(consumer);
     }
 
+<<<<<<< HEAD
     private boolean isConsumersExceededOnTopic() {
         final int maxConsumersPerTopic = serviceConfig.getMaxConsumersPerTopic();
         if (maxConsumersPerTopic > 0 && maxConsumersPerTopic <= topic.getNumberOfConsumers()) {
@@ -97,6 +137,8 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
         return false;
     }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private boolean isConsumersExceededOnSubscription() {
         final int maxConsumersPerSubscription = serviceConfig.getMaxConsumersPerSubscription();
         if (maxConsumersPerSubscription > 0 && maxConsumersPerSubscription <= consumerList.size()) {
@@ -162,7 +204,11 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     }
 
     @Override
+<<<<<<< HEAD
     public synchronized CompletableFuture<Void> disconnectAllConsumers() {
+=======
+    public synchronized CompletableFuture<Void> disconnectAllConsumers(boolean isResetCursor) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         closeFuture = new CompletableFuture<>();
         if (consumerList.isEmpty()) {
             closeFuture.complete(null);
@@ -173,7 +219,22 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     }
 
     @Override
+<<<<<<< HEAD
     public void reset() {
+=======
+    public CompletableFuture<Void> disconnectActiveConsumers(boolean isResetCursor) {
+        return disconnectAllConsumers(isResetCursor);
+    }
+
+    @Override
+    public synchronized void resetCloseFuture() {
+        closeFuture = null;
+    }
+
+    @Override
+    public void reset() {
+        resetCloseFuture();
+>>>>>>> f773c602c... Test pr 10 (#27)
         IS_CLOSED_UPDATER.set(this, FALSE);
     }
 
@@ -191,12 +252,27 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     public void sendMessages(List<Entry> entries) {
         Consumer consumer = TOTAL_AVAILABLE_PERMITS_UPDATER.get(this) > 0 ? getNextConsumer() : null;
         if (consumer != null) {
+<<<<<<< HEAD
             TOTAL_AVAILABLE_PERMITS_UPDATER.addAndGet(this, -consumer.sendMessages(entries).getTotalSentMessages());
         } else {
             entries.forEach(entry -> {
                 int totalMsgs = getBatchSizeforEntry(entry.getDataBuffer(), subscription, -1);
                 if (totalMsgs > 0) {
                     msgDrop.recordEvent();
+=======
+            SendMessageInfo sendMessageInfo = SendMessageInfo.getThreadLocal();
+            EntryBatchSizes batchSizes = EntryBatchSizes.get(entries.size());
+            filterEntriesForConsumer(entries, batchSizes, sendMessageInfo, null, null, false);
+            consumer.sendMessages(entries, batchSizes, null, sendMessageInfo.getTotalMessages(),
+                    sendMessageInfo.getTotalBytes(), sendMessageInfo.getTotalChunkedMessages(), getRedeliveryTracker());
+
+            TOTAL_AVAILABLE_PERMITS_UPDATER.addAndGet(this, -sendMessageInfo.getTotalMessages());
+        } else {
+            entries.forEach(entry -> {
+                int totalMsgs = Commands.getNumberOfMessagesInBatch(entry.getDataBuffer(), subscription.toString(), -1);
+                if (totalMsgs > 0) {
+                    msgDrop.recordEvent(totalMsgs);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 }
                 entry.release();
             });
@@ -209,7 +285,11 @@ public class NonPersistentDispatcherMultipleConsumers extends AbstractDispatcher
     }
 
     @Override
+<<<<<<< HEAD
     public Rate getMesssageDropRate() {
+=======
+    public Rate getMessageDropRate() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return msgDrop;
     }
 

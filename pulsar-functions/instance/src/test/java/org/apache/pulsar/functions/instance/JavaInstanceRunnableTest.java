@@ -25,6 +25,12 @@ import org.apache.pulsar.functions.api.Function;
 import org.apache.pulsar.functions.api.SerDe;
 import org.apache.pulsar.functions.proto.Function.FunctionDetails;
 import org.apache.pulsar.functions.proto.Function.SinkSpec;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.functions.proto.InstanceCommunication;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.lang.reflect.Method;
 
@@ -42,7 +48,11 @@ public class JavaInstanceRunnableTest {
         }
     }
 
+<<<<<<< HEAD
     private static InstanceConfig createInstanceConfig(boolean addCustom, String outputSerde) {
+=======
+    private static InstanceConfig createInstanceConfig(String outputSerde) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         FunctionDetails.Builder functionDetailsBuilder = FunctionDetails.newBuilder();
         if (outputSerde != null) {
             functionDetailsBuilder.setSink(SinkSpec.newBuilder().setSerDeClassName(outputSerde).build());
@@ -53,10 +63,17 @@ public class JavaInstanceRunnableTest {
         return instanceConfig;
     }
 
+<<<<<<< HEAD
     private JavaInstanceRunnable createRunnable(boolean addCustom, String outputSerde) throws Exception {
         InstanceConfig config = createInstanceConfig(addCustom, outputSerde);
         JavaInstanceRunnable javaInstanceRunnable = new JavaInstanceRunnable(
                 config, null, null, null, null, null, null);
+=======
+    private JavaInstanceRunnable createRunnable(String outputSerde) throws Exception {
+        InstanceConfig config = createInstanceConfig(outputSerde);
+        JavaInstanceRunnable javaInstanceRunnable = new JavaInstanceRunnable(
+                config, null, null, null, null, null, null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return javaInstanceRunnable;
     }
 
@@ -105,4 +122,16 @@ public class JavaInstanceRunnableTest {
             return null;
         }
     }
+<<<<<<< HEAD
+=======
+
+    @Test
+    public void testStatsManagerNull() throws Exception {
+        JavaInstanceRunnable javaInstanceRunnable = createRunnable(null);
+
+        Assert.assertEquals(javaInstanceRunnable.getFunctionStatus().build(), InstanceCommunication.FunctionStatus.newBuilder().build());
+
+        Assert.assertEquals(javaInstanceRunnable.getMetrics(), InstanceCommunication.MetricsData.newBuilder().build());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

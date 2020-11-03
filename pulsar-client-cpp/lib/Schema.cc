@@ -16,21 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Schema.h>
 
 #include <iostream>
 #include <map>
 #include <memory>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 std::ostream &operator<<(std::ostream &s, pulsar::SchemaType schemaType) {
+=======
+PULSAR_PUBLIC std::ostream &operator<<(std::ostream &s, pulsar::SchemaType schemaType) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     return s << strSchemaType(schemaType);
 }
 
 namespace pulsar {
 
+<<<<<<< HEAD
 const char *strSchemaType(SchemaType schemaType) {
+=======
+PULSAR_PUBLIC const char *strSchemaType(SchemaType schemaType) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     switch (schemaType) {
         case NONE:
             return "NONE";
@@ -69,7 +81,11 @@ const char *strSchemaType(SchemaType schemaType) {
     return "UnknownSchemaType";
 }
 
+<<<<<<< HEAD
 class SchemaInfoImpl {
+=======
+class PULSAR_PUBLIC SchemaInfoImpl {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     const std::string name_;
     const std::string schema_;
@@ -98,5 +114,8 @@ const std::string &SchemaInfo::getSchema() const { return impl_->schema_; }
 const std::map<std::string, std::string> &SchemaInfo::getProperties() const { return impl_->properties_; }
 
 }  // namespace pulsar
+<<<<<<< HEAD
 
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

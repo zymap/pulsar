@@ -23,7 +23,11 @@ import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 
 public class DebeziumMySQLContainer extends ChaosContainer<DebeziumMySQLContainer> {
 
+<<<<<<< HEAD
     public static final String NAME = "mysql";
+=======
+    public static final String NAME = "debezium-mysql-example";
+>>>>>>> f773c602c... Test pr 10 (#27)
     static final Integer[] PORTS = { 3306 };
 
     private static final String IMAGE_NAME = "debezium/example-mysql:0.8";

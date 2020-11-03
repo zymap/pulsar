@@ -20,11 +20,23 @@ package org.apache.pulsar.common.util;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+<<<<<<< HEAD
 
 public class FutureUtil {
 
     /**
      * Return a future that represents the completion of the futures in the provided list
+=======
+import java.util.concurrent.CompletionException;
+
+/**
+ * This class is aimed at simplifying work with {@code CompletableFuture}.
+ */
+public class FutureUtil {
+
+    /**
+     * Return a future that represents the completion of the futures in the provided list.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param futures
      * @return
@@ -38,4 +50,15 @@ public class FutureUtil {
         future.completeExceptionally(t);
         return future;
     }
+<<<<<<< HEAD
+=======
+
+    public static Throwable unwrapCompletionException(Throwable t) {
+        if (t instanceof CompletionException) {
+            return unwrapCompletionException(t.getCause());
+        } else {
+            return t;
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -20,6 +20,11 @@ package org.apache.pulsar.zookeeper;
 
 import java.util.List;
 import java.util.Set;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.pulsar.zookeeper.ZooKeeperCache.CacheUpdater;
@@ -49,6 +54,7 @@ public class ZooKeeperChildrenCache implements Watcher, CacheUpdater<Set<String>
     }
 
     public Set<String> get() throws KeeperException, InterruptedException {
+<<<<<<< HEAD
         return cache.getChildren(path, this);
     }
 
@@ -63,10 +69,35 @@ public class ZooKeeperChildrenCache implements Watcher, CacheUpdater<Set<String>
 
     public void clearTree() {
         cache.invalidateRoot(path);
+=======
+        return get(this.path);
+    }
+
+    public Set<String> get(String path) throws KeeperException, InterruptedException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("getChildren called at: {}", path);
+        }
+
+        Set<String> children = cache.getChildrenAsync(path, this).join();
+        if (children == null) {
+            throw KeeperException.create(KeeperException.Code.NONODE);
+        }
+
+        return children;
+    }
+
+    public CompletableFuture<Set<String>> getAsync(String path) {
+        return cache.getChildrenAsync(path, this);
+    }
+
+    public void clear() {
+        cache.invalidateChildren(path);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public void reloadCache(final String path) {
+<<<<<<< HEAD
         try {
             cache.invalidate(path);
             Set<String> children = cache.getChildren(path, this);
@@ -79,6 +110,19 @@ public class ZooKeeperChildrenCache implements Watcher, CacheUpdater<Set<String>
         } catch (Exception e) {
             LOG.warn("Reloading ZooKeeperDataCache failed at path:{}", path);
         }
+=======
+        cache.invalidate(path);
+        cache.getChildrenAsync(path, this)
+                .thenAccept(children -> {
+                    LOG.info("reloadCache called in zookeeperChildrenCache for path {}", path);
+                    for (ZooKeeperCacheListener<Set<String>> listener : listeners) {
+                        listener.onUpdate(path, children, null);
+                    }
+                }).exceptionally(ex -> {
+                    LOG.warn("Reloading ZooKeeperDataCache failed at path:{}", path, ex);
+                    return null;
+                }).join();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

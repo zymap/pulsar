@@ -28,7 +28,11 @@ public class TopicMessageIdImpl implements MessageId {
     private final String topicName;
     private final MessageId messageId;
 
+<<<<<<< HEAD
     TopicMessageIdImpl(String topicPartitionName, String topicName, MessageId messageId) {
+=======
+    public TopicMessageIdImpl(String topicPartitionName, String topicName, MessageId messageId) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.messageId = messageId;
         this.topicPartitionName = topicPartitionName;
         this.topicName = topicName;
@@ -55,11 +59,27 @@ public class TopicMessageIdImpl implements MessageId {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public String toString() {
+        return messageId.toString();
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public byte[] toByteArray() {
         return messageId.toByteArray();
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hash(topicPartitionName, messageId);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (!(obj instanceof TopicMessageIdImpl)) {
             return false;

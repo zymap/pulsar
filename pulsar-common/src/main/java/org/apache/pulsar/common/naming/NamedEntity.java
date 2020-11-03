@@ -31,7 +31,11 @@ public class NamedEntity {
     // allowed characters for property, namespace, cluster and topic names are
     // alphanumeric (a-zA-Z_0-9) and these special chars -=:.
     // % is allowed as part of valid URL encoding
+<<<<<<< HEAD
     private static final Pattern NAMED_ENTITY_PATTERN = Pattern.compile("^[-=:.\\w]*$");
+=======
+    public static final Pattern NAMED_ENTITY_PATTERN = Pattern.compile("^[-=:.\\w]*$");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static void checkName(String name) throws IllegalArgumentException {
         Matcher m = NAMED_ENTITY_PATTERN.matcher(name);

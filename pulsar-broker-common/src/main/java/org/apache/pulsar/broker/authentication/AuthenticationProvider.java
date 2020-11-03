@@ -21,9 +21,21 @@ package org.apache.pulsar.broker.authentication;
 import java.io.Closeable;
 import java.io.IOException;
 
+<<<<<<< HEAD
 import javax.naming.AuthenticationException;
 
 import org.apache.pulsar.broker.ServiceConfiguration;
+=======
+import java.net.SocketAddress;
+import javax.naming.AuthenticationException;
+
+import javax.net.ssl.SSLSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.pulsar.broker.ServiceConfiguration;
+import org.apache.pulsar.common.api.AuthData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Provider of authentication mechanism
@@ -46,14 +58,45 @@ public interface AuthenticationProvider extends Closeable {
     String getAuthMethodName();
 
     /**
+<<<<<<< HEAD
      * Validate the authentication for the given credentials with the specified authentication data
      * 
+=======
+     * Validate the authentication for the given credentials with the specified authentication data.
+     * This method is useful in one stage authn, if you're not doing one stage or if you're providing
+     * your own state implementation for one stage authn, it should throw an exception.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param authData
      *            provider specific authentication data
      * @return the "role" string for the authenticated connection, if the authentication was successful
      * @throws AuthenticationException
      *             if the credentials are not valid
      */
+<<<<<<< HEAD
     String authenticate(AuthenticationDataSource authData) throws AuthenticationException;
 
+=======
+    default String authenticate(AuthenticationDataSource authData) throws AuthenticationException {
+        throw new AuthenticationException("Not supported");
+    }
+
+    /**
+     * Create an authentication data State use passed in AuthenticationDataSource.
+     */
+    default AuthenticationState newAuthState(AuthData authData,
+                                             SocketAddress remoteAddress,
+                                             SSLSession sslSession)
+        throws AuthenticationException {
+        return new OneStageAuthenticationState(authData, remoteAddress, sslSession, this);
+    }
+
+    /**
+     * Set response, according to passed in request.
+     * and return whether we should do following chain.doFilter or not.
+     */
+    default boolean authenticateHttpRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new AuthenticationException("Not supported");
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

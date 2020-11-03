@@ -33,10 +33,13 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -47,10 +50,13 @@ import org.apache.pulsar.io.core.annotations.FieldDoc;
  * Configuration object for the Twitter Firehose Connector.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class TwitterFireHoseConfig implements Serializable {
 
@@ -59,6 +65,10 @@ public class TwitterFireHoseConfig implements Serializable {
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Your twitter app consumer key. See "
                 + "https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens for details"
     )
@@ -67,6 +77,10 @@ public class TwitterFireHoseConfig implements Serializable {
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Your twitter app consumer secret. "
                 + "See https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens for details"
     )
@@ -75,6 +89,10 @@ public class TwitterFireHoseConfig implements Serializable {
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Your twitter app token. "
                 + "See https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens for details"
     )
@@ -83,6 +101,10 @@ public class TwitterFireHoseConfig implements Serializable {
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Your twitter app token secret. "
                 + "See https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens for details"
     )

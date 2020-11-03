@@ -196,7 +196,11 @@ template <typename Type, int MaxSize>
 std::mutex Allocator<Type, MaxSize>::Impl::mutex_;
 
 template <typename Type, int MaxSize>
+<<<<<<< HEAD
 struct Allocator<Type, MaxSize>::Impl::GlobalPool* Allocator<Type, MaxSize>::Impl::globalPool_;
+=======
+typename Allocator<Type, MaxSize>::Impl::GlobalPool* Allocator<Type, MaxSize>::Impl::globalPool_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 template <typename Type, int MaxSize>
 int Allocator<Type, MaxSize>::Impl::globalNodeCount_;

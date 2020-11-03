@@ -19,12 +19,20 @@
 package org.apache.flink.batch.connectors.pulsar.serialization;
 
 import org.apache.commons.io.IOUtils;
+<<<<<<< HEAD
 import org.junit.Test;
+=======
+import org.testng.annotations.Test;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
+=======
+import static org.testng.Assert.assertEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Tests for Json Serialization Schema
@@ -49,7 +57,11 @@ public class JsonSerializationSchemaTest {
         assertEquals(jsonContent, "{\"id\":0,\"name\":null}");
     }
 
+<<<<<<< HEAD
     @Test(expected = RuntimeException.class)
+=======
+    @Test(expectedExceptions = RuntimeException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testJsonSerializationSchemaWithNotSerializableObject() {
         NotSerializableObject notSerializableObject = new NotSerializableObject();
         JsonSerializationSchema schema = new JsonSerializationSchema();

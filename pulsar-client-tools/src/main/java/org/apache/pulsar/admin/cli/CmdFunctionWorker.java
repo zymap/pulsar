@@ -50,7 +50,11 @@ public class CmdFunctionWorker extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             printList(admin.worker().getFunctionsStats());
+=======
+            print(admin.worker().getFunctionsStats());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -59,7 +63,11 @@ public class CmdFunctionWorker extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             printList(admin.worker().getMetrics());
+=======
+            print(admin.worker().getMetrics());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -68,7 +76,11 @@ public class CmdFunctionWorker extends CmdBase {
 
         @Override
         void runCmd() throws Exception {
+<<<<<<< HEAD
             printList(admin.worker().getCluster());
+=======
+            print(admin.worker().getCluster());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 

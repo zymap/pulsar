@@ -18,15 +18,31 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Maps;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+<<<<<<< HEAD
 import com.google.common.collect.Maps;
 
 public class AuthPolicies {
     public final Map<String, Set<AuthAction>> namespace_auth;
     public final Map<String, Map<String, Set<AuthAction>>> destination_auth;
+=======
+/**
+ * Authentication policies.
+ */
+public class AuthPolicies {
+    @SuppressWarnings("checkstyle:MemberName")
+    public final Map<String, Set<AuthAction>> namespace_auth;
+    @SuppressWarnings("checkstyle:MemberName")
+    public final Map<String, Map<String, Set<AuthAction>>> destination_auth;
+    @SuppressWarnings("checkstyle:MemberName")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public final Map<String, Set<String>> subscription_auth_roles;
 
     public AuthPolicies() {
@@ -36,6 +52,15 @@ public class AuthPolicies {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hash(namespace_auth, destination_auth,
+                subscription_auth_roles);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof AuthPolicies) {
             AuthPolicies other = (AuthPolicies) obj;

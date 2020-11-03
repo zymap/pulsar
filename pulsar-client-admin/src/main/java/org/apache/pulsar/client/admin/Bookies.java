@@ -18,6 +18,11 @@
  */
 package org.apache.pulsar.client.admin;
 
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.BookieInfo;
 import org.apache.pulsar.common.policies.data.BookiesRackConfiguration;
 
@@ -27,22 +32,60 @@ import org.apache.pulsar.common.policies.data.BookiesRackConfiguration;
 public interface Bookies {
 
     /**
+<<<<<<< HEAD
      * Gets the rack placement information for all the bookies in the cluster
+=======
+     * Gets the rack placement information for all the bookies in the cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     BookiesRackConfiguration getBookiesRackInfo() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Gets the rack placement information for a specific bookie in the cluster
+=======
+     * Gets the rack placement information for all the bookies in the cluster asynchronously.
+     */
+    CompletableFuture<BookiesRackConfiguration> getBookiesRackInfoAsync();
+
+    /**
+     * Gets the rack placement information for a specific bookie in the cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     BookieInfo getBookieRackInfo(String bookieAddress) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Remove rack placement information for a specific bookie in the cluster
+=======
+     * Gets the rack placement information for a specific bookie in the cluster asynchronously.
+     */
+    CompletableFuture<BookieInfo> getBookieRackInfoAsync(String bookieAddress);
+
+    /**
+     * Remove rack placement information for a specific bookie in the cluster.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     void deleteBookieRackInfo(String bookieAddress) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Updates the rack placement information for a specific bookie in the cluster
      */
     void updateBookieRackInfo(String bookieAddress, String group, BookieInfo bookieInfo) throws PulsarAdminException;
+=======
+     * Remove rack placement information for a specific bookie in the cluster asynchronously.
+     */
+    CompletableFuture<Void> deleteBookieRackInfoAsync(String bookieAddress);
+
+    /**
+     * Updates the rack placement information for a specific bookie in the cluster.
+     */
+    void updateBookieRackInfo(String bookieAddress, String group, BookieInfo bookieInfo) throws PulsarAdminException;
+
+    /**
+     * Updates the rack placement information for a specific bookie in the cluster asynchronously.
+     */
+    CompletableFuture<Void> updateBookieRackInfoAsync(String bookieAddress, String group, BookieInfo bookieInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

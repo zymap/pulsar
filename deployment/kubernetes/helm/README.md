@@ -19,6 +19,7 @@
 
 -->
 
+<<<<<<< HEAD
 This directory contains the Helm Chart required
 to do a complete Pulsar deployment on Kubernetes.
 
@@ -75,3 +76,8 @@ Once the helm chart is completed on installation, you can access the cluster via
 
 - Web service url: `http://$(minikube ip):30001/`
 - Pulsar service url: `pulsar://$(minikube ip):30002/`
+=======
+The Helm Chart is moved to [pulsar-helm-chart](https://github.com/apache/pulsar-helm-chart).
+
+Read [Deploying Pulsar on Kubernetes](http://pulsar.apache.org/docs/en/deploy-kubernetes/) for more details.
+>>>>>>> f773c602c... Test pr 10 (#27)

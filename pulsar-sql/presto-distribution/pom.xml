@@ -31,15 +31,25 @@
     <groupId>org.apache.pulsar</groupId>
     <artifactId>pulsar-presto-distribution</artifactId>
     <name>Pulsar SQL :: Pulsar Presto Distribution</name>
+<<<<<<< HEAD
     <version>2.3.0</version>
 
     <properties>
         <presto.version>0.206</presto.version>
+=======
+    <version>2.7.0-SNAPSHOT</version>
+
+    <properties>
+        <jersey.version>2.31</jersey.version>
+        <presto.version>332</presto.version>
+        <jersey.version>2.31</jersey.version>
+>>>>>>> f773c602c... Test pr 10 (#27)
         <airlift.version>0.170</airlift.version>
         <objenesis.version>2.6</objenesis.version>
         <objectsize.version>0.0.12</objectsize.version>
         <guice.version>4.2.0</guice.version>
         <!-- Launcher properties -->
+<<<<<<< HEAD
         <main-class>com.facebook.presto.server.PrestoServer</main-class>
         <process-name>${project.artifactId}</process-name>
         <jackson.version>2.8.11</jackson.version>
@@ -52,6 +62,77 @@
 
         <dependency>
             <groupId>com.facebook.presto</groupId>
+=======
+        <main-class>io.prestosql.server.PrestoServer</main-class>
+        <process-name>${project.artifactId}</process-name>
+        <jackson.version>2.11.1</jackson.version>
+        <!--fix Security Vulnerabilities-->
+        <!--https://www.cvedetails.com/vulnerability-list/vendor_id-15866/product_id-42991/Fasterxml-Jackson-databind.html-->
+        <jackson.databind.version>2.11.1</jackson.databind.version>
+        <maven.version>3.0.5</maven.version>
+        <guava.version>25.1-jre</guava.version>
+        <asynchttpclient.version>2.12.1</asynchttpclient.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.glassfish.jersey.containers</groupId>
+           <artifactId>jersey-container-servlet-core</artifactId>
+           <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.glassfish.jersey.containers</groupId>
+           <artifactId>jersey-container-servlet</artifactId>
+           <version>${jersey.version}</version>
+       </dependency>
+
+        <dependency>
+            <groupId>io.prestosql</groupId>
+>>>>>>> f773c602c... Test pr 10 (#27)
             <artifactId>presto-main</artifactId>
             <version>${presto.version}</version>
             <exclusions>
@@ -64,11 +145,22 @@
                     <groupId>com.sun</groupId>
                     <artifactId>tools</artifactId>
                 </exclusion>
+<<<<<<< HEAD
+=======
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+>>>>>>> f773c602c... Test pr 10 (#27)
             </exclusions>
         </dependency>
 
         <dependency>
+<<<<<<< HEAD
             <groupId>com.facebook.presto</groupId>
+=======
+            <groupId>io.prestosql</groupId>
+>>>>>>> f773c602c... Test pr 10 (#27)
             <artifactId>presto-cli</artifactId>
             <version>${presto.version}</version>
         </dependency>
@@ -90,7 +182,11 @@
         </dependency>
 
         <dependency>
+<<<<<<< HEAD
             <groupId>org.apache.pulsar</groupId>
+=======
+            <groupId>${project.groupId}</groupId>
+>>>>>>> f773c602c... Test pr 10 (#27)
             <artifactId>pulsar-presto-connector</artifactId>
             <version>${project.version}</version>
             <type>tar.gz</type>
@@ -174,15 +270,71 @@
 
     </dependencies>
 
+<<<<<<< HEAD
+=======
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.asynchttpclient</groupId>
+          <artifactId>async-http-client</artifactId>
+          <version>${asynchttpclient.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty</artifactId>
+          <version>3.10.6.Final</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-core</artifactId>
+          <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-model</artifactId>
+          <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-artifact</artifactId>
+          <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-aether-provider</artifactId>
+          <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-embedder</artifactId>
+          <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>${guava.version}</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+<<<<<<< HEAD
                 <version>2.5.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+=======
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <attach>true</attach>
@@ -228,11 +380,25 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
+<<<<<<< HEAD
                 <version>3.0.rc1</version>
+=======
+                <version>3.0</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 <configuration>
                     <header>../../src/license-header.txt</header>
                 </configuration>
             </plugin>
+<<<<<<< HEAD
+=======
+            <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+              </configuration>
+            </plugin>
+>>>>>>> f773c602c... Test pr 10 (#27)
         </plugins>
         <extensions>
             <extension>
@@ -242,4 +408,8 @@
             </extension>
         </extensions>
     </build>
+<<<<<<< HEAD
 </project>
+=======
+</project>
+>>>>>>> f773c602c... Test pr 10 (#27)

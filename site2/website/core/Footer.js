@@ -120,9 +120,18 @@ class Footer extends React.Component {
     const twitterUrl = 'https://twitter.com/Apache_Pulsar'
     const wikiUrl = 'https://github.com/apache/pulsar/wiki'
     const issuesUrl = 'https://github.com/apache/pulsar/issues'
+<<<<<<< HEAD
     const resourcesUrl = this.pageUrl('resources', this.props.language)
     const teamUrl = this.pageUrl('team', this.props.language)
     const contributingUrl = this.pageUrl('contributing', this.props.language)
+=======
+    const summitUrl = 'https://pulsar-summit.org/'
+    const resourcesUrl = this.pageUrl('resources', this.props.language)
+    const teamUrl = this.pageUrl('team', this.props.language)
+    const poweredByUrl = this.pageUrl('powered-by', this.props.language)
+    const contributingUrl = this.pageUrl('contributing', this.props.language)
+    const codingUrl = this.pageUrl('coding-guide', this.props.language)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     const communityMenuJs = `
       const community = document.querySelector("a[href='#community']").parentNode;
@@ -133,13 +142,25 @@ class Footer extends React.Component {
           '<ul id="community-dropdown-items">' +
             '<li><a href="${contactUrl}">Contact</a></li>' +
             '<li><a href="${contributingUrl}">Contributing</a></li>' +
+<<<<<<< HEAD
+=======
+            '<li><a href="${codingUrl}">Coding guide</a></li>' +
+>>>>>>> f773c602c... Test pr 10 (#27)
             '<li><a href="${eventsUrl}">Events</a></li>' +
             '<li><a href="${twitterUrl}" target="_blank">Twitter &#x2750</a></li>' +
             '<li><a href="${wikiUrl}" target="_blank">Wiki &#x2750</a></li>' +
             '<li><a href="${issuesUrl}" target="_blank">Issue tracking &#x2750</a></li>' +
+<<<<<<< HEAD
             '<li>&nbsp;</li>' +
             '<li><a href="${resourcesUrl}">Resources</a></li>' +
             '<li><a href="${teamUrl}">Team</a></li>' +
+=======
+            '<li><a href="${summitUrl}" target="_blank">Pulsar Summit &#x2750</a></li>' +
+            '<li>&nbsp;</li>' +
+            '<li><a href="${resourcesUrl}">Resources</a></li>' +
+            '<li><a href="${teamUrl}">Team</a></li>' +
+            '<li><a href="${poweredByUrl}">Powered By</a></li>' +
+>>>>>>> f773c602c... Test pr 10 (#27)
           '</ul>' +
         '</div>' +
         '</li>';
@@ -165,6 +186,7 @@ class Footer extends React.Component {
         <span>
         <script dangerouslySetInnerHTML={{__html: communityMenuJs }} />
         </span>
+<<<<<<< HEAD
         <span>
         <script src={this.props.config.baseUrl + 'js/pjax-api.min.js'} />
         <script dangerouslySetInnerHTML={{__html: `window.navfoo = new Pjax({
@@ -181,6 +203,8 @@ class Footer extends React.Component {
           });
         `}}></script>
         </span>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
       </footer>
     );
   }

@@ -20,9 +20,19 @@ package org.apache.pulsar.functions.secretsproviderconfigurator;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+<<<<<<< HEAD
 import io.kubernetes.client.apis.AppsV1Api;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.models.*;
+=======
+import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarSource;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1SecretKeySelector;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.functions.proto.Function;
 import org.apache.pulsar.functions.secretsprovider.EnvironmentBasedSecretsProvider;
@@ -35,7 +45,11 @@ import java.util.Map;
  * As such this implementation is strictly when workers are configured to use kubernetes runtime.
  * We use kubernetes in built secrets and bind them as environment variables within the function container
  * to ensure that the secrets are available to the function at runtime. Then we plug in the
+<<<<<<< HEAD
  * EnvironmentBasedSecretsConfig as the secrets provider who knows how to read these environment variables
+=======
+ * EnvironmentBasedSecretsConfig as the secrets provider who knows how to read these environment variables.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class KubernetesSecretsProviderConfigurator implements SecretsProviderConfigurator {
     private static String ID_KEY = "path";
@@ -47,6 +61,11 @@ public class KubernetesSecretsProviderConfigurator implements SecretsProviderCon
                 return EnvironmentBasedSecretsProvider.class.getName();
             case PYTHON:
                 return "secretsprovider.EnvironmentBasedSecretsProvider";
+<<<<<<< HEAD
+=======
+            case GO:
+                throw new UnsupportedOperationException();
+>>>>>>> f773c602c... Test pr 10 (#27)
             default:
                 throw new RuntimeException("Unknown function runtime " + functionDetails.getRuntime());
         }

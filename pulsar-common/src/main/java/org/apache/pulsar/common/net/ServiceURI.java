@@ -26,8 +26,15 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.net.URI;
+<<<<<<< HEAD
 import java.util.List;
 import java.util.stream.Collectors;
+=======
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -52,8 +59,13 @@ public class ServiceURI {
 
     private static final int BINARY_PORT = 6650;
     private static final int BINARY_TLS_PORT = 6651;
+<<<<<<< HEAD
     private static final int HTTP_PORT = 8080;
     private static final int HTTPS_PORT = 8443;
+=======
+    private static final int HTTP_PORT = 80;
+    private static final int HTTPS_PORT = 443;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Create a service uri instance from a uri string.
@@ -66,6 +78,42 @@ public class ServiceURI {
     public static ServiceURI create(String uriStr) {
         checkNotNull(uriStr, "service uri string is null");
 
+<<<<<<< HEAD
+=======
+        if (uriStr.contains("[") && uriStr.contains("]")) {
+            // deal with ipv6 address
+            Splitter splitter = Splitter.on(CharMatcher.anyOf(",;"));
+            List<String> hosts = splitter.splitToList(uriStr);
+
+            if (hosts.size() > 1) {
+                // deal with multi ipv6 hosts
+                String firstHost = hosts.get(0);
+                String lastHost = hosts.get(hosts.size() - 1);
+                boolean hasPath = lastHost.contains("/");
+                String path = hasPath ? lastHost.substring(lastHost.indexOf("/")) : "";
+                firstHost += path;
+
+                URI uri = URI.create(firstHost);
+                ServiceURI serviceURI = create(uri);
+
+                List<String> multiHosts = new ArrayList<>();
+                multiHosts.add(serviceURI.getServiceHosts()[0]);
+                multiHosts.addAll(hosts.subList(1, hosts.size()));
+                multiHosts = multiHosts
+                        .stream()
+                        .map(host -> validateHostName(serviceURI.getServiceName(), serviceURI.getServiceInfos(), host))
+                        .collect(Collectors.toList());
+                return new ServiceURI(
+                        serviceURI.getServiceName(),
+                        serviceURI.getServiceInfos(),
+                        serviceURI.getServiceUser(),
+                        multiHosts.toArray(new String[multiHosts.size()]),
+                        serviceURI.getServicePath(),
+                        serviceURI.getUri());
+            }
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         // a service uri first should be a valid java.net.URI
         URI uri = URI.create(uriStr);
 
@@ -134,6 +182,7 @@ public class ServiceURI {
     private static String validateHostName(String serviceName,
                                            String[] serviceInfos,
                                            String hostname) {
+<<<<<<< HEAD
         String[] parts = hostname.split(":");
         if (parts.length >= 3) {
             throw new IllegalArgumentException("Invalid hostname : " + hostname);
@@ -149,6 +198,23 @@ public class ServiceURI {
         } else {
             return hostname;
         }
+=======
+        URI uri = null;
+        try {
+            uri = URI.create("dummyscheme://" + hostname);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid hostname : " + hostname);
+        }
+        String host = uri.getHost();
+        if (host == null) {
+            throw new IllegalArgumentException("Invalid hostname : " + hostname);
+        }
+        int port = uri.getPort();
+        if (port == -1) {
+            port = getServicePort(serviceName, serviceInfos);
+        }
+        return host + ":" + port;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private final String serviceName;

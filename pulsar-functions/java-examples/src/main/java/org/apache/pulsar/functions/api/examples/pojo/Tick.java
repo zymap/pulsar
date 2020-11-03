@@ -19,6 +19,7 @@
 package org.apache.pulsar.functions.api.examples.pojo;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -28,6 +29,13 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode
+=======
+
+/**
+ * Pojo to represent a stock tick.
+ */
+@Data
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class Tick {
 
     private long timeStamp;

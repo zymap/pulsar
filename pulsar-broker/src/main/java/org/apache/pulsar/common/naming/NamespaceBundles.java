@@ -137,6 +137,14 @@ public class NamespaceBundles {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(nsname, bundles);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof NamespaceBundles) {
             NamespaceBundles other = (NamespaceBundles) obj;

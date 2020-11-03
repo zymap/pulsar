@@ -35,6 +35,14 @@ echo $IMAGE
 # Force to pull image in case it was updated
 docker pull $IMAGE
 
+<<<<<<< HEAD
 docker run -i \
     -v ${COMMON_DIR}:${COMMON_DIR} $IMAGE \
     bash -c "cd ${COMMON_DIR}; /pulsar/protobuf/src/protoc --java_out=src/main/java src/main/proto/PulsarApi.proto"
+=======
+WORKDIR=/workdir
+docker run -i \
+    -v ${COMMON_DIR}:${WORKDIR} $IMAGE \
+    bash -c "cd ${WORKDIR}; PROTOC=/pulsar/protobuf/src/protoc ./generate_protobuf.sh"
+
+>>>>>>> f773c602c... Test pr 10 (#27)

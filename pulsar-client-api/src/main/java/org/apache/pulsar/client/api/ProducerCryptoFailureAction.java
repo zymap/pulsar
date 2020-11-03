@@ -20,16 +20,28 @@
 package org.apache.pulsar.client.api;
 
 /**
+<<<<<<< HEAD
  * The action the producer will take in case of encryption failures
  */
 public enum ProducerCryptoFailureAction {
     /**
      * This is the default option to fail send if crypto operation fails
+=======
+ * The action the producer will take in case of encryption failures.
+ */
+public enum ProducerCryptoFailureAction {
+    /**
+     * This is the default option to fail send if crypto operation fails.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     FAIL,
 
     /**
+<<<<<<< HEAD
      * Ignore crypto failure and proceed with sending unencrypted messages
+=======
+     * Ignore crypto failure and proceed with sending unencrypted messages.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     SEND
 }

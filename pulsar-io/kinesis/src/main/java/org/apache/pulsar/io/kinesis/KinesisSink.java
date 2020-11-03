@@ -24,23 +24,33 @@ import static com.google.common.util.concurrent.Futures.addCallback;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+<<<<<<< HEAD
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+=======
+import com.amazonaws.auth.AWSCredentialsProvider;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.amazonaws.services.kinesis.producer.KinesisProducer;
 import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
 import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration.ThreadingModel;
 import com.amazonaws.services.kinesis.producer.UserRecordResult;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+<<<<<<< HEAD
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import io.netty.util.Recycler;
 import io.netty.util.Recycler.Handle;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.lang.reflect.Constructor;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +59,11 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.pulsar.functions.api.Record;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.io.aws.AbstractAwsConnector;
+import org.apache.pulsar.io.aws.AwsCredentialProviderPlugin;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.io.core.Sink;
 import org.apache.pulsar.io.core.SinkContext;
 import org.apache.pulsar.io.core.annotations.Connector;
@@ -88,7 +103,11 @@ import org.slf4j.LoggerFactory;
     help = "A sink connector that copies messages from Pulsar to Kinesis",
     configClass = KinesisSinkConfig.class
 )
+<<<<<<< HEAD
 public class KinesisSink implements Sink<byte[]> {
+=======
+public class KinesisSink extends AbstractAwsConnector implements Sink<byte[]> {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private static final Logger LOG = LoggerFactory.getLogger(KinesisSink.class);
 
@@ -105,9 +124,12 @@ public class KinesisSink implements Sink<byte[]> {
     private static final AtomicIntegerFieldUpdater<KinesisSink> IS_PUBLISH_FAILED =
             AtomicIntegerFieldUpdater.newUpdater(KinesisSink.class, "previousPublishFailed");
 
+<<<<<<< HEAD
     public static final String ACCESS_KEY_NAME = "accessKey";
     public static final String SECRET_KEY_NAME = "secretKey";
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static final String METRICS_TOTAL_INCOMING = "_kinesis_total_incoming_";
     public static final String METRICS_TOTAL_INCOMING_BYTES = "_kinesis_total_incoming_bytes_";
     public static final String METRICS_TOTAL_SUCCESS = "_kinesis_total_success_";
@@ -155,9 +177,15 @@ public class KinesisSink implements Sink<byte[]> {
         this.sinkContext = sinkContext;
 
         checkArgument(isNotBlank(kinesisSinkConfig.getAwsKinesisStreamName()), "empty kinesis-stream name");
+<<<<<<< HEAD
         checkArgument(isNotBlank(kinesisSinkConfig.getAwsEndpoint()), "empty aws-end-point");
         checkArgument(isNotBlank(kinesisSinkConfig.getAwsRegion()), "empty aws region name");
         checkArgument(isNotBlank(kinesisSinkConfig.getAwsKinesisStreamName()), "empty kinesis stream name");
+=======
+        checkArgument(isNotBlank(kinesisSinkConfig.getAwsEndpoint()) || 
+                      isNotBlank(kinesisSinkConfig.getAwsRegion()), 
+                      "Either the aws-end-point or aws-region must be set");
+>>>>>>> f773c602c... Test pr 10 (#27)
         checkArgument(isNotBlank(kinesisSinkConfig.getAwsCredentialPluginParam()), "empty aws-credential param");
 
         KinesisProducerConfiguration kinesisConfig = new KinesisProducerConfiguration();
@@ -167,7 +195,13 @@ public class KinesisSink implements Sink<byte[]> {
         kinesisConfig.setThreadPoolSize(4);
         kinesisConfig.setCollectionMaxCount(1);
         AWSCredentialsProvider credentialsProvider = createCredentialProvider(
+<<<<<<< HEAD
                 kinesisSinkConfig.getAwsCredentialPluginName(), kinesisSinkConfig.getAwsCredentialPluginParam());
+=======
+                kinesisSinkConfig.getAwsCredentialPluginName(),
+                kinesisSinkConfig.getAwsCredentialPluginParam())
+            .getCredentialProvider();
+>>>>>>> f773c602c... Test pr 10 (#27)
         kinesisConfig.setCredentialsProvider(credentialsProvider);
 
         this.streamName = kinesisSinkConfig.getAwsKinesisStreamName();
@@ -177,6 +211,7 @@ public class KinesisSink implements Sink<byte[]> {
         LOG.info("Kinesis sink started. {}", (ReflectionToStringBuilder.toString(kinesisConfig, ToStringStyle.SHORT_PREFIX_STYLE)));
     }
 
+<<<<<<< HEAD
     protected AWSCredentialsProvider createCredentialProvider(String awsCredentialPluginName,
             String awsCredentialPluginParam) {
         if (isNotBlank(awsCredentialPluginName)) {
@@ -186,6 +221,8 @@ public class KinesisSink implements Sink<byte[]> {
         }
     }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final class ProducerSendCallback implements FutureCallback<UserRecordResult> {
 
         private Record<byte[]> resultContext;
@@ -249,6 +286,7 @@ public class KinesisSink implements Sink<byte[]> {
         }
     }
 
+<<<<<<< HEAD
     /**
      * Creates a instance of credential provider which can return {@link AWSCredentials} or {@link BasicAWSCredentials}
      * based on IAM user/roles.
@@ -316,6 +354,8 @@ public class KinesisSink implements Sink<byte[]> {
         };
     }
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static ByteBuffer createKinesisMessage(MessageFormat msgFormat, Record<byte[]> record) {
         if (MessageFormat.FULL_MESSAGE_IN_JSON.equals(msgFormat)) {
             return ByteBuffer.wrap(Utils.serializeRecordToJson(record).getBytes());

@@ -20,3 +20,7 @@
 name: file
 description: Reads data from local filesystem
 sourceClass: org.apache.pulsar.io.file.FileSource
+<<<<<<< HEAD
+=======
+sourceConfigClass: org.apache.pulsar.io.file.FileSourceConfig
+>>>>>>> f773c602c... Test pr 10 (#27)

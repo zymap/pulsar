@@ -18,6 +18,11 @@
  */
 package org.apache.pulsar.utils.auth.tokens;
 
+<<<<<<< HEAD
+=======
+import com.beust.jcommander.DefaultUsageFormatter;
+import com.beust.jcommander.IUsageFormatter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -109,6 +114,12 @@ public class TokensCliUtils {
 
     @Parameters(commandDescription = "Create a new token")
     public static class CommandCreateToken {
+<<<<<<< HEAD
+=======
+        @Parameter(names = { "-a",
+                "--signature-algorithm" }, description = "The signature algorithm for the new key pair.")
+        SignatureAlgorithm algorithm = SignatureAlgorithm.RS256;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         @Parameter(names = { "-s",
                 "--subject" }, description = "Specify the 'subject' or 'principal' associate with this token", required = true)
@@ -141,7 +152,11 @@ public class TokensCliUtils {
 
             if (privateKey != null) {
                 byte[] encodedKey = AuthTokenUtils.readKeyFromUrl(privateKey);
+<<<<<<< HEAD
                 signingKey = AuthTokenUtils.decodePrivateKey(encodedKey);
+=======
+                signingKey = AuthTokenUtils.decodePrivateKey(encodedKey, algorithm);
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else {
                 byte[] encodedKey = AuthTokenUtils.readKeyFromUrl(secretKey);
                 signingKey = AuthTokenUtils.decodeSecretKey(encodedKey);
@@ -202,6 +217,13 @@ public class TokensCliUtils {
     @Parameters(commandDescription = "Validate a token against a key")
     public static class CommandValidateToken {
 
+<<<<<<< HEAD
+=======
+        @Parameter(names = { "-a",
+                "--signature-algorithm" }, description = "The signature algorithm for the key pair if using public key.")
+        SignatureAlgorithm algorithm = SignatureAlgorithm.RS256;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Parameter(description = "The token string", arity = 1)
         private java.util.List<String> args;
 
@@ -254,7 +276,11 @@ public class TokensCliUtils {
 
             if (publicKey != null) {
                 byte[] encodedKey = AuthTokenUtils.readKeyFromUrl(publicKey);
+<<<<<<< HEAD
                 validationKey = AuthTokenUtils.decodePublicKey(encodedKey);
+=======
+                validationKey = AuthTokenUtils.decodePublicKey(encodedKey, algorithm);
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else {
                 byte[] encodedKey = AuthTokenUtils.readKeyFromUrl(secretKey);
                 validationKey = AuthTokenUtils.decodeSecretKey(encodedKey);
@@ -273,6 +299,10 @@ public class TokensCliUtils {
     public static void main(String[] args) throws Exception {
         Arguments arguments = new Arguments();
         JCommander jcommander = new JCommander(arguments);
+<<<<<<< HEAD
+=======
+        IUsageFormatter usageFormatter = new DefaultUsageFormatter(jcommander);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         CommandCreateSecretKey commandCreateSecretKey = new CommandCreateSecretKey();
         jcommander.addCommand("create-secret-key", commandCreateSecretKey);
@@ -297,8 +327,14 @@ public class TokensCliUtils {
                 System.exit(1);
             }
         } catch (Exception e) {
+<<<<<<< HEAD
             jcommander.usage();
             System.err.println(e);
+=======
+            System.err.println(e);
+            String chosenCommand = jcommander.getParsedCommand();
+            usageFormatter.usage(chosenCommand);
+>>>>>>> f773c602c... Test pr 10 (#27)
             System.exit(1);
         }
 

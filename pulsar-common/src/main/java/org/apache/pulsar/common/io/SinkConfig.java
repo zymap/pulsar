@@ -20,19 +20,36 @@ package org.apache.pulsar.common.io;
 
 import java.util.Collection;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.TreeMap;
 
 import lombok.*;
+=======
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.functions.ConsumerConfig;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.common.functions.Resources;
 
+<<<<<<< HEAD
 @Getter
 @Setter
 @Data
 @EqualsAndHashCode
 @ToString
 @Builder(toBuilder=true)
+=======
+/**
+ * Configuration of Pulsar Sink.
+ */
+@Data
+@Builder(toBuilder = true)
+>>>>>>> f773c602c... Test pr 10 (#27)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SinkConfig {
@@ -42,6 +59,10 @@ public class SinkConfig {
     private String name;
     private String className;
     private String sourceSubscriptionName;
+<<<<<<< HEAD
+=======
+    private SubscriptionInitialPosition sourceSubscriptionPosition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private Collection<String> inputs;
 
@@ -51,7 +72,17 @@ public class SinkConfig {
 
     private Map<String, String> topicToSchemaType;
 
+<<<<<<< HEAD
     private Map<String, ConsumerConfig> inputSpecs = new TreeMap<>();
+=======
+    private Map<String, String> topicToSchemaProperties;
+
+    private Map<String, ConsumerConfig> inputSpecs;
+
+    private Integer maxMessageRetries;
+
+    private String deadLetterTopic;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private Map<String, Object> configs;
     // This is a map of secretName(aka how the secret is going to be
@@ -66,7 +97,21 @@ public class SinkConfig {
     private Resources resources;
     private Boolean autoAck;
     private Long timeoutMs;
+<<<<<<< HEAD
     private String archive;
     // Whether the subscriptions the functions created/used should be deleted when the functions is deleted
     private Boolean cleanupSubscription;
+=======
+    private Long negativeAckRedeliveryDelayMs;
+    private String archive;
+    // Whether the subscriptions the functions created/used should be deleted when the functions is deleted
+    private Boolean cleanupSubscription;
+
+    // Any flags that you want to pass to the runtime.
+    private String runtimeFlags;
+    // This is an arbitrary string that can be interpreted by the function runtime
+    // to change behavior at runtime. Currently, this primarily used by the KubernetesManifestCustomizer
+    // interface
+    private String customRuntimeOptions;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

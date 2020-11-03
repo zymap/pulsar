@@ -19,6 +19,11 @@
 package org.apache.pulsar.broker.service;
 
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Map;
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.bookkeeper.mledger.ManagedCursor;
@@ -31,9 +36,14 @@ import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.BacklogQuota;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.BacklogQuota.BacklogQuotaType;
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.BacklogQuota.RetentionPolicy;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.collections.ConcurrentOpenHashSet;
+=======
+import org.apache.pulsar.common.policies.data.TopicPolicies;
+import org.apache.pulsar.common.util.FutureUtil;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +56,25 @@ public class BacklogQuotaManager {
     private static final Logger log = LoggerFactory.getLogger(BacklogQuotaManager.class);
     private final BacklogQuota defaultQuota;
     private final ZooKeeperDataCache<Policies> zkCache;
+<<<<<<< HEAD
 
     public BacklogQuotaManager(PulsarService pulsar) {
+=======
+    private final PulsarService pulsar;
+    private final boolean isTopicLevelPoliciesEnable;
+
+
+    public BacklogQuotaManager(PulsarService pulsar) {
+        this.isTopicLevelPoliciesEnable = pulsar.getConfiguration().isTopicLevelPoliciesEnabled();
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.defaultQuota = new BacklogQuota(
                 pulsar.getConfiguration().getBacklogQuotaDefaultLimitGB() * 1024 * 1024 * 1024,
                 pulsar.getConfiguration().getBacklogQuotaDefaultRetentionPolicy());
         this.zkCache = pulsar.getConfigurationCache().policiesCache();
+<<<<<<< HEAD
+=======
+        this.pulsar = pulsar;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public BacklogQuota getDefaultQuota() {
@@ -64,15 +87,41 @@ public class BacklogQuotaManager {
                     .map(p -> p.backlog_quota_map.getOrDefault(BacklogQuotaType.destination_storage, defaultQuota))
                     .orElse(defaultQuota);
         } catch (Exception e) {
+<<<<<<< HEAD
             log.error(String.format("Failed to read policies data, will apply the default backlog quota: namespace=%s",
                     namespace), e);
+=======
+            log.warn("Failed to read policies data, will apply the default backlog quota: namespace={}", namespace, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return this.defaultQuota;
         }
     }
 
+<<<<<<< HEAD
     public long getBacklogQuotaLimit(String namespace) {
         String policyPath = AdminResource.path(POLICIES, namespace);
         return getBacklogQuota(namespace, policyPath).getLimit();
+=======
+    public BacklogQuota getBacklogQuota(TopicName topicName) {
+        String policyPath = AdminResource.path(POLICIES, topicName.getNamespace());
+        if (!isTopicLevelPoliciesEnable) {
+            return getBacklogQuota(topicName.getNamespace(),policyPath);
+        }
+
+        try {
+            return Optional.ofNullable(pulsar.getTopicPoliciesService().getTopicPolicies(topicName))
+                    .map(TopicPolicies::getBackLogQuotaMap)
+                    .map(map -> map.get(BacklogQuotaType.destination_storage.name()))
+                    .orElseGet(() -> getBacklogQuota(topicName.getNamespace(),policyPath));
+        } catch (Exception e) {
+            log.warn("Failed to read topic policies data, will apply the namespace backlog quota: topicName={}", topicName, e);
+        }
+        return getBacklogQuota(topicName.getNamespace(),policyPath);
+    }
+
+    public long getBacklogQuotaLimit(TopicName topicName) {
+        return getBacklogQuota(topicName).getLimit();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -83,10 +132,14 @@ public class BacklogQuotaManager {
      */
     public void handleExceededBacklogQuota(PersistentTopic persistentTopic) {
         TopicName topicName = TopicName.get(persistentTopic.getName());
+<<<<<<< HEAD
         String namespace = topicName.getNamespace();
         String policyPath = AdminResource.path(POLICIES, namespace);
 
         BacklogQuota quota = getBacklogQuota(namespace, policyPath);
+=======
+        BacklogQuota quota = getBacklogQuota(topicName);
+>>>>>>> f773c602c... Test pr 10 (#27)
         log.info("Backlog quota exceeded for topic [{}]. Applying [{}] policy", persistentTopic.getName(),
                 quota.getPolicy());
         switch (quota.getPolicy()) {
@@ -144,7 +197,11 @@ public class BacklogQuotaManager {
             }
 
             // Calculate number of messages to be skipped using the current backlog and the skip factor.
+<<<<<<< HEAD
             long entriesInBacklog = slowestConsumer.getNumberOfEntriesInBacklog();
+=======
+            long entriesInBacklog = slowestConsumer.getNumberOfEntriesInBacklog(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
             int messagesToSkip = (int) (messageSkipFactor * entriesInBacklog);
             try {
                 // If there are no messages to skip, break out of the loop
@@ -184,9 +241,15 @@ public class BacklogQuotaManager {
      */
     private void disconnectProducers(PersistentTopic persistentTopic) {
         List<CompletableFuture<Void>> futures = Lists.newArrayList();
+<<<<<<< HEAD
         ConcurrentOpenHashSet<Producer> producers = persistentTopic.getProducers();
 
         producers.forEach(producer -> {
+=======
+        Map<String, Producer> producers = persistentTopic.getProducers();
+
+        producers.values().forEach(producer -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
             log.info("Producer [{}] has exceeded backlog quota on topic [{}]. Disconnecting producer",
                     producer.getProducerName(), persistentTopic.getName());
             futures.add(producer.disconnect());

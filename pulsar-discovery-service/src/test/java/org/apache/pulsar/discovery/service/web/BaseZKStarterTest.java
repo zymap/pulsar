@@ -34,6 +34,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 
 public class BaseZKStarterTest {
 
+<<<<<<< HEAD
     protected MockZooKeeper mockZookKeeper;
 
     protected void start() throws Exception {
@@ -42,6 +43,16 @@ public class BaseZKStarterTest {
 
     protected void close() throws Exception {
         mockZookKeeper.shutdown();
+=======
+    protected MockZooKeeper mockZooKeeper;
+
+    protected void start() throws Exception {
+        mockZooKeeper = createMockZooKeeper();
+    }
+
+    protected void close() throws Exception {
+        mockZooKeeper.shutdown();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**

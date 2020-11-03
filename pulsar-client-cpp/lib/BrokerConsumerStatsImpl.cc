@@ -95,6 +95,11 @@ ConsumerType BrokerConsumerStatsImpl::convertStringToConsumerType(const std::str
         return ConsumerFailover;
     } else if (str == "ConsumerShared" || str == "Shared") {
         return ConsumerShared;
+<<<<<<< HEAD
+=======
+    } else if (str == "ConsumerKeyShared" || str == "KeyShared") {
+        return ConsumerKeyShared;
+>>>>>>> f773c602c... Test pr 10 (#27)
     } else {
         return ConsumerExclusive;
     }

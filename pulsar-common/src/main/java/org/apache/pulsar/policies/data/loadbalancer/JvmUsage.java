@@ -22,7 +22,11 @@ import java.util.Map;
 
 /**
  * {@link JvmUsage} represents set of resources that are specific to JVM and are used by broker, load balancing need to
+<<<<<<< HEAD
  * know this detail
+=======
+ * know this detail.
+>>>>>>> f773c602c... Test pr 10 (#27)
  *
  */
 public class JvmUsage {

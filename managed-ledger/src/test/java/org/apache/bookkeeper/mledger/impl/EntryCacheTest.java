@@ -18,19 +18,38 @@
  */
 package org.apache.bookkeeper.mledger.impl;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 import io.netty.buffer.Unpooled;
+=======
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
+import io.netty.buffer.Unpooled;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+<<<<<<< HEAD
 import org.apache.bookkeeper.client.BKException.BKNoSuchLedgerExistsException;
 import org.apache.bookkeeper.client.api.BKException;
+=======
+
+import org.apache.bookkeeper.client.BKException.BKNoSuchLedgerExistsException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.api.LedgerEntries;
 import org.apache.bookkeeper.client.api.LedgerEntry;
 import org.apache.bookkeeper.client.api.ReadHandle;
@@ -39,13 +58,19 @@ import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
 import org.mockito.Mockito;
+<<<<<<< HEAD
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class EntryCacheTest extends MockedBookKeeperTestCase {
 
     private ManagedLedgerImpl ml;
@@ -60,7 +85,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testRead() throws Exception {
+=======
+    public void testRead() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -92,7 +121,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testReadMissingBefore() throws Exception {
+=======
+    public void testReadMissingBefore() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -120,7 +153,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testReadMissingAfter() throws Exception {
+=======
+    public void testReadMissingAfter() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -148,7 +185,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testReadMissingMiddle() throws Exception {
+=======
+    public void testReadMissingMiddle() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -177,7 +218,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testReadMissingMultiple() throws Exception {
+=======
+    public void testReadMissingMultiple() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -206,7 +251,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
     }
 
     @Test(timeOut = 5000)
+<<<<<<< HEAD
     void testReadWithError() throws Exception {
+=======
+    public void testReadWithError() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         final ReadHandle lh = getLedgerHandle();
         when(lh.getId()).thenReturn((long) 0);
 
@@ -236,7 +285,11 @@ public class EntryCacheTest extends MockedBookKeeperTestCase {
         counter.await();
     }
 
+<<<<<<< HEAD
     private static ReadHandle getLedgerHandle() {
+=======
+    static ReadHandle getLedgerHandle() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         final ReadHandle lh = mock(ReadHandle.class);
         final LedgerEntry ledgerEntry = mock(LedgerEntry.class, Mockito.CALLS_REAL_METHODS);
         doReturn(Unpooled.wrappedBuffer(new byte[10])).when(ledgerEntry).getEntryBuffer();

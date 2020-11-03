@@ -22,7 +22,10 @@ package org.apache.pulsar.io.kinesis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.*;
+<<<<<<< HEAD
 import lombok.experimental.Accessors;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,7 @@ import java.util.Map;
 import org.apache.pulsar.io.core.annotations.FieldDoc;
 
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
@@ -71,6 +75,13 @@ public class KinesisSinkConfig implements Serializable {
         defaultValue = "",
         help = "json-parameters to initialize `AwsCredentialsProviderPlugin`")
     private String awsCredentialPluginParam;
+=======
+@EqualsAndHashCode(callSuper=true)
+public class KinesisSinkConfig extends BaseKinesisConfig implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldDoc(
         required = true,
         defaultValue = "ONLY_RAW_PAYLOAD",
@@ -93,6 +104,10 @@ public class KinesisSinkConfig implements Serializable {
             + "  #   properties and encryptionCtx, and publishes flatbuffer payload into the configured kinesis stream."
     )
     private MessageFormat messageFormat = MessageFormat.ONLY_RAW_PAYLOAD; // default : ONLY_RAW_PAYLOAD
+<<<<<<< HEAD
+=======
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldDoc(
         required = false,
         defaultValue = "false",
@@ -109,10 +124,13 @@ public class KinesisSinkConfig implements Serializable {
         return mapper.readValue(new ObjectMapper().writeValueAsString(map), KinesisSinkConfig.class);
     }
     
+<<<<<<< HEAD
     /**
      * Message format in which kinesis-sink converts pulsar-message and publishes to kinesis stream.
      *
      */
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static enum MessageFormat {
         /**
          * Kinesis sink directly publishes pulsar-payload as a message into the kinesis-stream
@@ -135,4 +153,8 @@ public class KinesisSinkConfig implements Serializable {
          */
         FULL_MESSAGE_IN_FB;
     }
+<<<<<<< HEAD
+=======
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

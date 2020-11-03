@@ -18,7 +18,10 @@
  */
 package org.apache.pulsar.broker.cache;
 
+<<<<<<< HEAD
 import java.nio.file.Paths;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Map;
 
 import org.apache.bookkeeper.util.ZkUtils;
@@ -67,6 +70,11 @@ public class ConfigurationCacheService {
     public static final String POLICIES_ROOT = "/admin/policies";
     private static final String CLUSTERS_ROOT = "/admin/clusters";
 
+<<<<<<< HEAD
+=======
+    public static final String PARTITIONED_TOPICS_ROOT = "/admin/partitioned-topics";
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ConfigurationCacheService(ZooKeeperCache cache) throws PulsarServerException {
         this(cache, null);
     }
@@ -98,7 +106,11 @@ public class ConfigurationCacheService {
         };
 
         this.clustersListCache = new ZooKeeperChildrenCache(cache, CLUSTERS_ROOT);
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         CLUSTER_FAILURE_DOMAIN_ROOT = CLUSTERS_ROOT + "/" + configuredClusterName + "/" + FAILURE_DOMAIN;
         if (isNotBlank(configuredClusterName)) {
             createFailureDomainRoot(cache.getZooKeeper(), CLUSTER_FAILURE_DOMAIN_ROOT);
@@ -109,12 +121,20 @@ public class ConfigurationCacheService {
             @Override
             @SuppressWarnings("unchecked")
             public NamespaceIsolationPolicies deserialize(String path, byte[] content) throws Exception {
+<<<<<<< HEAD
                 return new NamespaceIsolationPolicies((Map<String, NamespaceIsolationData>) ObjectMapperFactory
+=======
+                return new NamespaceIsolationPolicies(ObjectMapperFactory
+>>>>>>> f773c602c... Test pr 10 (#27)
                         .getThreadLocal().readValue(content, new TypeReference<Map<String, NamespaceIsolationData>>() {
                         }));
             }
         };
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.failureDomainCache = new ZooKeeperDataCache<FailureDomain>(cache) {
             @Override
             public FailureDomain deserialize(String path, byte[] content) throws Exception {
@@ -125,7 +145,12 @@ public class ConfigurationCacheService {
 
     private void createFailureDomainRoot(ZooKeeper zk, String path) {
         try {
+<<<<<<< HEAD
             final String clusterZnodePath = Paths.get(path).getParent().toString();
+=======
+            final int index = path.lastIndexOf('/');
+            final String clusterZnodePath = (index > 0) ? path.substring(0, index) : null;
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (zk.exists(clusterZnodePath, false) != null && zk.exists(path, false) == null) {
                 try {
                     byte[] data = "".getBytes();
@@ -169,7 +194,11 @@ public class ConfigurationCacheService {
     public ZooKeeperCache cache() {
         return cache;
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ZooKeeperDataCache<TenantInfo> propertiesCache() {
         return this.propertiesCache;
     }
@@ -189,7 +218,11 @@ public class ConfigurationCacheService {
     public ZooKeeperChildrenCache failureDomainListCache() {
         return this.failureDomainListCache;
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ZooKeeper getZooKeeper() {
         return this.cache.getZooKeeper();
     }
@@ -197,7 +230,11 @@ public class ConfigurationCacheService {
     public ZooKeeperDataCache<NamespaceIsolationPolicies> namespaceIsolationPoliciesCache() {
         return this.namespaceIsolationPoliciesCache;
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ZooKeeperDataCache<FailureDomain> failureDomainCache() {
         return this.failureDomainCache;
     }

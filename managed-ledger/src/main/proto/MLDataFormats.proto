@@ -56,6 +56,11 @@ message ManagedLedgerInfo {
     // committed entry.
     // No more entries can be written.
     optional NestedPositionInfo terminatedPosition = 2;
+<<<<<<< HEAD
+=======
+
+    repeated KeyValue properties = 3;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 message PositionInfo {
@@ -66,6 +71,12 @@ message PositionInfo {
     // Additional custom properties associated with
 	// the current cursor position
 	repeated LongProperty properties = 4;
+<<<<<<< HEAD
+=======
+
+    // Store which index in the batch message has been deleted
+    repeated BatchedEntryDeletionIndexInfo batchedEntryDeletionIndexInfo = 5;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 message NestedPositionInfo {
@@ -78,6 +89,14 @@ message MessageRange {
     required NestedPositionInfo upperEndpoint = 2;
 }
 
+<<<<<<< HEAD
+=======
+message BatchedEntryDeletionIndexInfo {
+    required NestedPositionInfo position = 1;
+    repeated int64 deleteSet = 2;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 // Generic string and long tuple
 message LongProperty {
     required string name = 1;
@@ -98,5 +117,12 @@ message ManagedCursorInfo {
 	// the current cursor position
 	repeated LongProperty properties = 5;
 
+<<<<<<< HEAD
   optional int64 lastActive = 6;
+=======
+    optional int64 lastActive = 6;
+
+    // Store which index in the batch message has been deleted
+    repeated BatchedEntryDeletionIndexInfo batchedEntryDeletionIndexInfo = 7;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

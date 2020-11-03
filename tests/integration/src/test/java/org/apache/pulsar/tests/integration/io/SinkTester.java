@@ -31,6 +31,7 @@ import org.testng.collections.Maps;
 @Getter
 public abstract class SinkTester<ServiceContainerT extends GenericContainer> {
 
+<<<<<<< HEAD
     public enum SinkType {
         UNDEFINED,
         CASSANDRA,
@@ -38,6 +39,23 @@ public abstract class SinkTester<ServiceContainerT extends GenericContainer> {
         JDBC,
         HDFS,
         ELASTIC_SEARCH
+=======
+    @Getter
+    public enum SinkType {
+        UNDEFINED("undefined"),
+        CASSANDRA("cassandra"),
+        KAFKA("kafka"),
+        JDBC_POSTGRES("jdbc-postgres"),
+        HDFS("hdfs"),
+        ELASTIC_SEARCH("elastic_search"),
+        RABBITMQ("rabbitmq");
+
+        private final String value;
+
+        SinkType(String value) {
+            this.value = value;
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     protected final String networkAlias;

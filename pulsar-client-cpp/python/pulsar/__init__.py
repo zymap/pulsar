@@ -21,7 +21,11 @@
 The Pulsar Python client library is based on the existing C++ client library.
 All the same features are exposed through the Python interface.
 
+<<<<<<< HEAD
 Currently, the only supported Python version is 2.7.
+=======
+Currently, the supported Python versions are 2.7, 3.5, 3.6, 3.7 and 3.8.
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ## Install from PyPI
 
@@ -68,8 +72,16 @@ To install the Python bindings:
 
     while True:
         msg = consumer.receive()
+<<<<<<< HEAD
         print("Received message '%s' id='%s'", msg.data().decode('utf-8'), msg.message_id())
         consumer.acknowledge(msg)
+=======
+        try:
+            print("Received message '%s' id='%s'", msg.data().decode('utf-8'), msg.message_id())
+            consumer.acknowledge(msg)
+        except:
+            consumer.negative_acknowledge(msg)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     client.close()
 
@@ -87,7 +99,11 @@ To install the Python bindings:
                     batching_max_publish_delay_ms=10
                 )
 
+<<<<<<< HEAD
     def send_callback(res, msg):
+=======
+    def send_callback(res, msg_id):
+>>>>>>> f773c602c... Test pr 10 (#27)
         print('Message published res=%s', res)
 
     while True:
@@ -98,7 +114,11 @@ To install the Python bindings:
 
 import _pulsar
 
+<<<<<<< HEAD
 from _pulsar import Result, CompressionType, ConsumerType, PartitionsRoutingMode  # noqa: F401
+=======
+from _pulsar import Result, CompressionType, ConsumerType, InitialPosition, PartitionsRoutingMode, BatchingType  # noqa: F401
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 from pulsar.functions.function import Function
 from pulsar.functions.context import Context
@@ -109,18 +129,45 @@ _schema = schema
 import re
 _retype = type(re.compile('x'))
 
+<<<<<<< HEAD
+=======
+import certifi
+from datetime import timedelta
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 class MessageId:
     """
     Represents a message id
     """
 
+<<<<<<< HEAD
+=======
+    def __init__(self, partition=-1, ledger_id=-1, entry_id=-1, batch_index=-1):
+        self._msg_id = _pulsar.MessageId(partition, ledger_id, entry_id, batch_index)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     'Represents the earliest message stored in a topic'
     earliest = _pulsar.MessageId.earliest
 
     'Represents the latest message published on a topic'
     latest = _pulsar.MessageId.latest
 
+<<<<<<< HEAD
+=======
+    def ledger_id(self):
+        return self._msg_id.ledger_id()
+
+    def entry_id(self):
+        return self._msg_id.entry_id()
+
+    def batch_index(self):
+        return self._msg_id.batch_index()
+
+    def partition(self):
+        return self._msg_id.partition()
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def serialize(self):
         """
         Returns a bytes representation of the message id.
@@ -193,6 +240,47 @@ class Message:
         """
         return self._message.topic_name()
 
+<<<<<<< HEAD
+=======
+    def redelivery_count(self):
+        """
+        Get the redelivery count for this message
+        """
+        return self._message.redelivery_count()
+
+    def schema_version(self):
+        """
+        Get the schema version for this message
+        """
+        return self._message.schema_version()
+
+    @staticmethod
+    def _wrap(_message):
+        self = Message()
+        self._message = _message
+        return self
+
+
+class MessageBatch:
+
+    def __init__(self):
+        self._msg_batch = _pulsar.MessageBatch()
+
+    def with_message_id(self, msg_id):
+        if not isinstance(msg_id, _pulsar.MessageId):
+            if isinstance(msg_id, MessageId):
+                msg_id = msg_id._msg_id
+            else:
+                raise TypeError("unknown message id type")
+        self._msg_batch.with_message_id(msg_id)
+        return self
+
+    def parse_from(self, data, size):
+        self._msg_batch.parse_from(data, size)
+        _msgs = self._msg_batch.messages()
+        return list(map(Message._wrap, _msgs))
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 class Authentication:
     """
@@ -266,6 +354,23 @@ class AuthenticationAthenz(Authentication):
         _check_type(str, auth_params_string, 'auth_params_string')
         self.auth = _pulsar.AuthenticationAthenz(auth_params_string)
 
+<<<<<<< HEAD
+=======
+class AuthenticationOauth2(Authentication):
+    """
+    Oauth2 Authentication implementation
+    """
+    def __init__(self, auth_params_string):
+        """
+        Create the Oauth2 authentication provider instance.
+
+        **Args**
+
+        * `auth_params_string`: JSON encoded configuration for Oauth2 client
+        """
+        _check_type(str, auth_params_string, 'auth_params_string')
+        self.auth = _pulsar.AuthenticationOauth2(auth_params_string)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 class Client:
     """
@@ -285,7 +390,12 @@ class Client:
                  log_conf_file_path=None,
                  use_tls=False,
                  tls_trust_certs_file_path=None,
+<<<<<<< HEAD
                  tls_allow_insecure_connection=False
+=======
+                 tls_allow_insecure_connection=False,
+                 tls_validate_hostname=False,
+>>>>>>> f773c602c... Test pr 10 (#27)
                  ):
         """
         Create a new Pulsar client instance.
@@ -298,7 +408,11 @@ class Client:
 
         * `authentication`:
           Set the authentication provider to be used with the broker. For example:
+<<<<<<< HEAD
           `AuthenticationTls` or `AuthenticationAthenz`
+=======
+          `AuthenticationTls`, AuthenticaionToken, `AuthenticationAthenz`or `AuthenticationOauth2`
+>>>>>>> f773c602c... Test pr 10 (#27)
         * `operation_timeout_seconds`:
           Set timeout on client operations (subscribe, create producer, close,
           unsubscribe).
@@ -320,10 +434,22 @@ class Client:
           is deprecated. TLS will be automatically enabled if the `serviceUrl` is
           set to `pulsar+ssl://` or `https://`
         * `tls_trust_certs_file_path`:
+<<<<<<< HEAD
           Set the path to the trusted TLS certificate file.
         * `tls_allow_insecure_connection`:
           Configure whether the Pulsar client accepts untrusted TLS certificates
           from the broker.
+=======
+          Set the path to the trusted TLS certificate file. If empty defaults to
+          certifi.
+        * `tls_allow_insecure_connection`:
+          Configure whether the Pulsar client accepts untrusted TLS certificates
+          from the broker.
+        * `tls_validate_hostname`:
+          Configure whether the Pulsar client validates that the hostname of the
+          endpoint, matches the common name on the TLS certificate presented by
+          the endpoint.
+>>>>>>> f773c602c... Test pr 10 (#27)
         """
         _check_type(str, service_url, 'service_url')
         _check_type_or_none(Authentication, authentication, 'authentication')
@@ -335,6 +461,10 @@ class Client:
         _check_type(bool, use_tls, 'use_tls')
         _check_type_or_none(str, tls_trust_certs_file_path, 'tls_trust_certs_file_path')
         _check_type(bool, tls_allow_insecure_connection, 'tls_allow_insecure_connection')
+<<<<<<< HEAD
+=======
+        _check_type(bool, tls_validate_hostname, 'tls_validate_hostname')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         conf = _pulsar.ClientConfiguration()
         if authentication:
@@ -349,7 +479,14 @@ class Client:
             conf.use_tls(True)
         if tls_trust_certs_file_path:
             conf.tls_trust_certs_file_path(tls_trust_certs_file_path)
+<<<<<<< HEAD
         conf.tls_allow_insecure_connection(tls_allow_insecure_connection)
+=======
+        else:
+            conf.tls_trust_certs_file_path(certifi.where())
+        conf.tls_allow_insecure_connection(tls_allow_insecure_connection)
+        conf.tls_validate_hostname(tls_validate_hostname)
+>>>>>>> f773c602c... Test pr 10 (#27)
         self._client = _pulsar.Client(service_url, conf)
         self._consumers = []
 
@@ -368,6 +505,10 @@ class Client:
                         batching_max_publish_delay_ms=10,
                         message_routing_mode=PartitionsRoutingMode.RoundRobinDistribution,
                         properties=None,
+<<<<<<< HEAD
+=======
+                        batching_type=BatchingType.Default,
+>>>>>>> f773c602c... Test pr 10 (#27)
                         ):
         """
         Create a new producer on a given topic.
@@ -396,15 +537,27 @@ class Client:
            published by the producer. First message will be using
            `(initialSequenceId + 1)`` as its sequence id and subsequent messages will
            be assigned incremental sequence ids, if not otherwise specified.
+<<<<<<< HEAD
         * `send_timeout_seconds`:
+=======
+        * `send_timeout_millis`:
+>>>>>>> f773c602c... Test pr 10 (#27)
           If a message is not acknowledged by the server before the
           `send_timeout` expires, an error will be reported.
         * `compression_type`:
           Set the compression type for the producer. By default, message
           payloads are not compressed. Supported compression types are
+<<<<<<< HEAD
           `CompressionType.LZ4`, `CompressionType.ZLib` and `CompressionType.ZSTD`.
           ZSTD is supported since Pulsar 2.3. Consumers will need to be at least at that
           release in order to be able to receive messages compressed with ZSTD.
+=======
+          `CompressionType.LZ4`, `CompressionType.ZLib`, `CompressionType.ZSTD` and `CompressionType.SNAPPY`.
+          ZSTD is supported since Pulsar 2.3. Consumers will need to be at least at that
+          release in order to be able to receive messages compressed with ZSTD.
+          SNAPPY is supported since Pulsar 2.4. Consumers will need to be at least at that
+          release in order to be able to receive messages compressed with SNAPPY.
+>>>>>>> f773c602c... Test pr 10 (#27)
         * `max_pending_messages`:
           Set the max size of the queue holding the messages pending to receive
           an acknowledgment from the broker.
@@ -419,6 +572,23 @@ class Client:
         * `properties`:
           Sets the properties for the producer. The properties associated with a producer
           can be used for identify a producer at broker side.
+<<<<<<< HEAD
+=======
+        * `batching_type`:
+          Sets the batching type for the producer.
+          There are two batching type: DefaultBatching and KeyBasedBatching.
+            - Default batching
+            incoming single messages:
+            (k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)
+            batched into single batch message:
+            [(k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)]
+
+            - KeyBasedBatching
+            incoming single messages:
+            (k1, v1), (k2, v1), (k3, v1), (k1, v2), (k2, v2), (k3, v2), (k1, v3), (k2, v3), (k3, v3)
+            batched into single batch message:
+            [(k1, v1), (k1, v2), (k1, v3)], [(k2, v1), (k2, v2), (k2, v3)], [(k3, v1), (k3, v2), (k3, v3)]
+>>>>>>> f773c602c... Test pr 10 (#27)
         """
         _check_type(str, topic, 'topic')
         _check_type_or_none(str, producer_name, 'producer_name')
@@ -434,6 +604,10 @@ class Client:
         _check_type(int, batching_max_allowed_size_in_bytes, 'batching_max_allowed_size_in_bytes')
         _check_type(int, batching_max_publish_delay_ms, 'batching_max_publish_delay_ms')
         _check_type_or_none(dict, properties, 'properties')
+<<<<<<< HEAD
+=======
+        _check_type(BatchingType, batching_type, 'batching_type')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         conf = _pulsar.ProducerConfiguration()
         conf.send_timeout_millis(send_timeout_millis)
@@ -446,6 +620,10 @@ class Client:
         conf.batching_max_allowed_size_in_bytes(batching_max_allowed_size_in_bytes)
         conf.batching_max_publish_delay_ms(batching_max_publish_delay_ms)
         conf.partitions_routing_mode(message_routing_mode)
+<<<<<<< HEAD
+=======
+        conf.batching_type(batching_type)
+>>>>>>> f773c602c... Test pr 10 (#27)
         if producer_name:
             conf.producer_name(producer_name)
         if initial_sequence_id:
@@ -470,9 +648,17 @@ class Client:
                   consumer_name=None,
                   unacked_messages_timeout_ms=None,
                   broker_consumer_stats_cache_time_ms=30000,
+<<<<<<< HEAD
                   is_read_compacted=False,
                   properties=None,
                   pattern_auto_discovery_period=60
+=======
+                  negative_ack_redelivery_delay_ms=60000,
+                  is_read_compacted=False,
+                  properties=None,
+                  pattern_auto_discovery_period=60,
+                  initial_position=InitialPosition.Latest
+>>>>>>> f773c602c... Test pr 10 (#27)
                   ):
         """
         Subscribe to the given topic and subscription combination.
@@ -483,7 +669,11 @@ class Client:
                   This method will accept these forms:
                     - `topic='my-topic'`
                     - `topic=['topic-1', 'topic-2', 'topic-3']`
+<<<<<<< HEAD
                     - `topic=re.compile('topic-.*')`
+=======
+                    - `topic=re.compile('persistent://public/default/topic-*')`
+>>>>>>> f773c602c... Test pr 10 (#27)
         * `subscription`: The name of the subscription.
 
         **Options**
@@ -528,14 +718,32 @@ class Client:
           the given value is less than 10 seconds. If a successful
           acknowledgement is not sent within the timeout, all the unacknowledged
           messages are redelivered.
+<<<<<<< HEAD
         * `broker_consumer_stats_cache_time_ms`:
           Sets the time duration for which the broker-side consumer stats will
           be cached in the client.
+=======
+        * `negative_ack_redelivery_delay_ms`:
+           The delay after which to redeliver the messages that failed to be
+           processed (with the `consumer.negative_acknowledge()`)
+        * `broker_consumer_stats_cache_time_ms`:
+          Sets the time duration for which the broker-side consumer stats will
+          be cached in the client.
+        * `is_read_compacted`:
+          Selects whether to read the compacted version of the topic
+>>>>>>> f773c602c... Test pr 10 (#27)
         * `properties`:
           Sets the properties for the consumer. The properties associated with a consumer
           can be used for identify a consumer at broker side.
         * `pattern_auto_discovery_period`:
           Periods of seconds for consumer to auto discover match topics.
+<<<<<<< HEAD
+=======
+        * `initial_position`:
+          Set the initial position of a consumer  when subscribing to the topic.
+          It could be either: `InitialPosition.Earliest` or `InitialPosition.Latest`.
+          Default: `Latest`.
+>>>>>>> f773c602c... Test pr 10 (#27)
         """
         _check_type(str, subscription_name, 'subscription_name')
         _check_type(ConsumerType, consumer_type, 'consumer_type')
@@ -546,8 +754,16 @@ class Client:
         _check_type_or_none(str, consumer_name, 'consumer_name')
         _check_type_or_none(int, unacked_messages_timeout_ms, 'unacked_messages_timeout_ms')
         _check_type(int, broker_consumer_stats_cache_time_ms, 'broker_consumer_stats_cache_time_ms')
+<<<<<<< HEAD
         _check_type(bool, is_read_compacted, 'is_read_compacted')
         _check_type_or_none(dict, properties, 'properties')
+=======
+        _check_type(int, negative_ack_redelivery_delay_ms, 'negative_ack_redelivery_delay_ms')
+        _check_type(int, pattern_auto_discovery_period, 'pattern_auto_discovery_period')
+        _check_type(bool, is_read_compacted, 'is_read_compacted')
+        _check_type_or_none(dict, properties, 'properties')
+        _check_type(InitialPosition, initial_position, 'initial_position')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         conf = _pulsar.ConsumerConfiguration()
         conf.consumer_type(consumer_type)
@@ -560,10 +776,19 @@ class Client:
             conf.consumer_name(consumer_name)
         if unacked_messages_timeout_ms:
             conf.unacked_messages_timeout_ms(unacked_messages_timeout_ms)
+<<<<<<< HEAD
+=======
+
+        conf.negative_ack_redelivery_delay_ms(negative_ack_redelivery_delay_ms)
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.broker_consumer_stats_cache_time_ms(broker_consumer_stats_cache_time_ms)
         if properties:
             for k, v in properties.items():
                 conf.property(k, v)
+<<<<<<< HEAD
+=======
+        conf.subscription_initial_position(initial_position)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         conf.schema(schema.schema_info())
 
@@ -590,7 +815,12 @@ class Client:
                       reader_listener=None,
                       receiver_queue_size=1000,
                       reader_name=None,
+<<<<<<< HEAD
                       subscription_role_prefix=None
+=======
+                      subscription_role_prefix=None,
+                      is_read_compacted=False
+>>>>>>> f773c602c... Test pr 10 (#27)
                       ):
         """
         Create a reader on a particular topic
@@ -638,6 +868,11 @@ class Client:
           Sets the reader name.
         * `subscription_role_prefix`:
           Sets the subscription role prefix.
+<<<<<<< HEAD
+=======
+        * `is_read_compacted`:
+          Selects whether to read the compacted version of the topic
+>>>>>>> f773c602c... Test pr 10 (#27)
         """
         _check_type(str, topic, 'topic')
         _check_type(_pulsar.MessageId, start_message_id, 'start_message_id')
@@ -645,6 +880,10 @@ class Client:
         _check_type(int, receiver_queue_size, 'receiver_queue_size')
         _check_type_or_none(str, reader_name, 'reader_name')
         _check_type_or_none(str, subscription_role_prefix, 'subscription_role_prefix')
+<<<<<<< HEAD
+=======
+        _check_type(bool, is_read_compacted, 'is_read_compacted')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         conf = _pulsar.ReaderConfiguration()
         if reader_listener:
@@ -655,6 +894,10 @@ class Client:
         if subscription_role_prefix:
             conf.subscription_role_prefix(subscription_role_prefix)
         conf.schema(schema.schema_info())
+<<<<<<< HEAD
+=======
+        conf.read_compacted(is_read_compacted)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         c = Reader()
         c._reader = self._client.create_reader(topic, start_message_id, conf)
@@ -723,6 +966,11 @@ class Producer:
              replication_clusters=None,
              disable_replication=False,
              event_timestamp=None,
+<<<<<<< HEAD
+=======
+             deliver_at=None,
+             deliver_after=None,
+>>>>>>> f773c602c... Test pr 10 (#27)
              ):
         """
         Publish a message on the topic. Blocks until the message is acknowledged
@@ -750,9 +998,23 @@ class Producer:
           Do not replicate this message.
         * `event_timestamp`:
           Timestamp in millis of the timestamp of event creation
+<<<<<<< HEAD
         """
         msg = self._build_msg(content, properties, partition_key, sequence_id,
                               replication_clusters, disable_replication, event_timestamp)
+=======
+        * `deliver_at`:
+          Specify the this message should not be delivered earlier than the
+          specified timestamp.
+          The timestamp is milliseconds and based on UTC
+        * `deliver_after`:
+          Specify a delay in timedelta for the delivery of the messages.
+
+        """
+        msg = self._build_msg(content, properties, partition_key, sequence_id,
+                              replication_clusters, disable_replication, event_timestamp,
+                              deliver_at, deliver_after)
+>>>>>>> f773c602c... Test pr 10 (#27)
         return self._producer.send(msg)
 
     def send_async(self, content, callback,
@@ -761,7 +1023,13 @@ class Producer:
                    sequence_id=None,
                    replication_clusters=None,
                    disable_replication=False,
+<<<<<<< HEAD
                    event_timestamp=None
+=======
+                   event_timestamp=None,
+                   deliver_at=None,
+                   deliver_after=None,
+>>>>>>> f773c602c... Test pr 10 (#27)
                    ):
         """
         Send a message asynchronously.
@@ -772,7 +1040,11 @@ class Producer:
         Example:
 
             #!python
+<<<<<<< HEAD
             def callback(res, msg):
+=======
+            def callback(res, msg_id):
+>>>>>>> f773c602c... Test pr 10 (#27)
                 print('Message published: %s' % res)
 
             producer.send_async(msg, callback)
@@ -803,11 +1075,35 @@ class Producer:
           Do not replicate this message.
         * `event_timestamp`:
           Timestamp in millis of the timestamp of event creation
+<<<<<<< HEAD
         """
         msg = self._build_msg(content, properties, partition_key, sequence_id,
                               replication_clusters, disable_replication, event_timestamp)
         self._producer.send_async(msg, callback)
 
+=======
+        * `deliver_at`:
+          Specify the this message should not be delivered earlier than the
+          specified timestamp.
+          The timestamp is milliseconds and based on UTC
+        * `deliver_after`:
+          Specify a delay in timedelta for the delivery of the messages.
+        """
+        msg = self._build_msg(content, properties, partition_key, sequence_id,
+                              replication_clusters, disable_replication, event_timestamp,
+                              deliver_at, deliver_after)
+        self._producer.send_async(msg, callback)
+
+
+    def flush(self):
+        """
+        Flush all the messages buffered in the client and wait until all messages have been
+        successfully persisted
+        """
+        self._producer.flush()
+
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def close(self):
         """
         Close the producer.
@@ -815,7 +1111,12 @@ class Producer:
         self._producer.close()
 
     def _build_msg(self, content, properties, partition_key, sequence_id,
+<<<<<<< HEAD
                    replication_clusters, disable_replication, event_timestamp):
+=======
+                   replication_clusters, disable_replication, event_timestamp,
+                   deliver_at, deliver_after):
+>>>>>>> f773c602c... Test pr 10 (#27)
         data = self._schema.encode(content)
 
         _check_type(bytes, data, 'data')
@@ -825,6 +1126,11 @@ class Producer:
         _check_type_or_none(list, replication_clusters, 'replication_clusters')
         _check_type(bool, disable_replication, 'disable_replication')
         _check_type_or_none(int, event_timestamp, 'event_timestamp')
+<<<<<<< HEAD
+=======
+        _check_type_or_none(int, deliver_at, 'deliver_at')
+        _check_type_or_none(timedelta, deliver_after, 'deliver_after')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         mb = _pulsar.MessageBuilder()
         mb.content(data)
@@ -841,6 +1147,14 @@ class Producer:
             mb.disable_replication(disable_replication)
         if event_timestamp:
             mb.event_timestamp(event_timestamp)
+<<<<<<< HEAD
+=======
+        if deliver_at:
+            mb.deliver_at(deliver_at)
+        if deliver_after:
+            mb.deliver_after(deliver_after)
+        
+>>>>>>> f773c602c... Test pr 10 (#27)
         return mb.build()
 
 
@@ -932,6 +1246,29 @@ class Consumer:
         else:
             self._consumer.acknowledge_cumulative(message)
 
+<<<<<<< HEAD
+=======
+    def negative_acknowledge(self, message):
+        """
+        Acknowledge the failure to process a single message.
+
+        When a message is "negatively acked" it will be marked for redelivery after
+        some fixed delay. The delay is configurable when constructing the consumer
+        with {@link ConsumerConfiguration#setNegativeAckRedeliveryDelayMs}.
+
+        This call is not blocking.
+
+        **Args**
+
+        * `message`:
+          The received message or message id.
+        """
+        if isinstance(message, Message):
+            self._consumer.negative_acknowledge(message._message)
+        else:
+            self._consumer.negative_acknowledge(message)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def pause_message_listener(self):
         """
         Pause receiving messages via the `message_listener` until
@@ -960,7 +1297,11 @@ class Consumer:
 
     def seek(self, messageid):
         """
+<<<<<<< HEAD
         Reset the subscription associated with this consumer to a specific message id.
+=======
+        Reset the subscription associated with this consumer to a specific message id or publish timestamp.
+>>>>>>> f773c602c... Test pr 10 (#27)
         The message id can either be a specific message or represent the first or last messages in the topic.
         Note: this operation can only be done on non-partitioned topics. For these, one can rather perform the
         seek() on the individual partitions.
@@ -968,7 +1309,11 @@ class Consumer:
         **Args**
 
         * `message`:
+<<<<<<< HEAD
           The message id for seek.
+=======
+          The message id for seek, OR an integer event time to seek to
+>>>>>>> f773c602c... Test pr 10 (#27)
         """
         self._consumer.seek(messageid)
 
@@ -1021,6 +1366,23 @@ class Reader:
         """
         return self._reader.has_message_available();
 
+<<<<<<< HEAD
+=======
+    def seek(self, messageid):
+        """
+        Reset this reader to a specific message id or publish timestamp.
+        The message id can either be a specific message or represent the first or last messages in the topic.
+        Note: this operation can only be done on non-partitioned topics. For these, one can rather perform the
+        seek() on the individual partitions.
+
+        **Args**
+
+        * `message`:
+          The message id for seek, OR an integer event time to seek to
+        """
+        self._reader.seek(messageid)
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def close(self):
         """
         Close the reader.

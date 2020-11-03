@@ -18,20 +18,37 @@
  */
 package org.apache.flink.streaming.connectors.pulsar;
 
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.configuration.Configuration;
+<<<<<<< HEAD
 import org.apache.flink.shaded.curator.org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.functions.source.MessageAcknowledgingSourceBase;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.util.IOUtils;
 
+=======
+import org.apache.flink.streaming.api.functions.source.MessageAcknowledgingSourceBase;
+import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
+import org.apache.flink.util.IOUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +61,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+=======
+import org.apache.pulsar.client.impl.PulsarClientImpl;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Pulsar source (consumer) which receives messages from a topic and acknowledges messages.
  * When checkpointing is enabled, it guarantees at least once processing semantics.
@@ -55,11 +80,19 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
 
     private static final Logger LOG = LoggerFactory.getLogger(PulsarConsumerSource.class);
 
+<<<<<<< HEAD
     private final int messageReceiveTimeoutMs = 100;
     private final String serviceUrl;
     private final Set<String> topicNames;
     private final Pattern topicsPattern;
     private final String subscriptionName;
+=======
+    private int messageReceiveTimeoutMs;
+
+    private ClientConfigurationData clientConfigurationData;
+    private ConsumerConfigurationData<byte[]> consumerConfigurationData;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final DeserializationSchema<T> deserializer;
 
     private PulsarClient client;
@@ -74,12 +107,24 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
 
     PulsarConsumerSource(PulsarSourceBuilder<T> builder) {
         super(MessageId.class);
+<<<<<<< HEAD
         this.serviceUrl = builder.serviceUrl;
         this.topicNames = builder.topicNames;
         this.topicsPattern = builder.topicsPattern;
         this.deserializer = builder.deserializationSchema;
         this.subscriptionName = builder.subscriptionName;
         this.acknowledgementBatchSize = builder.acknowledgementBatchSize;
+=======
+
+        clientConfigurationData = new ClientConfigurationData();
+        consumerConfigurationData = new ConsumerConfigurationData<>();
+
+        this.clientConfigurationData = builder.clientConfigurationData;
+        this.consumerConfigurationData = builder.consumerConfigurationData;
+        this.deserializer = builder.deserializationSchema;
+        this.acknowledgementBatchSize = builder.acknowledgementBatchSize;
+        this.messageReceiveTimeoutMs = builder.messageReceiveTimeoutMs;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -91,7 +136,11 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
             isCheckpointingEnabled = ((StreamingRuntimeContext) context).isCheckpointingEnabled();
         }
 
+<<<<<<< HEAD
         client = createClient();
+=======
+        client = getClient();
+>>>>>>> f773c602c... Test pr 10 (#27)
         consumer = createConsumer(client);
 
         isRunning = true;
@@ -163,7 +212,11 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
         }
     }
 
+<<<<<<< HEAD
     private T deserialize(Message message) throws IOException {
+=======
+    protected T deserialize(Message message) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return deserializer.deserialize(message.getData());
     }
 
@@ -188,6 +241,7 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
         return isCheckpointingEnabled;
     }
 
+<<<<<<< HEAD
     PulsarClient createClient() throws PulsarClientException {
         return PulsarClient.builder()
             .serviceUrl(serviceUrl)
@@ -207,5 +261,13 @@ class PulsarConsumerSource<T> extends MessageAcknowledgingSourceBase<T, MessageI
                     .subscriptionType(SubscriptionType.Failover)
                     .subscribe();
         }
+=======
+    PulsarClient getClient() throws ExecutionException {
+        return CachedPulsarClient.getOrCreate(clientConfigurationData);
+    }
+
+    Consumer<byte[]> createConsumer(PulsarClient client) throws PulsarClientException {
+        return ((PulsarClientImpl) client).subscribeAsync(consumerConfigurationData).join();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

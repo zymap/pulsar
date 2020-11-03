@@ -20,7 +20,11 @@ package org.apache.pulsar.io.canal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+<<<<<<< HEAD
 import lombok.*;
+=======
+import lombok.Data;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 
 import java.io.File;
@@ -34,21 +38,32 @@ import org.apache.pulsar.io.core.annotations.FieldDoc;
  * Canal source config.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class CanalSourceConfig implements Serializable{
 
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Username to connect to mysql database")
     private String username;
     @FieldDoc(
         required = true,
         defaultValue = "",
+<<<<<<< HEAD
+=======
+        sensitive = true,
+>>>>>>> f773c602c... Test pr 10 (#27)
         help = "Password to connect to mysql database")
     private String password;
     @FieldDoc(

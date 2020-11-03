@@ -23,6 +23,7 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +41,14 @@ public class Murmur3_32Hash implements Hash {
     private Murmur3_32Hash() {
         seed = 0;
     }
+=======
+import java.nio.charset.StandardCharsets;
+
+public class Murmur3_32Hash implements Hash {
+    private static final Murmur3_32Hash instance = new Murmur3_32Hash();
+
+    private Murmur3_32Hash(){ }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static Hash getInstance() {
         return instance;
@@ -47,6 +56,7 @@ public class Murmur3_32Hash implements Hash {
 
     @Override
     public int makeHash(String s) {
+<<<<<<< HEAD
         return makeHash(s.getBytes(StandardCharsets.UTF_8)) & Integer.MAX_VALUE;
     }
 
@@ -98,5 +108,14 @@ public class Murmur3_32Hash implements Hash {
         h1 ^= k1;
         h1 = Integer.rotateLeft(h1, 13);
         return h1 * 5 + 0xe6546b64;
+=======
+        return org.apache.pulsar.common.util.Murmur3_32Hash.getInstance()
+            .makeHash(s.getBytes(StandardCharsets.UTF_8)) & Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int makeHash(byte[] b) {
+        return org.apache.pulsar.common.util.Murmur3_32Hash.getInstance().makeHash(b) & Integer.MAX_VALUE;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

@@ -27,6 +27,12 @@ import org.apache.distributedlog.exceptions.EndOfStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 
+<<<<<<< HEAD
+=======
+/**
+ * DistributedLog Input Stream.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class DLInputStream extends InputStream {
 
   private LogRecordWithInputStream currentLogRecord = null;
@@ -60,7 +66,11 @@ public class DLInputStream extends InputStream {
   }
 
   /**
+<<<<<<< HEAD
    * Construct distributedlog input stream
+=======
+   * Construct DistributedLog input stream.
+>>>>>>> f773c602c... Test pr 10 (#27)
    *
    * @param dlm the Distributed Log Manager to access the stream
    */

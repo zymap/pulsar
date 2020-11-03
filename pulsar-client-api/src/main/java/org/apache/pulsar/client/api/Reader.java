@@ -24,7 +24,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A Reader can be used to scan through all the messages currently available in a topic.
+<<<<<<< HEAD
  *
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public interface Reader<T> extends Closeable {
 
@@ -35,8 +38,13 @@ public interface Reader<T> extends Closeable {
 
     /**
      * Read the next message in the topic.
+<<<<<<< HEAD
      * <p>
      * This method will block until a message is available.
+=======
+     *
+     * <p>This method will block until a message is available.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the next message
      * @throws PulsarClientException
@@ -45,8 +53,13 @@ public interface Reader<T> extends Closeable {
 
     /**
      * Read the next message in the topic waiting for a maximum time.
+<<<<<<< HEAD
      * <p>
      * Returns null if no message is received before the timeout.
+=======
+     *
+     * <p>Returns null if no message is received before the timeout.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return the next message(Could be null if none received in time)
      * @throws PulsarClientException
@@ -56,13 +69,29 @@ public interface Reader<T> extends Closeable {
     /**
      * Read asynchronously the next message in the topic.
      *
+<<<<<<< HEAD
+=======
+     * <p>{@code readNextAsync()} should be called subsequently once returned {@code CompletableFuture} gets complete
+     * with received message. Else it creates <i> backlog of receive requests </i> in the application.
+     *
+     * <p>The returned future can be cancelled before completion by calling {@code .cancel(false)}
+     * ({@link CompletableFuture#cancel(boolean)}) to remove it from the the backlog of receive requests. Another
+     * choice for ensuring a proper clean up of the returned future is to use the CompletableFuture.orTimeout method
+     * which is available on JDK9+. That would remove it from the backlog of receive requests if receiving exceeds
+     * the timeout.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return a future that will yield a message (when it's available) or {@link PulsarClientException} if the reader
      *         is already closed.
      */
     CompletableFuture<Message<T>> readNextAsync();
 
     /**
+<<<<<<< HEAD
      * Asynchronously close the reader and stop the broker to push more messages
+=======
+     * Asynchronously close the reader and stop the broker to push more messages.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return a future that can be used to track the completion of the operation
      */
@@ -70,8 +99,13 @@ public interface Reader<T> extends Closeable {
 
     /**
      * Return true if the topic was terminated and this reader has reached the end of the topic.
+<<<<<<< HEAD
      * <p>
      * Note that this only applies to a "terminated" topic (where the topic is "sealed" and no
+=======
+     *
+     * <p>Note that this only applies to a "terminated" topic (where the topic is "sealed" and no
+>>>>>>> f773c602c... Test pr 10 (#27)
      * more messages can be published) and not just that the reader is simply caught up with
      * the publishers. Use {@link #hasMessageAvailable()} to check for for that.
      */
@@ -79,6 +113,7 @@ public interface Reader<T> extends Closeable {
 
     /**
      * Check if there is any message available to read from the current position.
+<<<<<<< HEAD
      * <p>
      * This check can be used by an application to scan through a topic and stop
      * when the reader reaches the current last published message. For example:
@@ -86,13 +121,28 @@ public interface Reader<T> extends Closeable {
      * <pre>
      * while (reader.hasMessageAvailable()) {
      *     Message&lt;String&gt; msg = reader.readNext();
+=======
+     *
+     * <p>This check can be used by an application to scan through a topic and stop
+     * when the reader reaches the current last published message. For example:
+     *
+     * <pre>{@code
+     * while (reader.hasMessageAvailable()) {
+     *     Message<String> msg = reader.readNext();
+>>>>>>> f773c602c... Test pr 10 (#27)
      *     // Do something
      * }
      *
      * // Done reading
+<<<<<<< HEAD
      * </pre>
      *
      * Note that this call might be blocking (see {@link #hasMessageAvailableAsync() for async version) and
+=======
+     * }</pre>
+     *
+     * <p>Note that this call might be blocking (see {@link #hasMessageAvailableAsync()} for async version) and
+>>>>>>> f773c602c... Test pr 10 (#27)
      * that even if this call returns true, that will not guarantee that a subsequent call to {@link #readNext()}
      * will not block.
      *
@@ -103,8 +153,13 @@ public interface Reader<T> extends Closeable {
 
     /**
      * Asynchronously check if there is any message available to read from the current position.
+<<<<<<< HEAD
      * <p>
      * This check can be used by an application to scan through a topic and stop when the reader reaches the current
+=======
+     *
+     * <p>This check can be used by an application to scan through a topic and stop when the reader reaches the current
+>>>>>>> f773c602c... Test pr 10 (#27)
      * last published message.
      *
      * @return a future that will yield true if the are messages available to be read, false otherwise, or a
@@ -116,4 +171,62 @@ public interface Reader<T> extends Closeable {
      * @return Whether the reader is connected to the broker
      */
     boolean isConnected();
+<<<<<<< HEAD
+=======
+
+    /**
+     * Reset the subscription associated with this reader to a specific message id.
+     *
+     * <p>The message id can either be a specific message or represent the first or last messages in the topic.
+     * <ul>
+     * <li><code>MessageId.earliest</code> : Reset the reader on the earliest message available in the topic
+     * <li><code>MessageId.latest</code> : Reset the reader on the latest message in the topic
+     * </ul>
+     *
+     * <p>Note: this operation can only be done on non-partitioned topics. For these, one can rather perform
+     * the seek() on the individual partitions.
+     *
+     * @param messageId the message id where to reposition the reader
+     */
+    void seek(MessageId messageId) throws PulsarClientException;
+
+    /**
+     * Reset the subscription associated with this reader to a specific message publish time.
+     *
+     * <p>Note: this operation can only be done on non-partitioned topics. For these, one can rather perform
+     * the seek() on the individual partitions.
+     *
+     * @param timestamp the message publish time where to reposition the reader
+     */
+    void seek(long timestamp) throws PulsarClientException;
+
+    /**
+     * Reset the subscription associated with this reader to a specific message id.
+     *
+     * <p>The message id can either be a specific message or represent the first or last messages in the topic.
+     * <ul>
+     * <li><code>MessageId.earliest</code> : Reset the reader on the earliest message available in the topic
+     * <li><code>MessageId.latest</code> : Reset the reader on the latest message in the topic
+     * </ul>
+     *
+     * <p>Note: this operation can only be done on non-partitioned topics. For these, one can rather perform
+     * the seek() on the individual partitions.
+     *
+     * @param messageId the message id where to position the reader
+     * @return a future to track the completion of the seek operation
+     */
+    CompletableFuture<Void> seekAsync(MessageId messageId);
+
+    /**
+     * Reset the subscription associated with this reader to a specific message publish time.
+     *
+     * <p>Note: this operation can only be done on non-partitioned topics. For these, one can rather perform
+     * the seek() on the individual partitions.
+     *
+     * @param timestamp
+     *            the message publish time where to position the reader
+     * @return a future to track the completion of the seek operation
+     */
+    CompletableFuture<Void> seekAsync(long timestamp);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

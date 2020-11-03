@@ -65,6 +65,20 @@ public class CmdBrokers extends CmdBase {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Parameters(commandDescription = "Delete dynamic-serviceConfiguration of broker")
+    private class DeleteConfigurationCmd extends CliCommand {
+        @Parameter(names = "--config", description = "service-configuration name", required = true)
+        private String configName;
+
+        @Override
+        void run() throws Exception {
+            admin.brokers().deleteDynamicConfiguration(configName);
+        }
+    }
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Parameters(commandDescription = "Get all overridden dynamic-configuration values")
     private class GetAllConfigurationsCmd extends CliCommand {
 
@@ -83,6 +97,18 @@ public class CmdBrokers extends CmdBase {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Parameters(commandDescription = "Get runtime configuration values")
+    private class GetRuntimeConfigCmd extends CliCommand {
+
+        @Override
+        void run() throws Exception {
+            print(admin.brokers().getRuntimeConfigurations());
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Parameters(commandDescription = "Get internal configuration information")
     private class GetInternalConfigurationCmd extends CliCommand {
 
@@ -104,14 +130,38 @@ public class CmdBrokers extends CmdBase {
 
     }
 
+<<<<<<< HEAD
+=======
+    @Parameters(commandDescription = "Manually trigger backlogQuotaCheck")
+    private class BacklogQuotaCheckCmd extends CliCommand {
+
+        @Override
+        void run() throws Exception {
+            admin.brokers().backlogQuotaCheckAsync();
+            System.out.println("ok");
+        }
+
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public CmdBrokers(PulsarAdmin admin) {
         super("brokers", admin);
         jcommander.addCommand("list", new List());
         jcommander.addCommand("namespaces", new Namespaces());
         jcommander.addCommand("update-dynamic-config", new UpdateConfigurationCmd());
+<<<<<<< HEAD
         jcommander.addCommand("list-dynamic-config", new GetUpdatableConfigCmd());
         jcommander.addCommand("get-all-dynamic-config", new GetAllConfigurationsCmd());
         jcommander.addCommand("get-internal-config", new GetInternalConfigurationCmd());
         jcommander.addCommand("healthcheck", new HealthcheckCmd());
+=======
+        jcommander.addCommand("delete-dynamic-config", new DeleteConfigurationCmd());
+        jcommander.addCommand("list-dynamic-config", new GetUpdatableConfigCmd());
+        jcommander.addCommand("get-all-dynamic-config", new GetAllConfigurationsCmd());
+        jcommander.addCommand("get-internal-config", new GetInternalConfigurationCmd());
+        jcommander.addCommand("get-runtime-config", new GetRuntimeConfigCmd());
+        jcommander.addCommand("healthcheck", new HealthcheckCmd());
+        jcommander.addCommand("backlog-quota-check", new BacklogQuotaCheckCmd());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

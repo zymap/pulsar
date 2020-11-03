@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
@@ -26,6 +27,15 @@ import com.google.common.base.MoreObjects;
  * Unit of a backlog quota configuration for a scoped resource in a Pulsar instance.
  * <p>
  * A scoped resource is identified by a {@link BacklogQuotaType} enumeration type which is containing two attributes:
+=======
+import com.google.common.base.MoreObjects;
+import java.util.Objects;
+
+/**
+ * Unit of a backlog quota configuration for a scoped resource in a Pulsar instance.
+ *
+ * <p>A scoped resource is identified by a {@link BacklogQuotaType} enumeration type which is containing two attributes:
+>>>>>>> f773c602c... Test pr 10 (#27)
  * <code>limit</code> representing a quota limit in bytes and <code>policy</code> for backlog retention policy.
  */
 public class BacklogQuota {
@@ -33,7 +43,11 @@ public class BacklogQuota {
     private RetentionPolicy policy;
 
     /**
+<<<<<<< HEAD
      * Gets quota limit in bytes
+=======
+     * Gets quota limit in bytes.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return quota limit in bytes
      */
@@ -46,7 +60,11 @@ public class BacklogQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Sets quota limit in bytes
+=======
+     * Sets quota limit in bytes.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param limit
      *            quota limit in bytes
@@ -89,13 +107,18 @@ public class BacklogQuota {
     /**
      * Identifier to a backlog quota configuration (an instance of {@link BacklogQuota}).
      */
+<<<<<<< HEAD
     public static enum BacklogQuotaType {
+=======
+    public enum BacklogQuotaType {
+>>>>>>> f773c602c... Test pr 10 (#27)
         destination_storage;
     }
 
     /**
      * Enumeration type determines how to retain backlog against the resource shortages.
      */
+<<<<<<< HEAD
     public static enum RetentionPolicy {
         /** Policy which holds producer's send request until the resource becomes available (or holding times out) */
         producer_request_hold,
@@ -104,6 +127,16 @@ public class BacklogQuota {
         producer_exception,
 
         /** Policy which evicts the oldest message from the slowest consumer's backlog */
+=======
+    public enum RetentionPolicy {
+        /** Policy which holds producer's send request until the resource becomes available (or holding times out). */
+        producer_request_hold,
+
+        /** Policy which throws javax.jms.ResourceAllocationException to the producer. */
+        producer_exception,
+
+        /** Policy which evicts the oldest message from the slowest consumer's backlog. */
+>>>>>>> f773c602c... Test pr 10 (#27)
         consumer_backlog_eviction,
     }
 }

@@ -21,7 +21,13 @@ package org.apache.pulsar.client.admin.internal;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+<<<<<<< HEAD
 import javax.ws.rs.client.WebTarget;
+=======
+
+import javax.ws.rs.client.WebTarget;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +40,11 @@ class WebTargets {
                 try {
                     encode = URLEncoder.encode(part, StandardCharsets.UTF_8.toString());
                 } catch (UnsupportedEncodingException e) {
+<<<<<<< HEAD
                     log.error(String.format("%s is Unknown", StandardCharsets.UTF_8.toString()) + "exception - [{}]", e);
+=======
+                    log.error("{} is Unknown exception - [{}]", StandardCharsets.UTF_8.toString(), e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                     encode = part;
                 }
                 target = target.path(encode);

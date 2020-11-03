@@ -21,10 +21,13 @@ package org.apache.pulsar.io.hdfs3;
 import java.io.Serializable;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,10 +36,13 @@ import org.apache.commons.lang.StringUtils;
  * Configuration object for all HDFS components.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public abstract class AbstractHdfsConfig implements Serializable {
 

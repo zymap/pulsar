@@ -48,7 +48,11 @@ public class AuthenticationBasic implements Authentication, EncodedAuthenticatio
         try {
             return new AuthenticationDataBasic(userId, password);
         } catch (Exception e) {
+<<<<<<< HEAD
             throw new PulsarClientException(e);
+=======
+            throw PulsarClientException.unwrap(e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 

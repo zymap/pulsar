@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.api;
 
+<<<<<<< HEAD
 /**
  * A plugin interface that allows you to intercept (and possibly mutate)
  * messages received by the consumer.
@@ -26,6 +27,18 @@ package org.apache.pulsar.client.api;
  * monitoring, logging, etc.
  * <p>
  * Exceptions thrown by interceptor methods will be caught, logged, but
+=======
+import java.util.Set;
+
+/**
+ * A plugin interface that allows you to intercept (and possibly mutate)
+ * messages received by the consumer.
+ *
+ * <p>A primary use case is to hook into consumer applications for custom
+ * monitoring, logging, etc.
+ *
+ * <p>Exceptions thrown by interceptor methods will be caught, logged, but
+>>>>>>> f773c602c... Test pr 10 (#27)
  * not propagated further.
  */
 public interface ConsumerInterceptor<T> extends AutoCloseable {
@@ -40,6 +53,7 @@ public interface ConsumerInterceptor<T> extends AutoCloseable {
      * {@link Consumer#receive()}, {@link MessageListener#received(Consumer,
      * Message)} or the {@link java.util.concurrent.CompletableFuture} returned by
      * {@link Consumer#receiveAsync()} completes.
+<<<<<<< HEAD
      * <p>
      * This method is allowed to modify message, in which case the new message
      * will be returned.
@@ -48,6 +62,16 @@ public interface ConsumerInterceptor<T> extends AutoCloseable {
      * but not propagated to client.
      * <p>
      * Since the consumer may run multiple interceptors, a particular
+=======
+     *
+     * <p>This method is allowed to modify message, in which case the new message
+     * will be returned.
+     *
+     * <p>Any exception thrown by this method will be caught by the caller, logged,
+     * but not propagated to client.
+     *
+     * <p>Since the consumer may run multiple interceptors, a particular
+>>>>>>> f773c602c... Test pr 10 (#27)
      * interceptor's
      * <tt>beforeConsume</tt> callback will be called in the order specified by
      * {@link ConsumerBuilder#intercept(ConsumerInterceptor[])}. The first
@@ -94,4 +118,27 @@ public interface ConsumerInterceptor<T> extends AutoCloseable {
      * @param exception the exception on acknowledge.
      */
     void onAcknowledgeCumulative(Consumer<T> consumer, MessageId messageId, Throwable exception);
+<<<<<<< HEAD
+=======
+
+    /**
+     * This method will be called when a redelivery from a negative acknowledge occurs.
+     *
+     * <p>Any exception thrown by this method will be ignored by the caller.
+     *
+     * @param consumer the consumer which contains the interceptor
+     * @param messageIds message to ack, null if acknowledge fail.
+     */
+    void onNegativeAcksSend(Consumer<T> consumer, Set<MessageId> messageIds);
+
+    /**
+     * This method will be called when a redelivery from an acknowledge timeout occurs.
+     *
+     * <p>Any exception thrown by this method will be ignored by the caller.
+     *
+     * @param consumer the consumer which contains the interceptor
+     * @param messageIds message to ack, null if acknowledge fail.
+     */
+    void onAckTimeoutSend(Consumer<T> consumer, Set<MessageId> messageIds);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -20,11 +20,33 @@ package org.apache.pulsar.common.policies.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+<<<<<<< HEAD
 import java.util.HashSet;
 import java.util.Set;
 
 public class FailureDomain {
 
+=======
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * The data of a failure domain configuration in a cluster.
+ */
+@ApiModel(
+    value = "FailureDomain",
+    description = "The data of a failure domain configuration in a cluster"
+)
+public class FailureDomain {
+
+    @ApiModelProperty(
+        name = "brokers",
+        value = "The collection of brokers in the same failure domain",
+        example = "[ 'broker-1', 'broker-2' ]"
+    )
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Set<String> brokers = new HashSet<String>();
 
     public Set<String> getBrokers() {
@@ -36,6 +58,14 @@ public class FailureDomain {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(brokers);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof FailureDomain) {
             FailureDomain other = (FailureDomain) obj;

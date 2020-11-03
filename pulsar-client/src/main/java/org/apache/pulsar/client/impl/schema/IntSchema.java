@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.client.impl.schema;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.Schema;
+=======
+import io.netty.buffer.ByteBuf;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SchemaSerializationException;
 import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
@@ -26,18 +30,36 @@ import org.apache.pulsar.common.schema.SchemaType;
 /**
  * A schema for `Integer`.
  */
+<<<<<<< HEAD
 public class IntSchema implements Schema<Integer> {
+=======
+public class IntSchema extends AbstractSchema<Integer> {
+
+    private static final IntSchema INSTANCE;
+    private static final SchemaInfo SCHEMA_INFO;
+
+    static {
+        SCHEMA_INFO = new SchemaInfo()
+            .setName("INT32")
+            .setType(SchemaType.INT32)
+            .setSchema(new byte[0]);
+        INSTANCE = new IntSchema();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static IntSchema of() {
         return INSTANCE;
     }
 
+<<<<<<< HEAD
     private static final IntSchema INSTANCE = new IntSchema();
     private static final SchemaInfo SCHEMA_INFO = new SchemaInfo()
         .setName("INT32")
         .setType(SchemaType.INT32)
         .setSchema(new byte[0]);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public void validate(byte[] message) {
         if (message.length != 4) {
@@ -46,6 +68,16 @@ public class IntSchema implements Schema<Integer> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void validate(ByteBuf message) {
+        if (message.readableBytes() != 4) {
+            throw new SchemaSerializationException("Size of data received by IntSchema is not 4");
+        }
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public byte[] encode(Integer message) {
         if (null == message) {
             return null;
@@ -74,6 +106,25 @@ public class IntSchema implements Schema<Integer> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public Integer decode(ByteBuf byteBuf) {
+        if (null == byteBuf) {
+            return null;
+        }
+        validate(byteBuf);
+        int value = 0;
+
+        for (int i = 0; i < 4; i++) {
+            value <<= 8;
+            value |= byteBuf.getByte(i) & 0xFF;
+        }
+
+        return value;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaInfo getSchemaInfo() {
         return SCHEMA_INFO;
     }

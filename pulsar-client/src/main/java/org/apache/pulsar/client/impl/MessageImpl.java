@@ -41,11 +41,21 @@ import java.util.stream.Collectors;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.Schema;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.Commands;
+=======
+import org.apache.pulsar.client.impl.schema.KeyValueSchema;
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.EncryptionContext;
 import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.pulsar.common.api.proto.PulsarApi.KeyValue;
 import org.apache.pulsar.common.api.proto.PulsarApi.MessageMetadata;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.schema.KeyValueEncodingType;
+import org.apache.pulsar.common.schema.SchemaType;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class MessageImpl<T> implements Message<T> {
 
@@ -54,6 +64,10 @@ public class MessageImpl<T> implements Message<T> {
     private ClientCnx cnx;
     private ByteBuf payload;
     private Schema<T> schema;
+<<<<<<< HEAD
+=======
+    private SchemaState schemaState = SchemaState.None;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private Optional<EncryptionContext> encryptionCtx = Optional.empty();
 
     private String topic; // only set for incoming messages
@@ -61,7 +75,11 @@ public class MessageImpl<T> implements Message<T> {
     private final int redeliveryCount;
 
     // Constructor for out-going message
+<<<<<<< HEAD
     static <T> MessageImpl<T> create(MessageMetadata.Builder msgMetadataBuilder, ByteBuffer payload, Schema<T> schema) {
+=======
+    public static <T> MessageImpl<T> create(MessageMetadata.Builder msgMetadataBuilder, ByteBuffer payload, Schema<T> schema) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         @SuppressWarnings("unchecked")
         MessageImpl<T> msg = (MessageImpl<T>) RECYCLER.get();
         msg.msgMetadataBuilder = msgMetadataBuilder;
@@ -77,7 +95,11 @@ public class MessageImpl<T> implements Message<T> {
     // Constructor for incoming message
     MessageImpl(String topic, MessageIdImpl messageId, MessageMetadata msgMetadata,
                 ByteBuf payload, ClientCnx cnx, Schema<T> schema) {
+<<<<<<< HEAD
         this(topic, messageId, msgMetadata, payload, null, cnx, schema);
+=======
+        this(topic, messageId, msgMetadata, payload, Optional.empty(), cnx, schema);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     MessageImpl(String topic, MessageIdImpl messageId, MessageMetadata msgMetadata, ByteBuf payload,
@@ -101,7 +123,12 @@ public class MessageImpl<T> implements Message<T> {
 
         if (msgMetadata.getPropertiesCount() > 0) {
             this.properties = Collections.unmodifiableMap(msgMetadataBuilder.getPropertiesList().stream()
+<<<<<<< HEAD
                     .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue)));
+=======
+                    .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue,
+                            (oldValue,newValue) -> newValue)));
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             properties = Collections.emptyMap();
         }
@@ -135,21 +162,60 @@ public class MessageImpl<T> implements Message<T> {
         } else {
             properties = Collections.emptyMap();
         }
+<<<<<<< HEAD
 
         if (singleMessageMetadata.hasPartitionKey()) {
             msgMetadataBuilder.setPartitionKeyB64Encoded(singleMessageMetadata.getPartitionKeyB64Encoded());
             msgMetadataBuilder.setPartitionKey(singleMessageMetadata.getPartitionKey());
+=======
+        if (singleMessageMetadata.hasPartitionKey()) {
+            msgMetadataBuilder.setPartitionKeyB64Encoded(singleMessageMetadata.getPartitionKeyB64Encoded());
+            msgMetadataBuilder.setPartitionKey(singleMessageMetadata.getPartitionKey());
+        } else if (msgMetadataBuilder.hasPartitionKey()) {
+            msgMetadataBuilder.clearPartitionKey();
+            msgMetadataBuilder.clearPartitionKeyB64Encoded();
+        }
+
+        if (singleMessageMetadata.hasOrderingKey()) {
+            msgMetadataBuilder.setOrderingKey(singleMessageMetadata.getOrderingKey());
+        } else if (msgMetadataBuilder.hasOrderingKey()) {
+            msgMetadataBuilder.clearOrderingKey();
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         if (singleMessageMetadata.hasEventTime()) {
             msgMetadataBuilder.setEventTime(singleMessageMetadata.getEventTime());
         }
 
+<<<<<<< HEAD
+=======
+        if (singleMessageMetadata.hasSequenceId()) {
+            msgMetadataBuilder.setSequenceId(singleMessageMetadata.getSequenceId());
+        }
+
+        if (singleMessageMetadata.hasNullValue()) {
+            msgMetadataBuilder.setNullValue(singleMessageMetadata.hasNullValue());
+        }
+
+        if (singleMessageMetadata.hasNullPartitionKey()) {
+            msgMetadataBuilder.setNullPartitionKey(singleMessageMetadata.hasNullPartitionKey());
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.schema = schema;
     }
 
     public MessageImpl(String topic, String msgId, Map<String, String> properties,
+<<<<<<< HEAD
                        ByteBuf payload, Schema<T> schema) {
+=======
+            byte[] payload, Schema<T> schema, MessageMetadata.Builder msgMetadataBuilder) {
+        this(topic, msgId, properties, Unpooled.wrappedBuffer(payload), schema, msgMetadataBuilder);
+    }
+
+    public MessageImpl(String topic, String msgId, Map<String, String> properties,
+                       ByteBuf payload, Schema<T> schema, MessageMetadata.Builder msgMetadataBuilder) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         String[] data = msgId.split(":");
         long ledgerId = Long.parseLong(data[0]);
         long entryId = Long.parseLong(data[1]);
@@ -164,6 +230,10 @@ public class MessageImpl<T> implements Message<T> {
         this.properties = Collections.unmodifiableMap(properties);
         this.schema = schema;
         this.redeliveryCount = 0;
+<<<<<<< HEAD
+=======
+        this.msgMetadataBuilder = msgMetadataBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static MessageImpl<byte[]> deserialize(ByteBuf headersAndPayload) throws IOException {
@@ -186,11 +256,19 @@ public class MessageImpl<T> implements Message<T> {
         msgMetadataBuilder.setReplicatedFrom(cluster);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean isReplicated() {
         checkNotNull(msgMetadataBuilder);
         return msgMetadataBuilder.hasReplicatedFrom();
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String getReplicatedFrom() {
         checkNotNull(msgMetadataBuilder);
         return msgMetadataBuilder.getReplicatedFrom();
@@ -218,6 +296,13 @@ public class MessageImpl<T> implements Message<T> {
 
     @Override
     public byte[] getData() {
+<<<<<<< HEAD
+=======
+        checkNotNull(msgMetadataBuilder);
+        if (msgMetadataBuilder.hasNullValue()) {
+            return null;
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (payload.arrayOffset() == 0 && payload.capacity() == payload.array().length) {
             return payload.array();
         } else {
@@ -228,11 +313,79 @@ public class MessageImpl<T> implements Message<T> {
         }
     }
 
+<<<<<<< HEAD
     @Override
     public T getValue() {
         return schema.decode(getData());
     }
 
+=======
+    public Schema getSchema() {
+        return this.schema;
+    }
+
+    @Override
+    public byte[] getSchemaVersion() {
+        if (msgMetadataBuilder != null && msgMetadataBuilder.hasSchemaVersion()) {
+            return msgMetadataBuilder.getSchemaVersion().toByteArray();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public T getValue() {
+        checkNotNull(msgMetadataBuilder);
+        if (schema.getSchemaInfo() != null && SchemaType.KEY_VALUE == schema.getSchemaInfo().getType()) {
+            if (schema.supportSchemaVersioning()) {
+                return getKeyValueBySchemaVersion();
+            } else {
+                return getKeyValue();
+            }
+        } else {
+            if (msgMetadataBuilder.hasNullValue()) {
+                return null;
+            }
+            // check if the schema passed in from client supports schema versioning or not
+            // this is an optimization to only get schema version when necessary
+            if (schema.supportSchemaVersioning()) {
+                byte[] schemaVersion = getSchemaVersion();
+                if (null == schemaVersion) {
+                    return schema.decode(getData());
+                } else {
+                    return schema.decode(getData(), schemaVersion);
+                }
+            } else {
+                return schema.decode(getData());
+            }
+        }
+    }
+
+    private T getKeyValueBySchemaVersion() {
+        KeyValueSchema kvSchema = (KeyValueSchema) schema;
+        byte[] schemaVersion = getSchemaVersion();
+        if (kvSchema.getKeyValueEncodingType() == KeyValueEncodingType.SEPARATED) {
+            return (T) kvSchema.decode(
+                    msgMetadataBuilder.hasNullPartitionKey() ? null : getKeyBytes(),
+                    msgMetadataBuilder.hasNullValue() ? null : getData(), schemaVersion);
+        } else {
+            return schema.decode(getData(), schemaVersion);
+        }
+    }
+
+    private T getKeyValue() {
+        KeyValueSchema kvSchema = (KeyValueSchema) schema;
+        if (kvSchema.getKeyValueEncodingType() == KeyValueEncodingType.SEPARATED) {
+            return (T) kvSchema.decode(
+                    msgMetadataBuilder.hasNullPartitionKey() ? null : getKeyBytes(),
+                    msgMetadataBuilder.hasNullValue() ? null : getData(), null);
+        } else {
+            return schema.decode(getData());
+        }
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public long getSequenceId() {
         checkNotNull(msgMetadataBuilder);
         if (msgMetadataBuilder.hasSequenceId()) {
@@ -264,8 +417,15 @@ public class MessageImpl<T> implements Message<T> {
     public synchronized Map<String, String> getProperties() {
         if (this.properties == null) {
             if (msgMetadataBuilder.getPropertiesCount() > 0) {
+<<<<<<< HEAD
                 this.properties = Collections.unmodifiableMap(msgMetadataBuilder.getPropertiesList().stream()
                         .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue)));
+=======
+                  this.properties = Collections.unmodifiableMap(msgMetadataBuilder.getPropertiesList().stream()
+                           .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue,
+                                   (oldValue,newValue) -> newValue)));
+                
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else {
                 this.properties = Collections.emptyMap();
             }
@@ -280,7 +440,11 @@ public class MessageImpl<T> implements Message<T> {
 
     @Override
     public String getProperty(String name) {
+<<<<<<< HEAD
         return properties.get(name);
+=======
+        return this.getProperties().get(name);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public MessageMetadata.Builder getMessageBuilder() {
@@ -320,6 +484,21 @@ public class MessageImpl<T> implements Message<T> {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public boolean hasOrderingKey() {
+        checkNotNull(msgMetadataBuilder);
+        return msgMetadataBuilder.hasOrderingKey();
+    }
+
+    @Override
+    public byte[] getOrderingKey() {
+        checkNotNull(msgMetadataBuilder);
+        return msgMetadataBuilder.getOrderingKey().toByteArray();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ClientCnx getCnx() {
         return cnx;
     }
@@ -330,6 +509,11 @@ public class MessageImpl<T> implements Message<T> {
         topic = null;
         payload = null;
         properties = null;
+<<<<<<< HEAD
+=======
+        schema = null;
+        schemaState = SchemaState.None;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         if (recyclerHandle != null) {
             recyclerHandle.recycle(this);
@@ -373,4 +557,19 @@ public class MessageImpl<T> implements Message<T> {
     public int getRedeliveryCount() {
         return redeliveryCount;
     }
+<<<<<<< HEAD
+=======
+
+    SchemaState getSchemaState() {
+        return schemaState;
+    }
+
+    void setSchemaState(SchemaState schemaState) {
+        this.schemaState = schemaState;
+    }
+
+    enum SchemaState {
+        None, Ready, Broken
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

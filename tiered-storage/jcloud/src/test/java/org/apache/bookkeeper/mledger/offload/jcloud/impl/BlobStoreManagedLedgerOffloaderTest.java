@@ -18,6 +18,7 @@
  */
 package org.apache.bookkeeper.mledger.offload.jcloud.impl;
 
+<<<<<<< HEAD
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Matchers.any;
@@ -34,11 +35,25 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+=======
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.testng.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+<<<<<<< HEAD
 import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.client.LedgerHandle;
@@ -55,6 +70,16 @@ import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.MockZooKeeper;
 import org.apache.zookeeper.data.ACL;
+=======
+
+import org.apache.bookkeeper.client.BKException;
+import org.apache.bookkeeper.client.api.LedgerEntries;
+import org.apache.bookkeeper.client.api.LedgerEntry;
+import org.apache.bookkeeper.client.api.ReadHandle;
+import org.apache.bookkeeper.mledger.LedgerOffloader;
+import org.apache.bookkeeper.mledger.offload.jcloud.provider.JCloudBlobStoreProvider;
+import org.apache.bookkeeper.mledger.offload.jcloud.provider.TieredStorageConfiguration;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.options.CopyOptions;
 import org.mockito.Mockito;
@@ -64,6 +89,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.collections.Maps;
 
+<<<<<<< HEAD
 class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     private static final Logger log = LoggerFactory.getLogger(BlobStoreManagedLedgerOffloaderTest.class);
 
@@ -137,6 +163,59 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     public void testBucketDoesNotExist() throws Exception {
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, "no-bucket", scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+public class BlobStoreManagedLedgerOffloaderTest extends BlobStoreManagedLedgerOffloaderBase {
+
+    private static final Logger log = LoggerFactory.getLogger(BlobStoreManagedLedgerOffloaderTest.class);
+    private TieredStorageConfiguration mockedConfig;
+
+    BlobStoreManagedLedgerOffloaderTest() throws Exception {
+        super();
+        config = getConfiguration(BUCKET);
+        JCloudBlobStoreProvider provider = getBlobStoreProvider();
+        assertNotNull(provider);
+        provider.validate(config);
+        blobStore = provider.getBlobStore(config);
+    }
+
+    private BlobStoreManagedLedgerOffloader getOffloader() throws IOException {
+        return getOffloader(BUCKET);
+    }
+    
+    private BlobStoreManagedLedgerOffloader getOffloader(BlobStore mockedBlobStore) throws IOException {
+        return getOffloader(BUCKET, mockedBlobStore);
+    }
+
+    private BlobStoreManagedLedgerOffloader getOffloader(String bucket) throws IOException {
+        mockedConfig = mock(TieredStorageConfiguration.class, delegatesTo(getConfiguration(bucket)));
+        Mockito.doReturn(blobStore).when(mockedConfig).getBlobStore(); // Use the REAL blobStore
+        BlobStoreManagedLedgerOffloader offloader = BlobStoreManagedLedgerOffloader.create(mockedConfig, new HashMap<String,String>(), scheduler);
+        return offloader;
+    }
+    
+    private BlobStoreManagedLedgerOffloader getOffloader(String bucket, BlobStore mockedBlobStore) throws IOException {
+        mockedConfig = mock(TieredStorageConfiguration.class, delegatesTo(getConfiguration(bucket)));
+        Mockito.doReturn(mockedBlobStore).when(mockedConfig).getBlobStore(); 
+        BlobStoreManagedLedgerOffloader offloader = BlobStoreManagedLedgerOffloader.create(mockedConfig, new HashMap<String,String>(), scheduler);
+        return offloader;
+    }
+
+    @Test(timeOut = 600000)  // 10 minutes.
+    public void testHappyCase() throws Exception {
+        LedgerOffloader offloader = getOffloader();
+        offloader.offload(buildReadHandle(), UUID.randomUUID(), new HashMap<>()).get();
+    }
+
+    @Test(timeOut = 600000)  // 10 minutes.
+    public void testBucketDoesNotExist() throws Exception {
+
+        if (provider == JCloudBlobStoreProvider.TRANSIENT) {
+            // Skip this test, since it isn't applicable.
+            return;
+        }
+
+        LedgerOffloader offloader = getOffloader("some-non-existant-bucket-name");
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             offloader.offload(buildReadHandle(), UUID.randomUUID(), new HashMap<>()).get();
             Assert.fail("Shouldn't be able to add to bucket");
@@ -146,6 +225,7 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         }
     }
 
+<<<<<<< HEAD
     @Test
     public void testNoRegionConfigured() throws Exception {
         TieredStorageConfigurationData conf = new TieredStorageConfigurationData();
@@ -244,6 +324,13 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 3);
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+    @Test(timeOut = 600000)  // 10 minutes.
+    public void testOffloadAndRead() throws Exception {
+        ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 3);
+        LedgerOffloader offloader = getOffloader();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         UUID uuid = UUID.randomUUID();
         offloader.offload(toWrite, uuid, new HashMap<>()).get();
 
@@ -276,13 +363,20 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         String failureString = "fail InitDataBlockUpload";
 
         // mock throw exception when initiateMultipartUpload
+<<<<<<< HEAD
         try {
 
             BlobStore spiedBlobStore = mock(BlobStore.class, delegatesTo(blobStore));
+=======
+        try {      
+            BlobStore spiedBlobStore = mock(BlobStore.class, delegatesTo(blobStore));
+            
+>>>>>>> f773c602c... Test pr 10 (#27)
             Mockito
                 .doThrow(new RuntimeException(failureString))
                 .when(spiedBlobStore).initiateMultipartUpload(any(), any(), any());
 
+<<<<<<< HEAD
             LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(spiedBlobStore, BUCKET, scheduler,
                                                                      DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
@@ -293,6 +387,16 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
             Assert.assertTrue(e.getCause().getMessage().contains(failureString));
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
+=======
+            BlobStoreManagedLedgerOffloader offloader = getOffloader(spiedBlobStore);
+            offloader.offload(readHandle, uuid, new HashMap<>()).get();
+            Assert.fail("Should throw exception when initiateMultipartUpload");
+        } catch (Exception e) {
+            Assert.assertTrue(e.getCause() instanceof RuntimeException);
+            Assert.assertTrue(e.getCause().getMessage().contains(failureString));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -304,11 +408,16 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
 
         // mock throw exception when uploadPart
         try {
+<<<<<<< HEAD
+=======
+            
+>>>>>>> f773c602c... Test pr 10 (#27)
             BlobStore spiedBlobStore = mock(BlobStore.class, delegatesTo(blobStore));
             Mockito
                 .doThrow(new RuntimeException(failureString))
                 .when(spiedBlobStore).uploadMultipartPart(any(), anyInt(), any());
 
+<<<<<<< HEAD
             LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(spiedBlobStore, BUCKET, scheduler,
                 DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
@@ -319,6 +428,16 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
             Assert.assertTrue(e.getCause().getMessage().contains(failureString));
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
+=======
+            BlobStoreManagedLedgerOffloader offloader = getOffloader(spiedBlobStore);
+            offloader.offload(readHandle, uuid, new HashMap<>()).get();
+            Assert.fail("Should throw exception for when uploadPart");
+        } catch (Exception e) {
+            Assert.assertTrue(e.getCause() instanceof RuntimeException);
+            Assert.assertTrue(e.getCause().getMessage().contains(failureString));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -338,17 +457,27 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
                 .doNothing()
                 .when(spiedBlobStore).abortMultipartUpload(any());
 
+<<<<<<< HEAD
             LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(spiedBlobStore, BUCKET, scheduler,
                 DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
+=======
+            BlobStoreManagedLedgerOffloader offloader = getOffloader(spiedBlobStore);
+            offloader.offload(readHandle, uuid, new HashMap<>()).get();           
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             Assert.fail("Should throw exception for when completeMultipartUpload");
         } catch (Exception e) {
             // excepted
             Assert.assertTrue(e.getCause() instanceof RuntimeException);
             Assert.assertTrue(e.getCause().getMessage().contains(failureString));
+<<<<<<< HEAD
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
             Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
+=======
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -359,12 +488,17 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         String failureString = "fail putObject";
 
         // mock throw exception when putObject
+<<<<<<< HEAD
         try {
+=======
+        try {     
+>>>>>>> f773c602c... Test pr 10 (#27)
             BlobStore spiedBlobStore = mock(BlobStore.class, delegatesTo(blobStore));
             Mockito
                 .doThrow(new RuntimeException(failureString))
                 .when(spiedBlobStore).putBlob(any(), any());
 
+<<<<<<< HEAD
             LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(spiedBlobStore, BUCKET, scheduler,
                 DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
@@ -380,6 +514,22 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     }
 
     @Test
+=======
+            BlobStoreManagedLedgerOffloader offloader = getOffloader(spiedBlobStore);
+            offloader.offload(readHandle, uuid, new HashMap<>()).get();
+
+            Assert.fail("Should throw exception for when putObject for index block");
+         } catch (Exception e) {
+            // excepted
+            Assert.assertTrue(e.getCause() instanceof RuntimeException);
+            Assert.assertTrue(e.getCause().getMessage().contains(failureString));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+        }
+    }
+
+    @Test(timeOut = 600000)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testOffloadReadRandomAccess() throws Exception {
         ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 3);
         long[][] randomAccesses = new long[10][2];
@@ -396,8 +546,13 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
             randomAccesses[i][1] = second;
         }
 
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+        LedgerOffloader offloader = getOffloader();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         UUID uuid = UUID.randomUUID();
         offloader.offload(toWrite, uuid, new HashMap<>()).get();
 
@@ -428,8 +583,12 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     @Test
     public void testOffloadReadInvalidEntryIds() throws Exception {
         ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 1);
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+        LedgerOffloader offloader = getOffloader();
+>>>>>>> f773c602c... Test pr 10 (#27)
         UUID uuid = UUID.randomUUID();
         offloader.offload(toWrite, uuid, new HashMap<>()).get();
 
@@ -453,6 +612,7 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     public void testDeleteOffloaded() throws Exception {
         ReadHandle readHandle = buildReadHandle(DEFAULT_BLOCK_SIZE, 1);
         UUID uuid = UUID.randomUUID();
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
 
@@ -465,6 +625,20 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         offloader.deleteOffloaded(readHandle.getId(), uuid, Collections.emptyMap()).get();
         Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
         Assert.assertFalse(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
+=======
+        
+        BlobStoreManagedLedgerOffloader offloader = getOffloader();
+
+        // verify object exist after offload
+        offloader.offload(readHandle, uuid, new HashMap<>()).get();
+        Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+        Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+
+        // verify object deleted after delete
+        offloader.deleteOffloaded(readHandle.getId(), uuid, config.getOffloadDriverMetadata()).get();
+        Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+        Assert.assertFalse(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -472,28 +646,49 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         String failureString = "fail deleteOffloaded";
         ReadHandle readHandle = buildReadHandle(DEFAULT_BLOCK_SIZE, 1);
         UUID uuid = UUID.randomUUID();
+<<<<<<< HEAD
+=======
+        
+>>>>>>> f773c602c... Test pr 10 (#27)
         BlobStore spiedBlobStore = mock(BlobStore.class, delegatesTo(blobStore));
 
         Mockito
             .doThrow(new RuntimeException(failureString))
             .when(spiedBlobStore).removeBlobs(any(), any());
+<<<<<<< HEAD
 
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(spiedBlobStore, BUCKET, scheduler,
             DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+        
+        BlobStoreManagedLedgerOffloader offloader = getOffloader(spiedBlobStore);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         try {
             // verify object exist after offload
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
+<<<<<<< HEAD
             Assert.assertTrue(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
             Assert.assertTrue(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
 
             offloader.deleteOffloaded(readHandle.getId(), uuid, Collections.emptyMap()).get();
+=======
+            Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+
+            offloader.deleteOffloaded(readHandle.getId(), uuid, config.getOffloadDriverMetadata()).get();
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Exception e) {
             // expected
             Assert.assertTrue(e.getCause().getMessage().contains(failureString));
             // verify object still there.
+<<<<<<< HEAD
             Assert.assertTrue(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.dataBlockOffloadKey(readHandle.getId(), uuid)));
             Assert.assertTrue(blobStore.blobExists(BUCKET, BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(readHandle.getId(), uuid)));
+=======
+            Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.dataBlockOffloadKey(readHandle.getId(), uuid)));
+            Assert.assertTrue(blobStore.blobExists(BUCKET, DataBlockUtils.indexBlockOffloadKey(readHandle.getId(), uuid)));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -510,8 +705,13 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         Mockito.doReturn(1234L).when(readHandle).getId();
 
         UUID uuid = UUID.randomUUID();
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
+=======
+        LedgerOffloader offloader = getOffloader();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             offloader.offload(readHandle, uuid, new HashMap<>()).get();
             Assert.fail("Shouldn't have been able to offload");
@@ -523,6 +723,7 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     @Test
     public void testReadUnknownDataVersion() throws Exception {
         ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 1);
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
         UUID uuid = UUID.randomUUID();
@@ -535,6 +736,21 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
         Map<String, String> userMeta = Maps.newHashMap();
         userMeta.putAll(immutableMap);
         userMeta.put(BlobStoreManagedLedgerOffloader.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(-12345));
+=======
+        BlobStoreManagedLedgerOffloader offloader = getOffloader();
+
+        UUID uuid = UUID.randomUUID();
+        offloader.offload(toWrite, uuid, new HashMap<>()).get();
+
+        String dataKey = DataBlockUtils.dataBlockOffloadKey(toWrite.getId(), uuid);
+
+        // Here it will return a Immutable map.
+        Assert.assertTrue(blobStore.blobExists(BUCKET, dataKey));
+        Map<String, String> immutableMap = blobStore.blobMetadata(BUCKET, dataKey).getUserMetadata();
+        Map<String, String> userMeta = Maps.newHashMap();
+        userMeta.putAll(immutableMap);
+        userMeta.put(DataBlockUtils.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(-12345));
+>>>>>>> f773c602c... Test pr 10 (#27)
         blobStore.copyBlob(BUCKET, dataKey, BUCKET, dataKey, CopyOptions.builder().userMetadata(userMeta).build());
 
         try (ReadHandle toRead = offloader.readOffloaded(toWrite.getId(), uuid, Collections.emptyMap()).get()) {
@@ -546,7 +762,11 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
             Assert.assertTrue(e.getCause().getMessage().contains("Error reading from BlobStore"));
         }
 
+<<<<<<< HEAD
         userMeta.put(BlobStoreManagedLedgerOffloader.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(12345));
+=======
+        userMeta.put(DataBlockUtils.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(12345));
+>>>>>>> f773c602c... Test pr 10 (#27)
         blobStore.copyBlob(BUCKET, dataKey, BUCKET, dataKey, CopyOptions.builder().userMetadata(userMeta).build());
 
         try (ReadHandle toRead = offloader.readOffloaded(toWrite.getId(), uuid, Collections.emptyMap()).get()) {
@@ -561,18 +781,31 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
     @Test
     public void testReadUnknownIndexVersion() throws Exception {
         ReadHandle toWrite = buildReadHandle(DEFAULT_BLOCK_SIZE, 1);
+<<<<<<< HEAD
         LedgerOffloader offloader = new BlobStoreManagedLedgerOffloader(blobStore, BUCKET, scheduler,
                                                                  DEFAULT_BLOCK_SIZE, DEFAULT_READ_BUFFER_SIZE);
         UUID uuid = UUID.randomUUID();
         offloader.offload(toWrite, uuid, new HashMap<>()).get();
 
         String indexKey = BlobStoreManagedLedgerOffloader.indexBlockOffloadKey(toWrite.getId(), uuid);
+=======
+        BlobStoreManagedLedgerOffloader offloader = getOffloader();
+
+        UUID uuid = UUID.randomUUID();
+        offloader.offload(toWrite, uuid, new HashMap<>()).get();
+
+        String indexKey = DataBlockUtils.indexBlockOffloadKey(toWrite.getId(), uuid);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // Here it will return a Immutable map.
         Map<String, String> immutableMap = blobStore.blobMetadata(BUCKET, indexKey).getUserMetadata();
         Map<String, String> userMeta = Maps.newHashMap();
         userMeta.putAll(immutableMap);
+<<<<<<< HEAD
         userMeta.put(BlobStoreManagedLedgerOffloader.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(-12345));
+=======
+        userMeta.put(DataBlockUtils.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(-12345));
+>>>>>>> f773c602c... Test pr 10 (#27)
         blobStore.copyBlob(BUCKET, indexKey, BUCKET, indexKey, CopyOptions.builder().userMetadata(userMeta).build());
 
         try {
@@ -583,16 +816,28 @@ class BlobStoreManagedLedgerOffloaderTest extends BlobStoreTestBase {
             Assert.assertTrue(e.getCause().getMessage().contains("Invalid object version"));
         }
 
+<<<<<<< HEAD
         userMeta.put(BlobStoreManagedLedgerOffloader.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(12345));
         blobStore.copyBlob(BUCKET, indexKey, BUCKET, indexKey, CopyOptions.builder().userMetadata(userMeta).build());
 
         try {
             offloader.readOffloaded(toWrite.getId(), uuid, Collections.emptyMap()).get();
+=======
+        userMeta.put(DataBlockUtils.METADATA_FORMAT_VERSION_KEY.toLowerCase(), String.valueOf(12345));
+        blobStore.copyBlob(BUCKET, indexKey, BUCKET, indexKey, CopyOptions.builder().userMetadata(userMeta).build());
+
+        try {
+            offloader.readOffloaded(toWrite.getId(), uuid, config.getOffloadDriverMetadata()).get();
+>>>>>>> f773c602c... Test pr 10 (#27)
             Assert.fail("Shouldn't have been able to open");
         } catch (ExecutionException e) {
             Assert.assertEquals(e.getCause().getClass(), IOException.class);
             Assert.assertTrue(e.getCause().getMessage().contains("Invalid object version"));
         }
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

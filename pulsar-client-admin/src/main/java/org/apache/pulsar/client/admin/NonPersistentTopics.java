@@ -37,9 +37,15 @@ public interface NonPersistentTopics {
 
     /**
      * Get metadata of a partitioned topic.
+<<<<<<< HEAD
      * <p>
      * Get metadata of a partitioned topic.
      * <p>
+=======
+     * <p/>
+     * Get metadata of a partitioned topic.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -50,9 +56,15 @@ public interface NonPersistentTopics {
 
     /**
      * Get metadata of a partitioned topic asynchronously.
+<<<<<<< HEAD
      * <p>
      * Get metadata of a partitioned topic asynchronously.
      * <p>
+=======
+     * <p/>
+     * Get metadata of a partitioned topic asynchronously.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -62,7 +74,11 @@ public interface NonPersistentTopics {
 
     /**
      * Get the stats for the topic.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -118,7 +134,11 @@ public interface NonPersistentTopics {
      * }
      * </code>
      * </pre>
+<<<<<<< HEAD
      *
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * All the rates are computed over a 1 minute window and are relative the last completed 1 minute period.
      *
      * @param topic
@@ -148,7 +168,11 @@ public interface NonPersistentTopics {
 
     /**
      * Get the internal stats for the topic.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Access the internal state of the topic
      *
      * @param topic
@@ -176,9 +200,15 @@ public interface NonPersistentTopics {
 
     /**
      * Create a partitioned topic.
+<<<<<<< HEAD
      * <p>
      * Create a partitioned topic. It needs to be called before creating a producer for a partitioned topic.
      * <p>
+=======
+     * <p/>
+     * Create a partitioned topic. It needs to be called before creating a producer for a partitioned topic.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -190,10 +220,17 @@ public interface NonPersistentTopics {
 
     /**
      * Create a partitioned topic asynchronously.
+<<<<<<< HEAD
      * <p>
      * Create a partitioned topic asynchronously. It needs to be called before creating a producer for a partitioned
      * topic.
      * <p>
+=======
+     * <p/>
+     * Create a partitioned topic asynchronously. It needs to be called before creating a producer for a partitioned
+     * topic.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -205,7 +242,11 @@ public interface NonPersistentTopics {
 
     /**
      * Unload a topic.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -221,7 +262,11 @@ public interface NonPersistentTopics {
 
     /**
      * Unload a topic asynchronously.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      *            Topic name
@@ -231,7 +276,11 @@ public interface NonPersistentTopics {
     CompletableFuture<Void> unloadAsync(String topic);
 
     /**
+<<<<<<< HEAD
      * Get list of topics exist into given bundle
+=======
+     * Get list of topics exist into given bundle.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param namespace
      * @param bundleRange
@@ -251,7 +300,11 @@ public interface NonPersistentTopics {
     CompletableFuture<List<String>> getListInBundleAsync(String namespace, String bundleRange);
 
     /**
+<<<<<<< HEAD
      * Get list of topics exist into given namespace
+=======
+     * Get list of topics exist into given namespace.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param namespace
      * @return

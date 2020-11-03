@@ -36,7 +36,16 @@ public class DeadLetterPolicy {
     private int maxRedeliverCount;
 
     /**
+<<<<<<< HEAD
      * Name of the topic where the failing messages will be sent.
+=======
+     * Name of the retry topic where the failing messages will be sent.
+     */
+    private String retryLetterTopic;
+
+    /**
+     * Name of the dead topic where the failing messages will be sent.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private String deadLetterTopic;
 

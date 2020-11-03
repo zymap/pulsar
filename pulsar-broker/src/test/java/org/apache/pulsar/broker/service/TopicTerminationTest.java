@@ -48,7 +48,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class TopicTerminationTest extends BrokerTestBase {
     @BeforeMethod
     @Override

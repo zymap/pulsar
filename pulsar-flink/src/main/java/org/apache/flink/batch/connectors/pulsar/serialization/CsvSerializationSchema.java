@@ -18,13 +18,21 @@
  */
 package org.apache.flink.batch.connectors.pulsar.serialization;
 
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+import java.io.StringWriter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.csv.CSVFormat;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.java.tuple.Tuple;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.io.StringWriter;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Csv Serialization Schema to serialize Tuples to Csv.
  */
@@ -38,7 +46,11 @@ public class CsvSerializationSchema<T extends Tuple> implements SerializationSch
         StringWriter stringWriter;
         try {
             Object[] fieldsValues = new Object[t.getArity()];
+<<<<<<< HEAD
             for(int index = 0; index < t.getArity(); index++) {
+=======
+            for (int index = 0; index < t.getArity(); index++) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 fieldsValues[index] = (t.getField(index));
             }
 

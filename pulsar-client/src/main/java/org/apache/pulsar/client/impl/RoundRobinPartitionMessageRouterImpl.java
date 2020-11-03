@@ -46,7 +46,11 @@ public class RoundRobinPartitionMessageRouterImpl extends MessageRouterBase {
 
     private final int startPtnIdx;
     private final boolean isBatchingEnabled;
+<<<<<<< HEAD
     private final long maxBatchingDelayMs;
+=======
+    private final long partitionSwitchMs;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final Clock clock;
 
@@ -55,20 +59,33 @@ public class RoundRobinPartitionMessageRouterImpl extends MessageRouterBase {
     public RoundRobinPartitionMessageRouterImpl(HashingScheme hashingScheme,
                                                 int startPtnIdx,
                                                 boolean isBatchingEnabled,
+<<<<<<< HEAD
                                                 long maxBatchingDelayMs) {
         this(hashingScheme, startPtnIdx, isBatchingEnabled, maxBatchingDelayMs, SYSTEM_CLOCK);
+=======
+                                                long partitionSwitchMs) {
+        this(hashingScheme, startPtnIdx, isBatchingEnabled, partitionSwitchMs, SYSTEM_CLOCK);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public RoundRobinPartitionMessageRouterImpl(HashingScheme hashingScheme,
                                                 int startPtnIdx,
                                                 boolean isBatchingEnabled,
+<<<<<<< HEAD
                                                 long maxBatchingDelayMs,
+=======
+                                                long partitionSwitchMs,
+>>>>>>> f773c602c... Test pr 10 (#27)
                                                 Clock clock) {
         super(hashingScheme);
         PARTITION_INDEX_UPDATER.set(this, startPtnIdx);
         this.startPtnIdx = startPtnIdx;
         this.isBatchingEnabled = isBatchingEnabled;
+<<<<<<< HEAD
         this.maxBatchingDelayMs = Math.max(1, maxBatchingDelayMs);
+=======
+        this.partitionSwitchMs = Math.max(1, partitionSwitchMs);
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.clock = clock;
     }
 
@@ -79,9 +96,15 @@ public class RoundRobinPartitionMessageRouterImpl extends MessageRouterBase {
             return signSafeMod(hash.makeHash(msg.getKey()), topicMetadata.numPartitions());
         }
 
+<<<<<<< HEAD
         if (isBatchingEnabled) { // if batching is enabled, choose partition on `maxBatchingDelayMs` boundary.
             long currentMs = clock.millis();
             return signSafeMod(currentMs / maxBatchingDelayMs + startPtnIdx, topicMetadata.numPartitions());
+=======
+        if (isBatchingEnabled) { // if batching is enabled, choose partition on `partitionSwitchMs` boundary.
+            long currentMs = clock.millis();
+            return signSafeMod(currentMs / partitionSwitchMs + startPtnIdx, topicMetadata.numPartitions());
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             return signSafeMod(PARTITION_INDEX_UPDATER.getAndIncrement(this), topicMetadata.numPartitions());
         }

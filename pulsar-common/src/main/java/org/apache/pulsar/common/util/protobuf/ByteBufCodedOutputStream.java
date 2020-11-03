@@ -45,8 +45,16 @@ import java.io.IOException;
 import org.apache.pulsar.shaded.com.google.protobuf.v241.ByteString;
 import org.apache.pulsar.shaded.com.google.protobuf.v241.WireFormat;
 
+<<<<<<< HEAD
 public class ByteBufCodedOutputStream {
     public static interface ByteBufGeneratedMessage {
+=======
+@SuppressWarnings("checkstyle:JavadocType")
+public class ByteBufCodedOutputStream {
+
+    @SuppressWarnings("checkstyle:JavadocType")
+    public interface ByteBufGeneratedMessage {
+>>>>>>> f773c602c... Test pr 10 (#27)
         int getSerializedSize();
 
         void writeTo(ByteBufCodedOutputStream output) throws IOException;

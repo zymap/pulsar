@@ -25,7 +25,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.io.InputStream;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -33,8 +36,11 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 import java.util.zip.ZipInputStream;
 
+<<<<<<< HEAD
 import org.apache.commons.io.IOUtils;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * Helper class that provides helper methods for working with
  * zip-formatted files.
@@ -44,6 +50,7 @@ public class ZipFiles {
     /**
      * Returns true if the given file is a gzip file.
      */
+<<<<<<< HEAD
    @SuppressWarnings("deprecation")
    public static boolean isZip(File f) {
 
@@ -57,6 +64,14 @@ public class ZipFiles {
             return false;
         } finally {
             IOUtils.closeQuietly(input);
+=======
+    public static boolean isZip(File f) {
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))){
+            int test = in.readInt();
+            return test == 0x504b0304;
+        } catch (final Exception e) {
+            return false;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 

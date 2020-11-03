@@ -18,11 +18,14 @@
  */
 package org.apache.pulsar.broker.service.schema;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.schema.SchemaData;
 import org.apache.pulsar.common.schema.SchemaType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class AvroSchemaCompatibilityCheckTest extends BaseAvroSchemaCompatibilityTest{
 
     @Override

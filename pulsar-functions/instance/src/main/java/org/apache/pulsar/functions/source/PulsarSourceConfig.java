@@ -26,6 +26,10 @@ import java.util.TreeMap;
 
 import lombok.Data;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.apache.pulsar.common.functions.ConsumerConfig;
@@ -37,6 +41,10 @@ public class PulsarSourceConfig {
     private FunctionConfig.ProcessingGuarantees processingGuarantees;
     SubscriptionType subscriptionType;
     private String subscriptionName;
+<<<<<<< HEAD
+=======
+    private SubscriptionInitialPosition subscriptionPosition;
+>>>>>>> f773c602c... Test pr 10 (#27)
     // Whether the subscriptions the functions created/used should be deleted when the functions is deleted
     private Integer maxMessageRetries = -1;
     private String deadLetterTopic;
@@ -45,6 +53,10 @@ public class PulsarSourceConfig {
 
     private String typeClassName;
     private Long timeoutMs;
+<<<<<<< HEAD
+=======
+    private Long negativeAckRedeliveryDelayMs;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static PulsarSourceConfig load(Map<String, Object> map) throws IOException {
         ObjectMapper mapper = ObjectMapperFactory.getThreadLocal();

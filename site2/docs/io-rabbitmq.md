@@ -3,6 +3,7 @@ id: io-rabbitmq
 title: RabbitMQ Connector
 sidebar_label: RabbitMQ Connector
 ---
+<<<<<<< HEAD
 
 ## Source
 
@@ -17,3 +18,5 @@ messages to Pulsar topics.
 | `amqUri` | `true` | `null` | An AMQP URI: host, port, username, password and virtual host. |
 | `queueName` | `true` | `null` | RabbitMQ queue name. |
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

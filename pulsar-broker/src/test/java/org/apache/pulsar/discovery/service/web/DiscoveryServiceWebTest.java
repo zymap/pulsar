@@ -21,7 +21,17 @@ package org.apache.pulsar.discovery.service.web;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
+<<<<<<< HEAD
 import java.util.Map;
+=======
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.util.Map;
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,7 +44,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.ProducerConsumerBase;
 import org.apache.pulsar.common.policies.data.BundlesData;
 import org.apache.pulsar.discovery.service.server.ServerManager;
@@ -47,11 +60,14 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class DiscoveryServiceWebTest extends ProducerConsumerBase {
 
     private Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFeature.class));
@@ -61,6 +77,11 @@ public class DiscoveryServiceWebTest extends ProducerConsumerBase {
     protected void setup() throws Exception {
         super.internalSetup();
         super.producerBaseSetup();
+<<<<<<< HEAD
+=======
+        super.conf.setAuthorizationEnabled(true);
+        super.conf.setAuthenticationEnabled(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterMethod
@@ -78,11 +99,18 @@ public class DiscoveryServiceWebTest extends ProducerConsumerBase {
     @Test
     public void testRedirectUrlWithServerStarted() throws Exception {
         // 1. start server
+<<<<<<< HEAD
         int port = PortManager.nextFreePort();
         ServiceConfig config = new ServiceConfig();
         config.setWebServicePort(port);
         ServerManager server = new ServerManager(config);
         DiscoveryZooKeeperClientFactoryImpl.zk = mockZookKeeper;
+=======
+        ServiceConfig config = new ServiceConfig();
+        config.setWebServicePort(Optional.of(0));
+        ServerManager server = new ServerManager(config);
+        DiscoveryZooKeeperClientFactoryImpl.zk = mockZooKeeper;
+>>>>>>> f773c602c... Test pr 10 (#27)
         Map<String, String> params = new TreeMap<>();
         params.put("zookeeperServers", "");
         params.put("zookeeperClientFactoryClass", DiscoveryZooKeeperClientFactoryImpl.class.getName());
@@ -100,9 +128,15 @@ public class DiscoveryServiceWebTest extends ProducerConsumerBase {
          **/
 
         assertEquals(hitBrokerService(HttpMethod.POST, postRequestUrl, Lists.newArrayList("use")),
+<<<<<<< HEAD
                 "Tenant does not exist");
         assertEquals(hitBrokerService(HttpMethod.PUT, putRequestUrl, new BundlesData(1)), "Tenant does not exist");
         assertEquals(hitBrokerService(HttpMethod.GET, getRequestUrl, null), "Tenant does not exist");
+=======
+                "Need to authenticate to perform the request");
+        assertEquals(hitBrokerService(HttpMethod.PUT, putRequestUrl, new BundlesData(1)), "Need to authenticate to perform the request");
+        assertEquals(hitBrokerService(HttpMethod.GET, getRequestUrl, null), "Need to authenticate to perform the request");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         server.stop();
 

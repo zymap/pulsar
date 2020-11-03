@@ -29,10 +29,17 @@ from ratelimit import limits, RateLimitException
 class Stats(object):
   metrics_label_names = ['tenant', 'namespace', 'name', 'instance_id', 'cluster', 'fqfn']
 
+<<<<<<< HEAD
   exception_metrics_label_names = metrics_label_names + ['error', 'ts']
 
   PULSAR_FUNCTION_METRICS_PREFIX = "pulsar_function_"
   USER_METRIC_PREFIX = "user_metric_";
+=======
+  exception_metrics_label_names = metrics_label_names + ['error']
+
+  PULSAR_FUNCTION_METRICS_PREFIX = "pulsar_function_"
+  USER_METRIC_PREFIX = "user_metric_"
+>>>>>>> f773c602c... Test pr 10 (#27)
 
   TOTAL_SUCCESSFULLY_PROCESSED = 'processed_successfully_total'
   TOTAL_SYSTEM_EXCEPTIONS = 'system_exceptions_total'
@@ -86,7 +93,11 @@ class Stats(object):
   latest_sys_exception = []
 
   def __init__(self, metrics_labels):
+<<<<<<< HEAD
     self.metrics_labels = metrics_labels;
+=======
+    self.metrics_labels = metrics_labels
+>>>>>>> f773c602c... Test pr 10 (#27)
     self.process_start_time = None
 
     # as optimization
@@ -106,6 +117,7 @@ class Stats(object):
     util.FixedTimer(60, self.reset, name="windowed-metrics-timer").start()
 
   def get_total_received(self):
+<<<<<<< HEAD
     return self._stat_total_received._value.get();
 
   def get_total_processed_successfully(self):
@@ -116,6 +128,18 @@ class Stats(object):
 
   def get_total_user_exceptions(self):
     return self._stat_total_user_exceptions._value.get();
+=======
+    return self._stat_total_received._value.get()
+
+  def get_total_processed_successfully(self):
+    return self._stat_total_processed_successfully._value.get()
+
+  def get_total_sys_exceptions(self):
+    return self._stat_total_sys_exceptions._value.get()
+
+  def get_total_user_exceptions(self):
+    return self._stat_total_user_exceptions._value.get()
+>>>>>>> f773c602c... Test pr 10 (#27)
 
   def get_avg_process_latency(self):
     process_latency_ms_count = self._stat_process_latency_ms._count.get()
@@ -165,7 +189,11 @@ class Stats(object):
     self._stat_total_received_1min.inc()
 
   def process_time_start(self):
+<<<<<<< HEAD
     self.process_start_time = time.time();
+=======
+    self.process_start_time = time.time()
+>>>>>>> f773c602c... Test pr 10 (#27)
 
   def process_time_end(self):
     if self.process_start_time:
@@ -179,6 +207,7 @@ class Stats(object):
   def add_user_exception(self, exception):
     error = traceback.format_exc()
     ts = int(time.time() * 1000) if sys.version_info.major >= 3 else long(time.time() * 1000)
+<<<<<<< HEAD
     self.latest_sys_exception.append((error, ts))
     if len(self.latest_sys_exception) > 10:
       self.latest_sys_exception.pop(0)
@@ -186,12 +215,26 @@ class Stats(object):
     # report exception via prometheus
     try:
       self.report_user_exception_prometheus(exception, ts)
+=======
+    self.latest_user_exception.append((error, ts))
+    if len(self.latest_user_exception) > 10:
+      self.latest_user_exception.pop(0)
+
+    # report exception via prometheus
+    try:
+      self.report_user_exception_prometheus(exception)
+>>>>>>> f773c602c... Test pr 10 (#27)
     except RateLimitException:
       pass
 
   @limits(calls=5, period=60)
+<<<<<<< HEAD
   def report_user_exception_prometheus(self, exception, ts):
     exception_metric_labels = self.metrics_labels + [str(exception), str(ts)]
+=======
+  def report_user_exception_prometheus(self, exception):
+    exception_metric_labels = self.metrics_labels + [str(exception)]
+>>>>>>> f773c602c... Test pr 10 (#27)
     self.user_exceptions.labels(*exception_metric_labels).set(1.0)
 
   def add_sys_exception(self, exception):
@@ -203,11 +246,16 @@ class Stats(object):
 
     # report exception via prometheus
     try:
+<<<<<<< HEAD
       self.report_system_exception_prometheus(exception, ts)
+=======
+      self.report_system_exception_prometheus(exception)
+>>>>>>> f773c602c... Test pr 10 (#27)
     except RateLimitException:
       pass
 
   @limits(calls=5, period=60)
+<<<<<<< HEAD
   def report_system_exception_prometheus(self, exception, ts):
     exception_metric_labels = self.metrics_labels + [str(exception), str(ts)]
     self.system_exceptions.labels(*exception_metric_labels).set(1.0)
@@ -215,9 +263,20 @@ class Stats(object):
   def reset(self):
     self.latest_user_exception = []
     self.latest_sys_exception = []
+=======
+  def report_system_exception_prometheus(self, exception):
+    exception_metric_labels = self.metrics_labels + [str(exception)]
+    self.system_exceptions.labels(*exception_metric_labels).set(1.0)
+
+  def reset(self):
+>>>>>>> f773c602c... Test pr 10 (#27)
     self._stat_total_processed_successfully_1min._value.set(0.0)
     self._stat_total_user_exceptions_1min._value.set(0.0)
     self._stat_total_sys_exceptions_1min._value.set(0.0)
     self._stat_process_latency_ms_1min._sum.set(0.0)
     self._stat_process_latency_ms_1min._count.set(0.0)
+<<<<<<< HEAD
     self._stat_total_received_1min._value.set(0.0)
+=======
+    self._stat_total_received_1min._value.set(0.0)
+>>>>>>> f773c602c... Test pr 10 (#27)

@@ -52,6 +52,10 @@ const (
 	LZ4
 	ZLib
 	ZSTD
+<<<<<<< HEAD
+=======
+	SNAPPY
+>>>>>>> f773c602c... Test pr 10 (#27)
 )
 
 type TopicMetadata interface {
@@ -120,9 +124,19 @@ type ProducerOptions struct {
 	//  - LZ4
 	//  - ZLIB
 	//  - ZSTD
+<<<<<<< HEAD
 	//
 	// Note: ZSTD is supported since Pulsar 2.3. Consumers will need to be at least at that
 	// release in order to be able to receive messages compressed with ZSTD.
+=======
+	//  - SNAPPY
+	//
+	// Note: ZSTD is supported since Pulsar 2.3. Consumers will need to be at least at that
+	// release in order to be able to receive messages compressed with ZSTD.
+	//
+	// Note: SNAPPY is supported since Pulsar 2.4. Consumers will need to be at least at that
+	// release in order to be able to receive messages compressed with SNAPPY.
+>>>>>>> f773c602c... Test pr 10 (#27)
 	CompressionType
 
 	// Set a custom message routing policy by passing an implementation of MessageRouter
@@ -161,6 +175,7 @@ type Producer interface {
 	// This call will be blocking until is successfully acknowledged by the Pulsar broker.
 	// Example:
 	// producer.Send(ctx, pulsar.ProducerMessage{ Payload: myPayload })
+<<<<<<< HEAD
 	Send(context.Context, ProducerMessage) error
 
 	// Send a message in asynchronous mode
@@ -168,6 +183,28 @@ type Producer interface {
 	// the eventual error in publishing
 	SendAsync(context.Context, ProducerMessage, func(ProducerMessage, error))
 
+=======
+	// @Deprecated
+	Send(context.Context, ProducerMessage) error
+
+	// Send a message
+	// This call will be blocking until is successfully acknowledged by the Pulsar broker.
+	// Example:
+	// msgID, err := producer.SendAndGetMsgID(ctx, pulsar.ProducerMessage{ Payload: myPayload })
+	SendAndGetMsgID(context.Context, ProducerMessage) (MessageID, error)
+
+	// Send a message in asynchronous mode
+	// The callback will report back the message being published and
+	// the eventual error in publishing
+	// @Deprecated
+	SendAsync(context.Context, ProducerMessage, func(ProducerMessage, error))
+
+	// Send a message in asynchronous mode
+	// The callback will report back the message being published and
+	// the eventual error in publishing
+	SendAndGetMsgIDAsync(context.Context, ProducerMessage, func(MessageID, error))
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// Get the last sequence id that was published by this producer.
 	// This represent either the automatically assigned or custom sequence id (set on the ProducerMessage) that
 	// was published and acknowledged by the broker.
@@ -184,4 +221,9 @@ type Producer interface {
 	// No more writes will be accepted from this producer. Waits until all pending write request are persisted. In case
 	// of errors, pending writes will not be retried.
 	Close() error
+<<<<<<< HEAD
+=======
+
+	Schema() Schema
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

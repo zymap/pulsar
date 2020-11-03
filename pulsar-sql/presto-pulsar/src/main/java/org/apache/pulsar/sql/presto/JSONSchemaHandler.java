@@ -19,18 +19,31 @@
 package org.apache.pulsar.sql.presto;
 
 import com.dslplatform.json.DslJson;
+<<<<<<< HEAD
 import com.facebook.presto.spi.type.Type;
 
 import io.airlift.log.Logger;
 
+=======
+import io.airlift.log.Logger;
+import io.netty.buffer.ByteBuf;
+import io.netty.util.concurrent.FastThreadLocal;
+import io.prestosql.spi.type.Type;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 import org.apache.pulsar.shade.io.netty.buffer.ByteBuf;
 import org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocal;
 
+=======
+/**
+ * Schema handler for payload in the JSON format.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class JSONSchemaHandler implements SchemaHandler {
 
     private static final Logger log = Logger.get(JSONSchemaHandler.class);
@@ -84,7 +97,11 @@ public class JSONSchemaHandler implements SchemaHandler {
             if (field == null) {
                 return null;
             }
+<<<<<<< HEAD
             for (int i = 1; i < fieldNames.length ; i++) {
+=======
+            for (int i = 1; i < fieldNames.length; i++) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 field = ((Map) field).get(fieldNames[i]);
                 if (field == null) {
                     return null;
@@ -101,7 +118,11 @@ public class JSONSchemaHandler implements SchemaHandler {
 
             return field;
         } catch (Exception ex) {
+<<<<<<< HEAD
             log.debug(ex,"%s", ex);
+=======
+            log.debug(ex, "%s", ex);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         return null;
     }

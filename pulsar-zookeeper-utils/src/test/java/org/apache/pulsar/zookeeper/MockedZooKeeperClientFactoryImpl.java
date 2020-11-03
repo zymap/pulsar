@@ -20,11 +20,19 @@ package org.apache.pulsar.zookeeper;
 
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.zookeeper.ZooKeeperClientFactory;
 import org.apache.pulsar.zookeeper.ZookeeperClientFactoryImpl;
+=======
+import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.apache.bookkeeper.util.ZkUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.MockZooKeeper;
@@ -33,9 +41,18 @@ import org.apache.zookeeper.data.ACL;
 
 public class MockedZooKeeperClientFactoryImpl implements ZooKeeperClientFactory {
 
+<<<<<<< HEAD
     @Override
     public CompletableFuture<ZooKeeper> create(String serverList, SessionType sessionType, int zkSessionTimeoutMillis) {
         MockZooKeeper mockZooKeeper = MockZooKeeper.newInstance();
+=======
+    Queue<MockZooKeeper> createdInstances = new ConcurrentLinkedQueue<>();
+
+    @Override
+    public CompletableFuture<ZooKeeper> create(String serverList, SessionType sessionType, int zkSessionTimeoutMillis) {
+        MockZooKeeper mockZooKeeper = MockZooKeeper.newInstance();
+        createdInstances.add(mockZooKeeper);
+>>>>>>> f773c602c... Test pr 10 (#27)
         // not used for mock mode
         List<ACL> dummyAclList = new ArrayList<ACL>(0);
 
@@ -53,4 +70,17 @@ public class MockedZooKeeperClientFactoryImpl implements ZooKeeperClientFactory 
             return future;
         }
     }
+<<<<<<< HEAD
+=======
+
+    public void close() {
+        createdInstances.forEach(zk -> {
+            try {
+                zk.shutdown();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

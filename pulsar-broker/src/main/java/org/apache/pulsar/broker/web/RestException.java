@@ -63,8 +63,12 @@ public class RestException extends WebApplicationException {
     }
 
     private static Response getResponse(Throwable t) {
+<<<<<<< HEAD
         if (t instanceof RestException
             || t instanceof WebApplicationException) {
+=======
+        if (t instanceof WebApplicationException) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             WebApplicationException e = (WebApplicationException) t;
             return e.getResponse();
         } else {

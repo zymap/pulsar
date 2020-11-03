@@ -32,10 +32,18 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.nio.ByteBuffer;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import static org.testng.Assert.*;
 
@@ -112,6 +120,52 @@ public class KafkaAbstractSinkTest {
             public Logger getLogger() {
                 return null;
             }
+<<<<<<< HEAD
+=======
+
+            @Override
+            public String getSecret(String key) { return null; }
+
+            @Override
+            public void incrCounter(String key, long amount) {
+
+            }
+
+            @Override
+            public CompletableFuture<Void> incrCounterAsync(String key, long amount) {
+                return null;
+            }
+
+            @Override
+            public long getCounter(String key) {
+                return 0;
+            }
+
+            @Override
+            public CompletableFuture<Long> getCounterAsync(String key) {
+                return null;
+            }
+
+            @Override
+            public void putState(String key, ByteBuffer value) {
+
+            }
+
+            @Override
+            public CompletableFuture<Void> putStateAsync(String key, ByteBuffer value) {
+                return null;
+            }
+
+            @Override
+            public ByteBuffer getState(String key) {
+                return null;
+            }
+
+            @Override
+            public CompletableFuture<ByteBuffer> getStateAsync(String key) {
+                return null;
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         };
         ThrowingRunnable openAndClose = ()->{
             try {

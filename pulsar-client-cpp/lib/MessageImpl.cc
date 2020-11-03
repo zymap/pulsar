@@ -20,7 +20,11 @@
 
 namespace pulsar {
 
+<<<<<<< HEAD
 MessageImpl::MessageImpl() : metadata(), payload(), messageId(), cnx_(0), topicName_() {}
+=======
+MessageImpl::MessageImpl() : metadata(), payload(), messageId(), cnx_(0), topicName_(), redeliveryCount_() {}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 const Message::StringMap& MessageImpl::properties() {
     if (properties_.size() == 0) {
@@ -37,6 +41,13 @@ const std::string& MessageImpl::getPartitionKey() const { return metadata.partit
 
 bool MessageImpl::hasPartitionKey() const { return metadata.has_partition_key(); }
 
+<<<<<<< HEAD
+=======
+const std::string& MessageImpl::getOrderingKey() const { return metadata.ordering_key(); }
+
+bool MessageImpl::hasOrderingKey() const { return metadata.has_ordering_key(); }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 uint64_t MessageImpl::getPublishTimestamp() const {
     if (metadata.has_publish_time()) {
         return metadata.publish_time();
@@ -77,6 +88,11 @@ void MessageImpl::setPartitionKey(const std::string& partitionKey) {
     metadata.set_partition_key(partitionKey);
 }
 
+<<<<<<< HEAD
+=======
+void MessageImpl::setOrderingKey(const std::string& orderingKey) { metadata.set_ordering_key(orderingKey); }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 void MessageImpl::setEventTimestamp(uint64_t eventTimestamp) { metadata.set_event_time(eventTimestamp); }
 
 void MessageImpl::setTopicName(const std::string& topicName) {
@@ -86,4 +102,17 @@ void MessageImpl::setTopicName(const std::string& topicName) {
 
 const std::string& MessageImpl::getTopicName() { return *topicName_; }
 
+<<<<<<< HEAD
+=======
+int MessageImpl::getRedeliveryCount() { return redeliveryCount_; }
+
+void MessageImpl::setRedeliveryCount(int count) { redeliveryCount_ = count; }
+
+bool MessageImpl::hasSchemaVersion() const { return metadata.has_schema_version(); }
+
+void MessageImpl::setSchemaVersion(const std::string& schemaVersion) { schemaVersion_ = &schemaVersion; }
+
+const std::string& MessageImpl::getSchemaVersion() const { return metadata.schema_version(); }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

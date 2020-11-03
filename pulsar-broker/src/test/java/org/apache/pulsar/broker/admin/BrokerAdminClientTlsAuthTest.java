@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.broker.admin;
 
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
@@ -38,11 +39,24 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.bookkeeper.test.PortManager;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+=======
+import static org.testng.Assert.fail;
+
+import com.google.common.collect.ImmutableSet;
+
+import java.lang.reflect.Method;
+import java.util.Optional;
+
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.internal.JacksonConfigurator;
 import org.apache.pulsar.common.policies.data.AuthAction;
 import org.apache.pulsar.common.policies.data.AuthPolicies;
@@ -57,6 +71,13 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import org.testng.Assert;
+=======
+import org.apache.pulsar.common.policies.data.AuthAction;
+import org.apache.pulsar.common.policies.data.BundlesData;
+import org.apache.pulsar.common.policies.data.ClusterData;
+import org.apache.pulsar.common.policies.data.Policies;
+import org.apache.pulsar.common.policies.data.TenantInfo;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -77,8 +98,13 @@ public class BrokerAdminClientTlsAuthTest extends MockedPulsarServiceBaseTest {
     @BeforeMethod
     @Override
     public void setup() throws Exception {
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         buildConf(conf);
         super.internalSetup();
     }
@@ -98,7 +124,12 @@ public class BrokerAdminClientTlsAuthTest extends MockedPulsarServiceBaseTest {
         conf.setBrokerClientAuthenticationParameters(str);
         conf.setBrokerClientAuthenticationPlugin("org.apache.pulsar.client.impl.auth.AuthenticationTls");
         conf.setBrokerClientTrustCertsFilePath(getTLSFile("ca.cert"));
+<<<<<<< HEAD
         conf.setTlsAllowInsecureConnection(true); 
+=======
+        conf.setTlsAllowInsecureConnection(true);
+        conf.setNumExecutorThreadPoolSize(5);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterMethod
@@ -119,15 +150,24 @@ public class BrokerAdminClientTlsAuthTest extends MockedPulsarServiceBaseTest {
     }
 
     /**
+<<<<<<< HEAD
      * Test case => Use Multiple Brokers 
      *           => Create a namespace with bundles distributed among these brokers.
      *           => Use Tls as authPlugin for everything.
      *           => Run list topics command
      * @throws Exception 
+=======
+     * Test case => Use Multiple Brokers
+     *           => Create a namespace with bundles distributed among these brokers.
+     *           => Use Tls as authPlugin for everything.
+     *           => Run list topics command
+     * @throws Exception
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     @Test
     public void testPersistentList() throws Exception {
         log.info("-- Starting {} test --", methodName);
+<<<<<<< HEAD
         
         /***** Start Broker 2 ******/
         ServiceConfiguration conf = new ServiceConfiguration();
@@ -135,14 +175,32 @@ public class BrokerAdminClientTlsAuthTest extends MockedPulsarServiceBaseTest {
         conf.setBrokerServicePortTls(PortManager.nextFreePort());
         conf.setWebServicePort(PortManager.nextFreePort());
         conf.setWebServicePortTls(PortManager.nextFreePort());
+=======
+
+        /***** Start Broker 2 ******/
+        ServiceConfiguration conf = new ServiceConfiguration();
+        conf.setBrokerServicePort(Optional.of(0));
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePort(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setAdvertisedAddress("localhost");
         conf.setClusterName(this.conf.getClusterName());
         conf.setZookeeperServers("localhost:2181");
         buildConf(conf);
+<<<<<<< HEAD
+=======
+
+        @Cleanup
+>>>>>>> f773c602c... Test pr 10 (#27)
         PulsarService pulsar2 = startBroker(conf);
 
         /***** Broker 2 Started *****/
         try (PulsarAdmin admin = buildAdminClient("superproxy")) {
+<<<<<<< HEAD
+=======
+            admin.clusters().createCluster("test", new ClusterData(brokerUrl.toString()));
+>>>>>>> f773c602c... Test pr 10 (#27)
             admin.tenants().createTenant("tenant",
                                          new TenantInfo(ImmutableSet.of("admin"),
                                                         ImmutableSet.of("test")));
@@ -150,16 +208,30 @@ public class BrokerAdminClientTlsAuthTest extends MockedPulsarServiceBaseTest {
         try (PulsarAdmin admin = buildAdminClient("admin")) {
             Policies policies = new Policies();
             policies.bundles = new BundlesData(4);
+<<<<<<< HEAD
             policies.auth_policies.namespace_auth.put("admin", ImmutableSet.of(AuthAction.produce, AuthAction.consume));
             policies.replication_clusters = ImmutableSet.of("test");
             admin.namespaces().createNamespace("tenant/ns", policies);
             try {
                 admin.persistentTopics().getList("tenant/ns");
+=======
+            policies.replication_clusters = ImmutableSet.of("test");
+            admin.namespaces().createNamespace("tenant/ns", policies);
+            try {
+                admin.topics().getList("tenant/ns");
+>>>>>>> f773c602c... Test pr 10 (#27)
             } catch (PulsarAdminException ex) {
                 ex.printStackTrace();
                 fail("Should not have thrown an exception");
             }
+<<<<<<< HEAD
         }
         
+=======
+            String topicName = String.format("persistent://%s/t1", "tenant/ns");
+            admin.lookups().lookupTopic(topicName);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

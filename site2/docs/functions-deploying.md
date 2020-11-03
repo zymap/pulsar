@@ -3,6 +3,7 @@ id: functions-deploying
 title: Deploying and managing Pulsar Functions
 sidebar_label: Deploying functions
 ---
+<<<<<<< HEAD
 
 At the moment, there are two deployment modes available for Pulsar Functions:
 
@@ -226,3 +227,5 @@ This function has been triggered with a value of hello world
 
 > #### Topic info not required
 > In the `trigger` command above, you may have noticed that you only need to specify basic information about the function (tenant, namespace, and name). To trigger the function, you didn't need to know the function's input topic(s).
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

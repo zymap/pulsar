@@ -20,12 +20,20 @@ package org.apache.flink.batch.connectors.pulsar.serialization;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.flink.api.java.tuple.Tuple3;
+<<<<<<< HEAD
 import org.junit.Test;
+=======
+import org.testng.annotations.Test;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
+=======
+import static org.testng.Assert.assertEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Tests for Csv Serialization Schema

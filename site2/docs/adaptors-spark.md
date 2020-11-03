@@ -45,6 +45,7 @@ dependencies {
 Pass an instance of `SparkStreamingPulsarReceiver` to the `receiverStream` method in `JavaStreamingContext`:
 
 ```java
+<<<<<<< HEAD
 SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("pulsar-spark");
 JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.seconds(5));
 
@@ -56,11 +57,38 @@ String subs = "sub1";
 
 JavaReceiverInputDStream<byte[]> msgs = jssc
         .receiverStream(new SparkStreamingPulsarReceiver(clientConf, consConf, url, topic, subs));
+=======
+    String serviceUrl = "pulsar://localhost:6650/";
+    String topic = "persistent://public/default/test_src";
+    String subs = "test_sub";
+
+    SparkConf sparkConf = new SparkConf().setMaster("local[*]").setAppName("Pulsar Spark Example");
+
+    JavaStreamingContext jsc = new JavaStreamingContext(sparkConf, Durations.seconds(60));
+
+    ConsumerConfigurationData<byte[]> pulsarConf = new ConsumerConfigurationData();
+
+    Set<String> set = new HashSet<>();
+    set.add(topic);
+    pulsarConf.setTopicNames(set);
+    pulsarConf.setSubscriptionName(subs);
+
+    SparkStreamingPulsarReceiver pulsarReceiver = new SparkStreamingPulsarReceiver(
+        serviceUrl,
+        pulsarConf,
+        new AuthenticationDisabled());
+
+    JavaReceiverInputDStream<byte[]> lineDStream = jsc.receiverStream(pulsarReceiver);
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 
 ## Example
 
+<<<<<<< HEAD
 You can find a complete example [here](https://github.com/apache/pulsar/tree/master/tests/pulsar-spark-test/src/test/java/org/apache/pulsar/spark/example/SparkStreamingPulsarReceiverExample.java).
+=======
+You can find a complete example [here](https://github.com/apache/pulsar/tree/master/examples/spark/src/main/java/org/apache/spark/streaming/receiver/example/SparkStreamingPulsarReceiverExample.java).
+>>>>>>> f773c602c... Test pr 10 (#27)
 In this example, the number of messages which contain the string "Pulsar" in received messages is counted.
 

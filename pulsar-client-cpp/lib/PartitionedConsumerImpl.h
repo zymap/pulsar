@@ -64,12 +64,22 @@ class PartitionedConsumerImpl : public ConsumerImplBase,
     virtual Result pauseMessageListener();
     virtual Result resumeMessageListener();
     virtual void redeliverUnacknowledgedMessages();
+<<<<<<< HEAD
+=======
+    virtual void redeliverUnacknowledgedMessages(const std::set<MessageId>& messageIds);
+>>>>>>> f773c602c... Test pr 10 (#27)
     virtual const std::string& getName() const;
     virtual int getNumOfPrefetchedMessages() const;
     virtual void getBrokerConsumerStatsAsync(BrokerConsumerStatsCallback callback);
     void handleGetConsumerStats(Result, BrokerConsumerStats, LatchPtr, PartitionedBrokerConsumerStatsPtr,
                                 size_t, BrokerConsumerStatsCallback);
     virtual void seekAsync(const MessageId& msgId, ResultCallback callback);
+<<<<<<< HEAD
+=======
+    virtual void seekAsync(uint64_t timestamp, ResultCallback callback);
+
+    virtual void negativeAcknowledge(const MessageId& msgId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
    private:
     const ClientImplPtr client_;
@@ -80,6 +90,11 @@ class PartitionedConsumerImpl : public ConsumerImplBase,
     const ConsumerConfiguration conf_;
     typedef std::vector<ConsumerImplPtr> ConsumerList;
     ConsumerList consumers_;
+<<<<<<< HEAD
+=======
+    // consumersMutex_ is used to share consumers_ and numPartitions_
+    mutable std::mutex consumersMutex_;
+>>>>>>> f773c602c... Test pr 10 (#27)
     std::mutex mutex_;
     std::mutex pendingReceiveMutex_;
     PartitionedConsumerState state_;
@@ -90,7 +105,19 @@ class PartitionedConsumerImpl : public ConsumerImplBase,
     const std::string topic_;
     const std::string name_;
     const std::string partitionStr_;
+<<<<<<< HEAD
     /* methods */
+=======
+    ExecutorServicePtr internalListenerExecutor_;
+    DeadlineTimerPtr partitionsUpdateTimer_;
+    boost::posix_time::time_duration partitionsUpdateInterval_;
+    LookupServicePtr lookupServicePtr_;
+    /* methods */
+    unsigned int getNumPartitions() const;
+    unsigned int getNumPartitionsWithLock() const;
+    ConsumerConfiguration getSinglePartitionConsumerConfig() const;
+    ConsumerImplPtr newInternalConsumer(unsigned int partition, const ConsumerConfiguration& config) const;
+>>>>>>> f773c602c... Test pr 10 (#27)
     void setState(PartitionedConsumerState state);
     void handleUnsubscribeAsync(Result result, unsigned int consumerIndex, ResultCallback callback);
     void handleSinglePartitionConsumerCreated(Result result, ConsumerImplBaseWeakPtr consumerImplBaseWeakPtr,
@@ -102,9 +129,19 @@ class PartitionedConsumerImpl : public ConsumerImplBase,
     void internalListener(Consumer consumer);
     void receiveMessages();
     void failPendingReceiveCallback();
+<<<<<<< HEAD
     Promise<Result, ConsumerImplBaseWeakPtr> partitionedConsumerCreatedPromise_;
     UnAckedMessageTrackerScopedPtr unAckedMessageTrackerPtr_;
     std::queue<ReceiveCallback> pendingReceives_;
+=======
+    virtual void setNegativeAcknowledgeEnabledForTesting(bool enabled);
+    Promise<Result, ConsumerImplBaseWeakPtr> partitionedConsumerCreatedPromise_;
+    UnAckedMessageTrackerScopedPtr unAckedMessageTrackerPtr_;
+    std::queue<ReceiveCallback> pendingReceives_;
+    void runPartitionUpdateTask();
+    void getPartitionMetadata();
+    void handleGetPartitions(const Result result, const LookupDataResultPtr& lookupDataResult);
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 typedef std::weak_ptr<PartitionedConsumerImpl> PartitionedConsumerImplWeakPtr;
 typedef std::shared_ptr<PartitionedConsumerImpl> PartitionedConsumerImplPtr;

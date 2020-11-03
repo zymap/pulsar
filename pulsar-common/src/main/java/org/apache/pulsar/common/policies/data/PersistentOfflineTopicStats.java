@@ -18,10 +18,16 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -51,6 +57,34 @@ public class PersistentOfflineTopicStats {
     public Map<String, CursorDetails> cursorDetails;
 
     /** timestamp when stat was generated */
+=======
+/**
+ * This object is populated using meta data in zookeeper without actually bringing the topic online.
+ */
+public class PersistentOfflineTopicStats {
+    /** Space used to store the messages for the topic (bytes). */
+    public long storageSize;
+
+    /** Total number of messages. */
+    public long totalMessages;
+
+    /** Total backlog. */
+    public long messageBacklog;
+
+    /** Broker host where this stat was generated. */
+    public final String brokerName;
+
+    /** Offline topic name. */
+    public final String topicName;
+
+    /** Data ledger ids. */
+    public List<LedgerDetails> dataLedgerDetails;
+
+    /** Cursor ledger ids and backlog. */
+    public Map<String, CursorDetails> cursorDetails;
+
+    /** Timestamp when stat was generated. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Date statGeneratedAt;
 
     public PersistentOfflineTopicStats(String topicName, String brokerName) {
@@ -70,6 +104,12 @@ public class PersistentOfflineTopicStats {
         this.statGeneratedAt.setTime(System.currentTimeMillis());
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Details about a cursor.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public class CursorDetails {
         public long cursorBacklog;
         public long cursorLedgerId;
@@ -88,6 +128,12 @@ public class PersistentOfflineTopicStats {
         this.dataLedgerDetails.add(new LedgerDetails(entries, timestamp, size, ledgerId));
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Details about a ledger.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public class LedgerDetails {
         public long entries;
         public long timestamp;

@@ -49,7 +49,11 @@ import org.testng.annotations.Test;
 public class ConfigurationAssemblerTest {
 
     @Test
+<<<<<<< HEAD
     public void testBuildConfiguration() throws Exception {
+=======
+    public void testBuildConfiguration() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
@@ -66,7 +70,11 @@ public class ConfigurationAssemblerTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void testCustomConfigurationFactory() throws Exception {
+=======
+    public void testCustomConfigurationFactory() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
                     "org.apache.pulsar.log4j2.appender.builder.CustomConfigurationFactory");
@@ -88,12 +96,20 @@ public class ConfigurationAssemblerTest {
         assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
+<<<<<<< HEAD
         assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 2);
+=======
+        assertEquals("Incorrect number of Appenders: " + appenders.size(), appenders.size(), 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
         final PulsarAppender pulsarAppender = (PulsarAppender) appenders.get("Pulsar");
         final GelfLayout gelfLayout = (GelfLayout) pulsarAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
+<<<<<<< HEAD
         assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);
+=======
+        assertEquals("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size(), 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
         final LoggerConfig rootLoggerConfig = loggers.get("");
         assertEquals(Level.ERROR, rootLoggerConfig.getLevel());
         assertFalse(rootLoggerConfig.isIncludeLocation());

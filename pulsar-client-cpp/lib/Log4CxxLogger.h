@@ -19,15 +19,25 @@
 
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Logger.h>
 
 #ifdef USE_LOG4CXX
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 namespace pulsar {
 
 class Log4CxxLoggerFactory : public LoggerFactory {
+=======
+namespace pulsar {
+
+class PULSAR_PUBLIC Log4CxxLoggerFactory : public LoggerFactory {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     static LoggerFactoryPtr create();
     static LoggerFactoryPtr create(const std::string& log4cxxConfFile);
@@ -36,6 +46,9 @@ class Log4CxxLoggerFactory : public LoggerFactory {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif

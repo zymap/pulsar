@@ -58,7 +58,10 @@ public class Utils {
      * Serialize record to flat-buffer. it's not a thread-safe method.
      *
      * @param record
+<<<<<<< HEAD
      * @param data
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      */
     public static ByteBuffer serializeRecordToFlatBuffer(Record<byte[]> record) {
@@ -167,8 +170,12 @@ public class Utils {
      * Serializes sink-record into json format. It encodes encryption-keys, encryption-param and payload in base64
      * format so, it can be sent in json.
      *
+<<<<<<< HEAD
      * @param inputRecordContext
      * @param data
+=======
+     * @param record
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      */
     public static String serializeRecordToJson(Record<byte[]> record) {

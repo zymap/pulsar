@@ -43,8 +43,13 @@ public class HdfsTextSink extends
 
     @Override
     public KeyValue<String, String> extractKeyValue(Record<String> record) {
+<<<<<<< HEAD
        String key = record.getKey().orElseGet(() -> new String(record.getValue()));
        return new KeyValue<>(key, new String(record.getValue()));
+=======
+       String key = record.getKey().orElseGet(() -> record.getValue());
+       return new KeyValue<>(key, record.getValue());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

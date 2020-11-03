@@ -52,7 +52,11 @@ public class PulsarZKDowngradeTest extends PulsarClusterTestBase {
     @Override
     public void setupCluster() throws Exception {
         final String clusterName = Stream.of(this.getClass().getSimpleName(), randomName(5))
+<<<<<<< HEAD
                 .filter(s -> s != null && !s.isEmpty())
+=======
+                .filter(s -> !s.isEmpty())
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .collect(joining("-"));
 
         PulsarClusterSpec spec = PulsarClusterSpec.builder()

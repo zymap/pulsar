@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.ColumnHandle;
 import com.facebook.presto.spi.ConnectorTableLayoutHandle;
 import com.facebook.presto.spi.predicate.TupleDomain;
@@ -28,6 +29,20 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+=======
+import static java.util.Objects.requireNonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.prestosql.spi.connector.ColumnHandle;
+import io.prestosql.spi.connector.ConnectorTableLayoutHandle;
+import io.prestosql.spi.predicate.TupleDomain;
+import java.util.Objects;
+
+/**
+ * This class handles the table layout.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarTableLayoutHandle implements ConnectorTableLayoutHandle {
     private final PulsarTableHandle table;
     private final TupleDomain<ColumnHandle> tupleDomain;
@@ -46,14 +61,22 @@ public class PulsarTableLayoutHandle implements ConnectorTableLayoutHandle {
     }
 
     @JsonProperty
+<<<<<<< HEAD
     public TupleDomain<ColumnHandle> getTupleDomain()
     {
+=======
+    public TupleDomain<ColumnHandle> getTupleDomain() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return tupleDomain;
     }
 
     @Override
+<<<<<<< HEAD
     public boolean equals(Object o)
     {
+=======
+    public boolean equals(Object o) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (this == o) {
             return true;
         }
@@ -61,6 +84,7 @@ public class PulsarTableLayoutHandle implements ConnectorTableLayoutHandle {
             return false;
         }
         PulsarTableLayoutHandle that = (PulsarTableLayoutHandle) o;
+<<<<<<< HEAD
         return Objects.equals(table, that.table) &&
                 Objects.equals(tupleDomain, that.tupleDomain);
     }
@@ -68,12 +92,24 @@ public class PulsarTableLayoutHandle implements ConnectorTableLayoutHandle {
     @Override
     public int hashCode()
     {
+=======
+        return Objects.equals(table, that.table)
+            && Objects.equals(tupleDomain, that.tupleDomain);
+    }
+
+    @Override
+    public int hashCode() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return Objects.hash(table, tupleDomain);
     }
 
     @Override
+<<<<<<< HEAD
     public String toString()
     {
+=======
+    public String toString() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return table.toString();
     }
 }

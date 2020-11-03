@@ -22,6 +22,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.admin.PulsarAdminException.ConflictException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
@@ -38,9 +42,15 @@ import org.apache.pulsar.common.policies.data.NamespaceIsolationData;
 public interface Clusters {
     /**
      * Get the list of clusters.
+<<<<<<< HEAD
      * <p>
      * Get the list of all the Pulsar clusters.
      * <p>
+=======
+     * <p/>
+     * Get the list of all the Pulsar clusters.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -55,8 +65,27 @@ public interface Clusters {
     List<String> getClusters() throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the configuration data for the specified cluster.
      * <p>
+=======
+     * Get the list of clusters asynchronously.
+     * <p/>
+     * Get the list of all the Pulsar clusters.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>["c1", "c2", "c3"]</code>
+     * </pre>
+     *
+     */
+    CompletableFuture<List<String>> getClustersAsync();
+
+    /**
+     * Get the configuration data for the specified cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -78,10 +107,34 @@ public interface Clusters {
     ClusterData getCluster(String cluster) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Create a new cluster.
      * <p>
      * Provisions a new cluster. This operation requires Pulsar super-user privileges.
      * <p>
+=======
+     * Get the configuration data for the specified cluster asynchronously.
+     * <p/>
+     * Response Example:
+     *
+     * <pre>
+     * <code>{ serviceUrl : "http://my-broker.example.com:8080/" }</code>
+     * </pre>
+     *
+     * @param cluster
+     *            Cluster name
+     *
+     * @return the cluster configuration
+     *
+     */
+    CompletableFuture<ClusterData> getClusterAsync(String cluster);
+
+    /**
+     * Create a new cluster.
+     * <p/>
+     * Provisions a new cluster. This operation requires Pulsar super-user privileges.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * The name cannot contain '/' characters.
      *
      * @param cluster
@@ -89,7 +142,11 @@ public interface Clusters {
      * @param clusterData
      *            the cluster configuration object
      *
+<<<<<<< HEAD
      * @throws NotAuthorized
+=======
+     * @throws NotAuthorizedException
+>>>>>>> f773c602c... Test pr 10 (#27)
      *             You don't have admin permission to create the cluster
      * @throws ConflictException
      *             Cluster already exists
@@ -99,8 +156,28 @@ public interface Clusters {
     void createCluster(String cluster, ClusterData clusterData) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Update the configuration for a cluster.
      * <p>
+=======
+     * Create a new cluster asynchronously.
+     * <p/>
+     * Provisions a new cluster. This operation requires Pulsar super-user privileges.
+     * <p/>
+     * The name cannot contain '/' characters.
+     *
+     * @param cluster
+     *            Cluster name
+     * @param clusterData
+     *            the cluster configuration object
+     *
+     */
+    CompletableFuture<Void> createClusterAsync(String cluster, ClusterData clusterData);
+
+    /**
+     * Update the configuration for a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * This operation requires Pulsar super-user privileges.
      *
      * @param cluster
@@ -116,10 +193,30 @@ public interface Clusters {
      *             Unexpected error
      */
     void updateCluster(String cluster, ClusterData clusterData) throws PulsarAdminException;
+<<<<<<< HEAD
     
     /**
      * Update peer cluster names.
      * <p>
+=======
+
+    /**
+     * Update the configuration for a cluster asynchronously.
+     * <p/>
+     * This operation requires Pulsar super-user privileges.
+     *
+     * @param cluster
+     *            Cluster name
+     * @param clusterData
+     *            the cluster configuration object
+     *
+     */
+    CompletableFuture<Void> updateClusterAsync(String cluster, ClusterData clusterData);
+
+    /**
+     * Update peer cluster names.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * This operation requires Pulsar super-user privileges.
      *
      * @param cluster
@@ -135,10 +232,30 @@ public interface Clusters {
      *             Unexpected error
      */
     void updatePeerClusterNames(String cluster, LinkedHashSet<String> peerClusterNames) throws PulsarAdminException;
+<<<<<<< HEAD
     
     /**
      * Get peer-cluster names
      * <p>
+=======
+
+    /**
+     * Update peer cluster names asynchronously.
+     * <p/>
+     * This operation requires Pulsar super-user privileges.
+     *
+     * @param cluster
+     *            Cluster name
+     * @param peerClusterNames
+     *            list of peer cluster names
+     *
+     */
+    CompletableFuture<Void> updatePeerClusterNamesAsync(String cluster, LinkedHashSet<String> peerClusterNames);
+
+    /**
+     * Get peer-cluster names.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *            Cluster name
@@ -156,11 +273,29 @@ public interface Clusters {
      *             Unexpected error
      */
     Set<String> getPeerClusterNames(String cluster) throws PulsarAdminException;
+<<<<<<< HEAD
     
 
     /**
      * Delete an existing cluster
      * <p>
+=======
+
+    /**
+     * Get peer-cluster names asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *            Cluster name
+     * @return
+     *
+     */
+    CompletableFuture<Set<String>> getPeerClusterNamesAsync(String cluster);
+
+    /**
+     * Delete an existing cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Delete a cluster
      *
      * @param cluster
@@ -178,8 +313,24 @@ public interface Clusters {
     void deleteCluster(String cluster) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get the namespace isolation policies of a cluster
      * <p>
+=======
+     * Delete an existing cluster asynchronously.
+     * <p/>
+     * Delete a cluster
+     *
+     * @param cluster
+     *            Cluster name
+     *
+     */
+    CompletableFuture<Void> deleteClusterAsync(String cluster);
+
+    /**
+     * Get the namespace isolation policies of a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *            Cluster name
@@ -198,10 +349,37 @@ public interface Clusters {
      */
     Map<String, NamespaceIsolationData> getNamespaceIsolationPolicies(String cluster) throws PulsarAdminException;
 
+<<<<<<< HEAD
 
     /**
      * Create a namespace isolation policy for a cluster
      * <p>
+=======
+    /**
+     * Get the namespace isolation policies of a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *            Cluster name
+     * @return
+     * @throws NotAuthorizedException
+     *             You don't have admin permission to create the cluster
+     *
+     * @throws NotFoundException
+     *             Policies don't exist
+     *
+     * @throws PreconditionFailedException
+     *             Cluster doesn't exist
+     *
+     * @throws PulsarAdminException
+     *             Unexpected error
+     */
+    CompletableFuture<Map<String, NamespaceIsolationData>> getNamespaceIsolationPoliciesAsync(String cluster);
+
+    /**
+     * Create a namespace isolation policy for a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -225,6 +403,7 @@ public interface Clusters {
      * @throws PulsarAdminException
      *             Unexpected error
      */
+<<<<<<< HEAD
     void createNamespaceIsolationPolicy(String cluster, String policyName, NamespaceIsolationData namespaceIsolationData)
             throws PulsarAdminException;
 
@@ -232,6 +411,33 @@ public interface Clusters {
     /**
      * Returns list of active brokers with namespace-isolation policies attached to it.
      * 
+=======
+    void createNamespaceIsolationPolicy(
+            String cluster, String policyName, NamespaceIsolationData namespaceIsolationData)
+            throws PulsarAdminException;
+
+    /**
+     * Create a namespace isolation policy for a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param policyName
+     *          Policy name
+     *
+     * @param namespaceIsolationData
+     *          Namespace isolation policy configuration
+     *
+     * @return
+     */
+    CompletableFuture<Void> createNamespaceIsolationPolicyAsync(
+            String cluster, String policyName, NamespaceIsolationData namespaceIsolationData);
+
+    /**
+     * Returns list of active brokers with namespace-isolation policies attached to it.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param cluster
      * @return
      * @throws PulsarAdminException
@@ -240,8 +446,21 @@ public interface Clusters {
             throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Returns active broker with namespace-isolation policies attached to it.
      * 
+=======
+     * Returns list of active brokers with namespace-isolation policies attached to it asynchronously.
+     *
+     * @param cluster
+     * @return
+     */
+    CompletableFuture<List<BrokerNamespaceIsolationData>> getBrokersWithNamespaceIsolationPolicyAsync(String cluster);
+
+    /**
+     * Returns active broker with namespace-isolation policies attached to it.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param cluster
      * @param broker
      * @return
@@ -249,11 +468,28 @@ public interface Clusters {
      */
     BrokerNamespaceIsolationData getBrokerWithNamespaceIsolationPolicy(String cluster, String broker)
             throws PulsarAdminException;
+<<<<<<< HEAD
     
 
     /**
      * Update a namespace isolation policy for a cluster
      * <p>
+=======
+
+    /**
+     * Returns active broker with namespace-isolation policies attached to it asynchronously.
+     *
+     * @param cluster
+     * @param broker
+     * @return
+     */
+    CompletableFuture<BrokerNamespaceIsolationData> getBrokerWithNamespaceIsolationPolicyAsync(
+            String cluster, String broker);
+
+    /**
+     * Update a namespace isolation policy for a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -277,6 +513,7 @@ public interface Clusters {
      * @throws PulsarAdminException
      *             Unexpected error
      */
+<<<<<<< HEAD
     void updateNamespaceIsolationPolicy(String cluster, String policyName, NamespaceIsolationData namespaceIsolationData)
             throws PulsarAdminException;
 
@@ -284,6 +521,34 @@ public interface Clusters {
     /**
      * Delete a namespace isolation policy for a cluster
      * <p>
+=======
+    void updateNamespaceIsolationPolicy(
+            String cluster, String policyName, NamespaceIsolationData namespaceIsolationData)
+            throws PulsarAdminException;
+
+    /**
+     * Update a namespace isolation policy for a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param policyName
+     *          Policy name
+     *
+     * @param namespaceIsolationData
+     *          Namespace isolation policy configuration
+     *
+     * @return
+     *
+     */
+    CompletableFuture<Void> updateNamespaceIsolationPolicyAsync(
+            String cluster, String policyName, NamespaceIsolationData namespaceIsolationData);
+
+    /**
+     * Delete a namespace isolation policy for a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -308,8 +573,28 @@ public interface Clusters {
     void deleteNamespaceIsolationPolicy(String cluster, String policyName) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Get a single namespace isolation policy for a cluster
      * <p>
+=======
+     * Delete a namespace isolation policy for a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param policyName
+     *          Policy name
+     *
+     * @return
+     */
+
+    CompletableFuture<Void> deleteNamespaceIsolationPolicyAsync(String cluster, String policyName);
+
+    /**
+     * Get a single namespace isolation policy for a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -332,8 +617,26 @@ public interface Clusters {
     NamespaceIsolationData getNamespaceIsolationPolicy(String cluster, String policyName) throws PulsarAdminException;
 
     /**
+<<<<<<< HEAD
      * Create a domain into cluster
      * <p>
+=======
+     * Get a single namespace isolation policy for a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param policyName
+     *          Policy name
+     *
+     */
+    CompletableFuture<NamespaceIsolationData> getNamespaceIsolationPolicyAsync(String cluster, String policyName);
+
+    /**
+     * Create a domain into cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -341,7 +644,11 @@ public interface Clusters {
      * @param domainName
      *          domain name
      *
+<<<<<<< HEAD
      * @param FailureDomain
+=======
+     * @param domain
+>>>>>>> f773c602c... Test pr 10 (#27)
      *          Domain configurations
      *
      * @return
@@ -350,7 +657,11 @@ public interface Clusters {
      *
      * @throws ConflictException
      *             Broker already exist into other domain
+<<<<<<< HEAD
      *             
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws NotFoundException
      *             Cluster doesn't exist
      *
@@ -362,11 +673,18 @@ public interface Clusters {
      */
     void createFailureDomain(String cluster, String domainName, FailureDomain domain)
             throws PulsarAdminException;
+<<<<<<< HEAD
     
     
     /**
      * Update a domain into cluster
      * <p>
+=======
+
+    /**
+     * Create a domain into cluster asynchronously.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -374,7 +692,29 @@ public interface Clusters {
      * @param domainName
      *          domain name
      *
+<<<<<<< HEAD
      * @param FailureDomain
+=======
+     * @param domain
+     *          Domain configurations
+     *
+     * @return
+     *
+     */
+    CompletableFuture<Void> createFailureDomainAsync(String cluster, String domainName, FailureDomain domain);
+
+    /**
+     * Update a domain into cluster.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param domainName
+     *          domain name
+     *
+     * @param domain
+>>>>>>> f773c602c... Test pr 10 (#27)
      *          Domain configurations
      *
      * @return
@@ -383,7 +723,11 @@ public interface Clusters {
      *
      * @throws ConflictException
      *             Broker already exist into other domain
+<<<<<<< HEAD
      *             
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws NotFoundException
      *             Cluster doesn't exist
      *
@@ -395,11 +739,36 @@ public interface Clusters {
      */
     void updateFailureDomain(String cluster, String domainName, FailureDomain domain)
             throws PulsarAdminException;
+<<<<<<< HEAD
     
     
     /**
      * Delete a domain in cluster
      * <p>
+=======
+
+    /**
+     * Update a domain into cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param domainName
+     *          domain name
+     *
+     * @param domain
+     *          Domain configurations
+     *
+     * @return
+     *
+     */
+    CompletableFuture<Void> updateFailureDomainAsync(String cluster, String domainName, FailureDomain domain);
+
+    /**
+     * Delete a domain in cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *          Cluster name
@@ -420,12 +789,35 @@ public interface Clusters {
      * @throws PulsarAdminException
      *             Unexpected error
      */
+<<<<<<< HEAD
 
     void deleteFailureDomain(String cluster, String domainName) throws PulsarAdminException;
 
     /**
      * Get all registered domains in cluster
      * <p>
+=======
+    void deleteFailureDomain(String cluster, String domainName) throws PulsarAdminException;
+
+    /**
+     * Delete a domain in cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *          Cluster name
+     *
+     * @param domainName
+     *          Domain name
+     *
+     * @return
+     *
+     */
+    CompletableFuture<Void> deleteFailureDomainAsync(String cluster, String domainName);
+
+    /**
+     * Get all registered domains in cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *            Cluster name
@@ -440,10 +832,28 @@ public interface Clusters {
      *             Unexpected error
      */
     Map<String, FailureDomain> getFailureDomains(String cluster) throws PulsarAdminException;
+<<<<<<< HEAD
     
     /**
      * Get the domain registered into a cluster
      * <p>
+=======
+
+    /**
+     * Get all registered domains in cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *            Cluster name
+     * @return
+     *
+     */
+    CompletableFuture<Map<String, FailureDomain>> getFailureDomainsAsync(String cluster);
+
+    /**
+     * Get the domain registered into a cluster.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param cluster
      *            Cluster name
@@ -461,5 +871,20 @@ public interface Clusters {
      *             Unexpected error
      */
     FailureDomain getFailureDomain(String cluster, String domainName) throws PulsarAdminException;
+<<<<<<< HEAD
     
+=======
+
+    /**
+     * Get the domain registered into a cluster asynchronously.
+     * <p/>
+     *
+     * @param cluster
+     *            Cluster name
+     * @return
+     *
+     */
+    CompletableFuture<FailureDomain> getFailureDomainAsync(String cluster, String domainName);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

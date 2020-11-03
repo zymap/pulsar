@@ -18,15 +18,25 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+=======
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Map;
+
+/**
+ * Statistics about a publisher.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class PublisherStats {
     private int count;
 
+<<<<<<< HEAD
     /** Total rate of messages published by this publisher. msg/s */
     public double msgRateIn;
 
@@ -52,16 +62,54 @@ public class PublisherStats {
     private int connectedSinceLength;
 
     /** Client library version */
+=======
+    /** Total rate of messages published by this publisher (msg/s). */
+    public double msgRateIn;
+
+    /** Total throughput of messages published by this publisher (byte/s). */
+    public double msgThroughputIn;
+
+    /** Average message size published by this publisher. */
+    public double averageMsgSize;
+
+    /** total chunked message count received. **/
+    public double chunkedMessageRate;
+
+    /** Id of this publisher. */
+    public long producerId;
+
+    /** Producer name. */
+    private int producerNameOffset = -1;
+    private int producerNameLength;
+
+    /** Address of this publisher. */
+    private int addressOffset = -1;
+    private int addressLength;
+
+    /** Timestamp of connection. */
+    private int connectedSinceOffset = -1;
+    private int connectedSinceLength;
+
+    /** Client library version. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     private int clientVersionOffset = -1;
     private int clientVersionLength;
 
     /**
      * In order to prevent multiple string objects under stats: create a string-buffer that stores data for all string
+<<<<<<< HEAD
      * place-holders
      */
     private StringBuilder stringBuffer = new StringBuilder();
 
     /** Metadata (key/value strings) associated with this publisher */
+=======
+     * place-holders.
+     */
+    private StringBuilder stringBuffer = new StringBuilder();
+
+    /** Metadata (key/value strings) associated with this publisher. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Map<String, String> metadata;
 
     public PublisherStats add(PublisherStats stats) {

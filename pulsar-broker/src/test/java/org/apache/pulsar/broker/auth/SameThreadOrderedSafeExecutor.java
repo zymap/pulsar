@@ -35,7 +35,11 @@ public class SameThreadOrderedSafeExecutor extends OrderedExecutor {
             false,
             false,
             100000,
+<<<<<<< HEAD
             10,
+=======
+            -1,
+>>>>>>> f773c602c... Test pr 10 (#27)
             false);
     }
 

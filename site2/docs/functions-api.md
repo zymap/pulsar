@@ -3,6 +3,7 @@ id: functions-api
 title: The Pulsar Functions API
 sidebar_label: API
 ---
+<<<<<<< HEAD
 
 [Pulsar Functions](functions-overview.md) provides an easy-to-use API that developers can use to create and manage processing logic for the Apache Pulsar messaging system. With Pulsar Functions, you can write functions of any level of complexity in [Java](#functions-for-java) or [Python](#functions-for-python) and run them in conjunction with a Pulsar cluster without needing to run a separate stream processing engine.
 
@@ -718,3 +719,5 @@ class MetricRecorderFunction(Function):
         if input == 11:
             context.record_metric('elevens-count', 1)
 ```
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

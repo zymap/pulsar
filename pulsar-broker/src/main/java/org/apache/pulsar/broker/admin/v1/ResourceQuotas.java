@@ -44,7 +44,13 @@ public class ResourceQuotas extends ResourceQuotasBase {
     @GET
     @Path("/{property}/{cluster}/{namespace}/{bundle}")
     @ApiOperation(hidden = true, value = "Get resource quota of a namespace bundle.")
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
+=======
+    @ApiResponses(value = {
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace"),
+            @ApiResponse(code = 403, message = "Don't have admin permission"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 404, message = "Namespace does not exist") })
     public ResourceQuota getNamespaceBundleResourceQuota(@PathParam("property") String property,
             @PathParam("cluster") String cluster, @PathParam("namespace") String namespace,
@@ -56,7 +62,13 @@ public class ResourceQuotas extends ResourceQuotasBase {
     @POST
     @Path("/{property}/{cluster}/{namespace}/{bundle}")
     @ApiOperation(hidden = true, value = "Set resource quota on a namespace.")
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
+=======
+    @ApiResponses(value = {
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace"),
+            @ApiResponse(code = 403, message = "Don't have admin permission"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 409, message = "Concurrent modification") })
     public void setNamespaceBundleResourceQuota(@PathParam("property") String property,
             @PathParam("cluster") String cluster, @PathParam("namespace") String namespace,
@@ -68,7 +80,13 @@ public class ResourceQuotas extends ResourceQuotasBase {
     @DELETE
     @Path("/{property}/{cluster}/{namespace}/{bundle}")
     @ApiOperation(hidden = true, value = "Remove resource quota for a namespace.")
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 403, message = "Don't have admin permission"),
+=======
+    @ApiResponses(value = {
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace"),
+            @ApiResponse(code = 403, message = "Don't have admin permission"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 409, message = "Concurrent modification") })
     public void removeNamespaceBundleResourceQuota(@PathParam("property") String property,
             @PathParam("cluster") String cluster, @PathParam("namespace") String namespace,

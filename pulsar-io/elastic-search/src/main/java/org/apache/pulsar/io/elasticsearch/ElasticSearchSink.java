@@ -41,10 +41,14 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+<<<<<<< HEAD
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+=======
+import org.elasticsearch.client.*;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 
@@ -61,8 +65,11 @@ import org.elasticsearch.common.xcontent.XContentType;
 )
 public class ElasticSearchSink implements Sink<byte[]> {
 
+<<<<<<< HEAD
     protected static final String DOCUMENT = "doc";
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private URL url;
     private RestHighLevelClient client;
     private CredentialsProvider credentialsProvider;
@@ -84,11 +91,19 @@ public class ElasticSearchSink implements Sink<byte[]> {
     public void write(Record<byte[]> record) {
         KeyValue<String, byte[]> keyValue = extractKeyValue(record);
         IndexRequest indexRequest = Requests.indexRequest(elasticSearchConfig.getIndexName());
+<<<<<<< HEAD
         indexRequest.type(DOCUMENT);
         indexRequest.source(keyValue.getValue(), XContentType.JSON);
 
         try {
         IndexResponse indexResponse = getClient().index(indexRequest);
+=======
+        indexRequest.type(elasticSearchConfig.getTypeName());
+        indexRequest.source(keyValue.getValue(), XContentType.JSON);
+
+        try {
+        IndexResponse indexResponse = getClient().index(indexRequest, RequestOptions.DEFAULT);
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (indexResponse.getResult().equals(DocWriteResponse.Result.CREATED)) {
                 record.ack();
             } else {
@@ -100,14 +115,22 @@ public class ElasticSearchSink implements Sink<byte[]> {
     }
 
     public KeyValue<String, byte[]> extractKeyValue(Record<byte[]> record) {
+<<<<<<< HEAD
         String key = record.getKey().orElseGet(null);
+=======
+        String key = record.getKey().orElse("");
+>>>>>>> f773c602c... Test pr 10 (#27)
         return new KeyValue<>(key, record.getValue());
     }
 
     private void createIndexIfNeeded() throws IOException {
         GetIndexRequest request = new GetIndexRequest();
         request.indices(elasticSearchConfig.getIndexName());
+<<<<<<< HEAD
         boolean exists = getClient().indices().exists(request);
+=======
+        boolean exists = getClient().indices().exists(request, RequestOptions.DEFAULT);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         if (!exists) {
             CreateIndexRequest cireq = new CreateIndexRequest(elasticSearchConfig.getIndexName());
@@ -116,7 +139,11 @@ public class ElasticSearchSink implements Sink<byte[]> {
                .put("index.number_of_shards", elasticSearchConfig.getIndexNumberOfShards())
                .put("index.number_of_replicas", elasticSearchConfig.getIndexNumberOfReplicas()));
 
+<<<<<<< HEAD
             CreateIndexResponse ciresp = getClient().indices().create(cireq);
+=======
+            CreateIndexResponse ciresp = getClient().indices().create(cireq, RequestOptions.DEFAULT);
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (!ciresp.isAcknowledged() || !ciresp.isShardsAcknowledged()) {
                 throw new RuntimeException("Unable to create index.");
             }

@@ -18,11 +18,35 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import org.apache.pulsar.shade.io.netty.buffer.ByteBuf;
 
 public interface SchemaHandler {
 
     Object deserialize(ByteBuf payload);
+=======
+import io.netty.buffer.ByteBuf;
+
+/**
+ * This interface defines the methods to work with schemas.
+ */
+public interface SchemaHandler {
+
+    default Object deserialize(ByteBuf payload) {
+        return null;
+    }
+
+    // if schemaHandler don't support multi version, we will use method deserialize(ByteBuf payload)
+    default Object deserialize(ByteBuf byteBuf, byte[] schemaVersion) {
+        return deserialize(byteBuf);
+    }
+
+    // if SchemaHandler don't support key value multi version
+    // we will use method deserialize(ByteBuf byteBuf, byte[] schemaVersion)
+    default Object deserialize(ByteBuf keyPayload, ByteBuf dataPayload, byte[] schemaVersion) {
+        return deserialize(dataPayload, schemaVersion);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     Object extractField(int index, Object currentRecord);
 

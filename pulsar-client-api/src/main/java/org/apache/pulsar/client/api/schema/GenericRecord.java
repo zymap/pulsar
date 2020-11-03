@@ -26,6 +26,16 @@ import java.util.List;
 public interface GenericRecord {
 
     /**
+<<<<<<< HEAD
+=======
+     * Return schema version.
+     *
+     * @return schema version.
+     */
+    byte[] getSchemaVersion();
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Returns the list of fields associated with the record.
      *
      * @return the list of fields associated with the record.

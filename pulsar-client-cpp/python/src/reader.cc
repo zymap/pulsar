@@ -77,6 +77,27 @@ void Reader_close(Reader& reader) {
     CHECK_RESULT(res);
 }
 
+<<<<<<< HEAD
+=======
+void Reader_seek(Reader& reader, const MessageId& msgId) {
+    Result res;
+    Py_BEGIN_ALLOW_THREADS
+    res = reader.seek(msgId);
+    Py_END_ALLOW_THREADS
+
+    CHECK_RESULT(res);
+}
+
+void Reader_seek_timestamp(Reader& reader, uint64_t timestamp) {
+    Result res;
+    Py_BEGIN_ALLOW_THREADS
+    res = reader.seek(timestamp);
+    Py_END_ALLOW_THREADS
+
+    CHECK_RESULT(res);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 void export_reader() {
     using namespace boost::python;
 
@@ -86,5 +107,10 @@ void export_reader() {
             .def("read_next", &Reader_readNextTimeout)
             .def("has_message_available", &Reader_hasMessageAvailable)
             .def("close", &Reader_close)
+<<<<<<< HEAD
+=======
+            .def("seek", &Reader_seek)
+            .def("seek", &Reader_seek_timestamp)
+>>>>>>> f773c602c... Test pr 10 (#27)
             ;
 }

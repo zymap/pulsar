@@ -21,6 +21,11 @@
 #include <pulsar/Message.h>
 #include <pulsar/Consumer.h>
 
+<<<<<<< HEAD
+=======
+#include <set>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 class ConsumerImplBase;
 
@@ -46,10 +51,24 @@ class ConsumerImplBase {
     virtual Result pauseMessageListener() = 0;
     virtual Result resumeMessageListener() = 0;
     virtual void redeliverUnacknowledgedMessages() = 0;
+<<<<<<< HEAD
+=======
+    virtual void redeliverUnacknowledgedMessages(const std::set<MessageId>& messageIds) = 0;
+>>>>>>> f773c602c... Test pr 10 (#27)
     virtual const std::string& getName() const = 0;
     virtual int getNumOfPrefetchedMessages() const = 0;
     virtual void getBrokerConsumerStatsAsync(BrokerConsumerStatsCallback callback) = 0;
     virtual void seekAsync(const MessageId& msgId, ResultCallback callback) = 0;
+<<<<<<< HEAD
+=======
+    virtual void seekAsync(uint64_t timestamp, ResultCallback callback) = 0;
+    virtual void negativeAcknowledge(const MessageId& msgId) = 0;
+
+   private:
+    virtual void setNegativeAcknowledgeEnabledForTesting(bool enabled) = 0;
+
+    friend class PulsarFriend;
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 }  // namespace pulsar
 #endif  // PULSAR_CONSUMER_IMPL_BASE_HEADER

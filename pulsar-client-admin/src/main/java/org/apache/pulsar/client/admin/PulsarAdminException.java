@@ -21,12 +21,26 @@ package org.apache.pulsar.client.admin;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.WebApplicationException;
+<<<<<<< HEAD
 import javax.ws.rs.core.MediaType;
 
 import org.apache.pulsar.common.policies.data.ErrorData;
 
 
 @SuppressWarnings("serial")
+=======
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.pulsar.common.policies.data.ErrorData;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+
+/**
+ * Pulsar admin exceptions.
+ */
+@SuppressWarnings("serial")
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarAdminException extends Exception {
     private static final int DEFAULT_STATUS_CODE = 500;
 
@@ -34,6 +48,7 @@ public class PulsarAdminException extends Exception {
     private final int statusCode;
 
     private static String getReasonFromServer(WebApplicationException e) {
+<<<<<<< HEAD
         if (MediaType.APPLICATION_JSON.equals(e.getResponse().getHeaderString("Content-Type"))) {
             try {
                 return e.getResponse().readEntity(ErrorData.class).reason;
@@ -43,6 +58,23 @@ public class PulsarAdminException extends Exception {
             }
         }
         return e.getMessage();
+=======
+        try {
+            return e.getResponse().readEntity(ErrorData.class).reason.toString();
+        } catch (Exception ex) {
+            try {
+                return ObjectMapperFactory.getThreadLocal().readValue(
+                        e.getResponse().getEntity().toString(), ErrorData.class).reason;
+            } catch (Exception ex1) {
+                try {
+                    return ObjectMapperFactory.getThreadLocal().readValue(e.getMessage(), ErrorData.class).reason;
+                } catch (Exception ex2) {
+                    // could not parse output to ErrorData class
+                    return e.getMessage();
+                }
+            }
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public PulsarAdminException(ClientErrorException e) {
@@ -101,34 +133,82 @@ public class PulsarAdminException extends Exception {
         return statusCode;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Not Authorized Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class NotAuthorizedException extends PulsarAdminException {
         public NotAuthorizedException(ClientErrorException e) {
             super(e);
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Not Found Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class NotFoundException extends PulsarAdminException {
         public NotFoundException(ClientErrorException e) {
             super(e);
         }
     }
 
+<<<<<<< HEAD
     public static class NotAllowedException extends PulsarAdminException {
         public NotAllowedException(ClientErrorException e) { super(e); }
     }
 
+=======
+    /**
+     * Not Allowed Exception.
+     */
+    public static class NotAllowedException extends PulsarAdminException {
+        public NotAllowedException(ClientErrorException e) {
+            super(e);
+        }
+    }
+
+    /**
+     * Conflict Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class ConflictException extends PulsarAdminException {
         public ConflictException(ClientErrorException e) {
             super(e);
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Precondition Failed Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PreconditionFailedException extends PulsarAdminException {
         public PreconditionFailedException(ClientErrorException e) {
             super(e);
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Timeout Exception.
+     */
+    public static class TimeoutException extends PulsarAdminException {
+        public TimeoutException(Throwable t) {
+            super(t);
+        }
+    }
+
+    /**
+     * Server Side Error Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class ServerSideErrorException extends PulsarAdminException {
         public ServerSideErrorException(ServerErrorException e, String msg) {
             super(e, msg);
@@ -139,6 +219,12 @@ public class PulsarAdminException extends Exception {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Http Error Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class HttpErrorException extends PulsarAdminException {
         public HttpErrorException(Exception e) {
             super(e);
@@ -149,6 +235,12 @@ public class PulsarAdminException extends Exception {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Connect Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class ConnectException extends PulsarAdminException {
         public ConnectException(Throwable t) {
             super(t);
@@ -159,6 +251,12 @@ public class PulsarAdminException extends Exception {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Getting Authentication Data Exception.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class GettingAuthenticationDataException extends PulsarAdminException {
         public GettingAuthenticationDataException(Throwable t) {
             super(t);

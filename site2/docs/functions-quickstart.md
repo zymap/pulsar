@@ -2,6 +2,7 @@
 id: functions-quickstart
 title: Getting started with Pulsar Functions
 sidebar_label: Getting started
+<<<<<<< HEAD
 ---
 
 This tutorial will walk you through running a [standalone](reference-terminology.md#standalone) Pulsar [cluster](reference-terminology.md#cluster) on your machine and then running your first Pulsar Functions using that cluster. The first function will run in local run mode (outside your Pulsar [cluster](reference-terminology.md#cluster)), while the second will run in cluster mode (inside your cluster).
@@ -334,3 +335,6 @@ Archive **exclamation.zip** can we deployed as function into a pulsar worker, th
 
 * [The Pulsar Functions API](functions-api.md)
 * [Deploying Pulsar Functions](functions-deploying.md)
+=======
+---
+>>>>>>> f773c602c... Test pr 10 (#27)

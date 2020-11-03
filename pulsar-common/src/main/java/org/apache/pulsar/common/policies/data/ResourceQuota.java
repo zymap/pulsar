@@ -50,8 +50,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set incoming message rate quota
      * 
+=======
+     * Set incoming message rate quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param msgRateIn
      *            incoming messages rate quota (msg/sec)
      */
@@ -60,8 +65,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get incoming message rate quota
      * 
+=======
+     * Get incoming message rate quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return incoming message rate quota (msg/sec)
      */
     public double getMsgRateIn() {
@@ -69,8 +79,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set outgoing message rate quota
      * 
+=======
+     * Set outgoing message rate quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param msgRateOut
      *            outgoing messages rate quota (msg/sec)
      */
@@ -79,8 +94,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get outgoing message rate quota
      * 
+=======
+     * Get outgoing message rate quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return outgoing message rate quota (msg/sec)
      */
     public double getMsgRateOut() {
@@ -88,8 +108,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set inbound bandwidth quota
      * 
+=======
+     * Set inbound bandwidth quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param bandwidthIn
      *            inbound bandwidth quota (bytes/sec)
      */
@@ -98,8 +123,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get inbound bandwidth quota
      * 
+=======
+     * Get inbound bandwidth quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return inbound bandwidth quota (bytes/sec)
      */
     public double getBandwidthIn() {
@@ -107,8 +137,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set outbound bandwidth quota
      * 
+=======
+     * Set outbound bandwidth quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param bandwidthOut
      *            outbound bandwidth quota (bytes/sec)
      */
@@ -117,8 +152,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get outbound bandwidth quota
      * 
+=======
+     * Get outbound bandwidth quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return outbound bandwidth quota (bytes/sec)
      */
     public double getBandwidthOut() {
@@ -126,8 +166,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set memory quota
      * 
+=======
+     * Set memory quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param memory
      *            memory quota (Mbytes)
      */
@@ -136,8 +181,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get memory quota
      * 
+=======
+     * Get memory quota.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return memory quota (Mbytes)
      */
     public double getMemory() {
@@ -145,8 +195,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Set dynamic to true/false
      * 
+=======
+     * Set dynamic to true/false.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param dynamic
      *            allow the quota to be dynamically re-calculated
      */
@@ -155,8 +210,13 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Get dynamic setting
      * 
+=======
+     * Get dynamic setting.
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return is dynamic or not
      */
     public boolean getDynamic() {
@@ -164,7 +224,11 @@ public class ResourceQuota {
     }
 
     /**
+<<<<<<< HEAD
      * Check if this is a valid quota definition
+=======
+     * Check if this is a valid quota definition.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     @JsonIgnore
     public boolean isValid() {
@@ -178,7 +242,11 @@ public class ResourceQuota {
 
     /**
      * Add quota.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param quota
      *            <code>ResourceQuota</code> to add
      */
@@ -192,7 +260,11 @@ public class ResourceQuota {
 
     /**
      * Substract quota.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param quota
      *            <code>ResourceQuota</code> to substract
      */
@@ -205,6 +277,15 @@ public class ResourceQuota {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(msgRateIn, msgRateOut, bandwidthIn,
+                bandwidthOut, memory, dynamic);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof ResourceQuota) {
             ResourceQuota other = (ResourceQuota) obj;

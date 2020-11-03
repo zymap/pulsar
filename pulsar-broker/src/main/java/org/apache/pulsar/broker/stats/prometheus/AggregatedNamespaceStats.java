@@ -34,8 +34,23 @@ public class AggregatedNamespaceStats {
     public double throughputIn;
     public double throughputOut;
 
+<<<<<<< HEAD
     public long storageSize;
     public long msgBacklog;
+=======
+    public long bytesInCounter;
+    public long msgInCounter;
+    public long bytesOutCounter;
+    public long msgOutCounter;
+
+    public long storageSize;
+    public long msgBacklog;
+    public long msgDelayed;
+
+    long backlogSize;
+    long offloadedStorageUsed;
+    long backlogQuotaLimit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public StatsBuckets storageWriteLatencyBuckets = new StatsBuckets(
             ManagedLedgerMBeanImpl.ENTRY_LATENCY_BUCKETS_USEC);
@@ -60,7 +75,19 @@ public class AggregatedNamespaceStats {
         throughputIn += stats.throughputIn;
         throughputOut += stats.throughputOut;
 
+<<<<<<< HEAD
         storageSize += stats.storageSize;
+=======
+        bytesInCounter += stats.bytesInCounter;
+        msgInCounter += stats.msgInCounter;
+        bytesOutCounter += stats.bytesOutCounter;
+        msgOutCounter += stats.msgOutCounter;
+
+        storageSize += stats.storageSize;
+        backlogSize += stats.backlogSize;
+        offloadedStorageUsed += stats.offloadedStorageUsed;
+        backlogQuotaLimit = Math.max(backlogQuotaLimit, stats.backlogQuotaLimit);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         storageWriteRate += stats.storageWriteRate;
         storageReadRate += stats.storageReadRate;
@@ -83,8 +110,16 @@ public class AggregatedNamespaceStats {
         stats.subscriptionStats.forEach((n, as) -> {
             AggregatedSubscriptionStats subsStats =
                     subscriptionStats.computeIfAbsent(n, k -> new AggregatedSubscriptionStats());
+<<<<<<< HEAD
             subsStats.blockedSubscriptionOnUnackedMsgs = as.blockedSubscriptionOnUnackedMsgs;
             subsStats.msgBacklog += as.msgBacklog;
+=======
+            msgDelayed += as.msgDelayed;
+            subsStats.blockedSubscriptionOnUnackedMsgs = as.blockedSubscriptionOnUnackedMsgs;
+            subsStats.msgBacklog += as.msgBacklog;
+            subsStats.msgBacklogNoDelayed += as.msgBacklogNoDelayed;
+            subsStats.msgDelayed += as.msgDelayed;
+>>>>>>> f773c602c... Test pr 10 (#27)
             subsStats.msgRateRedeliver += as.msgRateRedeliver;
             subsStats.unackedMessages += as.unackedMessages;
             as.consumerStat.forEach((c, v) -> {
@@ -108,9 +143,19 @@ public class AggregatedNamespaceStats {
         throughputOut = 0;
 
         storageSize = 0;
+<<<<<<< HEAD
         msgBacklog = 0;
         storageWriteRate = 0;
         storageReadRate = 0;
+=======
+        backlogSize = 0;
+        msgBacklog = 0;
+        msgDelayed = 0;
+        storageWriteRate = 0;
+        storageReadRate = 0;
+        offloadedStorageUsed = 0;
+        backlogQuotaLimit= 0;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         replicationStats.clear();
         subscriptionStats.clear();

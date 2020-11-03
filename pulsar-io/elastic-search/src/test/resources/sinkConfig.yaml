@@ -20,6 +20,13 @@
 {
    "elasticSearchUrl": "http://localhost:90902",
    "indexName": "myIndex",
+<<<<<<< HEAD
    "username": "scooby",
    "password": "doobie"
 }
+=======
+   "typeName": "doc",
+   "username": "scooby",
+   "password": "doobie"
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

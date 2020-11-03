@@ -40,12 +40,18 @@ static const std::string clientPublicKeyPath =
 static const std::string clientPrivateKeyPath =
     "../../pulsar-broker/src/test/resources/authentication/tls/client-key.pem";
 
+<<<<<<< HEAD
 static void sendCallBackTls(Result r, const Message& msg) {
     ASSERT_EQ(r, ResultOk);
     std::string prefix = "test-tls-message-";
     std::string messageContent = prefix + std::to_string(globalTestTlsMessagesCounter++);
     ASSERT_EQ(messageContent, msg.getDataAsString());
     LOG_DEBUG("Received publish acknowledgement for " << msg.getDataAsString());
+=======
+static void sendCallBackTls(Result r, const MessageId& msgId) {
+    ASSERT_EQ(r, ResultOk);
+    globalTestTlsMessagesCounter++;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 TEST(AuthPluginTest, testTls) {
@@ -339,3 +345,71 @@ TEST(AuthPluginTest, testAuthFactoryAthenz) {
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+TEST(AuthPluginTest, testOauth2) {
+    // test success get token from oauth2 server.
+    pulsar::AuthenticationDataPtr data;
+    std::string params = R"({
+        "type": "client_credentials",
+        "issuer_url": "https://dev-kt-aa9ne.us.auth0.com",
+        "client_id": "Xd23RHsUnvUlP7wchjNYOaIfazgeHd9x",
+        "client_secret": "rT7ps7WY8uhdVuBTKWZkttwLdQotmdEliaM5rLfmgNibvqziZ-g07ZH52N_poGAb",
+        "audience": "https://dev-kt-aa9ne.us.auth0.com/api/v2/"})";
+
+    int expectedTokenLength = 3379;
+    LOG_INFO("PARAMS: " << params);
+    pulsar::AuthenticationPtr auth = pulsar::AuthOauth2::create(params);
+
+    ASSERT_EQ(auth->getAuthMethodName(), "token");
+    ASSERT_EQ(auth->getAuthData(data), pulsar::ResultOk);
+    ASSERT_EQ(data->hasDataForHttp(), true);
+    ASSERT_EQ(data->hasDataFromCommand(), true);
+    ASSERT_EQ(data->getCommandData().length(), expectedTokenLength);
+}
+
+TEST(AuthPluginTest, testOauth2WrongSecret) {
+    try {
+        pulsar::AuthenticationDataPtr data;
+
+        std::string params = R"({
+        "type": "client_credentials",
+        "issuer_url": "https://dev-kt-aa9ne.us.auth0.com",
+        "client_id": "Xd23RHsUnvUlP7wchjNYOaIfazgeHd9x",
+        "client_secret": "rT7ps7WY8uhdVuBTKWZkttwLdQotmdEliaM5rLfmgNibvqziZ",
+        "audience": "https://dev-kt-aa9ne.us.auth0.com/api/v2/"})";
+
+        int expectedTokenLength = 3379;
+        LOG_INFO("PARAMS: " << params);
+        pulsar::AuthenticationPtr auth = pulsar::AuthOauth2::create(params);
+        ASSERT_EQ(auth->getAuthMethodName(), "token");
+
+        auth->getAuthData(data);
+
+        FAIL() << "Expected fail for wrong secret when to get token from server";
+
+    } catch (...) {
+        // expected
+    }
+}
+
+TEST(AuthPluginTest, testOauth2CredentialFile) {
+    // test success get token from oauth2 server.
+    pulsar::AuthenticationDataPtr data;
+    std::string params = R"({
+        "type": "client_credentials",
+        "issuer_url": "https://dev-kt-aa9ne.us.auth0.com",
+        "private_key": "../../pulsar-broker/src/test/resources/authentication/token/cpp_credentials_file.json",
+        "audience": "https://dev-kt-aa9ne.us.auth0.com/api/v2/"})";
+
+    int expectedTokenLength = 3379;
+    LOG_INFO("PARAMS: " << params);
+    pulsar::AuthenticationPtr auth = pulsar::AuthOauth2::create(params);
+    ASSERT_EQ(auth->getAuthMethodName(), "token");
+    ASSERT_EQ(auth->getAuthData(data), pulsar::ResultOk);
+    ASSERT_EQ(data->hasDataForHttp(), true);
+    ASSERT_EQ(data->hasDataFromCommand(), true);
+    ASSERT_EQ(data->getCommandData().length(), expectedTokenLength);
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

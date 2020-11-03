@@ -1,7 +1,11 @@
 ---
 id: admin-api-permissions
 title: Managing permissions
+<<<<<<< HEAD
 sidebar_label: Persmissions
+=======
+sidebar_label: Permissions
+>>>>>>> f773c602c... Test pr 10 (#27)
 ---
 
 Permissions in Pulsar are managed at the [namespace](reference-terminology.md#namespace) level

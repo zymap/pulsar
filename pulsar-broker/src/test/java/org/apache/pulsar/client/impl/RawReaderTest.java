@@ -35,6 +35,10 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.bookkeeper.mledger.ManagedLedger;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+<<<<<<< HEAD
+=======
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.broker.service.persistent.PersistentTopic;
 import org.apache.pulsar.client.api.MessageId;
@@ -42,7 +46,11 @@ import org.apache.pulsar.client.api.MessageRoutingMode;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.RawMessage;
 import org.apache.pulsar.client.api.RawReader;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.Commands;
+=======
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.proto.PulsarApi.MessageMetadata;
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.TenantInfo;
@@ -61,7 +69,11 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
         super.internalSetup();
 
         admin.clusters().createCluster("test",
+<<<<<<< HEAD
                 new ClusterData("http://127.0.0.1:" + BROKER_WEBSERVICE_PORT));
+=======
+                new ClusterData(pulsar.getWebServiceAddress()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("test")));
         admin.namespaces().createNamespace("my-property/my-ns", Sets.newHashSet("test"));
@@ -74,10 +86,23 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
     }
 
     private Set<String> publishMessages(String topic, int count) throws Exception {
+<<<<<<< HEAD
         Set<String> keys = new HashSet<>();
 
         try (Producer<byte[]> producer = pulsarClient.newProducer()
             .enableBatching(false)
+=======
+        return publishMessages(topic, count, false);
+    }
+
+    private Set<String> publishMessages(String topic, int count, boolean batching) throws Exception {
+        Set<String> keys = new HashSet<>();
+
+        try (Producer<byte[]> producer = pulsarClient.newProducer()
+            .enableBatching(batching)
+            // easier to create enough batches with a small batch size
+            .batchingMaxMessages(10)
+>>>>>>> f773c602c... Test pr 10 (#27)
             .messageRoutingMode(MessageRoutingMode.SinglePartition)
             .maxPendingMessages(count)
             .topic(topic)
@@ -234,6 +259,37 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
     }
 
     @Test
+<<<<<<< HEAD
+=======
+    public void testFlowControlBatch() throws Exception {
+        int numMessages = RawReaderImpl.DEFAULT_RECEIVER_QUEUE_SIZE * 5;
+        String topic = "persistent://my-property/my-ns/my-raw-topic";
+
+        publishMessages(topic, numMessages, true);
+
+        RawReader reader = RawReader.create(pulsarClient, topic, subscription).get();
+        Set<String> keys = new HashSet<>();
+
+        while (true) {
+            try (RawMessage m = reader.readNextAsync().get(1, TimeUnit.SECONDS)) {
+                Assert.assertTrue(RawBatchConverter.isReadableBatch(m));
+                List<ImmutableTriple<MessageId, String, Integer>> batchKeys = RawBatchConverter.extractIdsAndKeysAndSize(m);
+                // Assert each key is unique
+                for (ImmutableTriple<MessageId, String, Integer> pair : batchKeys) {
+                    String key = pair.middle;
+                    Assert.assertTrue(
+                            keys.add(key),
+                            "Received duplicated key '" + key + "' : already received keys = " + keys);
+                }
+            } catch (TimeoutException te) {
+                break;
+            }
+        }
+        Assert.assertEquals(keys.size(), numMessages);
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testBatchingExtractKeysAndIds() throws Exception {
         String topic = "persistent://my-property/my-ns/my-raw-topic";
 
@@ -251,7 +307,11 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
 
         RawReader reader = RawReader.create(pulsarClient, topic, subscription).get();
         try (RawMessage m = reader.readNextAsync().get()) {
+<<<<<<< HEAD
             List<ImmutablePair<MessageId,String>> idsAndKeys = RawBatchConverter.extractIdsAndKeys(m);
+=======
+            List<ImmutableTriple<MessageId, String, Integer>> idsAndKeys = RawBatchConverter.extractIdsAndKeysAndSize(m);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             Assert.assertEquals(idsAndKeys.size(), 3);
 
@@ -260,9 +320,15 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
             Assert.assertTrue(idsAndKeys.get(1).getLeft().compareTo(idsAndKeys.get(2).getLeft()) < 0);
 
             // assert keys are as expected
+<<<<<<< HEAD
             Assert.assertEquals(idsAndKeys.get(0).getRight(), "key1");
             Assert.assertEquals(idsAndKeys.get(1).getRight(), "key2");
             Assert.assertEquals(idsAndKeys.get(2).getRight(), "key3");
+=======
+            Assert.assertEquals(idsAndKeys.get(0).getMiddle(), "key1");
+            Assert.assertEquals(idsAndKeys.get(1).getMiddle(), "key2");
+            Assert.assertEquals(idsAndKeys.get(2).getMiddle(), "key3");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } finally {
             reader.closeAsync().get();
         }
@@ -285,6 +351,7 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
         }
 
         RawReader reader = RawReader.create(pulsarClient, topic, subscription).get();
+<<<<<<< HEAD
         try {
             RawMessage m1 = reader.readNextAsync().get();
             RawMessage m2 = RawBatchConverter.rebatchMessage(m1, (key, id) -> key.equals("key2")).get();
@@ -292,6 +359,15 @@ public class RawReaderTest extends MockedPulsarServiceBaseTest {
             Assert.assertEquals(idsAndKeys.size(), 1);
             Assert.assertEquals(idsAndKeys.get(0).getRight(), "key2");
             m2.close();
+=======
+        try (RawMessage m1 = reader.readNextAsync().get()) {
+            RawMessage m2 = RawBatchConverter.rebatchMessage(m1, (key, id) -> key.equals("key2")).get();
+            List<ImmutableTriple<MessageId, String, Integer>> idsAndKeys = RawBatchConverter.extractIdsAndKeysAndSize(m2);
+            Assert.assertEquals(idsAndKeys.size(), 1);
+            Assert.assertEquals(idsAndKeys.get(0).getMiddle(), "key2");
+            m2.close();
+            Assert.assertEquals(m1.getHeadersAndPayload().refCnt(), 1);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } finally {
             reader.closeAsync().get();
         }

@@ -19,6 +19,7 @@
 #ifndef CRYPTOKEYREADER_H_
 #define CRYPTOKEYREADER_H_
 
+<<<<<<< HEAD
 #include <pulsar/Result.h>
 #include <pulsar/EncryptionKeyInfo.h>
 
@@ -27,6 +28,15 @@
 namespace pulsar {
 
 class CryptoKeyReader {
+=======
+#include <pulsar/defines.h>
+#include <pulsar/Result.h>
+#include <pulsar/EncryptionKeyInfo.h>
+
+namespace pulsar {
+
+class PULSAR_PUBLIC CryptoKeyReader {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~CryptoKeyReader() {}
 
@@ -65,6 +75,9 @@ class CryptoKeyReader {
 typedef std::shared_ptr<CryptoKeyReader> CryptoKeyReaderPtr;
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* CRYPTOKEYREADER_H_ */

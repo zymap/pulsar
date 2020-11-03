@@ -25,6 +25,7 @@ package org.apache.pulsar.policies.data.loadbalancer;
  *
  */
 public class NamespaceUsage {
+<<<<<<< HEAD
     /** Total rate of messages produced on the broker. msg/s */
     private double msgRateIn;
 
@@ -65,6 +66,48 @@ public class NamespaceUsage {
     private long totalQueues;
 
     /** total number of topics */
+=======
+    /** Total rate of messages produced on the broker (msg/s). */
+    private double msgRateIn;
+
+    /** Total throughput of messages produced on the broker (byte/s). */
+    private double msgThroughputIn;
+
+    /** Rate of persistent messages produced on the broker (msg/s). */
+    private double msgPersistentRateIn;
+
+    /** Throughput of persistent messages produced on the broker (byte/s). */
+    private double msgPersistentThroughputIn;
+
+    /** Rate of non-persistent messages produced on the broker (msg/s). */
+    private double msgNonPersistentRateIn;
+
+    /** Throughput of non-persistent messages produced on the broker (byte/s). */
+    private double msgNonPersistentThroughputIn;
+
+    /** Total rate of messages consumed from the broker (msg/s). */
+    private double msgRateOut;
+
+    /** Total throughput of messages consumed from the broker (byte/s). */
+    private double msgThroughputOut;
+
+    /** Number of messages in backlog for the broker. */
+    private long msgBacklog;
+
+    /** Space used to store the messages for the broker (bytes). */
+    private long storageSize;
+
+    /** Total number of producers = producer(queues) + producer(topics). */
+    private long totalProducers;
+
+    /** Number of clusters the namespace is replicated on. */
+    private long totalReplicatedClusters;
+
+    /** Total number of queues. */
+    private long totalQueues;
+
+    /** Total number of topics. */
+>>>>>>> f773c602c... Test pr 10 (#27)
     private long totalTopics;
 
     private long activeSubscribers;

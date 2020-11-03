@@ -19,9 +19,17 @@
 package org.apache.pulsar.policies.data.loadbalancer;
 
 import java.util.Set;
+<<<<<<< HEAD
 
 import org.apache.pulsar.common.policies.data.ResourceQuota;
 
+=======
+import org.apache.pulsar.common.policies.data.ResourceQuota;
+
+/**
+ * The class containing information about system resources, allocated quota, and loaded bundles.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
 
     private static final long KBITS_TO_BYTES = 1024 / 8;
@@ -71,7 +79,11 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Estimate the load percentage which is the max percentage of all resource usages
+=======
+     * Estimate the load percentage which is the max percentage of all resource usages.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private void estimateLoadPercentage() {
         double cpuUsed = this.systemResourceUsage.cpu.usage;
@@ -120,8 +132,13 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
                 Math.max(this.estimatedLoadPercentageMemory, Math.max(this.estimatedLoadPercentageDirectMemory,
                         Math.max(this.estimatedLoadPercentageBandwidthIn, this.estimatedLoadPercentageBandwidthOut))));
 
+<<<<<<< HEAD
         this.estimatedMessageRate = this.allocatedQuota.getMsgRateIn() + this.allocatedQuota.getMsgRateOut() +
                 this.preAllocatedQuota.getMsgRateIn() + this.preAllocatedQuota.getMsgRateOut();
+=======
+        this.estimatedMessageRate = this.allocatedQuota.getMsgRateIn() + this.allocatedQuota.getMsgRateOut()
+            + this.preAllocatedQuota.getMsgRateIn() + this.preAllocatedQuota.getMsgRateOut();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     }
 
@@ -149,35 +166,55 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Compare two loads based on message rate only
+=======
+     * Compare two loads based on message rate only.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public int compareMessageRateTo(ResourceUnitRanking other) {
         return Double.compare(this.estimatedMessageRate, other.estimatedMessageRate);
     }
 
     /**
+<<<<<<< HEAD
      * If the ResourceUnit is idle
+=======
+     * If the ResourceUnit is idle.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public boolean isIdle() {
         return this.loadedBundles.isEmpty() && this.preAllocatedBundles.isEmpty();
     }
 
     /**
+<<<<<<< HEAD
      * Check if a ServiceUnit is already loaded by this ResourceUnit
+=======
+     * Check if a ServiceUnit is already loaded by this ResourceUnit.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public boolean isServiceUnitLoaded(String suName) {
         return this.loadedBundles.contains(suName);
     }
 
     /**
+<<<<<<< HEAD
      * Check if a ServiceUnit is pre-allocated to this ResourceUnit
+=======
+     * Check if a ServiceUnit is pre-allocated to this ResourceUnit.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public boolean isServiceUnitPreAllocated(String suName) {
         return this.preAllocatedBundles.contains(suName);
     }
 
     /**
+<<<<<<< HEAD
      * Pre-allocate a ServiceUnit to this ResourceUnit
+=======
+     * Pre-allocate a ServiceUnit to this ResourceUnit.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public void addPreAllocatedServiceUnit(String suName, ResourceQuota quota) {
         this.preAllocatedBundles.add(suName);
@@ -186,7 +223,11 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Remove a service unit from the loaded bundle list
+=======
+     * Remove a service unit from the loaded bundle list.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public void removeLoadedServiceUnit(String suName, ResourceQuota quota) {
         if (this.loadedBundles.remove(suName)) {
@@ -196,7 +237,11 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Get the pre-allocated bundles
+=======
+     * Get the pre-allocated bundles.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public Set<String> getPreAllocatedBundles() {
         return this.preAllocatedBundles;
@@ -210,48 +255,73 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Get the estimated load percentage
+=======
+     * Get the estimated load percentage.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getEstimatedLoadPercentage() {
         return this.estimatedLoadPercentage;
     }
 
     /**
+<<<<<<< HEAD
      * Get the estimated message rate
+=======
+     * Get the estimated message rate.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getEstimatedMessageRate() {
         return this.estimatedMessageRate;
     }
 
     /**
+<<<<<<< HEAD
      * Percentage of CPU allocated to bundle's quota
+=======
+     * Percentage of CPU allocated to bundle's quota.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getAllocatedLoadPercentageCPU() {
         return this.allocatedLoadPercentageCPU;
     }
 
     /**
+<<<<<<< HEAD
      * Percetage of memory allocated to bundle's quota
+=======
+     * Percetage of memory allocated to bundle's quota.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getAllocatedLoadPercentageMemory() {
         return this.allocatedLoadPercentageMemory;
     }
 
     /**
+<<<<<<< HEAD
      * Percentage of inbound bandwidth allocated to bundle's quota
+=======
+     * Percentage of inbound bandwidth allocated to bundle's quota.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getAllocatedLoadPercentageBandwidthIn() {
         return this.allocatedLoadPercentageBandwidthIn;
     }
 
     /**
+<<<<<<< HEAD
      * Percentage of outbound bandwidth allocated to bundle's quota
+=======
+     * Percentage of outbound bandwidth allocated to bundle's quota.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public double getAllocatedLoadPercentageBandwidthOut() {
         return this.allocatedLoadPercentageBandwidthOut;
     }
 
     /**
+<<<<<<< HEAD
      * Get the load percentage in String, with detail resource usages
      */
     public String getEstimatedLoadPercentageString() {
@@ -261,6 +331,18 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
                 this.estimatedLoadPercentage, this.estimatedLoadPercentageCPU, this.estimatedLoadPercentageMemory,
                 this.estimatedLoadPercentageDirectMemory, this.estimatedLoadPercentageBandwidthIn,
                 this.estimatedLoadPercentageBandwidthOut);
+=======
+     * Get the load percentage in String, with detail resource usages.
+     */
+    public String getEstimatedLoadPercentageString() {
+        return String.format(
+            "msgrate: %.0f, load: %.1f%% - cpu: %.1f%%, mem: %.1f%%, directMemory: %.1f%%, "
+                + "bandwidthIn: %.1f%%, bandwidthOut: %.1f%%",
+            this.estimatedMessageRate,
+            this.estimatedLoadPercentage, this.estimatedLoadPercentageCPU, this.estimatedLoadPercentageMemory,
+            this.estimatedLoadPercentageDirectMemory, this.estimatedLoadPercentageBandwidthIn,
+            this.estimatedLoadPercentageBandwidthOut);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -271,7 +353,11 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Estimate the maximum number namespace bundles a ResourceUnit is able to handle with all resource
+=======
+     * Estimate the maximum number namespace bundles a ResourceUnit is able to handle with all resource.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public static long calculateBrokerMaxCapacity(SystemResourceUsage systemResourceUsage, ResourceQuota defaultQuota) {
         double bandwidthOutLimit = systemResourceUsage.bandwidthOut.limit * KBITS_TO_BYTES;
@@ -283,7 +369,11 @@ public class ResourceUnitRanking implements Comparable<ResourceUnitRanking> {
     }
 
     /**
+<<<<<<< HEAD
      * Calculate how many bundles could be handle with the specified resources
+=======
+     * Calculate how many bundles could be handle with the specified resources.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private static long calculateBrokerCapacity(ResourceQuota defaultQuota, double usableCPU, double usableMem,
             double usableBandwidthOut, double usableBandwidthIn) {

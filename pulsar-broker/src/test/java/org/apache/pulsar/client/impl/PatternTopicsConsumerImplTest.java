@@ -27,6 +27,11 @@ import static org.testng.Assert.fail;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -40,6 +45,10 @@ import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerConsumerBase;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.RegexSubscriptionMode;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.Schema;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.TenantInfo;
@@ -81,7 +90,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         final String patternString = "persistent://my-property/my-ns/pattern-topic.*";
         Pattern pattern = Pattern.compile(patternString);
 
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -140,7 +154,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("my-property/my-ns/pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -172,6 +191,10 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
             .ackTimeout(ackTimeOutMillis, TimeUnit.MILLISECONDS)
             .receiverQueueSize(4)
             .subscribe();
+<<<<<<< HEAD
+=======
+        assertTrue(consumer.getTopic().startsWith(PatternMultiTopicsConsumerImpl.DUMMY_TOPIC_NAME_PREFIX));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 4. verify consumer get methods, to get right number of partitions and topics.
         assertSame(pattern, ((PatternMultiTopicsConsumerImpl<?>) consumer).getPattern());
@@ -186,7 +209,11 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         consumers.forEach(c -> log.debug("consumer: {}", c.getTopic()));
 
         IntStream.range(0, topics.size()).forEach(index ->
+<<<<<<< HEAD
             assertTrue(topics.get(index).equals(consumers.get(index).getTopic())));
+=======
+            assertEquals(consumers.get(index).getTopic(), topics.get(index)));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ((PatternMultiTopicsConsumerImpl<?>) consumer).getTopics().forEach(topic -> log.debug("getTopics topic: {}", topic));
 
@@ -218,6 +245,21 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         producer4.close();
     }
 
+<<<<<<< HEAD
+=======
+    @Test(timeOut = testTimeout)
+    public void testPubRateOnNonPersistent() throws Exception {
+        internalCleanup();
+        conf.setMaxPublishRatePerTopicInBytes(10000L);
+        conf.setMaxPublishRatePerTopicInMessages(100);
+        Thread.sleep(500);
+        isTcpLookup = true;
+        super.internalSetup();
+        super.producerBaseSetup();
+        testBinaryProtoToGetTopicsOfNamespaceNonPersistent();
+    }
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
 	// verify consumer create success, and works well.
     @Test(timeOut = testTimeout)
     public void testBinaryProtoToGetTopicsOfNamespaceNonPersistent() throws Exception {
@@ -230,7 +272,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("my-property/my-ns/np-pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -276,7 +323,11 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         consumers.forEach(c -> log.debug("consumer: {}", c.getTopic()));
 
         IntStream.range(0, topics.size()).forEach(index ->
+<<<<<<< HEAD
             assertTrue(topics.get(index).equals(consumers.get(index).getTopic())));
+=======
+            assertEquals(consumers.get(index).getTopic(), topics.get(index)));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ((PatternMultiTopicsConsumerImpl<?>) consumer).getTopics().forEach(topic -> log.debug("getTopics topic: {}", topic));
 
@@ -320,7 +371,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("my-property/my-ns/pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -366,7 +422,11 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         consumers.forEach(c -> log.debug("consumer: {}", c.getTopic()));
 
         IntStream.range(0, topics.size()).forEach(index ->
+<<<<<<< HEAD
             assertTrue(topics.get(index).equals(consumers.get(index).getTopic())));
+=======
+            assertEquals(consumers.get(index).getTopic(), topics.get(index)));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ((PatternMultiTopicsConsumerImpl<?>) consumer).getTopics().forEach(topic -> log.debug("getTopics topic: {}", topic));
 
@@ -451,7 +511,11 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
 
         // empty list minus: addedNames2.size = 2, addedNames3.size = 0
         List<String> addedNames4 = PatternMultiTopicsConsumerImpl.topicsListsMinus(addedNames2, addedNames3);
+<<<<<<< HEAD
         assertTrue(addedNames4.size() == addedNames2.size());
+=======
+        assertEquals(addedNames2.size(), addedNames4.size());
+>>>>>>> f773c602c... Test pr 10 (#27)
         addedNames4.forEach(name -> assertTrue(addedNames2.contains(name)));
 
         List<String> addedNames5 = PatternMultiTopicsConsumerImpl.topicsListsMinus(addedNames3, addedNames2);
@@ -469,7 +533,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("persistent://my-property/my-ns/pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -483,11 +552,19 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
             .receiverQueueSize(4)
             .subscribe();
 
+<<<<<<< HEAD
         // 3. verify consumer get methods, to get 0 number of partitions and topics.
         assertSame(pattern, ((PatternMultiTopicsConsumerImpl<?>) consumer).getPattern());
         assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getPartitionedTopics().size(), 0);
         assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getConsumers().size(), 0);
         assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getTopics().size(), 0);
+=======
+        // 3. verify consumer get methods, to get 5 number of partitions and topics.
+        assertSame(pattern, ((PatternMultiTopicsConsumerImpl<?>) consumer).getPattern());
+        assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getPartitionedTopics().size(), 5);
+        assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getConsumers().size(), 5);
+        assertEquals(((PatternMultiTopicsConsumerImpl<?>) consumer).getTopics().size(), 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 4. create producer
         String messagePredicate = "my-message-" + key + "-";
@@ -556,7 +633,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("persistent://my-property/my-ns/pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -664,7 +746,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         Pattern pattern = Pattern.compile("persistent://my-property/my-ns/pattern-topic.*");
 
         // 1. create partition
+<<<<<<< HEAD
         admin.tenants().createTenant("prop", new TenantInfo());
+=======
+        TenantInfo tenantInfo = createDefaultTenantInfo();
+        admin.tenants().createTenant("prop", tenantInfo);
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.topics().createPartitionedTopic(topicName2, 2);
         admin.topics().createPartitionedTopic(topicName3, 3);
 
@@ -687,7 +774,11 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
 
         Consumer<byte[]> consumer = pulsarClient.newConsumer()
             .topicsPattern(pattern)
+<<<<<<< HEAD
             .patternAutoDiscoveryPeriod(2)
+=======
+            .patternAutoDiscoveryPeriod(10, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
             .subscriptionName(subscriptionName)
             .subscriptionType(SubscriptionType.Shared)
             .ackTimeout(ackTimeOutMillis, TimeUnit.MILLISECONDS)
@@ -724,7 +815,12 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         // seems no direct way to verify auto-unsubscribe, because this patternConsumer also referenced the topic.
         List<String> topicNames = Lists.newArrayList(topicName2);
         NamespaceService nss = pulsar.getNamespaceService();
+<<<<<<< HEAD
         doReturn(topicNames).when(nss).getListOfPersistentTopics(NamespaceName.get("my-property/my-ns"));
+=======
+        doReturn(CompletableFuture.completedFuture(topicNames)).when(nss)
+                .getListOfPersistentTopics(NamespaceName.get("my-property/my-ns"));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 7. call recheckTopics to unsubscribe topic 1,3 , verify topics number: 2=6-1-3
         log.debug("recheck topics change");
@@ -757,4 +853,54 @@ public class PatternTopicsConsumerImplTest extends ProducerConsumerBase {
         producer2.close();
         producer3.close();
     }
+<<<<<<< HEAD
+=======
+
+    @Test()
+    public void testTopicDeletion() throws Exception {
+        String baseTopicName = "persistent://my-property/my-ns/pattern-topic-" + System.currentTimeMillis();
+        Pattern pattern = Pattern.compile(baseTopicName + ".*");
+
+        // Create 2 topics
+        Producer<String> producer1 = pulsarClient.newProducer(Schema.STRING)
+                .topic(baseTopicName + "-1")
+                .create();
+        Producer<String> producer2 = pulsarClient.newProducer(Schema.STRING)
+                .topic(baseTopicName + "-2")
+                .create();
+
+        Consumer<String> consumer = pulsarClient.newConsumer(Schema.STRING)
+            .topicsPattern(pattern)
+            .patternAutoDiscoveryPeriod(1)
+            .subscriptionName("sub")
+            .subscribe();
+
+        assertTrue(consumer instanceof PatternMultiTopicsConsumerImpl);
+        PatternMultiTopicsConsumerImpl<String> consumerImpl = (PatternMultiTopicsConsumerImpl<String>) consumer;
+
+        // 4. verify consumer get methods
+        assertSame(consumerImpl.getPattern(), pattern);
+        assertEquals(consumerImpl.getTopics().size(), 2);
+
+        producer1.send("msg-1");
+
+        producer1.close();
+
+        Message<String> message = consumer.receive();
+        assertEquals(message.getValue(), "msg-1");
+        consumer.acknowledge(message);
+
+        // Force delete the topic while the regex consumer is connected
+        admin.topics().delete(baseTopicName + "-1", true);
+
+        producer2.send("msg-2");
+
+        message = consumer.receive();
+        assertEquals(message.getValue(), "msg-2");
+        consumer.acknowledge(message);
+
+        assertEquals(pulsar.getBrokerService().getTopicIfExists(baseTopicName + "-1").join(), Optional.empty());
+        assertTrue(pulsar.getBrokerService().getTopicIfExists(baseTopicName + "-2").join().isPresent());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

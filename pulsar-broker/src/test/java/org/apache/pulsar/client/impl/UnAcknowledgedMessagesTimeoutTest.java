@@ -20,9 +20,17 @@ package org.apache.pulsar.client.impl;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+<<<<<<< HEAD
 import static org.testng.Assert.assertTrue;
 
 import java.util.HashSet;
+=======
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.UUID;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 
 import org.apache.pulsar.broker.service.BrokerTestBase;
@@ -42,7 +50,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
+<<<<<<< HEAD
     private static final long testTimeout = 90000; // 1.5 min
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(UnAcknowledgedMessagesTimeoutTest.class);
     private final long ackTimeOutMillis = TimeUnit.SECONDS.toMillis(2);
 
@@ -58,7 +69,11 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         super.internalCleanup();
     }
 
+<<<<<<< HEAD
     @Test(timeOut = testTimeout)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testExclusiveSingleAckedNormalTopic() throws Exception {
         String key = "testExclusiveSingleAckedNormalTopic";
         final String topicName = "persistent://prop/ns-abc/topic-" + key;
@@ -68,9 +83,15 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
 
         // 1. producer connect
         Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+<<<<<<< HEAD
             .enableBatching(false)
             .messageRoutingMode(MessageRoutingMode.SinglePartition)
             .create();
+=======
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.SinglePartition)
+                .create();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. Create consumer
         Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subscriptionName)
@@ -116,7 +137,11 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         assertEquals(hSet.size(), totalMessages);
     }
 
+<<<<<<< HEAD
     @Test(timeOut = testTimeout)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testExclusiveCumulativeAckedNormalTopic() throws Exception {
         String key = "testExclusiveCumulativeAckedNormalTopic";
         final String topicName = "persistent://prop/use/ns-abc/topic-" + key;
@@ -126,9 +151,15 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
 
         // 1. producer connect
         Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+<<<<<<< HEAD
             .enableBatching(false)
             .messageRoutingMode(MessageRoutingMode.SinglePartition)
             .create();
+=======
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.SinglePartition)
+                .create();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. Create consumer
         Consumer<byte[]> consumer = pulsarClient.newConsumer().topic(topicName).subscriptionName(subscriptionName)
@@ -148,21 +179,36 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
             lastMessage = message;
             hSet.add(new String(message.getData()));
             log.info("Consumer received " + new String(message.getData()));
+<<<<<<< HEAD
             log.info("Message ID details " + ((MessageIdImpl) message.getMessageId()).toString());
+=======
+            log.info("Message ID details " + message.getMessageId().toString());
+>>>>>>> f773c602c... Test pr 10 (#27)
             message = consumer.receive(500, TimeUnit.MILLISECONDS);
         }
         long size = ((ConsumerImpl<?>) consumer).getUnAckedMessageTracker().size();
         assertEquals(size, totalMessages);
         log.info("Comulative Ack sent for " + new String(lastMessage.getData()));
+<<<<<<< HEAD
         log.info("Message ID details " + ((MessageIdImpl) lastMessage.getMessageId()).toString());
+=======
+        log.info("Message ID details " + lastMessage.getMessageId().toString());
+>>>>>>> f773c602c... Test pr 10 (#27)
         consumer.acknowledgeCumulative(lastMessage);
         size = ((ConsumerImpl<?>) consumer).getUnAckedMessageTracker().size();
         assertEquals(size, 0);
         message = consumer.receive((int) (2 * ackTimeOutMillis), TimeUnit.MILLISECONDS);
+<<<<<<< HEAD
         assertEquals(message, null);
     }
 
     @Test(timeOut = testTimeout)
+=======
+        assertNull(message);
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testSharedSingleAckedPartitionedTopic() throws Exception {
         String key = "testSharedSingleAckedPartitionedTopic";
         final String topicName = "persistent://prop/ns-abc/topic-" + key;
@@ -175,9 +221,15 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
 
         // 1. producer connect
         Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+<<<<<<< HEAD
             .enableBatching(false)
             .messageRoutingMode(MessageRoutingMode.RoundRobinPartition)
             .create();
+=======
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.RoundRobinPartition)
+                .create();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. Create consumer
         Consumer<byte[]> consumer1 = pulsarClient.newConsumer().topic(topicName).subscriptionName(subscriptionName)
@@ -250,10 +302,17 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         return messagesReceived;
     }
 
+<<<<<<< HEAD
     @Test(timeOut = testTimeout)
     public void testFailoverSingleAckedPartitionedTopic() throws Exception {
         String key = "testFailoverSingleAckedPartitionedTopic";
         final String topicName = "persistent://prop/ns-abc/topic-" + key;
+=======
+    @Test
+    public void testFailoverSingleAckedPartitionedTopic() throws Exception {
+        String key = "testFailoverSingleAckedPartitionedTopic";
+        final String topicName = "persistent://prop/ns-abc/topic-" + key + UUID.randomUUID().toString();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final String subscriptionName = "my-failover-subscription-" + key;
         final String messagePredicate = "my-message-" + key + "-";
         final int totalMessages = 10;
@@ -263,6 +322,7 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
 
         // 1. producer connect
         Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+<<<<<<< HEAD
             .enableBatching(false)
             .messageRoutingMode(MessageRoutingMode.RoundRobinPartition)
             .create();
@@ -274,6 +334,31 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         Consumer<byte[]> consumer2 = pulsarClient.newConsumer().topic(topicName).subscriptionName(subscriptionName)
                 .receiverQueueSize(7).subscriptionType(SubscriptionType.Shared)
                 .ackTimeout(ackTimeOutMillis, TimeUnit.MILLISECONDS).consumerName("Consumer-2").subscribe();
+=======
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.RoundRobinPartition)
+                .create();
+
+        // 2. Create consumer
+        Consumer<byte[]> consumer1 = pulsarClient.newConsumer()
+                .topic(topicName)
+                .subscriptionName(subscriptionName)
+                .receiverQueueSize(7)
+                .subscriptionType(SubscriptionType.Shared)
+                .ackTimeout(ackTimeOutMillis, TimeUnit.MILLISECONDS)
+                .acknowledgmentGroupTime(0, TimeUnit.SECONDS)
+                .consumerName("Consumer-1")
+                .subscribe();
+        Consumer<byte[]> consumer2 = pulsarClient.newConsumer()
+                .topic(topicName)
+                .subscriptionName(subscriptionName)
+                .receiverQueueSize(7)
+                .subscriptionType(SubscriptionType.Shared)
+                .ackTimeout(ackTimeOutMillis, TimeUnit.MILLISECONDS)
+                .acknowledgmentGroupTime(0, TimeUnit.SECONDS)
+                .consumerName("Consumer-2")
+                .subscribe();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 3. producer publish messages
         for (int i = 0; i < totalMessages; i++) {
@@ -283,6 +368,7 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         }
 
         // 4. Receive messages
+<<<<<<< HEAD
         Message<byte[]> message1 = consumer1.receive();
         Message<byte[]> message2 = consumer2.receive();
         int messageCount1 = 0;
@@ -333,6 +419,55 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         log.info(key + " ackCount1 = " + ackCount1);
         log.info(key + " ackCount2 = " + ackCount2);
         assertEquals(ackCount1 + messageCount2, totalMessages);
+=======
+        int messagesReceived = 0;
+        while (true) {
+            Message<byte[]> message1 = consumer1.receive(500, TimeUnit.MILLISECONDS);
+            if (message1 == null) {
+                break;
+            }
+
+            ++messagesReceived;
+        }
+
+        int ackCount = 0;
+        while (true) {
+            Message<byte[]> message2 = consumer2.receive(500, TimeUnit.MILLISECONDS);
+            if (message2 == null) {
+                break;
+            }
+
+            consumer2.acknowledge(message2);
+            ++messagesReceived;
+            ++ackCount;
+        }
+
+        assertEquals(messagesReceived, totalMessages);
+
+        // 5. Check if Messages redelivered again
+        Thread.sleep(ackTimeOutMillis);
+        log.info(key + " Timeout should be triggered now");
+        messagesReceived = 0;
+        while (true) {
+            Message<byte[]> message1 = consumer1.receive(500, TimeUnit.MILLISECONDS);
+            if (message1 == null) {
+                break;
+            }
+
+            ++messagesReceived;
+        }
+
+        while (true) {
+            Message<byte[]> message2 = consumer2.receive(500, TimeUnit.MILLISECONDS);
+            if (message2 == null) {
+                break;
+            }
+
+            ++messagesReceived;
+        }
+
+        assertEquals(messagesReceived + ackCount, totalMessages);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -345,7 +480,11 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         }
     }
 
+<<<<<<< HEAD
     @Test(timeOut = testTimeout)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testCheckUnAcknowledgedMessageTimer() throws PulsarClientException, InterruptedException {
         String key = "testCheckUnAcknowledgedMessageTimer";
         final String topicName = "persistent://prop/ns-abc/topic-" + key;
@@ -355,9 +494,15 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
 
         // 1. producer connect
         Producer<byte[]> producer = pulsarClient.newProducer().topic(topicName)
+<<<<<<< HEAD
             .enableBatching(false)
             .messageRoutingMode(MessageRoutingMode.SinglePartition)
             .create();
+=======
+                .enableBatching(false)
+                .messageRoutingMode(MessageRoutingMode.SinglePartition)
+                .create();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // 2. Create consumer
         ConsumerImpl<byte[]> consumer = (ConsumerImpl<byte[]>) pulsarClient.newConsumer().topic(topicName)
@@ -391,7 +536,10 @@ public class UnAcknowledgedMessagesTimeoutTest extends BrokerTestBase {
         assertEquals(consumer.getUnAckedMessageTracker().size(), 0);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Test
     public void testSingleMessageBatch() throws Exception {
         String topicName = "prop/ns-abc/topic-estSingleMessageBatch";

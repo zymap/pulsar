@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.common.partition;
 
+<<<<<<< HEAD
+=======
+/**
+ * Metadata of a partitioned topic.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PartitionedTopicMetadata {
 
     /* Number of partitions for the topic */

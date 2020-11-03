@@ -19,6 +19,11 @@
 package org.apache.bookkeeper.mledger.impl;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import com.google.common.base.Charsets;
 import java.nio.charset.Charset;
@@ -57,12 +62,20 @@ public class ManagedLedgerSingleBookieTest extends MockedBookKeeperTestCase {
 
         ManagedCursor cursor = ledger.openCursor("c1");
 
+<<<<<<< HEAD
         assertEquals(cursor.hasMoreEntries(), false);
+=======
+        assertFalse(cursor.hasMoreEntries());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(cursor.readEntries(100), new ArrayList<Entry>());
 
         ledger.addEntry("dummy-entry-2".getBytes(Encoding));
 
+<<<<<<< HEAD
         assertEquals(cursor.hasMoreEntries(), true);
+=======
+        assertTrue(cursor.hasMoreEntries());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         List<Entry> entries = cursor.readEntries(100);
         assertEquals(entries.size(), 1);

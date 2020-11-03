@@ -24,7 +24,11 @@ package org.apache.pulsar.client.api;
 public enum HashingScheme {
 
     /**
+<<<<<<< HEAD
      * Use regular <code>String.hashCode()</code>
+=======
+     * Use regular <code>String.hashCode()</code>.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     JavaStringHash,
 

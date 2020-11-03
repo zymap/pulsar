@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import io.netty.channel.ConnectTimeoutException;
 
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +28,13 @@ import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 
+=======
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import io.netty.channel.ConnectTimeoutException;
+import org.apache.pulsar.client.api.PulsarClient;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -40,8 +48,15 @@ public class ConnectionTimeoutTest {
         long startNanos = System.nanoTime();
 
         try (PulsarClient clientLow = PulsarClient.builder().serviceUrl(blackholeBroker)
+<<<<<<< HEAD
                 .connectionTimeout(1, TimeUnit.MILLISECONDS).build();
              PulsarClient clientDefault = PulsarClient.builder().serviceUrl(blackholeBroker).build()) {
+=======
+                .connectionTimeout(1, TimeUnit.MILLISECONDS)
+                .operationTimeout(1000, TimeUnit.MILLISECONDS).build();
+             PulsarClient clientDefault = PulsarClient.builder().serviceUrl(blackholeBroker)
+                 .operationTimeout(1000, TimeUnit.MILLISECONDS).build()) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             CompletableFuture<?> lowFuture = clientLow.newProducer().topic("foo").createAsync();
             CompletableFuture<?> defaultFuture = clientDefault.newProducer().topic("foo").createAsync();
 
@@ -50,9 +65,13 @@ public class ConnectionTimeoutTest {
                 Assert.fail("Shouldn't be able to connect to anything");
             } catch (Exception e) {
                 Assert.assertFalse(defaultFuture.isDone());
+<<<<<<< HEAD
                 Assert.assertEquals(e.getCause().getCause().getCause().getClass(),
                                     ConnectTimeoutException.class);
                 Assert.assertTrue((System.nanoTime() - startNanos) < TimeUnit.SECONDS.toNanos(3));
+=======
+                Assert.assertEquals(e.getCause().getCause().getCause().getClass(), ConnectTimeoutException.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
     }

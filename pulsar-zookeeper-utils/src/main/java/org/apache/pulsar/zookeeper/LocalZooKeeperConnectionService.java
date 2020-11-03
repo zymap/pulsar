@@ -59,7 +59,11 @@ public class LocalZooKeeperConnectionService implements Closeable {
         this.zkSessionTimeoutMillis = zkSessionTimeoutMillis;
     }
 
+<<<<<<< HEAD
     public void start(ShutdownService shutdownService) throws IOException {
+=======
+    public void start(ZookeeperSessionExpiredHandler sessionExpiredHandler) throws IOException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         // Connect to local ZK
         CompletableFuture<ZooKeeper> zkFuture = zkClientFactory.create(zkConnect, SessionType.ReadWrite,
                 (int) zkSessionTimeoutMillis);
@@ -67,7 +71,11 @@ public class LocalZooKeeperConnectionService implements Closeable {
         try {
             localZooKeeper = zkFuture.get(zkSessionTimeoutMillis, TimeUnit.MILLISECONDS);
             localZooKeeperSessionWatcher = new ZooKeeperSessionWatcher(localZooKeeper, zkSessionTimeoutMillis,
+<<<<<<< HEAD
                     shutdownService);
+=======
+                sessionExpiredHandler);
+>>>>>>> f773c602c... Test pr 10 (#27)
             localZooKeeperSessionWatcher.start();
             localZooKeeper.register(localZooKeeperSessionWatcher);
         } catch (Exception e) {
@@ -76,6 +84,13 @@ public class LocalZooKeeperConnectionService implements Closeable {
     }
 
     public void close() throws IOException {
+<<<<<<< HEAD
+=======
+        if (localZooKeeperSessionWatcher != null) {
+            localZooKeeperSessionWatcher.close();
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (localZooKeeper != null) {
             try {
                 localZooKeeper.close();
@@ -83,10 +98,13 @@ public class LocalZooKeeperConnectionService implements Closeable {
                 throw new IOException(e);
             }
         }
+<<<<<<< HEAD
 
         if (localZooKeeperSessionWatcher != null) {
             localZooKeeperSessionWatcher.close();
         }
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public ZooKeeper getLocalZooKeeper() {

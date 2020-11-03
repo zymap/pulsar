@@ -38,15 +38,23 @@ import org.jclouds.io.Payload;
 import org.jclouds.io.Payloads;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Slf4j
+<<<<<<< HEAD
 class BlobStoreBackedInputStreamTest extends BlobStoreTestBase {
     private static final Logger log = LoggerFactory.getLogger(BlobStoreBackedInputStreamTest.class);
 
+=======
+public class BlobStoreBackedInputStreamTest extends BlobStoreTestBase {
+    
+>>>>>>> f773c602c... Test pr 10 (#27)
     class RandomInputStream extends InputStream {
         final Random r;
         int bytesRemaining;

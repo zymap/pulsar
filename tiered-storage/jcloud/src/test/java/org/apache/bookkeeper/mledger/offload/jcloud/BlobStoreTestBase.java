@@ -18,6 +18,11 @@
  */
 package org.apache.bookkeeper.mledger.offload.jcloud;
 
+<<<<<<< HEAD
+=======
+import java.util.Properties;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
@@ -27,8 +32,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public class BlobStoreTestBase {
+<<<<<<< HEAD
     private static final Logger log = LoggerFactory.getLogger(BlobStoreTestBase.class);
 
+=======
+
+    private static final Logger log = LoggerFactory.getLogger(BlobStoreTestBase.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
     public final static String BUCKET = "pulsar-unittest";
 
     protected BlobStoreContext context = null;
@@ -59,6 +69,10 @@ public class BlobStoreTestBase {
                 .build(BlobStoreContext.class);
             blobStore = context.getBlobStore();
         } else {
+<<<<<<< HEAD
+=======
+            log.info("Test Transient, bucket: {}", BUCKET);
+>>>>>>> f773c602c... Test pr 10 (#27)
             context = ContextBuilder.newBuilder("transient").build(BlobStoreContext.class);
             blobStore = context.getBlobStore();
             boolean create = blobStore.createContainerInLocation(null, BUCKET);
@@ -69,7 +83,11 @@ public class BlobStoreTestBase {
     @AfterMethod
     public void tearDown() {
         if (blobStore != null &&
+<<<<<<< HEAD
             (!Boolean.parseBoolean(System.getProperty("testRealGCS", "false")) &&
+=======
+            (!Boolean.parseBoolean(System.getProperty("testRealAWS", "false")) &&
+>>>>>>> f773c602c... Test pr 10 (#27)
              !Boolean.parseBoolean(System.getProperty("testRealGCS", "false")))) {
             blobStore.deleteContainer(BUCKET);
         }

@@ -19,6 +19,10 @@
 #include <boost/python.hpp>
 
 #include <pulsar/Client.h>
+<<<<<<< HEAD
+=======
+#include <pulsar/MessageBatch.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 using namespace pulsar;
 

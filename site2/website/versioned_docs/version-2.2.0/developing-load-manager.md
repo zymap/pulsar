@@ -15,7 +15,11 @@ There are two ways that you can enable the modular load manager:
 2. Using the `pulsar-admin` tool. Here's an example:
 
    ```shell
+<<<<<<< HEAD
    $ pulsar-admin update-dynamic-config \
+=======
+   $ pulsar-admin brokers update-dynamic-config \
+>>>>>>> f773c602c... Test pr 10 (#27)
      --config loadManagerClassName \
      --value org.apache.pulsar.broker.loadbalance.impl.ModularLoadManagerImpl
    ```

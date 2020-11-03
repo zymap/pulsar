@@ -24,8 +24,11 @@
 package org.apache.pulsar.functions.runtime;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.Timer;
 import java.util.TimerTask;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -33,14 +36,21 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+<<<<<<< HEAD
 import org.apache.commons.lang3.StringUtils;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.functions.instance.InstanceCache;
 import org.apache.pulsar.functions.instance.InstanceConfig;
 import org.apache.pulsar.functions.proto.Function.FunctionDetails;
 import org.apache.pulsar.functions.proto.InstanceCommunication.FunctionStatus;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.utils.Utils;
 import static org.apache.pulsar.functions.proto.Function.FunctionDetails.Runtime.PYTHON;
+=======
+import org.apache.pulsar.functions.utils.FunctionCommon;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 @Slf4j
 public class RuntimeSpawner implements AutoCloseable {
@@ -49,7 +59,10 @@ public class RuntimeSpawner implements AutoCloseable {
     private final InstanceConfig instanceConfig;
     @Getter
     private final RuntimeFactory runtimeFactory;
+<<<<<<< HEAD
     private final String codeFile;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final String originalCodeFileName;
 
     @Getter
@@ -66,7 +79,10 @@ public class RuntimeSpawner implements AutoCloseable {
                           RuntimeFactory containerFactory, long instanceLivenessCheckFreqMs) {
         this.instanceConfig = instanceConfig;
         this.runtimeFactory = containerFactory;
+<<<<<<< HEAD
         this.codeFile = codeFile;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.originalCodeFileName = originalCodeFileName;
         this.numRestarts = 0;
         this.instanceLivenessCheckFreqMs = instanceLivenessCheckFreqMs;
@@ -131,10 +147,17 @@ public class RuntimeSpawner implements AutoCloseable {
     public CompletableFuture<String> getFunctionStatusAsJson(int instanceId) {
         return this.getFunctionStatus(instanceId).thenApply(msg -> {
             try {
+<<<<<<< HEAD
                 return Utils.printJson(msg);
             } catch (IOException e) {
                 throw new RuntimeException(
                         instanceConfig.getFunctionDetails().getName() + " Exception parsing getstatus", e);
+=======
+                return FunctionCommon.printJson(msg);
+            } catch (IOException e) {
+                throw new RuntimeException(
+                        instanceConfig.getFunctionDetails().getName() + " Exception parsing getStatus", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         });
     }

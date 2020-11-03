@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.functions.worker.dlog;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.Mockito.eq;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

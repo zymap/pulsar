@@ -81,11 +81,18 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                      final @FormDataParam("data") InputStream uploadedInputStream,
                                      final @FormDataParam("data") FormDataContentDisposition fileDetail,
                                      final @FormDataParam("url") String functionPkgUrl,
+<<<<<<< HEAD
                                      final @FormDataParam("functionDetails") String functionDetailsJson,
                                      final @FormDataParam("functionConfig") String functionConfigJson) {
 
         return functions.registerFunction(tenant, namespace, functionName, uploadedInputStream, fileDetail,
                 functionPkgUrl, functionDetailsJson, functionConfigJson, clientAppId());
+=======
+                                     final @FormDataParam("functionDetails") String functionDetailsJson) {
+
+        return functions.registerFunction(tenant, namespace, functionName, uploadedInputStream, fileDetail,
+                functionPkgUrl, functionDetailsJson, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @PUT
@@ -103,11 +110,18 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                    final @FormDataParam("data") InputStream uploadedInputStream,
                                    final @FormDataParam("data") FormDataContentDisposition fileDetail,
                                    final @FormDataParam("url") String functionPkgUrl,
+<<<<<<< HEAD
                                    final @FormDataParam("functionDetails") String functionDetailsJson,
                                    final @FormDataParam("functionConfig") String functionConfigJson) {
 
         return functions.updateFunction(tenant, namespace, functionName, uploadedInputStream, fileDetail,
                 functionPkgUrl, functionDetailsJson, functionConfigJson, clientAppId());
+=======
+                                   final @FormDataParam("functionDetails") String functionDetailsJson) {
+
+        return functions.updateFunction(tenant, namespace, functionName, uploadedInputStream, fileDetail,
+                functionPkgUrl, functionDetailsJson, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 
@@ -144,7 +158,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                     final @PathParam("functionName") String functionName) throws IOException {
 
         return functions.getFunctionInfo(
+<<<<<<< HEAD
                 tenant, namespace, functionName);
+=======
+                tenant, namespace, functionName, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -153,6 +171,10 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
             response = FunctionStatus.class
     )
     @ApiResponses(value = {
+<<<<<<< HEAD
+=======
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace of this function"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 400, message = "Invalid request"),
             @ApiResponse(code = 403, message = "The requester doesn't have admin permissions"),
             @ApiResponse(code = 404, message = "The function doesn't exist")
@@ -163,7 +185,12 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                               final @PathParam("functionName") String functionName,
                                               final @PathParam("instanceId") String instanceId) throws IOException {
 
+<<<<<<< HEAD
         return functions.getFunctionInstanceStatus(tenant, namespace, functionName, instanceId, uri.getRequestUri());
+=======
+        return functions.getFunctionInstanceStatus(tenant, namespace, functionName, instanceId, uri.getRequestUri(),
+                clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -172,6 +199,10 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
             response = FunctionStatus.class
     )
     @ApiResponses(value = {
+<<<<<<< HEAD
+=======
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace of this function"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 400, message = "Invalid request"),
             @ApiResponse(code = 403, message = "The requester doesn't have admin permissions")
     })
@@ -180,7 +211,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                       final @PathParam("namespace") String namespace,
                                       final @PathParam("functionName") String functionName) throws IOException {
         return functions.getFunctionStatusV2(
+<<<<<<< HEAD
                 tenant, namespace, functionName, uri.getRequestUri());
+=======
+                tenant, namespace, functionName, uri.getRequestUri(), clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -196,7 +231,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     @Path("/{tenant}/{namespace}")
     public Response listFunctions(final @PathParam("tenant") String tenant,
                                   final @PathParam("namespace") String namespace) {
+<<<<<<< HEAD
         return functions.listFunctions( tenant, namespace);
+=======
+        return functions.listFunctions( tenant, namespace, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
@@ -218,7 +257,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                     final @FormDataParam("data") String triggerValue,
                                     final @FormDataParam("dataStream") InputStream triggerStream,
                                     final @FormDataParam("topic") String topic) {
+<<<<<<< HEAD
         return functions.triggerFunction(tenant, namespace, functionName, triggerValue, triggerStream, topic);
+=======
+        return functions.triggerFunction(tenant, namespace, functionName, triggerValue, triggerStream, topic, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -237,12 +280,22 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
                                      final @PathParam("namespace") String namespace,
                                      final @PathParam("functionName") String functionName,
                                      final @PathParam("key") String key) {
+<<<<<<< HEAD
         return functions.getFunctionState(tenant, namespace, functionName, key);
+=======
+        return functions.getFunctionState(tenant, namespace, functionName, key, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
     @ApiOperation(value = "Restart function instance", response = Void.class)
+<<<<<<< HEAD
     @ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid request"),
+=======
+    @ApiResponses(value = {
+            @ApiResponse(code = 307, message = "Current broker doesn't serve the namespace of this function"),
+            @ApiResponse(code = 400, message = "Invalid request"),
+>>>>>>> f773c602c... Test pr 10 (#27)
             @ApiResponse(code = 404, message = "The function does not exist"),
             @ApiResponse(code = 500, message = "Internal server error") })
     @Path("/{tenant}/{namespace}/{functionName}/{instanceId}/restart")
@@ -250,7 +303,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     public Response restartFunction(final @PathParam("tenant") String tenant,
                                     final @PathParam("namespace") String namespace, final @PathParam("functionName") String functionName,
                                     final @PathParam("instanceId") String instanceId) {
+<<<<<<< HEAD
         return functions.restartFunctionInstance(tenant, namespace, functionName, instanceId, uri.getRequestUri());
+=======
+        return functions.restartFunctionInstance(tenant, namespace, functionName, instanceId, uri.getRequestUri(), clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
@@ -262,7 +319,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     @Consumes(MediaType.APPLICATION_JSON)
     public Response restartFunction(final @PathParam("tenant") String tenant,
                                     final @PathParam("namespace") String namespace, final @PathParam("functionName") String functionName) {
+<<<<<<< HEAD
         return functions.restartFunctionInstances(tenant, namespace, functionName);
+=======
+        return functions.restartFunctionInstances(tenant, namespace, functionName, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
@@ -275,7 +336,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     public Response stopFunction(final @PathParam("tenant") String tenant,
                                  final @PathParam("namespace") String namespace, final @PathParam("functionName") String functionName,
                                  final @PathParam("instanceId") String instanceId) {
+<<<<<<< HEAD
         return functions.stopFunctionInstance(tenant, namespace, functionName, instanceId, uri.getRequestUri());
+=======
+        return functions.stopFunctionInstance(tenant, namespace, functionName, instanceId, uri.getRequestUri(), clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
@@ -287,19 +352,31 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     @Consumes(MediaType.APPLICATION_JSON)
     public Response stopFunction(final @PathParam("tenant") String tenant,
                                  final @PathParam("namespace") String namespace, final @PathParam("functionName") String functionName) {
+<<<<<<< HEAD
         return functions.stopFunctionInstances(tenant, namespace, functionName);
+=======
+        return functions.stopFunctionInstances(tenant, namespace, functionName, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @POST
     @ApiOperation(
+<<<<<<< HEAD
             value = "Uploads Pulsar Function file data",
+=======
+            value = "Uploads Pulsar Function file data (admin only)",
+>>>>>>> f773c602c... Test pr 10 (#27)
             hidden = true
     )
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFunction(final @FormDataParam("data") InputStream uploadedInputStream,
                                    final @FormDataParam("path") String path) {
+<<<<<<< HEAD
         return functions.uploadFunction(uploadedInputStream, path);
+=======
+        return functions.uploadFunction(uploadedInputStream, path, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -309,7 +386,11 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     )
     @Path("/download")
     public Response downloadFunction(final @QueryParam("path") String path) {
+<<<<<<< HEAD
         return functions.downloadFunction(path);
+=======
+        return functions.downloadFunction(path, clientAppId());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @GET
@@ -326,4 +407,8 @@ public class Functions extends AdminResource implements Supplier<WorkerService> 
     public List<ConnectorDefinition> getConnectorsList() throws IOException {
         return functions.getListOfConnectors();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

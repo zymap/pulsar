@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.functions;
 
+<<<<<<< HEAD
 import lombok.*;
 
 @Getter
@@ -35,4 +36,45 @@ public class Resources {
     private Long ram = 1073741824l;
     // Default disk is 10GB
     private Long disk = 10737418240l;
+=======
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Class representing resources, such as CPU, RAM, and disk size.
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+public class Resources {
+
+    private static final Resources DEFAULT = new Resources();
+
+    // Default cpu is 1 core
+    private Double cpu = 1d;
+    // Default memory is 1GB
+    private Long ram = 1073741824L;
+    // Default disk is 10GB
+    private Long disk = 10737418240L;
+
+    public static Resources getDefaultResources() {
+        return DEFAULT;
+    }
+
+    public static Resources mergeWithDefault(Resources resources) {
+
+        if (resources == null) {
+            return DEFAULT;
+        }
+
+        double cpu = resources.getCpu() == null ? Resources.getDefaultResources().getCpu() : resources.getCpu();
+        long ram = resources.getRam() == null ? Resources.getDefaultResources().getRam() : resources.getRam();
+        long disk = resources.getDisk() == null ? Resources.getDefaultResources().getDisk() : resources.getDisk();
+
+        return new Resources(cpu, ram, disk);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

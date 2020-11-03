@@ -38,9 +38,15 @@ struct WaitForCallback {
 
 template <typename T>
 struct WaitForCallbackValue {
+<<<<<<< HEAD
     Promise<Result, T> m_promise;
 
     WaitForCallbackValue(Promise<Result, T> promise) : m_promise(promise) {}
+=======
+    Promise<Result, T>& m_promise;
+
+    WaitForCallbackValue(Promise<Result, T>& promise) : m_promise(promise) {}
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void operator()(Result result, const T& value) {
         if (result == ResultOk) {

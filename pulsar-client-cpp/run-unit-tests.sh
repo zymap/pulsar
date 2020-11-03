@@ -61,7 +61,11 @@ if [ $RES -eq 0 ]; then
     RES=$?
 
     echo "---- Running Python Function Instance unit tests"
+<<<<<<< HEAD
     bash /pulsar/pulsar-functions/instance/src/scripts/run_python_instance_tests.sh
+=======
+    bash $ROOT_DIR/pulsar-functions/instance/src/scripts/run_python_instance_tests.sh
+>>>>>>> f773c602c... Test pr 10 (#27)
     RES=$?
 
     popd

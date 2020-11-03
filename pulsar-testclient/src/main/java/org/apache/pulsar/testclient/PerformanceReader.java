@@ -92,8 +92,19 @@ public class PerformanceReader {
         @Parameter(names = { "--auth-plugin" }, description = "Authentication plugin class name")
         public String authPluginClassName;
 
+<<<<<<< HEAD
         @Parameter(names = {
                 "--auth-params" }, description = "Authentication parameters, e.g., \"key1:val1,key2:val2\"")
+=======
+        @Parameter(names = { "--listener-name" }, description = "Listener name for the broker.")
+        String listenerName = null;
+
+        @Parameter(
+            names = { "--auth-params" },
+            description = "Authentication parameters, whose format is determined by the implementation " +
+                "of method `configure` in authentication plugin class, for example \"key1:val1,key2:val2\" " +
+                "or \"{\"key1\":\"val1\",\"key2\":\"val2\"}.")
+>>>>>>> f773c602c... Test pr 10 (#27)
         public String authParams;
 
         @Parameter(names = {
@@ -103,12 +114,31 @@ public class PerformanceReader {
         @Parameter(names = {
                 "--trust-cert-file" }, description = "Path for the trusted TLS certificate file")
         public String tlsTrustCertsFilePath = "";
+<<<<<<< HEAD
+=======
+
+        @Parameter(names = {
+                "--tls-allow-insecure" }, description = "Allow insecure TLS connection")
+        public Boolean tlsAllowInsecureConnection = null;
+
+        @Parameter(names = { "-time",
+                "--test-duration" }, description = "Test duration in secs. If 0, it will keep consuming")
+        public long testTime = 0;
+
+        @Parameter(names = {"-ioThreads", "--num-io-threads"}, description = "Set the number of threads to be " +
+                "used for handling connections to brokers, default is 1 thread")
+        public int ioThreads = 1;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static void main(String[] args) throws Exception {
         final Arguments arguments = new Arguments();
         JCommander jc = new JCommander(arguments);
+<<<<<<< HEAD
         jc.setProgramName("pulsar-perf-reader");
+=======
+        jc.setProgramName("pulsar-perf read");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         try {
             jc.parse(args);
@@ -161,6 +191,14 @@ public class PerformanceReader {
             if (isBlank(arguments.tlsTrustCertsFilePath)) {
                 arguments.tlsTrustCertsFilePath = prop.getProperty("tlsTrustCertsFilePath", "");
             }
+<<<<<<< HEAD
+=======
+
+            if (arguments.tlsAllowInsecureConnection == null) {
+                arguments.tlsAllowInsecureConnection = Boolean.parseBoolean(prop
+                        .getProperty("tlsAllowInsecureConnection", ""));
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         // Dump config variables
@@ -171,8 +209,20 @@ public class PerformanceReader {
         final TopicName prefixTopicName = TopicName.get(arguments.topic.get(0));
 
         final RateLimiter limiter = arguments.rate > 0 ? RateLimiter.create(arguments.rate) : null;
+<<<<<<< HEAD
 
         ReaderListener<byte[]> listener = (reader, msg) -> {
+=======
+        long startTime = System.nanoTime();
+        long testEndTime = startTime + (long) (arguments.testTime * 1e9);
+        ReaderListener<byte[]> listener = (reader, msg) -> {
+            if (arguments.testTime > 0) {
+                if (System.nanoTime() > testEndTime) {
+                    log.info("------------------- DONE -----------------------");
+                    System.exit(0);
+                }
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
             messagesReceived.increment();
             bytesReceived.add(msg.getData().length);
 
@@ -185,7 +235,11 @@ public class PerformanceReader {
                 .serviceUrl(arguments.serviceURL) //
                 .connectionsPerBroker(arguments.maxConnections) //
                 .statsInterval(arguments.statsIntervalSeconds, TimeUnit.SECONDS) //
+<<<<<<< HEAD
                 .ioThreads(Runtime.getRuntime().availableProcessors()) //
+=======
+                .ioThreads(arguments.ioThreads) //
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .enableTls(arguments.useTls) //
                 .tlsTrustCertsFilePath(arguments.tlsTrustCertsFilePath);
 
@@ -193,6 +247,17 @@ public class PerformanceReader {
             clientBuilder.authentication(arguments.authPluginClassName, arguments.authParams);
         }
 
+<<<<<<< HEAD
+=======
+        if (arguments.tlsAllowInsecureConnection != null) {
+            clientBuilder.allowTlsInsecureConnection(arguments.tlsAllowInsecureConnection);
+        }
+
+        if (isNotBlank(arguments.listenerName)) {
+            clientBuilder.listenerName(arguments.listenerName);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         PulsarClient pulsarClient = clientBuilder.build();
 
         List<CompletableFuture<Reader<byte[]>>> futures = Lists.newArrayList();

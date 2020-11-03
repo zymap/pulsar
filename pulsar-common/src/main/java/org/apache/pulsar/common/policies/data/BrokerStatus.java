@@ -20,6 +20,12 @@ package org.apache.pulsar.common.policies.data;
 
 import com.google.common.collect.ComparisonChain;
 
+<<<<<<< HEAD
+=======
+/**
+ * Information about the broker status.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class BrokerStatus implements Comparable<BrokerStatus> {
     private String brokerAddress;
     private boolean active;

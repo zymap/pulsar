@@ -23,7 +23,11 @@ import org.apache.pulsar.functions.api.SerDe;
 import java.nio.ByteBuffer;
 
 /**
+<<<<<<< HEAD
  * This class takes care of serializing/deserializing CustomObject
+=======
+ * This class takes care of serializing/deserializing CustomObject.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class CustomObjectSerde implements SerDe<CustomObject> {
     @Override

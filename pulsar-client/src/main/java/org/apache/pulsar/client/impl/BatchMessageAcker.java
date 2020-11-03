@@ -23,12 +23,28 @@ import java.util.BitSet;
 
 class BatchMessageAcker {
 
+<<<<<<< HEAD
+=======
+    private BatchMessageAcker() {
+        this.bitSet = new BitSet();
+        this.batchSize = 0;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static BatchMessageAcker newAcker(int batchSize) {
         BitSet bitSet = new BitSet(batchSize);
         bitSet.set(0, batchSize);
         return new BatchMessageAcker(bitSet, batchSize);
     }
 
+<<<<<<< HEAD
+=======
+    // Use the param bitSet as the BatchMessageAcker's bitSet, don't care about the batchSize.
+    static BatchMessageAcker newAcker(BitSet bitSet) {
+        return new BatchMessageAcker(bitSet, -1);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     // bitset shared across messages in the same batch.
     private final int batchSize;
     private final BitSet bitSet;
@@ -53,6 +69,13 @@ class BatchMessageAcker {
         return bitSet.isEmpty();
     }
 
+<<<<<<< HEAD
+=======
+    public synchronized int getBitSetSize() {
+        return bitSet.size();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public synchronized boolean ackCumulative(int batchIndex) {
         // +1 since to argument is exclusive
         bitSet.clear(0, batchIndex + 1);
@@ -72,4 +95,15 @@ class BatchMessageAcker {
         return prevBatchCumulativelyAcked;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public String toString() {
+        return "BatchMessageAcker{" +
+                "batchSize=" + batchSize +
+                ", bitSet=" + bitSet +
+                ", prevBatchCumulativelyAcked=" + prevBatchCumulativelyAcked +
+                '}';
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -18,8 +18,12 @@
  */
 package org.apache.pulsar.common.net;
 
+<<<<<<< HEAD
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+=======
+import static org.testng.Assert.*;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.net.URI;
@@ -55,6 +59,10 @@ public class ServiceURITest {
             "pulsar://localhost:6650:6651/",    // invalid hostname pair
             "pulsar://localhost:xyz/",          // invalid port
             "pulsar://localhost:-6650/",        // negative port
+<<<<<<< HEAD
+=======
+            "pulsar://fec0:0:0:ffff::1:6650",   // missing brackets
+>>>>>>> f773c602c... Test pr 10 (#27)
         };
 
         for (String uri : uris) {
@@ -123,6 +131,57 @@ public class ServiceURITest {
     }
 
     @Test
+<<<<<<< HEAD
+=======
+    public void testIpv6Uri() {
+        String serviceUri = "pulsar://pulsaruser@[fec0:0:0:ffff::1]:6650/path/to/namespace";
+        assertServiceUri(
+            serviceUri,
+            "pulsar",
+            new String[0],
+            "pulsaruser",
+            new String[] { "[fec0:0:0:ffff::1]:6650" },
+            "/path/to/namespace");
+    }
+
+    @Test
+    public void testIpv6UriWithoutPulsarPort() {
+        String serviceUri = "pulsar://[fec0:0:0:ffff::1]/path/to/namespace";
+        assertServiceUri(
+            serviceUri,
+            "pulsar",
+            new String[0],
+            null,
+            new String[] { "[fec0:0:0:ffff::1]:6650" },
+            "/path/to/namespace");
+    }
+
+    @Test
+    public void testMultiIpv6Uri() {
+        String serviceUri = "pulsar://pulsaruser@[fec0:0:0:ffff::1]:6650,[fec0:0:0:ffff::2]:6650;[fec0:0:0:ffff::3]:6650/path/to/namespace";
+        assertServiceUri(
+                serviceUri,
+                "pulsar",
+                new String[0],
+                "pulsaruser",
+                new String[] { "[fec0:0:0:ffff::1]:6650", "[fec0:0:0:ffff::2]:6650", "[fec0:0:0:ffff::3]:6650" },
+                "/path/to/namespace");
+    }
+
+    @Test
+    public void testMultiIpv6UriWithoutPulsarPort() {
+        String serviceUri = "pulsar://pulsaruser@[fec0:0:0:ffff::1],[fec0:0:0:ffff::2];[fec0:0:0:ffff::3]/path/to/namespace";
+        assertServiceUri(
+                serviceUri,
+                "pulsar",
+                new String[0],
+                "pulsaruser",
+                new String[] { "[fec0:0:0:ffff::1]:6650", "[fec0:0:0:ffff::2]:6650", "[fec0:0:0:ffff::3]:6650" },
+                "/path/to/namespace");
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testMultipleHostsSemiColon() {
         String serviceUri = "pulsar://host1:6650;host2:6650;host3:6650/path/to/namespace";
         assertServiceUri(
@@ -178,7 +237,11 @@ public class ServiceURITest {
             "http",
             new String[0],
             null,
+<<<<<<< HEAD
             new String[] { "host1:8080", "host2:8080", "host3:8080" },
+=======
+            new String[] { "host1:80", "host2:80", "host3:80" },
+>>>>>>> f773c602c... Test pr 10 (#27)
             "/path/to/namespace");
     }
 
@@ -190,7 +253,11 @@ public class ServiceURITest {
             "https",
             new String[0],
             null,
+<<<<<<< HEAD
             new String[] { "host1:8443", "host2:8443", "host3:8443" },
+=======
+            new String[] { "host1:443", "host2:443", "host3:443" },
+>>>>>>> f773c602c... Test pr 10 (#27)
             "/path/to/namespace");
     }
 

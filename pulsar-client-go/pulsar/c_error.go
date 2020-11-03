@@ -42,7 +42,11 @@ type Error struct {
 
 func newError(result C.pulsar_result, msg string) error {
 	return &Error{
+<<<<<<< HEAD
 		msg:    fmt.Sprintf("%s: %s", msg, C.GoString(C.pulsar_result_str(result))),
+=======
+		msg:    fmt.Sprintf("%s: %v", msg, C.GoString(C.pulsar_result_str(result))),
+>>>>>>> f773c602c... Test pr 10 (#27)
 		result: Result(result),
 	}
 }

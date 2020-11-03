@@ -20,3 +20,7 @@
 name: hdfs2
 description: Writes data into HDFS 2.x
 sinkClass: org.apache.pulsar.io.hdfs2.sink.text.HdfsStringSink
+<<<<<<< HEAD
+=======
+sinkConfigClass: org.apache.pulsar.io.hdfs2.sink.HdfsSinkConfig
+>>>>>>> f773c602c... Test pr 10 (#27)

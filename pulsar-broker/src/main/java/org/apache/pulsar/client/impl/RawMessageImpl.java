@@ -18,20 +18,34 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import io.netty.buffer.Unpooled;
 
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.RawMessage;
+=======
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.io.IOException;
+
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.RawMessage;
+import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.proto.PulsarApi.MessageIdData;
 import org.apache.pulsar.common.util.protobuf.ByteBufCodedInputStream;
 import org.apache.pulsar.common.util.protobuf.ByteBufCodedOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class RawMessageImpl implements RawMessage {
     private static final Logger log = LoggerFactory.getLogger(RawMessageImpl.class);
 
@@ -74,7 +88,11 @@ public class RawMessageImpl implements RawMessage {
         int headerSize = 4 /* IdSize */ + idSize + 4 /* PayloadAndMetadataSize */;
         int totalSize = headerSize + headersAndPayload.readableBytes();
 
+<<<<<<< HEAD
         ByteBuf buf = PooledByteBufAllocator.DEFAULT.buffer(totalSize);
+=======
+        ByteBuf buf = PulsarByteBufAllocator.DEFAULT.buffer(totalSize);
+>>>>>>> f773c602c... Test pr 10 (#27)
         buf.writeInt(idSize);
         try {
             ByteBufCodedOutputStream outStream = ByteBufCodedOutputStream.get(buf);

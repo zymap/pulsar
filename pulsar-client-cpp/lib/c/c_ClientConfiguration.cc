@@ -78,7 +78,11 @@ class PulsarCLogger : public pulsar::Logger {
     PulsarCLogger(const std::string &file, pulsar_logger logger, void *ctx)
         : file_(file), logger_(logger), ctx_(ctx) {}
 
+<<<<<<< HEAD
     bool isEnabled(Level level) { return level >= pulsar::Logger::INFO; }
+=======
+    bool isEnabled(Level level) { return level >= pulsar::Logger::LEVEL_INFO; }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void log(Level level, int line, const std::string &message) {
         logger_((pulsar_logger_level_t)level, file_.c_str(), line, message.c_str(), ctx_);
@@ -99,7 +103,11 @@ class PulsarCLoggerFactory : public pulsar::LoggerFactory {
 
 void pulsar_client_configuration_set_logger(pulsar_client_configuration_t *conf, pulsar_logger logger,
                                             void *ctx) {
+<<<<<<< HEAD
     conf->conf.setLogger(pulsar::LoggerFactoryPtr(new PulsarCLoggerFactory(logger, ctx)));
+=======
+    conf->conf.setLogger(new PulsarCLoggerFactory(logger, ctx));
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 void pulsar_client_configuration_set_use_tls(pulsar_client_configuration_t *conf, int useTls) {

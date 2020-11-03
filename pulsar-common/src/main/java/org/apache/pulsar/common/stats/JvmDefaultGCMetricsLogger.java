@@ -18,10 +18,15 @@
  */
 package org.apache.pulsar.common.stats;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Maps;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +34,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Maps;
 
 @SuppressWarnings("restriction")
+=======
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@SuppressWarnings({"restriction", "checkstyle:JavadocType"})
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class JvmDefaultGCMetricsLogger implements JvmGCMetricsLogger {
 
     private static final Logger log = LoggerFactory.getLogger(JvmDefaultGCMetricsLogger.class);
@@ -47,10 +58,20 @@ public class JvmDefaultGCMetricsLogger implements JvmGCMetricsLogger {
         try {
             runtime = sun.management.ManagementFactoryHelper.getHotspotRuntimeMBean();
         } catch (Exception e) {
+<<<<<<< HEAD
             log.warn("Failed to get Runtime bean", e.getMessage());
         }
     }
 
+=======
+            log.warn("Failed to get Runtime bean", e);
+        }
+    }
+
+    /**
+     * Metrics for the Garbage Collector.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     static class GCMetrics {
         volatile long accumulatedGcCount = 0;
         volatile long currentGcCount = 0;

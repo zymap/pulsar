@@ -21,10 +21,18 @@ package org.apache.pulsar.proxy.server;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.bookkeeper.test.PortManager;
+=======
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.Optional;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.broker.authentication.AuthenticationProviderTls;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
@@ -32,19 +40,31 @@ import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.impl.auth.AuthenticationTls;
 import org.apache.pulsar.common.configuration.PulsarConfigurationLoader;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.policies.data.ClusterData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.TenantInfo;
 import org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport;
 import org.apache.pulsar.policies.data.loadbalancer.LoadReport;
 import org.eclipse.jetty.servlet.ServletHolder;
+<<<<<<< HEAD
 
+=======
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class AuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
     private static final Logger LOG = LoggerFactory.getLogger(AuthedAdminProxyHandlerTest.class);
 
@@ -62,8 +82,13 @@ public class AuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
         // enable tls and auth&auth at broker
         conf.setAuthenticationEnabled(true);
         conf.setAuthorizationEnabled(true);
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setTlsTrustCertsFilePath(getTlsFile("ca.cert"));
         conf.setTlsCertificateFilePath(getTlsFile("broker.cert"));
         conf.setTlsKeyFilePath(getTlsFile("broker.key-pk8"));
@@ -71,16 +96,27 @@ public class AuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
         conf.setSuperUserRoles(ImmutableSet.of("admin"));
         conf.setProxyRoles(ImmutableSet.of("proxy"));
         conf.setAuthenticationProviders(ImmutableSet.of(AuthenticationProviderTls.class.getName()));
+<<<<<<< HEAD
+=======
+        conf.setNumExecutorThreadPoolSize(5);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         super.internalSetup();
 
         // start proxy service
         proxyConfig.setAuthenticationEnabled(true);
         proxyConfig.setAuthorizationEnabled(true);
+<<<<<<< HEAD
         proxyConfig.setServicePort(PortManager.nextFreePort());
         proxyConfig.setServicePortTls(PortManager.nextFreePort());
         proxyConfig.setWebServicePort(PortManager.nextFreePort());
         proxyConfig.setWebServicePortTls(PortManager.nextFreePort());
+=======
+        proxyConfig.setServicePort(Optional.of(0));
+        proxyConfig.setServicePortTls(Optional.of(0));
+        proxyConfig.setWebServicePort(Optional.of(0));
+        proxyConfig.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         proxyConfig.setTlsEnabledWithBroker(true);
 
         // enable tls and auth&auth at proxy
@@ -130,7 +166,11 @@ public class AuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
 
     PulsarAdmin getAdminClient(String user) throws Exception {
         return PulsarAdmin.builder()
+<<<<<<< HEAD
             .serviceHttpUrl("https://localhost:" + proxyConfig.getWebServicePortTls().get())
+=======
+            .serviceHttpUrl("https://localhost:" + webServer.getListenPortHTTPS().get())
+>>>>>>> f773c602c... Test pr 10 (#27)
             .tlsTrustCertsFilePath(getTlsFile("ca.cert"))
             .allowTlsInsecureConnection(false)
             .authentication(AuthenticationTls.class.getName(),
@@ -151,6 +191,11 @@ public class AuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
                 // expected
             }
 
+<<<<<<< HEAD
+=======
+            brokerAdmin.clusters().createCluster(configClusterName, new ClusterData(brokerUrl.toString()));
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             brokerAdmin.tenants().createTenant("tenant1",
                                                new TenantInfo(ImmutableSet.of("user1"),
                                                               ImmutableSet.of(configClusterName)));

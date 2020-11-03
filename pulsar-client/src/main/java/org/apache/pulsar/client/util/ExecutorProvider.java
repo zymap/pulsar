@@ -25,10 +25,20 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+<<<<<<< HEAD
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.collect.Lists;
 
+=======
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ExecutorProvider {
     private final int numThreads;
     private final List<ExecutorService> executors;
@@ -49,6 +59,17 @@ public class ExecutorProvider {
     }
 
     public void shutdownNow() {
+<<<<<<< HEAD
         executors.forEach(executor -> executor.shutdownNow());
+=======
+        executors.forEach(executor -> {
+            executor.shutdownNow();
+            try {
+                executor.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.warn("Shutdown of thread pool was interrupted");
+            }
+        });
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

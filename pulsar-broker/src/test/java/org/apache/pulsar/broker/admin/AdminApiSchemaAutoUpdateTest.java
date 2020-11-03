@@ -28,7 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.broker.service.Topic;
+<<<<<<< HEAD
 import org.apache.pulsar.broker.service.schema.SchemaCompatibilityStrategy;
+=======
+import org.apache.pulsar.common.policies.data.SchemaCompatibilityStrategy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
@@ -54,7 +58,11 @@ public class AdminApiSchemaAutoUpdateTest extends MockedPulsarServiceBaseTest {
         super.internalSetup();
 
         // Setup namespaces
+<<<<<<< HEAD
         admin.clusters().createCluster("test", new ClusterData("http://127.0.0.1" + ":" + BROKER_WEBSERVICE_PORT));
+=======
+        admin.clusters().createCluster("test", new ClusterData(pulsar.getWebServiceAddress()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         TenantInfo tenantInfo = new TenantInfo(Sets.newHashSet("role1", "role2"), Sets.newHashSet("test"));
         admin.tenants().createTenant("prop-xyz", tenantInfo);
         admin.namespaces().createNamespace("prop-xyz/ns1", Sets.newHashSet("test"));
@@ -184,10 +192,17 @@ public class AdminApiSchemaAutoUpdateTest extends MockedPulsarServiceBaseTest {
 
         for (int i = 0; i < 100; i++) {
             Topic t = pulsar.getBrokerService().getTopicIfExists(topicName).get().get();
+<<<<<<< HEAD
             // get around fact that field is private and topic can be persisent or non-persistent
             Field strategy = t.getClass().getDeclaredField("schemaCompatibilityStrategy");
             strategy.setAccessible(true);
             if (((SchemaCompatibilityStrategy)strategy.get(t)) == SchemaCompatibilityStrategy.FULL) {
+=======
+            // get around fact that field is private and topic can be persistent or non-persistent
+            Field strategy = t.getClass().getSuperclass().getDeclaredField("schemaCompatibilityStrategy");
+            strategy.setAccessible(true);
+            if (strategy.get(t) == SchemaCompatibilityStrategy.FULL) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 break;
             }
             Thread.sleep(100);

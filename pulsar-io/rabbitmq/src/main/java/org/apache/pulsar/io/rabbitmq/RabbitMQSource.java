@@ -47,13 +47,18 @@ import org.slf4j.LoggerFactory;
     name = "rabbitmq",
     type = IOType.SOURCE,
     help = "A simple connector to move messages from a RabbitMQ queue to a Pulsar topic",
+<<<<<<< HEAD
     configClass = RabbitMQConfig.class)
+=======
+    configClass = RabbitMQSourceConfig.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class RabbitMQSource extends PushSource<byte[]> {
 
     private static Logger logger = LoggerFactory.getLogger(RabbitMQSource.class);
 
     private Connection rabbitMQConnection;
     private Channel rabbitMQChannel;
+<<<<<<< HEAD
     private RabbitMQConfig rabbitMQConfig;
 
     @Override
@@ -66,15 +71,38 @@ public class RabbitMQSource extends PushSource<byte[]> {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setUri(rabbitMQConfig.getAmqUri());
         rabbitMQConnection = connectionFactory.newConnection(rabbitMQConfig.getConnectionName());
+=======
+    private RabbitMQSourceConfig rabbitMQSourceConfig;
+
+    @Override
+    public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception {
+        rabbitMQSourceConfig = RabbitMQSourceConfig.load(config);
+        rabbitMQSourceConfig.validate();
+
+        ConnectionFactory connectionFactory = rabbitMQSourceConfig.createConnectionFactory();
+        rabbitMQConnection = connectionFactory.newConnection(rabbitMQSourceConfig.getConnectionName());
+>>>>>>> f773c602c... Test pr 10 (#27)
         logger.info("A new connection to {}:{} has been opened successfully.",
                 rabbitMQConnection.getAddress().getCanonicalHostName(),
                 rabbitMQConnection.getPort()
         );
         rabbitMQChannel = rabbitMQConnection.createChannel();
+<<<<<<< HEAD
         rabbitMQChannel.queueDeclare(rabbitMQConfig.getQueueName(), false, false, false, null);
         com.rabbitmq.client.Consumer consumer = new RabbitMQConsumer(this, rabbitMQChannel);
         rabbitMQChannel.basicConsume(rabbitMQConfig.getQueueName(), consumer);
         logger.info("A consumer for queue {} has been successfully started.", rabbitMQConfig.getQueueName());
+=======
+        rabbitMQChannel.queueDeclare(rabbitMQSourceConfig.getQueueName(), false, false, false, null);
+        logger.info("Setting channel.basicQos({}, {}).",
+                rabbitMQSourceConfig.getPrefetchCount(),
+                rabbitMQSourceConfig.isPrefetchGlobal()
+        );
+        rabbitMQChannel.basicQos(rabbitMQSourceConfig.getPrefetchCount(), rabbitMQSourceConfig.isPrefetchGlobal());
+        com.rabbitmq.client.Consumer consumer = new RabbitMQConsumer(this, rabbitMQChannel);
+        rabbitMQChannel.basicConsume(rabbitMQSourceConfig.getQueueName(), consumer);
+        logger.info("A consumer for queue {} has been successfully started.", rabbitMQSourceConfig.getQueueName());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -94,6 +122,13 @@ public class RabbitMQSource extends PushSource<byte[]> {
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
             source.consume(new RabbitMQRecord(Optional.ofNullable(envelope.getRoutingKey()), body));
+<<<<<<< HEAD
+=======
+            long deliveryTag = envelope.getDeliveryTag();
+            // positively acknowledge all deliveries up to this delivery tag to reduce network traffic
+            // since manual message acknowledgments are turned on by default
+            this.getChannel().basicAck(deliveryTag, true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 

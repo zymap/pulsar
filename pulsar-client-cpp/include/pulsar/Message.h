@@ -24,10 +24,16 @@
 
 #include <memory>
 
+<<<<<<< HEAD
 #include "MessageId.h"
 
 #pragma GCC visibility push(default)
 
+=======
+#include <pulsar/defines.h>
+#include "MessageId.h"
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 namespace proto {
 class CommandMessage;
@@ -40,7 +46,11 @@ class MessageBuilder;
 class MessageImpl;
 class PulsarWrapper;
 
+<<<<<<< HEAD
 class Message {
+=======
+class PULSAR_PUBLIC Message {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     typedef std::map<std::string, std::string> StringMap;
 
@@ -105,6 +115,15 @@ class Message {
     const MessageId& getMessageId() const;
 
     /**
+<<<<<<< HEAD
+=======
+     * Set the unique message ID.
+     *
+     */
+    void setMessageId(const MessageId& messageID) const;
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get the partition key for this message
      * @return key string that is hashed to determine message's topic partition
      */
@@ -112,6 +131,24 @@ class Message {
     bool hasPartitionKey() const;
 
     /**
+<<<<<<< HEAD
+=======
+     * Get the ordering key of the message
+     *
+     * @return the ordering key of the message
+     */
+    const std::string& getOrderingKey() const;
+
+    /**
+     * Check whether the message has a ordering key
+     *
+     * @return true if the ordering key was set while creating the message
+     *         false if the ordering key was not set while creating the message
+     */
+    bool hasOrderingKey() const;
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get the UTC based timestamp in milliseconds referring to when the message was published by the client
      * producer
      */
@@ -127,6 +164,26 @@ class Message {
      */
     const std::string& getTopicName() const;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get the redelivery count for this message
+     */
+    const int getRedeliveryCount() const;
+
+    /**
+     * Check if schema version exists
+     */
+    bool hasSchemaVersion() const;
+
+    /**
+     * Get the schema version
+     */
+    const std::string& getSchemaVersion() const;
+
+    bool operator==(const Message& msg) const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     typedef std::shared_ptr<MessageImpl> MessageImplPtr;
     MessageImplPtr impl_;
@@ -144,6 +201,7 @@ class Message {
     friend class ConsumerImpl;
     friend class ProducerImpl;
     friend class Commands;
+<<<<<<< HEAD
     friend class BatchMessageContainer;
     friend class BatchAcknowledgementTracker;
     friend class PulsarWrapper;
@@ -154,4 +212,17 @@ class Message {
 }  // namespace pulsar
 
 #pragma GCC visibility pop
+=======
+    friend class BatchMessageContainerBase;
+    friend class BatchAcknowledgementTracker;
+    friend class PulsarWrapper;
+    friend class MessageBatch;
+    friend struct OpSendMsg;
+
+    friend PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const StringMap& map);
+    friend PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const Message& msg);
+};
+}  // namespace pulsar
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* MESSAGE_HPP_ */

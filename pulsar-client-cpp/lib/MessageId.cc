@@ -17,6 +17,10 @@
  * under the License.
  */
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/MessageId.h>
 
 #include "PulsarApi.pb.h"
@@ -24,6 +28,10 @@
 
 #include <iostream>
 #include <limits>
+<<<<<<< HEAD
+=======
+#include <stdexcept>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <tuple>
 #include <math.h>
 #include <memory>
@@ -75,7 +83,11 @@ void MessageId::serialize(std::string& result) const {
 MessageId MessageId::deserialize(const std::string& serializedMessageId) {
     proto::MessageIdData idData;
     if (!idData.ParseFromString(serializedMessageId)) {
+<<<<<<< HEAD
         throw "Failed to parse serialized message id";
+=======
+        throw std::invalid_argument("Failed to parse serialized message id");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     return MessageId(idData.partition(), idData.ledgerid(), idData.entryid(), idData.batch_index());
@@ -89,6 +101,7 @@ int32_t MessageId::batchIndex() const { return impl_->batchIndex_; }
 
 int32_t MessageId::partition() const { return impl_->partition_; }
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 std::ostream& operator<<(std::ostream& s, const pulsar::MessageId& messageId) {
@@ -98,6 +111,15 @@ std::ostream& operator<<(std::ostream& s, const pulsar::MessageId& messageId) {
 }
 
 bool MessageId::operator<(const MessageId& other) const {
+=======
+PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const pulsar::MessageId& messageId) {
+    s << '(' << messageId.impl_->ledgerId_ << ',' << messageId.impl_->entryId_ << ','
+      << messageId.impl_->partition_ << ',' << messageId.impl_->batchIndex_ << ')';
+    return s;
+}
+
+PULSAR_PUBLIC bool MessageId::operator<(const MessageId& other) const {
+>>>>>>> f773c602c... Test pr 10 (#27)
     if (impl_->ledgerId_ < other.impl_->ledgerId_) {
         return true;
     } else if (impl_->ledgerId_ > other.impl_->ledgerId_) {
@@ -117,6 +139,7 @@ bool MessageId::operator<(const MessageId& other) const {
     }
 }
 
+<<<<<<< HEAD
 bool MessageId::operator<=(const MessageId& other) const { return *this < other || *this == other; }
 
 bool MessageId::operator>(const MessageId& other) const { return !(*this <= other); }
@@ -124,10 +147,22 @@ bool MessageId::operator>(const MessageId& other) const { return !(*this <= othe
 bool MessageId::operator>=(const MessageId& other) const { return !(*this < other); }
 
 bool MessageId::operator==(const MessageId& other) const {
+=======
+PULSAR_PUBLIC bool MessageId::operator<=(const MessageId& other) const {
+    return *this < other || *this == other;
+}
+
+PULSAR_PUBLIC bool MessageId::operator>(const MessageId& other) const { return !(*this <= other); }
+
+PULSAR_PUBLIC bool MessageId::operator>=(const MessageId& other) const { return !(*this < other); }
+
+PULSAR_PUBLIC bool MessageId::operator==(const MessageId& other) const {
+>>>>>>> f773c602c... Test pr 10 (#27)
     return impl_->ledgerId_ == other.impl_->ledgerId_ && impl_->entryId_ == other.impl_->entryId_ &&
            impl_->batchIndex_ == other.impl_->batchIndex_ && impl_->partition_ == other.impl_->partition_;
 }
 
+<<<<<<< HEAD
 bool MessageId::operator!=(const MessageId& other) const { return !(*this == other); }
 
 const std::string& MessageId::getTopicName() const { return impl_->getTopicName(); }
@@ -135,4 +170,14 @@ const std::string& MessageId::getTopicName() const { return impl_->getTopicName(
 void MessageId::setTopicName(const std::string& topicName) { return impl_->setTopicName(topicName); }
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC bool MessageId::operator!=(const MessageId& other) const { return !(*this == other); }
+
+PULSAR_PUBLIC const std::string& MessageId::getTopicName() const { return impl_->getTopicName(); }
+
+PULSAR_PUBLIC void MessageId::setTopicName(const std::string& topicName) {
+    return impl_->setTopicName(topicName);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

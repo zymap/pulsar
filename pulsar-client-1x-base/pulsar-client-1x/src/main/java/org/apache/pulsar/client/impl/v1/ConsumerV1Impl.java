@@ -138,6 +138,17 @@ public class ConsumerV1Impl implements Consumer {
         consumer.seek(arg0);
     }
 
+<<<<<<< HEAD
+=======
+    public void seek(long arg0) throws PulsarClientException {
+        consumer.seek(arg0);
+    }
+
+    public CompletableFuture<Void> seekAsync(long arg0) {
+        return consumer.seekAsync(arg0);
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public CompletableFuture<Void> seekAsync(MessageId arg0) {
         return consumer.seekAsync(arg0);
     }
@@ -150,4 +161,14 @@ public class ConsumerV1Impl implements Consumer {
         return consumer.unsubscribeAsync();
     }
 
+<<<<<<< HEAD
+=======
+    public MessageId getLastMessageId() throws PulsarClientException {
+        return consumer.getLastMessageId();
+    }
+
+    public CompletableFuture<MessageId> getLastMessageIdAsync() {
+        return consumer.getLastMessageIdAsync();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -53,6 +53,7 @@ public abstract class CanalAbstractSource<V> extends PushSource<V> {
 
     private static final String DESTINATION = "destination";
 
+<<<<<<< HEAD
     protected final Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
 
         @Override
@@ -60,6 +61,9 @@ public abstract class CanalAbstractSource<V> extends PushSource<V> {
             log.error("[{}] parse events has an error", t.getName(), e);
         }
     };
+=======
+    protected final Thread.UncaughtExceptionHandler handler = (t, e) -> log.error("[{}] parse events has an error", t.getName(), e);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @Override
     public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception {
@@ -82,6 +86,7 @@ public abstract class CanalAbstractSource<V> extends PushSource<V> {
 
     protected void start() {
         Objects.requireNonNull(connector, "connector is null");
+<<<<<<< HEAD
         thread = new Thread(new Runnable() {
 
             @Override
@@ -90,6 +95,9 @@ public abstract class CanalAbstractSource<V> extends PushSource<V> {
             }
         });
 
+=======
+        thread = new Thread(this::process);
+>>>>>>> f773c602c... Test pr 10 (#27)
         thread.setName("canal source thread");
         thread.setUncaughtExceptionHandler(handler);
         running = true;

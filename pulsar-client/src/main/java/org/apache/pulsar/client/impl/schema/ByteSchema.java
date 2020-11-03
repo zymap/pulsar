@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.client.impl.schema;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.Schema;
+=======
+import io.netty.buffer.ByteBuf;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.SchemaSerializationException;
 import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
@@ -26,18 +30,36 @@ import org.apache.pulsar.common.schema.SchemaType;
 /**
  * A schema for 'Byte'.
  */
+<<<<<<< HEAD
 public class ByteSchema implements Schema<Byte> {
+=======
+public class ByteSchema extends AbstractSchema<Byte> {
+
+    private static final ByteSchema INSTANCE;
+    private static final SchemaInfo SCHEMA_INFO;
+
+    static {
+        SCHEMA_INFO = new SchemaInfo()
+            .setName("INT8")
+            .setType(SchemaType.INT8)
+            .setSchema(new byte[0]);
+        INSTANCE = new ByteSchema();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static ByteSchema of() {
         return INSTANCE;
     }
 
+<<<<<<< HEAD
     private static final ByteSchema INSTANCE = new ByteSchema();
     private static final SchemaInfo SCHEMA_INFO = new SchemaInfo()
         .setName("INT8")
         .setType(SchemaType.INT8)
         .setSchema(new byte[0]);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public void validate(byte[] message) {
         if (message.length != 1) {
@@ -46,6 +68,16 @@ public class ByteSchema implements Schema<Byte> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void validate(ByteBuf message) {
+        if (message.readableBytes() != 1) {
+            throw new SchemaSerializationException("Size of data received by ByteSchema is not 1");
+        }
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public byte[] encode(Byte message) {
         if (null == message) {
             return null;
@@ -64,6 +96,18 @@ public class ByteSchema implements Schema<Byte> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public Byte decode(ByteBuf byteBuf) {
+        if (null == byteBuf) {
+            return null;
+        }
+        validate(byteBuf);
+        return byteBuf.getByte(0);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaInfo getSchemaInfo() {
         return SCHEMA_INFO;
     }

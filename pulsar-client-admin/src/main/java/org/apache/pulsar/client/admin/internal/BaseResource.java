@@ -19,6 +19,11 @@
 package org.apache.pulsar.client.admin.internal;
 
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.Map.Entry;
+import java.util.Set;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -37,18 +42,27 @@ import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.admin.PulsarAdminException.ConflictException;
 import org.apache.pulsar.client.admin.PulsarAdminException.ConnectException;
 import org.apache.pulsar.client.admin.PulsarAdminException.GettingAuthenticationDataException;
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.PulsarAdminException.HttpErrorException;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAllowedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.ServerSideErrorException;
 import org.apache.pulsar.client.api.Authentication;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.AuthenticationDataProvider;
+import org.apache.pulsar.client.api.PulsarClientException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.ErrorData;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 public abstract class BaseResource {
     private static final Logger log = LoggerFactory.getLogger(BaseResource.class);
 
@@ -56,10 +70,25 @@ public abstract class BaseResource {
 
     protected BaseResource(Authentication auth) {
         this.auth = auth;
+=======
+/**
+ * Abstract base class for all admin resources.
+ */
+public abstract class BaseResource {
+    private static final Logger log = LoggerFactory.getLogger(BaseResource.class);
+
+    protected final Authentication auth;
+    protected final long readTimeoutMs;
+
+    protected BaseResource(Authentication auth, long readTimeoutMs) {
+        this.auth = auth;
+        this.readTimeoutMs = readTimeoutMs;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public Builder request(final WebTarget target) throws PulsarAdminException {
         try {
+<<<<<<< HEAD
             Builder builder = target.request(MediaType.APPLICATION_JSON);
             // Add headers for authentication if any
             if (auth != null && auth.getAuthData().hasDataForHttp()) {
@@ -71,6 +100,55 @@ public abstract class BaseResource {
         } catch (Throwable t) {
             throw new GettingAuthenticationDataException(t);
         }
+=======
+            return requestAsync(target).get();
+        } catch (Exception e) {
+            throw new GettingAuthenticationDataException(e);
+        }
+    }
+
+    // do the authentication stage, and once authentication completed return a Builder
+    public CompletableFuture<Builder> requestAsync(final WebTarget target) {
+        CompletableFuture<Builder> builderFuture = new CompletableFuture<>();
+        CompletableFuture<Map<String, String>> authFuture = new CompletableFuture<>();
+        try {
+            AuthenticationDataProvider authData = auth.getAuthData(target.getUri().getHost());
+
+            if (authData.hasDataForHttp()) {
+                auth.authenticationStage(target.getUri().toString(), authData, null, authFuture);
+            } else {
+                authFuture.complete(null);
+            }
+
+            // auth complete, return a new Builder
+            authFuture.whenComplete((respHeaders, ex) -> {
+                if (ex != null) {
+                    log.warn("[{}] Failed to perform http request at auth stage: {}", target.getUri(),
+                        ex.getMessage());
+                    builderFuture.completeExceptionally(new PulsarClientException(ex));
+                    return;
+                }
+
+                try {
+                    Builder builder = target.request(MediaType.APPLICATION_JSON);
+                    if (authData.hasDataForHttp()) {
+                        Set<Entry<String, String>> headers =
+                            auth.newRequestHeader(target.getUri().toString(), authData, respHeaders);
+                        if (headers != null) {
+                            headers.forEach(entry -> builder.header(entry.getKey(), entry.getValue()));
+                        }
+                    }
+                    builderFuture.complete(builder);
+                } catch (Throwable t) {
+                    builderFuture.completeExceptionally(new GettingAuthenticationDataException(t));
+                }
+            });
+        } catch (Throwable t) {
+            builderFuture.completeExceptionally(new GettingAuthenticationDataException(t));
+        }
+
+        return builderFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public <T> CompletableFuture<Void> asyncPutRequest(final WebTarget target, Entity<T> entity) {
@@ -150,7 +228,13 @@ public abstract class BaseResource {
     }
 
     public PulsarAdminException getApiException(Throwable e) {
+<<<<<<< HEAD
         if (e instanceof ServiceUnavailableException) {
+=======
+        if (e instanceof PulsarAdminException) {
+            return (PulsarAdminException) e;
+        } else if (e instanceof ServiceUnavailableException) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (e.getCause() instanceof java.net.ConnectException) {
                 return new ConnectException(e.getCause());
             } else {
@@ -188,6 +272,7 @@ public abstract class BaseResource {
         }
     }
 
+<<<<<<< HEAD
     public WebApplicationException getApiException(Response response) {
         if (response.getStatusInfo().equals(Response.Status.OK)) {
             return null;
@@ -201,4 +286,22 @@ public abstract class BaseResource {
         }
     }
 
+=======
+    public PulsarAdminException getApiException(Response response) {
+        if (response.getStatusInfo().equals(Response.Status.OK)) {
+            return null;
+        }
+        try {
+            if (response.getStatus() >= 500) {
+                throw new ServerErrorException(response);
+            } else if (response.getStatus() >= 400) {
+                throw new ClientErrorException(response);
+            } else {
+                throw new WebApplicationException(response);
+            }
+        } catch (Exception e) {
+            return getApiException(e);
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

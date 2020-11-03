@@ -41,6 +41,14 @@ public class ConsumerStatsDisabled implements ConsumerStatsRecorder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void incrementNumBatchReceiveFailed() {
+        // Do nothing
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void incrementNumAcksSent(long numAcks) {
         // Do nothing
     }
@@ -76,6 +84,14 @@ public class ConsumerStatsDisabled implements ConsumerStatsRecorder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public long getNumBatchReceiveFailed() {
+        return 0;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public long getTotalMsgsReceived() {
         return 0;
     }
@@ -91,6 +107,14 @@ public class ConsumerStatsDisabled implements ConsumerStatsRecorder {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public long getTotaBatchReceivedFailed() {
+        return 0;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public long getTotalAcksSent() {
         return 0;
     }

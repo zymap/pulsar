@@ -18,10 +18,16 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import org.apache.pulsar.common.policies.data.PersistencePolicies;
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 public class PersistencePoliciesTest {
@@ -30,7 +36,12 @@ public class PersistencePoliciesTest {
     public void testPersistencePolicies() {
         PersistencePolicies policy0 = new PersistencePolicies();
         PersistencePolicies policy1 = new PersistencePolicies();
+<<<<<<< HEAD
         assertTrue(policy0.equals(policy1));
         assertFalse(policy0.equals(new OldPolicies()));
+=======
+        assertEquals(policy1, policy0);
+        assertNotEquals(new OldPolicies(), policy0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

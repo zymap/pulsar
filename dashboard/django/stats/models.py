@@ -64,16 +64,36 @@ class Property(Model):
 
 @python_2_unicode_compatible
 class Namespace(Model):
+<<<<<<< HEAD
     name = CharField(max_length=200, unique=True)
     property = ForeignKey(Property, on_delete=SET_NULL, db_index=True, null=True)
     clusters = ManyToManyField(Cluster)
+=======
+    name = CharField(max_length=200)
+    property = ForeignKey(Property, on_delete=SET_NULL, db_index=True, null=True)
+    clusters = ManyToManyField(Cluster)
+    timestamp = BigIntegerField(db_index=True)
+    deleted = BooleanField(default=False)
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     def is_global(self):
         return self.name.split('/', 2)[1] == 'global'
 
+<<<<<<< HEAD
     def __str__(self):
         return self.name
 
+=======
+    def is_v2(self):
+        return len(self.name.split('/', 2)) == 2
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        index_together = ('name', 'timestamp', 'deleted')
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 @python_2_unicode_compatible
 class Bundle(Model):
     timestamp = BigIntegerField(db_index=True)
@@ -95,6 +115,10 @@ class Topic(Model):
     bundle = ForeignKey(Bundle, on_delete=SET_NULL, db_index=True, null=True)
 
     timestamp              = BigIntegerField(db_index=True)
+<<<<<<< HEAD
+=======
+    deleted                = BooleanField(default=False)
+>>>>>>> f773c602c... Test pr 10 (#27)
     averageMsgSize         = IntegerField(default=0)
     msgRateIn              = DecimalField(max_digits = 12, decimal_places=1, default=0)
     msgRateOut             = DecimalField(max_digits = 12, decimal_places=1, default=0)
@@ -124,6 +148,12 @@ class Topic(Model):
     def is_global(self):
         return self.namespace.is_global()
 
+<<<<<<< HEAD
+=======
+    def is_v2(self):
+        return self.namespace.is_v2()
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def url_name(self):
         return '/'.join(self.name.split('://', 1))
 
@@ -134,7 +164,11 @@ class Topic(Model):
         return url
 
     class Meta:
+<<<<<<< HEAD
         index_together = ('name', 'cluster', 'timestamp')
+=======
+        index_together = ('name', 'cluster', 'timestamp', 'deleted')
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     def __str__(self):
         return self.name
@@ -146,6 +180,10 @@ class Subscription(Model):
     namespace        = ForeignKey(Namespace, on_delete=SET_NULL, null=True, db_index=True)
 
     timestamp        = BigIntegerField(db_index=True)
+<<<<<<< HEAD
+=======
+    deleted          = BooleanField(default=False)
+>>>>>>> f773c602c... Test pr 10 (#27)
     msgBacklog       = BigIntegerField(default=0)
     msgRateExpired   = DecimalField(max_digits = 12, decimal_places=1, default=0)
     msgRateOut       = DecimalField(max_digits = 12, decimal_places=1, default=0)
@@ -161,6 +199,12 @@ class Subscription(Model):
     subscriptionType = CharField(max_length=1, choices=SUBSCRIPTION_TYPES, default='N')
     unackedMessages  = BigIntegerField(default=0)
 
+<<<<<<< HEAD
+=======
+    class Meta:
+        unique_together = ('name', 'topic', 'timestamp')
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     def __str__(self):
         return self.name
 
@@ -172,7 +216,11 @@ class Consumer(Model):
     address = CharField(max_length=64, null=True)
     availablePermits = IntegerField(default=0)
     connectedSince   = DateTimeField(null=True)
+<<<<<<< HEAD
     consumerName     = CharField(max_length=64, null=True)
+=======
+    consumerName     = CharField(max_length=256, null=True)
+>>>>>>> f773c602c... Test pr 10 (#27)
     msgRateOut       = DecimalField(max_digits = 12, decimal_places=1, default=0)
     msgRateRedeliver = DecimalField(max_digits = 12, decimal_places=1, default=0)
     msgThroughputOut = DecimalField(max_digits = 12, decimal_places=1, default=0)

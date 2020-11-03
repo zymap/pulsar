@@ -19,6 +19,7 @@
 package org.apache.pulsar.common.policies.data;
 
 /**
+<<<<<<< HEAD
  * Authorization action for Pulsar policies
  */
 public enum AuthAction {
@@ -27,4 +28,23 @@ public enum AuthAction {
 
     /** Permission to consume messages */
     consume,
+=======
+ * Authorization action for Pulsar policies.
+ */
+public enum AuthAction {
+    /** Permission to produce/publish messages. */
+    produce,
+
+    /** Permission to consume messages. */
+    consume,
+
+    /** Permissions for functions ops. **/
+    functions,
+
+    /** Permissions for sources ops. **/
+    sources,
+
+    /** Permissions for sinks ops. **/
+    sinks,
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

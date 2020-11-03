@@ -61,13 +61,27 @@ static inline void _pulsar_producer_close_async(pulsar_producer_t *producer, voi
     pulsar_producer_close_async(producer, pulsarProducerCloseCallbackProxy, ctx);
 }
 
+<<<<<<< HEAD
 void pulsarProducerSendCallbackProxy(pulsar_result result, pulsar_message_t *message, void *ctx);
+=======
+void pulsarProducerSendCallbackProxy(pulsar_result result, pulsar_message_id_t *messageId, void *ctx);
+
+void pulsarProducerSendCallbackProxyWithMsgID(pulsar_result result, pulsar_message_id_t *messageId, void *ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 static inline void _pulsar_producer_send_async(pulsar_producer_t *producer, pulsar_message_t *message,
                                                void *ctx) {
     pulsar_producer_send_async(producer, message, pulsarProducerSendCallbackProxy, ctx);
 }
 
+<<<<<<< HEAD
+=======
+static inline void _pulsar_producer_send_async_msg_id(pulsar_producer_t *producer, pulsar_message_t *message,
+                                               void *ctx) {
+    pulsar_producer_send_async(producer, message, pulsarProducerSendCallbackProxyWithMsgID, ctx);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 int pulsarRouterCallbackProxy(pulsar_message_t *msg, pulsar_topic_metadata_t *topicMetadata, void* ctx);
 
 

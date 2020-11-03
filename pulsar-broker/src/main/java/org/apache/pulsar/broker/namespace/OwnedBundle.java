@@ -18,13 +18,24 @@
  */
 package org.apache.pulsar.broker.namespace;
 
+<<<<<<< HEAD
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+=======
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.common.naming.NamespaceBundle;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.util.FutureUtil;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +58,11 @@ public class OwnedBundle {
     /**
      * constructor
      *
+<<<<<<< HEAD
      * @param nsname
+=======
+     * @param suName
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public OwnedBundle(NamespaceBundle suName) {
         this.bundle = suName;
@@ -57,8 +72,12 @@ public class OwnedBundle {
     /**
      * Constructor to allow set initial active flag
      *
+<<<<<<< HEAD
      * @param nsname
      * @param nssvc
+=======
+     * @param suName
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param active
      */
     public OwnedBundle(NamespaceBundle suName, boolean active) {
@@ -77,20 +96,32 @@ public class OwnedBundle {
 
     /**
      * It unloads the bundle by closing all topics concurrently under this bundle.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * <pre>
      * a. disable bundle ownership in memory and not in zk
      * b. close all the topics concurrently
      * c. delete ownership znode from zookeeper.
      * </pre>
+<<<<<<< HEAD
      * 
      * @param pulsar
      * @param timeout
      *            timeout for unloading bundle. It doesn't throw exception if it timesout while waiting on closing all
+=======
+     *
+     * @param pulsar
+     * @param timeout
+     *            timeout for unloading bundle. It doesn't throw exception if it times out while waiting on closing all
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            topics
      * @param timeoutUnit
      * @throws Exception
      */
+<<<<<<< HEAD
     public void handleUnloadRequest(PulsarService pulsar, long timeout, TimeUnit timeoutUnit) throws Exception {
 
         long unloadBundleStartTime = System.nanoTime();
@@ -147,6 +178,60 @@ public class OwnedBundle {
 
         double unloadBundleTime = TimeUnit.NANOSECONDS.toMillis((System.nanoTime() - unloadBundleStartTime));
         LOG.info("Unloading {} namespace-bundle with {} topics completed in {} ms", this.bundle, unloadedTopics, unloadBundleTime);
+=======
+    public CompletableFuture<Void> handleUnloadRequest(PulsarService pulsar, long timeout, TimeUnit timeoutUnit) {
+        long unloadBundleStartTime = System.nanoTime();
+        // Need a per namespace RenetrantReadWriteLock
+        // Here to do a writeLock to set the flag and proceed to check and close connections
+        try {
+            while (!this.nsLock.writeLock().tryLock(1, TimeUnit.SECONDS)) {
+                // Using tryLock to avoid deadlocks caused by 2 threads trying to acquire 2 readlocks (eg: replicators)
+                // while a handleUnloadRequest happens in the middle
+                LOG.warn("Contention on OwnedBundle rw lock. Retrying to acquire lock write lock");
+            }
+
+            try {
+                // set the flag locally s.t. no more producer/consumer to this namespace is allowed
+                if (!IS_ACTIVE_UPDATER.compareAndSet(this, TRUE, FALSE)) {
+                    // An exception is thrown when the namespace is not in active state (i.e. another thread is
+                    // removing/have removed it)
+                    return FutureUtil.failedFuture(new IllegalStateException(
+                            "Namespace is not active. ns:" + this.bundle + "; state:" + IS_ACTIVE_UPDATER.get(this)));
+                }
+            } finally {
+                // no matter success or not, unlock
+                this.nsLock.writeLock().unlock();
+            }
+        } catch (InterruptedException e) {
+            return FutureUtil.failedFuture(e);
+        }
+
+        AtomicInteger unloadedTopics = new AtomicInteger();
+        LOG.info("Disabling ownership: {}", this.bundle);
+
+        // close topics forcefully
+        return pulsar.getNamespaceService().getOwnershipCache()
+                .updateBundleState(this.bundle, false)
+                .thenCompose(v -> pulsar.getBrokerService().unloadServiceUnit(bundle, true, timeout, timeoutUnit))
+                .handle((numUnloadedTopics, ex) -> {
+                    if (ex != null) {
+                        // ignore topic-close failure to unload bundle
+                        LOG.error("Failed to close topics under namespace {}", bundle.toString(), ex);
+                    } else {
+                        unloadedTopics.set(numUnloadedTopics);
+                    }
+                    return null;
+                })
+                .thenCompose(v -> {
+                    // delete ownership node on zk
+                    return pulsar.getNamespaceService().getOwnershipCache().removeOwnership(bundle);
+                }).whenComplete((ignored, ex) -> {
+                    double unloadBundleTime = TimeUnit.NANOSECONDS
+                            .toMillis((System.nanoTime() - unloadBundleStartTime));
+                    LOG.info("Unloading {} namespace-bundle with {} topics completed in {} ms", this.bundle,
+                            unloadedTopics, unloadBundleTime, ex);
+                });
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**

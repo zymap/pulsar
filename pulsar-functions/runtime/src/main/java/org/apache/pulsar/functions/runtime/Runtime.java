@@ -31,10 +31,24 @@ public interface Runtime {
 
     void start() throws Exception;
 
+<<<<<<< HEAD
+=======
+    default void reinitialize() {
+
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     void join() throws Exception;
 
     void stop() throws Exception;
 
+<<<<<<< HEAD
+=======
+    default void terminate() throws Exception {
+        stop();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     boolean isAlive();
 
     Throwable getDeathException();

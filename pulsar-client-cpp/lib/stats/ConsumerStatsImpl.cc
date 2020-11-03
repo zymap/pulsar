@@ -25,6 +25,7 @@
 namespace pulsar {
 DECLARE_LOG_OBJECT();
 
+<<<<<<< HEAD
 ConsumerStatsImpl::ConsumerStatsImpl(std::string consumerStr, DeadlineTimerPtr timer,
                                      unsigned int statsIntervalInSeconds)
     : consumerStr_(consumerStr),
@@ -32,6 +33,21 @@ ConsumerStatsImpl::ConsumerStatsImpl(std::string consumerStr, DeadlineTimerPtr t
       statsIntervalInSeconds_(statsIntervalInSeconds),
       totalNumBytesRecieved_(0),
       numBytesRecieved_(0) {
+=======
+ConsumerStatsImpl::ConsumerStatsImpl(std::string consumerStr, ExecutorServicePtr executor,
+                                     unsigned int statsIntervalInSeconds)
+    : consumerStr_(consumerStr),
+      executor_(executor),
+      timer_(executor_->createDeadlineTimer()),
+      statsIntervalInSeconds_(statsIntervalInSeconds),
+      receivedMsgMap_(),
+      ackedMsgMap_(),
+      totalReceivedMsgMap_(),
+      totalAckedMsgMap_(),
+      totalNumBytesRecieved_(0),
+      numBytesRecieved_(0),
+      mutex_() {
+>>>>>>> f773c602c... Test pr 10 (#27)
     timer_->expires_from_now(boost::posix_time::seconds(statsIntervalInSeconds_));
     timer_->async_wait(std::bind(&pulsar::ConsumerStatsImpl::flushAndReset, this, std::placeholders::_1));
 }

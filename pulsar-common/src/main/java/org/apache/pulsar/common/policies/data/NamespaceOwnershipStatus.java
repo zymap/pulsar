@@ -18,10 +18,23 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 public class NamespaceOwnershipStatus {
 
     public BrokerAssignment broker_assignment;
     public boolean is_controlled;
+=======
+/**
+ * Information about the namespace's ownership.
+ */
+public class NamespaceOwnershipStatus {
+
+    @SuppressWarnings("checkstyle:MemberName")
+    public BrokerAssignment broker_assignment;
+    @SuppressWarnings("checkstyle:MemberName")
+    public boolean is_controlled;
+    @SuppressWarnings("checkstyle:MemberName")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean is_active;
 
     public NamespaceOwnershipStatus() {

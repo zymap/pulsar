@@ -27,13 +27,21 @@ import org.apache.bookkeeper.mledger.AsyncCallbacks.DeleteCursorCallback;
 import org.apache.bookkeeper.mledger.AsyncCallbacks.MarkDeleteCallback;
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
 import org.apache.commons.lang3.tuple.Pair;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.api.proto.PulsarApi;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NonDurableCursorImpl extends ManagedCursorImpl {
 
     NonDurableCursorImpl(BookKeeper bookkeeper, ManagedLedgerConfig config, ManagedLedgerImpl ledger, String cursorName,
+<<<<<<< HEAD
             PositionImpl startCursorPosition) {
+=======
+                         PositionImpl startCursorPosition, PulsarApi.CommandSubscribe.InitialPosition initialPosition) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super(bookkeeper, config, ledger, cursorName);
 
         // Compare with "latest" position marker by using only the ledger id. Since the C++ client is using 48bits to
@@ -41,8 +49,20 @@ public class NonDurableCursorImpl extends ManagedCursorImpl {
         // both ledgerId and entryId to be Long.max()
         if (startCursorPosition == null || startCursorPosition.getLedgerId() == PositionImpl.latest.getLedgerId()) {
             // Start from last entry
+<<<<<<< HEAD
             initializeCursorPosition(ledger.getLastPositionAndCounter());
         } else if (startCursorPosition.equals(PositionImpl.earliest)) {
+=======
+            switch (initialPosition) {
+                case Latest:
+                    initializeCursorPosition(ledger.getLastPositionAndCounter());
+                    break;
+                case Earliest:
+                    initializeCursorPosition(ledger.getFirstPositionAndCounter());
+                    break;
+            }
+        } else if (startCursorPosition.getLedgerId() == PositionImpl.earliest.getLedgerId()) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Start from invalid ledger to read from first available entry
             recoverCursor(ledger.getPreviousPosition(ledger.getFirstPosition()));
         } else {
@@ -62,9 +82,20 @@ public class NonDurableCursorImpl extends ManagedCursorImpl {
 
         // Initialize the counter such that the difference between the messages written on the ML and the
         // messagesConsumed is equal to the current backlog (negated).
+<<<<<<< HEAD
         long initialBacklog = readPosition.compareTo(lastEntryAndCounter.getLeft()) < 0
                 ? ledger.getNumberOfEntries(Range.closed(readPosition, lastEntryAndCounter.getLeft())) : 0;
         messagesConsumedCounter = lastEntryAndCounter.getRight() - initialBacklog;
+=======
+        if (null != this.readPosition) {
+            long initialBacklog = readPosition.compareTo(lastEntryAndCounter.getLeft()) < 0
+                ? ledger.getNumberOfEntries(Range.closed(readPosition, lastEntryAndCounter.getLeft())) : 0;
+            messagesConsumedCounter = lastEntryAndCounter.getRight() - initialBacklog;
+        } else {
+            log.warn("Recovered a non-durable cursor from position {} but didn't find a valid read position {}",
+                mdPosition, readPosition);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -83,6 +114,7 @@ public class NonDurableCursorImpl extends ManagedCursorImpl {
     protected void internalAsyncMarkDelete(final PositionImpl newPosition, Map<String, Long> properties,
             final MarkDeleteCallback callback, final Object ctx) {
         // Bypass persistence of mark-delete position and individually deleted messages info
+<<<<<<< HEAD
         callback.markDeleteComplete(ctx);
     }
 
@@ -99,6 +131,15 @@ public class NonDurableCursorImpl extends ManagedCursorImpl {
     @Override
     public void setInactive() {
         /// No-Op
+=======
+
+        MarkDeleteEntry mdEntry = new MarkDeleteEntry(newPosition, properties, callback, ctx);
+        lastMarkDeleteEntry = mdEntry;
+        // it is important to advance cursor so the retention can kick in as expected.
+        ledger.updateCursor(NonDurableCursorImpl.this, mdEntry.newPosition);
+
+        callback.markDeleteComplete(ctx);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

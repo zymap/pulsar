@@ -49,6 +49,14 @@ class ReaderImpl : public std::enable_shared_from_this<ReaderImpl> {
 
     void hasMessageAvailableAsync(HasMessageAvailableCallback callback);
 
+<<<<<<< HEAD
+=======
+    void seekAsync(const MessageId& msgId, ResultCallback callback);
+    void seekAsync(uint64_t timestamp, ResultCallback callback);
+
+    ReaderImplWeakPtr getReaderImplWeakPtr();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     void handleConsumerCreated(Result result, ConsumerImplBaseWeakPtr consumer);
 
@@ -62,6 +70,10 @@ class ReaderImpl : public std::enable_shared_from_this<ReaderImpl> {
     ConsumerImplPtr consumer_;
     ReaderCallback readerCreatedCallback_;
     ReaderListener readerListener_;
+<<<<<<< HEAD
+=======
+    ReaderImplWeakPtr readerImplWeakPtr_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 }  // namespace pulsar
 

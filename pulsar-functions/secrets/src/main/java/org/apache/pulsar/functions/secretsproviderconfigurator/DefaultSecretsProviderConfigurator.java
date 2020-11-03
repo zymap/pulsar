@@ -19,7 +19,11 @@
 package org.apache.pulsar.functions.secretsproviderconfigurator;
 
 import com.google.gson.reflect.TypeToken;
+<<<<<<< HEAD
 import io.kubernetes.client.models.V1PodSpec;
+=======
+import io.kubernetes.client.openapi.models.V1PodSpec;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.proto.Function;
 import org.apache.pulsar.functions.secretsprovider.ClearTextSecretsProvider;
 
@@ -40,8 +44,15 @@ public class DefaultSecretsProviderConfigurator implements SecretsProviderConfig
                 return ClearTextSecretsProvider.class.getName();
             case PYTHON:
                 return "secretsprovider.ClearTextSecretsProvider";
+<<<<<<< HEAD
             default:
                 throw new RuntimeException("Unknwon runtime " + functionDetails.getRuntime());
+=======
+            case GO:
+                return "";
+            default:
+                throw new RuntimeException("Unknown runtime " + functionDetails.getRuntime());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 

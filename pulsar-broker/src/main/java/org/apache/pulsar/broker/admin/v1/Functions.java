@@ -25,8 +25,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+<<<<<<< HEAD
 import org.apache.pulsar.broker.admin.impl.FunctionsBase;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Path("/functions")
 @Api(value = "/functions", description = "Functions admin apis", tags = "functions", hidden = true)
 @Produces(MediaType.APPLICATION_JSON)

@@ -18,8 +18,16 @@
  */
 package org.apache.pulsar.discovery.service;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.PulsarDecoder;
 import org.apache.pulsar.common.util.SecurityUtility;
+=======
+import io.netty.handler.ssl.SslHandler;
+import org.apache.pulsar.common.protocol.Commands;
+import org.apache.pulsar.common.util.NettyServerSslContextBuilder;
+import org.apache.pulsar.common.util.SslContextAutoRefreshBuilder;
+import org.apache.pulsar.common.util.keystoretls.NettySSLContextAutoRefreshBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.discovery.service.server.ServiceConfig;
 
 import io.netty.channel.ChannelInitializer;
@@ -34,6 +42,7 @@ import io.netty.handler.ssl.SslContext;
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     public static final String TLS_HANDLER = "tls";
+<<<<<<< HEAD
     private final ServiceConfig serviceConfig;
     private final DiscoveryService discoveryService;
     private final SslContext sslCtx;
@@ -50,15 +59,69 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
                     serviceConfig.getTlsRequireTrustedClientCertOnConnect());
         } else {
             this.sslCtx = null;
+=======
+    private final DiscoveryService discoveryService;
+    private final boolean enableTls;
+    private final boolean tlsEnabledWithKeyStore;
+    private SslContextAutoRefreshBuilder<SslContext> sslCtxRefresher;
+    private NettySSLContextAutoRefreshBuilder nettySSLContextAutoRefreshBuilder;
+
+    public ServiceChannelInitializer(DiscoveryService discoveryService, ServiceConfig serviceConfig, boolean e)
+            throws Exception {
+        super();
+        this.discoveryService = discoveryService;
+        this.enableTls = e;
+        this.tlsEnabledWithKeyStore = serviceConfig.isTlsEnabledWithKeyStore();
+        if (this.enableTls) {
+            if (tlsEnabledWithKeyStore) {
+                nettySSLContextAutoRefreshBuilder = new NettySSLContextAutoRefreshBuilder(
+                        serviceConfig.getTlsProvider(),
+                        serviceConfig.getTlsKeyStoreType(),
+                        serviceConfig.getTlsKeyStore(),
+                        serviceConfig.getTlsKeyStorePassword(),
+                        serviceConfig.isTlsAllowInsecureConnection(),
+                        serviceConfig.getTlsTrustStoreType(),
+                        serviceConfig.getTlsTrustStore(),
+                        serviceConfig.getTlsTrustStorePassword(),
+                        serviceConfig.isTlsRequireTrustedClientCertOnConnect(),
+                        serviceConfig.getTlsCiphers(),
+                        serviceConfig.getTlsProtocols(),
+                        serviceConfig.getTlsCertRefreshCheckDurationSec());
+            } else {
+                sslCtxRefresher = new NettyServerSslContextBuilder(serviceConfig.isTlsAllowInsecureConnection(),
+                        serviceConfig.getTlsTrustCertsFilePath(), serviceConfig.getTlsCertificateFilePath(),
+                        serviceConfig.getTlsKeyFilePath(), serviceConfig.getTlsCiphers(), serviceConfig.getTlsProtocols(),
+                        serviceConfig.isTlsRequireTrustedClientCertOnConnect(),
+                        serviceConfig.getTlsCertRefreshCheckDurationSec());
+            }
+        } else {
+            this.sslCtxRefresher = null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
+<<<<<<< HEAD
         if (sslCtx != null) {
             ch.pipeline().addLast(TLS_HANDLER, sslCtx.newHandler(ch.alloc()));
         }
         ch.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(PulsarDecoder.MaxFrameSize, 0, 4, 0, 4));
+=======
+        if (sslCtxRefresher != null && this.enableTls) {
+            if (this.tlsEnabledWithKeyStore) {
+                ch.pipeline().addLast(TLS_HANDLER,
+                        new SslHandler(nettySSLContextAutoRefreshBuilder.get().createSSLEngine()));
+            } else{
+                SslContext sslContext = sslCtxRefresher.get();
+                if (sslContext != null) {
+                    ch.pipeline().addLast(TLS_HANDLER, sslContext.newHandler(ch.alloc()));
+                }
+            }
+        }
+        ch.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(
+            Commands.DEFAULT_MAX_MESSAGE_SIZE + Commands.MESSAGE_SIZE_FRAME_PADDING, 0, 4, 0, 4));
+>>>>>>> f773c602c... Test pr 10 (#27)
         ch.pipeline().addLast("handler", new ServerConnection(discoveryService));
     }
 }

@@ -20,17 +20,25 @@ package org.apache.pulsar.functions.instance;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+<<<<<<< HEAD
 import static org.apache.pulsar.functions.utils.Utils.ComponentType.FUNCTION;
 import static org.apache.pulsar.functions.utils.Utils.ComponentType.SINK;
 import static org.apache.pulsar.functions.utils.Utils.ComponentType.SOURCE;
 
 import lombok.experimental.UtilityClass;
 
+=======
+
+import lombok.experimental.UtilityClass;
+
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.functions.api.SerDe;
 import org.apache.pulsar.functions.proto.Function;
 import org.apache.pulsar.functions.sink.PulsarSink;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.utils.FunctionDetailsUtils;
 import org.apache.pulsar.functions.utils.Reflections;
 
@@ -40,6 +48,19 @@ import org.apache.pulsar.functions.utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
 
+=======
+import org.apache.pulsar.common.util.Reflections;
+
+import net.jodah.typetools.TypeResolver;
+import org.apache.pulsar.functions.utils.FunctionCommon;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 @UtilityClass
 public class InstanceUtils {
     public static SerDe<?> initializeSerDe(String serdeClassName, ClassLoader clsLoader, Class<?> typeArg,
@@ -89,16 +110,28 @@ public class InstanceUtils {
         }
     }
 
+<<<<<<< HEAD
     public Utils.ComponentType calculateSubjectType(Function.FunctionDetails functionDetails) {
         Function.SourceSpec sourceSpec = functionDetails.getSource();
         Function.SinkSpec sinkSpec = functionDetails.getSink();
         if (sourceSpec.getInputSpecsCount() == 0) {
             return SOURCE;
+=======
+    public Function.FunctionDetails.ComponentType calculateSubjectType(Function.FunctionDetails functionDetails) {
+        if (functionDetails.getComponentType() != Function.FunctionDetails.ComponentType.UNKNOWN) {
+            return functionDetails.getComponentType();
+        }
+        Function.SourceSpec sourceSpec = functionDetails.getSource();
+        Function.SinkSpec sinkSpec = functionDetails.getSink();
+        if (sourceSpec.getInputSpecsCount() == 0) {
+            return Function.FunctionDetails.ComponentType.SOURCE;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         // Now its between sink and function
 
         if (!isEmpty(sinkSpec.getBuiltin())) {
             // if its built in, its a sink
+<<<<<<< HEAD
             return SINK;
         }
 
@@ -110,6 +143,19 @@ public class InstanceUtils {
 
     public static String getDefaultSubscriptionName(String tenant, String namespace, String name) {
         return FunctionDetailsUtils.getFullyQualifiedName(tenant, namespace, name);
+=======
+            return Function.FunctionDetails.ComponentType.SINK;
+        }
+
+        if (isEmpty(sinkSpec.getClassName()) || sinkSpec.getClassName().equals(PulsarSink.class.getName())) {
+            return Function.FunctionDetails.ComponentType.FUNCTION;
+        }
+        return Function.FunctionDetails.ComponentType.SINK;
+    }
+
+    public static String getDefaultSubscriptionName(String tenant, String namespace, String name) {
+        return FunctionCommon.getFullyQualifiedName(tenant, namespace, name);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static String getDefaultSubscriptionName(Function.FunctionDetails functionDetails) {
@@ -119,7 +165,11 @@ public class InstanceUtils {
                 functionDetails.getName());
     }
 
+<<<<<<< HEAD
     public static Map<String, String> getProperties(Utils.ComponentType componentType,
+=======
+    public static Map<String, String> getProperties(Function.FunctionDetails.ComponentType componentType,
+>>>>>>> f773c602c... Test pr 10 (#27)
                                                     String fullyQualifiedName, int instanceId) {
         Map<String, String> properties = new HashMap<>();
         switch (componentType) {
@@ -135,6 +185,14 @@ public class InstanceUtils {
         }
         properties.put("id", fullyQualifiedName);
         properties.put("instance_id", String.valueOf(instanceId));
+<<<<<<< HEAD
+=======
+        try {
+            properties.put("instance_hostname", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            log.warn("[{}:{}] Failed to get hostname of instance", fullyQualifiedName, instanceId, e);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         return properties;
     }
 }

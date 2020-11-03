@@ -24,13 +24,20 @@ import static org.mockito.Mockito.spy;
 
 import java.net.URI;
 import java.security.GeneralSecurityException;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.TlsProducerConsumerBase;
 import org.apache.pulsar.client.impl.auth.AuthenticationTls;
 import org.apache.pulsar.common.util.SecurityUtility;
@@ -51,8 +58,11 @@ import org.testng.annotations.Test;
 
 public class ProxyPublishConsumeTlsTest extends TlsProducerConsumerBase {
     protected String methodName;
+<<<<<<< HEAD
     private int port;
     private int tlsPort;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private ProxyServer proxyServer;
     private WebSocketService service;
@@ -62,11 +72,17 @@ public class ProxyPublishConsumeTlsTest extends TlsProducerConsumerBase {
         super.setup();
         super.internalSetUpForNamespace();
 
+<<<<<<< HEAD
         port = PortManager.nextFreePort();
         tlsPort = PortManager.nextFreePort();
         WebSocketProxyConfiguration config = new WebSocketProxyConfiguration();
         config.setWebServicePort(port);
         config.setWebServicePortTls(tlsPort);
+=======
+        WebSocketProxyConfiguration config = new WebSocketProxyConfiguration();
+        config.setWebServicePort(Optional.of(0));
+        config.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setBrokerClientTlsEnabled(true);
         config.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
         config.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
@@ -76,7 +92,10 @@ public class ProxyPublishConsumeTlsTest extends TlsProducerConsumerBase {
         config.setConfigurationStoreServers("dummy-zk-servers");
         config.setBrokerClientAuthenticationParameters("tlsCertFile:" + TLS_CLIENT_CERT_FILE_PATH + ",tlsKeyFile:" + TLS_CLIENT_KEY_FILE_PATH);
         config.setBrokerClientAuthenticationPlugin(AuthenticationTls.class.getName());
+<<<<<<< HEAD
         String lookupUrl = new URI("pulsar://localhost:" + BROKER_PORT_TLS).toString();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         service = spy(new WebSocketService(config));
         doReturn(mockZooKeeperClientFactory).when(service).getZooKeeperClientFactory();
         proxyServer = new ProxyServer(config);
@@ -96,8 +115,13 @@ public class ProxyPublishConsumeTlsTest extends TlsProducerConsumerBase {
     @Test(timeOut = 30000)
     public void socketTest() throws InterruptedException, GeneralSecurityException {
         String consumerUri =
+<<<<<<< HEAD
                 "wss://localhost:" + tlsPort + "/ws/consumer/persistent/my-property/use/my-ns/my-topic/my-sub";
         String producerUri = "wss://localhost:" + tlsPort + "/ws/producer/persistent/my-property/use/my-ns/my-topic/";
+=======
+                "wss://localhost:" + proxyServer.getListenPortHTTPS().get() + "/ws/consumer/persistent/my-property/use/my-ns/my-topic/my-sub";
+        String producerUri = "wss://localhost:" + proxyServer.getListenPortHTTPS().get() + "/ws/producer/persistent/my-property/use/my-ns/my-topic/";
+>>>>>>> f773c602c... Test pr 10 (#27)
         URI consumeUri = URI.create(consumerUri);
         URI produceUri = URI.create(producerUri);
 

@@ -24,5 +24,9 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 
 docker pull apachepulsar/pulsar-build:debian-9
 
+<<<<<<< HEAD
 docker run -it -v $ROOT_DIR:/pulsar apachepulsar/pulsar-build:debian-9 \
+=======
+docker run -i -v $ROOT_DIR:/pulsar apachepulsar/pulsar-build:debian-9 \
+>>>>>>> f773c602c... Test pr 10 (#27)
         /pulsar/pulsar-client-cpp/pkg/deb/build-deb.sh

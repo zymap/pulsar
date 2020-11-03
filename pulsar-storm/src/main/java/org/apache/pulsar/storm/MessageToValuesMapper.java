@@ -33,12 +33,20 @@ public interface MessageToValuesMapper extends Serializable {
      * @param msg
      * @return
      */
+<<<<<<< HEAD
     public Values toValues(Message<byte[]> msg);
+=======
+    Values toValues(Message<byte[]> msg);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Declare the output schema for the spout.
      *
      * @param declarer
      */
+<<<<<<< HEAD
     public void declareOutputFields(OutputFieldsDeclarer declarer);
+=======
+    void declareOutputFields(OutputFieldsDeclarer declarer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

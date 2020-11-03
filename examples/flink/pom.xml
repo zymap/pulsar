@@ -24,15 +24,26 @@
   <parent>
     <groupId>org.apache.pulsar.examples</groupId>
     <artifactId>pulsar-examples</artifactId>
+<<<<<<< HEAD
     <version>2.3.0</version>
   </parent>
 
   <groupId>org.apache.pulsar.examples</groupId>
+=======
+    <version>2.7.0-SNAPSHOT</version>
+  </parent>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
   <artifactId>flink</artifactId>
   <name>Pulsar Examples :: Flink</name>
 
   <properties>
+<<<<<<< HEAD
     <log4j2.version>2.10.0</log4j2.version>
+=======
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+>>>>>>> f773c602c... Test pr 10 (#27)
   </properties>
 
   <dependencies>
@@ -110,6 +121,10 @@
                     <include>org/apache/flink/streaming/examples/kafka/**</include>
                     <include>org/apache/flink/streaming/**</include>
                     <include>org/apache/pulsar/**</include>
+<<<<<<< HEAD
+=======
+                    <include>org/bouncycastle/**</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
                     <include>org/apache/flink/batch/**</include>
                     <include>net/jpountz/**</include>
                     <include>com/scurrilous/circe/**</include>
@@ -130,7 +145,11 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
+<<<<<<< HEAD
         <version>3.4.4</version>
+=======
+        <version>4.3.0</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
         <executions>
           <execution>
             <goals>

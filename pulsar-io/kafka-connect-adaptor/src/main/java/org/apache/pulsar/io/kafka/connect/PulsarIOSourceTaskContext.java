@@ -21,12 +21,30 @@ package org.apache.pulsar.io.kafka.connect;
 import org.apache.kafka.connect.source.SourceTaskContext;
 import org.apache.kafka.connect.storage.OffsetStorageReader;
 
+<<<<<<< HEAD
 class PulsarIOSourceTaskContext implements SourceTaskContext {
 
     private final OffsetStorageReader reader;
 
     PulsarIOSourceTaskContext(OffsetStorageReader reader) {
         this.reader = reader;
+=======
+import java.util.Map;
+
+class PulsarIOSourceTaskContext implements SourceTaskContext {
+
+    private final OffsetStorageReader reader;
+    private final PulsarKafkaWorkerConfig pulsarKafkaWorkerConfig;
+
+    PulsarIOSourceTaskContext(OffsetStorageReader reader, PulsarKafkaWorkerConfig pulsarKafkaWorkerConfig) {
+        this.reader = reader;
+        this.pulsarKafkaWorkerConfig = pulsarKafkaWorkerConfig;
+    }
+
+    @Override
+    public Map<String, String> configs() {
+        return pulsarKafkaWorkerConfig.originalsStrings();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

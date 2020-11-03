@@ -20,15 +20,24 @@ package org.apache.bookkeeper.mledger.offload.jcloud;
 
 import java.io.Closeable;
 import java.io.FilterInputStream;
+<<<<<<< HEAD
 import java.io.InputStream;
 import java.io.IOException;
+=======
+import java.io.IOException;
+import java.io.InputStream;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.common.annotation.InterfaceStability.Unstable;
 
 /**
+<<<<<<< HEAD
  *
  * The Index block abstraction used for offload a ledger to long term storage.
  *
+=======
+ * The Index block abstraction used for offload a ledger to long term storage.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 @Unstable
 public interface OffloadIndexBlock extends Closeable {
@@ -73,7 +82,11 @@ public interface OffloadIndexBlock extends Closeable {
     /**
      * An input stream which knows the size of the stream upfront.
      */
+<<<<<<< HEAD
     public static class IndexInputStream extends FilterInputStream {
+=======
+    class IndexInputStream extends FilterInputStream {
+>>>>>>> f773c602c... Test pr 10 (#27)
         final long streamSize;
 
         public IndexInputStream(InputStream in, long streamSize) {

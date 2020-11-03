@@ -43,6 +43,10 @@ import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.PulsarClientException.NotSupportedException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.TopicMetadata;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.transaction.Transaction;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.util.FutureUtil;
@@ -64,7 +68,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
     CompletableFuture<Void> partitionsAutoUpdateFuture = null;
 
     public PartitionedProducerImpl(PulsarClientImpl client, String topic, ProducerConfigurationData conf, int numPartitions,
+<<<<<<< HEAD
             CompletableFuture<Producer<T>> producerCreatedFuture, Schema<T> schema, ProducerInterceptors<T> interceptors) {
+=======
+            CompletableFuture<Producer<T>> producerCreatedFuture, Schema<T> schema, ProducerInterceptors interceptors) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         super(client, topic, conf, producerCreatedFuture, schema, interceptors);
         this.producers = Lists.newArrayListWithCapacity(numPartitions);
         this.topicMetadata = new TopicMetadataImpl(numPartitions);
@@ -80,7 +88,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
         if (conf.isAutoUpdatePartitions()) {
             topicsPartitionChangedListener = new TopicsPartitionChangedListener();
             partitionsAutoUpdateTimeout = client.timer()
+<<<<<<< HEAD
                 .newTimeout(partitionsAutoUpdateTimerTask, 1, TimeUnit.MINUTES);
+=======
+                .newTimeout(partitionsAutoUpdateTimerTask, conf.getAutoUpdatePartitionsIntervalSeconds(), TimeUnit.SECONDS);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -103,7 +115,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
                         conf.getHashingScheme(),
                         ThreadLocalRandom.current().nextInt(topicMetadata.numPartitions()),
                         conf.isBatchingEnabled(),
+<<<<<<< HEAD
                         TimeUnit.MICROSECONDS.toMillis(conf.getBatchingMaxPublishDelayMicros()));
+=======
+                        TimeUnit.MICROSECONDS.toMillis(conf.batchingPartitionSwitchFrequencyIntervalMicros()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         return messageRouter;
@@ -161,7 +177,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
     }
 
     @Override
+<<<<<<< HEAD
     CompletableFuture<MessageId> internalSendAsync(Message<T> message) {
+=======
+    CompletableFuture<MessageId> internalSendAsync(Message<?> message, Transaction txn) {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         switch (getState()) {
         case Ready:
@@ -180,7 +200,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
         int partition = routerPolicy.choosePartition(message, topicMetadata);
         checkArgument(partition >= 0 && partition < topicMetadata.numPartitions(),
                 "Illegal partition index chosen by the message routing policy: " + partition);
+<<<<<<< HEAD
         return producers.get(partition).internalSendAsync(message);
+=======
+        return producers.get(partition).internalSendAsync(message, txn);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -343,7 +367,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
             }
 
             if (log.isDebugEnabled()) {
+<<<<<<< HEAD
                 log.debug("[{}]  run partitionsAutoUpdateTimerTask for partitioned producer: {}", topic);
+=======
+                log.debug("[{}] run partitionsAutoUpdateTimerTask for partitioned producer", topic);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
 
             // if last auto update not completed yet, do nothing.
@@ -353,7 +381,11 @@ public class PartitionedProducerImpl<T> extends ProducerBase<T> {
 
             // schedule the next re-check task
             partitionsAutoUpdateTimeout = client.timer()
+<<<<<<< HEAD
                 .newTimeout(partitionsAutoUpdateTimerTask, 1, TimeUnit.MINUTES);
+=======
+                .newTimeout(partitionsAutoUpdateTimerTask, conf.getAutoUpdatePartitionsIntervalSeconds(), TimeUnit.SECONDS);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     };
 

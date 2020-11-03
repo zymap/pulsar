@@ -21,10 +21,18 @@ package org.apache.pulsar.proxy.server;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.bookkeeper.test.PortManager;
+=======
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.Optional;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.broker.authentication.AuthenticationProviderTls;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
@@ -32,15 +40,24 @@ import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.impl.auth.AuthenticationTls;
 import org.apache.pulsar.common.configuration.PulsarConfigurationLoader;
+<<<<<<< HEAD
 import org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport;
 import org.apache.pulsar.policies.data.loadbalancer.LoadReport;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+=======
+import org.apache.pulsar.common.policies.data.ClusterData;
+import org.apache.pulsar.common.policies.data.TenantInfo;
+import org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport;
+import org.apache.pulsar.policies.data.loadbalancer.LoadReport;
+import org.eclipse.jetty.servlet.ServletHolder;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import org.apache.pulsar.common.policies.data.TenantInfo;
 
 import org.slf4j.Logger;
@@ -49,6 +66,9 @@ import org.slf4j.LoggerFactory;
 public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
     private static final Logger LOG = LoggerFactory.getLogger(SuperUserAuthedAdminProxyHandlerTest.class);
 
+=======
+public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBaseTest {
+>>>>>>> f773c602c... Test pr 10 (#27)
     private ProxyConfiguration proxyConfig = new ProxyConfiguration();
     private WebServer webServer;
     private BrokerDiscoveryProvider discoveryProvider;
@@ -64,8 +84,13 @@ public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBas
         conf.setAuthenticationEnabled(true);
         conf.setAuthorizationEnabled(true);
 
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setTlsTrustCertsFilePath(getTlsFile("ca.cert"));
         conf.setTlsCertificateFilePath(getTlsFile("broker.cert"));
         conf.setTlsKeyFilePath(getTlsFile("broker.key-pk8"));
@@ -73,16 +98,27 @@ public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBas
         conf.setSuperUserRoles(ImmutableSet.of("admin", "superproxy"));
         conf.setProxyRoles(ImmutableSet.of("superproxy"));
         conf.setAuthenticationProviders(ImmutableSet.of(AuthenticationProviderTls.class.getName()));
+<<<<<<< HEAD
+=======
+        conf.setNumExecutorThreadPoolSize(5);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         super.internalSetup();
 
         // start proxy service
         proxyConfig.setAuthenticationEnabled(true);
         proxyConfig.setAuthorizationEnabled(true);
+<<<<<<< HEAD
         proxyConfig.setServicePort(PortManager.nextFreePort());
         proxyConfig.setServicePortTls(PortManager.nextFreePort());
         proxyConfig.setWebServicePort(PortManager.nextFreePort());
         proxyConfig.setWebServicePortTls(PortManager.nextFreePort());
+=======
+        proxyConfig.setServicePort(Optional.of(0));
+        proxyConfig.setServicePortTls(Optional.of(0));
+        proxyConfig.setWebServicePort(Optional.of(0));
+        proxyConfig.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         proxyConfig.setTlsEnabledWithBroker(true);
 
         // enable tls and auth&auth at proxy
@@ -121,7 +157,11 @@ public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBas
 
     PulsarAdmin getAdminClient(String user) throws Exception {
         return PulsarAdmin.builder()
+<<<<<<< HEAD
             .serviceHttpUrl("https://localhost:" + proxyConfig.getWebServicePortTls().get())
+=======
+            .serviceHttpUrl("https://localhost:" + webServer.getListenPortHTTPS().get())
+>>>>>>> f773c602c... Test pr 10 (#27)
             .tlsTrustCertsFilePath(getTlsFile("ca.cert"))
             .allowTlsInsecureConnection(false)
             .authentication(AuthenticationTls.class.getName(),
@@ -133,6 +173,10 @@ public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBas
     @Test
     public void testAuthenticatedProxyAsAdmin() throws Exception {
         try (PulsarAdmin adminAdmin = getAdminClient("admin")) {
+<<<<<<< HEAD
+=======
+            adminAdmin.clusters().createCluster(configClusterName, new ClusterData(brokerUrl.toString()));
+>>>>>>> f773c602c... Test pr 10 (#27)
             adminAdmin.tenants().createTenant("tenant1",
                                               new TenantInfo(ImmutableSet.of("randoUser"),
                                                              ImmutableSet.of(configClusterName)));
@@ -150,6 +194,10 @@ public class SuperUserAuthedAdminProxyHandlerTest extends MockedPulsarServiceBas
             } catch (PulsarAdminException.NotAuthorizedException e) {
                 // expected
             }
+<<<<<<< HEAD
+=======
+            adminAdmin.clusters().createCluster(configClusterName, new ClusterData(brokerUrl.toString()));
+>>>>>>> f773c602c... Test pr 10 (#27)
             adminAdmin.tenants().createTenant("tenant1",
                                               new TenantInfo(ImmutableSet.of("unknownUser"),
                                                              ImmutableSet.of(configClusterName)));

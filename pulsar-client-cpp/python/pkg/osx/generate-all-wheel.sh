@@ -18,6 +18,7 @@
 # under the License.
 #
 
+<<<<<<< HEAD
 
 set -e
 
@@ -48,3 +49,35 @@ cd ..
 cd osx-10.13-python3.6
 sh generate-wheel-file.sh
 cd ..
+=======
+set -e
+
+if [ "$#" -lt 1 ]; then
+    echo "Need to specify git tag as argument"
+    exit 1
+fi
+
+export GIT_TAG=$1
+export GIT_REPO=${2:-https://github.com/apache/pulsar.git}
+
+echo "GIT_TAG: '$GIT_TAG'"
+echo "GIT_REPO: '$GIT_REPO'"
+
+OSX_VERSIONS=(
+    osx-10.12
+    osx-10.13
+    osx-10.14
+)
+
+for osx in ${OSX_VERSIONS[@]}; do
+    echo ""
+    echo "------------- BUILDING PYTHON WHEELS FOR $osx ---------------------"
+
+    pushd $osx
+    rm -rf *.whl
+    vagrant up --provision
+    vagrant scp :/Users/vagrant/pulsar/pulsar-client-cpp/python/dist/*.whl .
+    vagrant halt -f
+    popd
+done
+>>>>>>> f773c602c... Test pr 10 (#27)

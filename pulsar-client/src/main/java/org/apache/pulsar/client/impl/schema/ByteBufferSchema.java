@@ -18,26 +18,51 @@
  */
 package org.apache.pulsar.client.impl.schema;
 
+<<<<<<< HEAD
 import java.nio.ByteBuffer;
 import org.apache.pulsar.client.api.Schema;
+=======
+import io.netty.buffer.ByteBuf;
+
+import java.nio.ByteBuffer;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
 
 /**
  * A bytebuffer schema is effectively a `BYTES` schema.
  */
+<<<<<<< HEAD
 public class ByteBufferSchema implements Schema<ByteBuffer> {
+=======
+public class ByteBufferSchema extends AbstractSchema<ByteBuffer> {
+
+    private static final ByteBufferSchema INSTANCE;
+    private static final SchemaInfo SCHEMA_INFO;
+
+    static {
+        SCHEMA_INFO = new SchemaInfo()
+            .setName("ByteBuffer")
+            .setType(SchemaType.BYTES)
+            .setSchema(new byte[0]);
+        INSTANCE = new ByteBufferSchema();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public static ByteBufferSchema of() {
         return INSTANCE;
     }
 
+<<<<<<< HEAD
     private static final ByteBufferSchema INSTANCE = new ByteBufferSchema();
     private static final SchemaInfo SCHEMA_INFO = new SchemaInfo()
         .setName("ByteBuffer")
         .setType(SchemaType.BYTES)
         .setSchema(new byte[0]);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public byte[] encode(ByteBuffer data) {
         if (data == null) {
@@ -69,6 +94,21 @@ public class ByteBufferSchema implements Schema<ByteBuffer> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ByteBuffer decode(ByteBuf byteBuf) {
+        if (null == byteBuf) {
+            return null;
+        } else {
+            int size = byteBuf.readableBytes();
+            byte[] bytes = new byte[size];
+            byteBuf.readBytes(bytes);
+            return ByteBuffer.wrap(bytes);
+        }
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public SchemaInfo getSchemaInfo() {
         return SCHEMA_INFO;
     }

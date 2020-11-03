@@ -18,8 +18,16 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.connector.ConnectorTransactionHandle;
 
+=======
+import io.prestosql.spi.connector.ConnectorTransactionHandle;
+
+/**
+ * A handle for transactions.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public enum PulsarTransactionHandle implements ConnectorTransactionHandle {
     INSTANCE
 }

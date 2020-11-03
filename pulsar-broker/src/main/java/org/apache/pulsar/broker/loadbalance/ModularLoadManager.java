@@ -18,12 +18,20 @@
  */
 package org.apache.pulsar.broker.loadbalance;
 
+<<<<<<< HEAD
+=======
+import java.util.List;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Optional;
 import java.util.Set;
 
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.common.naming.ServiceUnitId;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.stats.Metrics;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.policies.data.loadbalancer.LocalBrokerData;
 import org.apache.pulsar.policies.data.loadbalancer.ServiceLookupData;
 import org.apache.pulsar.zookeeper.ZooKeeperCache.Deserializer;
@@ -111,4 +119,22 @@ public interface ModularLoadManager {
      * @return
      */
     Set<String> getAvailableBrokers();
+<<<<<<< HEAD
+=======
+
+    /**
+     * Fetch local-broker data from load-manager broker cache
+     * 
+     * @param broker load-balancer zk-path  
+     * @return
+     */
+    LocalBrokerData getBrokerLocalData(String broker);
+
+    /**
+     * Fetch load balancing metrics.
+     *
+     * @return List of LoadBalancing Metrics
+     */
+    List<Metrics> getLoadBalancingMetrics();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

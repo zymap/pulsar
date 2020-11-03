@@ -42,6 +42,10 @@ struct ProducerConfigurationImpl {
     unsigned int batchingMaxMessages;
     unsigned long batchingMaxAllowedSizeInBytes;
     unsigned long batchingMaxPublishDelayMs;
+<<<<<<< HEAD
+=======
+    ProducerConfiguration::BatchingType batchingType;
+>>>>>>> f773c602c... Test pr 10 (#27)
     CryptoKeyReaderPtr cryptoKeyReader;
     std::set<std::string> encryptionKeys;
     ProducerCryptoFailureAction cryptoFailureAction;
@@ -59,6 +63,10 @@ struct ProducerConfigurationImpl {
           batchingMaxMessages(1000),
           batchingMaxAllowedSizeInBytes(128 * 1024),  // 128 KB
           batchingMaxPublishDelayMs(10),              // 10 milli seconds
+<<<<<<< HEAD
+=======
+          batchingType(ProducerConfiguration::DefaultBatching),
+>>>>>>> f773c602c... Test pr 10 (#27)
           cryptoKeyReader(),
           encryptionKeys(),
           cryptoFailureAction(ProducerCryptoFailureAction::FAIL) {}

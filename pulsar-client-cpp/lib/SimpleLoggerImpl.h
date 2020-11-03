@@ -27,7 +27,14 @@ class SimpleLoggerFactory : public LoggerFactory {
    public:
     Logger* getLogger(const std::string& fileName);
 
+<<<<<<< HEAD
     static LoggerFactoryPtr create();
 };
 
 }  // namespace pulsar
+=======
+    static std::unique_ptr<LoggerFactory> create();
+};
+
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)

@@ -26,7 +26,11 @@
   <parent>
     <groupId>org.apache.pulsar.tests</groupId>
     <artifactId>tests-parent</artifactId>
+<<<<<<< HEAD
     <version>2.3.0</version>
+=======
+    <version>2.7.0-SNAPSHOT</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
   </parent>
 
   <artifactId>pulsar-storm-test</artifactId>
@@ -39,6 +43,10 @@
       <groupId>org.apache.pulsar</groupId>
       <artifactId>pulsar-storm</artifactId>
       <version>${project.version}</version>
+<<<<<<< HEAD
+=======
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
       <exclusions>
         <exclusion>
           <groupId>org.apache.pulsar</groupId>
@@ -47,10 +55,42 @@
       </exclusions>
     </dependency>
 
+<<<<<<< HEAD
+=======
+     <dependency>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-server</artifactId>
+      <version>${storm.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>bouncy-castle-bc</artifactId>
+      <version>${project.version}</version>
+      <classifier>pkg</classifier>
+      <scope>test</scope>
+    </dependency>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     <dependency>
       <groupId>org.apache.pulsar</groupId>
       <artifactId>pulsar-broker</artifactId>
       <version>${project.version}</version>
+<<<<<<< HEAD
+=======
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
     </dependency>
 
     <dependency>
@@ -58,13 +98,23 @@
       <artifactId>pulsar-broker</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
+<<<<<<< HEAD
+=======
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
     </dependency>
 
     <dependency>
       <groupId>org.apache.pulsar</groupId>
+<<<<<<< HEAD
       <artifactId>managed-ledger-original</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
+=======
+      <artifactId>testmocks</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
     </dependency>
 
     <dependency>
@@ -75,12 +125,20 @@
     <dependency>
       <groupId>org.asynchttpclient</groupId>
       <artifactId>async-http-client</artifactId>
+<<<<<<< HEAD
+=======
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
     </dependency>
 
     <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-core</artifactId>
       <version>${storm.version}</version>
+<<<<<<< HEAD
+=======
+      <scope>test</scope>
+>>>>>>> f773c602c... Test pr 10 (#27)
       <exclusions>
         <exclusion>
           <groupId>ch.qos.logback</groupId>

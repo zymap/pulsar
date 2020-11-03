@@ -24,7 +24,11 @@ import java.util.Map;
 @SuppressWarnings("checkstyle:javadoctype")
 public class ManagedLedgerInfo {
     /** Z-Node version. */
+<<<<<<< HEAD
     public int version;
+=======
+    public long version;
+>>>>>>> f773c602c... Test pr 10 (#27)
     public String creationDate;
     public String modificationDate;
 
@@ -33,16 +37,29 @@ public class ManagedLedgerInfo {
 
     public Map<String, CursorInfo> cursors;
 
+<<<<<<< HEAD
+=======
+    public Map<String, String> properties;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class LedgerInfo {
         public long ledgerId;
         public Long entries;
         public Long size;
         public Long timestamp;
+<<<<<<< HEAD
+=======
+        public boolean isOffloaded;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public static class CursorInfo {
         /** Z-Node version. */
+<<<<<<< HEAD
         public int version;
+=======
+        public long version;
+>>>>>>> f773c602c... Test pr 10 (#27)
         public String creationDate;
         public String modificationDate;
 

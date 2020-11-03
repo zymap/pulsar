@@ -20,6 +20,7 @@
 #define _CHECKSUM_PROVIDER_H_
 
 #include <stdint.h>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
 
@@ -33,4 +34,16 @@ uint32_t crc32cSw(uint32_t previousChecksum, const void *data, int length);
 
 #pragma GCC visibility pop
 
+=======
+#include <pulsar/defines.h>
+
+namespace pulsar {
+
+PULSAR_PUBLIC bool crc32cSupported();
+PULSAR_PUBLIC uint32_t computeChecksum(uint32_t previousChecksum, const void *data, int length);
+PULSAR_PUBLIC uint32_t crc32cHw(uint32_t previousChecksum, const void *data, int length);
+PULSAR_PUBLIC uint32_t crc32cSw(uint32_t previousChecksum, const void *data, int length);
+}  // namespace pulsar
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // _CHECKSUM_PROVIDER_H_

@@ -18,7 +18,11 @@
  */
 package org.apache.pulsar.broker.auth;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyString;
+=======
+import static org.mockito.Mockito.anyString;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;

@@ -18,20 +18,38 @@
  */
 package org.apache.pulsar.broker.loadbalance;
 
+<<<<<<< HEAD
 import java.io.IOException;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.policies.data.loadbalancer.SystemResourceUsage;
 
 /**
  * Class that will return the broker host usage.
+<<<<<<< HEAD
  *
  *
  */
 public interface BrokerHostUsage {
     /**
      * Returns the host usage information in the following format -
+=======
+ */
+public interface BrokerHostUsage {
+    /**
+     * Returns the host usage information.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @return Broker host usage in the json string format
      */
     SystemResourceUsage getBrokerHostUsage();
+<<<<<<< HEAD
+=======
+
+    /**
+     * Calculate the host usage information.
+     */
+    void calculateBrokerHostUsage();
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

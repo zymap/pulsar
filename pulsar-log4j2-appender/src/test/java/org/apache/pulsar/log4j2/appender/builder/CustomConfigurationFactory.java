@@ -34,8 +34,11 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
  * via a system property.
  */
+<<<<<<< HEAD
 //@Plugin(name = "CustomConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 //@Order(50)
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
     static Configuration addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {

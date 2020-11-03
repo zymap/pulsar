@@ -19,6 +19,10 @@
 #ifndef PULSAR_AUTHENTICATION_H_
 #define PULSAR_AUTHENTICATION_H_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <vector>
 #include <string>
 #include <map>
@@ -26,14 +30,21 @@
 #include <pulsar/Result.h>
 #include <functional>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 class ClientConfiguration;
 class Authentication;
 
+<<<<<<< HEAD
 class AuthenticationDataProvider {
+=======
+class PULSAR_PUBLIC AuthenticationDataProvider {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~AuthenticationDataProvider();
     virtual bool hasDataForTls();
@@ -53,11 +64,19 @@ typedef std::shared_ptr<AuthenticationDataProvider> AuthenticationDataPtr;
 typedef std::shared_ptr<Authentication> AuthenticationPtr;
 typedef std::map<std::string, std::string> ParamMap;
 
+<<<<<<< HEAD
 class Authentication {
    public:
     virtual ~Authentication();
     virtual const std::string getAuthMethodName() const = 0;
     virtual Result getAuthData(AuthenticationDataPtr& authDataContent) const {
+=======
+class PULSAR_PUBLIC Authentication {
+   public:
+    virtual ~Authentication();
+    virtual const std::string getAuthMethodName() const = 0;
+    virtual Result getAuthData(AuthenticationDataPtr& authDataContent) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         authDataContent = authData_;
         return ResultOk;
     }
@@ -77,7 +96,11 @@ class Authentication {
  * To use authentication methods that are internally supported, you should
  * use `AuthTls::create("my-cert.pem", "my-private.key")` or similar.
  */
+<<<<<<< HEAD
 class AuthFactory {
+=======
+class PULSAR_PUBLIC AuthFactory {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     static AuthenticationPtr Disabled();
 
@@ -100,7 +123,11 @@ class AuthFactory {
 /**
  * TLS implementation of Pulsar client authentication
  */
+<<<<<<< HEAD
 class AuthTls : public Authentication {
+=======
+class PULSAR_PUBLIC AuthTls : public Authentication {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     AuthTls(AuthenticationDataPtr&);
     ~AuthTls();
@@ -108,7 +135,11 @@ class AuthTls : public Authentication {
     static AuthenticationPtr create(const std::string& authParamsString);
     static AuthenticationPtr create(const std::string& certificatePath, const std::string& privateKeyPath);
     const std::string getAuthMethodName() const;
+<<<<<<< HEAD
     Result getAuthData(AuthenticationDataPtr& authDataTls) const;
+=======
+    Result getAuthData(AuthenticationDataPtr& authDataTls);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
    private:
     AuthenticationDataPtr authDataTls_;
@@ -119,7 +150,11 @@ typedef std::function<std::string()> TokenSupplier;
 /**
  * Token based implementation of Pulsar client authentication
  */
+<<<<<<< HEAD
 class AuthToken : public Authentication {
+=======
+class PULSAR_PUBLIC AuthToken : public Authentication {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     AuthToken(AuthenticationDataPtr&);
     ~AuthToken();
@@ -145,7 +180,11 @@ class AuthToken : public Authentication {
     static AuthenticationPtr create(const TokenSupplier& tokenSupplier);
 
     const std::string getAuthMethodName() const;
+<<<<<<< HEAD
     Result getAuthData(AuthenticationDataPtr& authDataToken) const;
+=======
+    Result getAuthData(AuthenticationDataPtr& authDataToken);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
    private:
     AuthenticationDataPtr authDataToken_;
@@ -154,21 +193,133 @@ class AuthToken : public Authentication {
 /**
  * Athenz implementation of Pulsar client authentication
  */
+<<<<<<< HEAD
 class AuthAthenz : public Authentication {
+=======
+class PULSAR_PUBLIC AuthAthenz : public Authentication {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     AuthAthenz(AuthenticationDataPtr&);
     ~AuthAthenz();
     static AuthenticationPtr create(ParamMap& params);
     static AuthenticationPtr create(const std::string& authParamsString);
     const std::string getAuthMethodName() const;
+<<<<<<< HEAD
     Result getAuthData(AuthenticationDataPtr& authDataAthenz) const;
+=======
+    Result getAuthData(AuthenticationDataPtr& authDataAthenz);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
    private:
     AuthenticationDataPtr authDataAthenz_;
 };
 
+<<<<<<< HEAD
 }  // namespace pulsar
 
 #pragma GCC visibility pop
+=======
+// OAuth 2.0 token and associated information.
+// currently mainly works for access token
+class Oauth2TokenResult {
+   public:
+    enum
+    {
+        undefined_expiration = -1
+    };
+
+    Oauth2TokenResult();
+    ~Oauth2TokenResult();
+
+    Oauth2TokenResult& setAccessToken(const std::string& accessToken);
+    Oauth2TokenResult& setIdToken(const std::string& idToken);
+    Oauth2TokenResult& setRefreshToken(const std::string& refreshToken);
+    Oauth2TokenResult& setExpiresIn(const int64_t expiresIn);
+
+    const std::string& getAccessToken() const;
+    const std::string& getIdToken() const;
+    const std::string& getRefreshToken() const;
+    int64_t getExpiresIn() const;
+
+   private:
+    // map to json "access_token"
+    std::string accessToken_;
+    // map to json "id_token"
+    std::string idToken_;
+    // map to json "refresh_token"
+    std::string refreshToken_;
+    // map to json "expires_in"
+    int64_t expiresIn_;
+};
+
+typedef std::shared_ptr<Oauth2TokenResult> Oauth2TokenResultPtr;
+
+class Oauth2Flow {
+   public:
+    virtual ~Oauth2Flow();
+
+    /**
+     * Initializes the authorization flow.
+     */
+    virtual void initialize() = 0;
+
+    /**
+     * Acquires an access token from the OAuth 2.0 authorization server.
+     * @return a token result including an access token.
+     */
+    virtual Oauth2TokenResultPtr authenticate() = 0;
+
+    /**
+     * Closes the authorization flow.
+     */
+    virtual void close() = 0;
+
+   protected:
+    Oauth2Flow();
+};
+
+typedef std::shared_ptr<Oauth2Flow> FlowPtr;
+
+class CachedToken {
+   public:
+    virtual ~CachedToken();
+    virtual bool isExpired() = 0;
+    virtual AuthenticationDataPtr getAuthData() = 0;
+
+   protected:
+    CachedToken();
+};
+
+typedef std::shared_ptr<CachedToken> CachedTokenPtr;
+
+/**
+ * Oauth2 based implementation of Pulsar client authentication.
+ * Passed in parameter would be like:
+ * ```
+ *   "type": "client_credentials",
+ *   "issuer_url": "https://accounts.google.com",
+ *   "client_id": "d9ZyX97q1ef8Cr81WHVC4hFQ64vSlDK3",
+ *   "client_secret": "on1uJ...k6F6R",
+ *   "audience": "https://broker.example.com"
+ *  ```
+ *  If passed in as std::string, it should be in Json format.
+ */
+class PULSAR_PUBLIC AuthOauth2 : public Authentication {
+   public:
+    AuthOauth2(ParamMap& params);
+    ~AuthOauth2();
+
+    static AuthenticationPtr create(ParamMap& params);
+    static AuthenticationPtr create(const std::string& authParamsString);
+    const std::string getAuthMethodName() const;
+    Result getAuthData(AuthenticationDataPtr& authDataOauth2);
+
+   private:
+    FlowPtr flowPtr_;
+    CachedTokenPtr cachedTokenPtr_;
+};
+
+}  // namespace pulsar
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #endif /* PULSAR_AUTHENTICATION_H_ */

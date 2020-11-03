@@ -36,6 +36,12 @@ TEST(SchemaTest, testSchema) {
     ProducerConfiguration producerConf;
     producerConf.setSchema(SchemaInfo(AVRO, "Avro", exampleSchema));
     res = client.createProducer("topic-avro", producerConf, producer);
+<<<<<<< HEAD
+=======
+
+    // Check schema version
+    ASSERT_FALSE(producer.getSchemaVersion().empty());
+>>>>>>> f773c602c... Test pr 10 (#27)
     producer.close();
 
     ASSERT_EQ(ResultOk, res);

@@ -30,7 +30,11 @@
         src: "{{ item.src }}"
         fstype: xfs
         opts: defaults,noatime,nodiscard
+<<<<<<< HEAD
         state: present
+=======
+        state: mounted
+>>>>>>> f773c602c... Test pr 10 (#27)
       with_items:
         - { path: "/mnt/journal", src: "/dev/nvme0n1" }
         - { path: "/mnt/storage", src: "/dev/nvme1n1" }

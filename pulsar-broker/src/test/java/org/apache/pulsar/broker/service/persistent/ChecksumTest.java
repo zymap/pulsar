@@ -30,7 +30,11 @@ import org.apache.pulsar.broker.service.BrokerTestBase;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.RawMessage;
 import org.apache.pulsar.client.api.RawReader;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.Commands;
+=======
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,7 +45,10 @@ import io.netty.buffer.ByteBuf;
 
 /**
  */
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ChecksumTest extends BrokerTestBase {
     @BeforeClass
     @Override

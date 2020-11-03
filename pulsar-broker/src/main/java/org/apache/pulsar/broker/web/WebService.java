@@ -19,22 +19,35 @@
 package org.apache.pulsar.broker.web;
 
 import com.google.common.collect.Lists;
+<<<<<<< HEAD
 
 import io.prometheus.client.jetty.JettyStatisticsCollector;
 
 import java.security.GeneralSecurityException;
+=======
+import io.prometheus.client.jetty.JettyStatisticsCollector;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+<<<<<<< HEAD
 
 import javax.servlet.DispatcherType;
 
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.common.util.SecurityUtility;
+=======
+import javax.servlet.DispatcherType;
+import org.apache.pulsar.broker.PulsarServerException;
+import org.apache.pulsar.broker.PulsarService;
+import org.apache.pulsar.broker.ServiceConfiguration;
+import org.apache.pulsar.common.util.SecurityUtility;
+import org.apache.pulsar.common.util.keystoretls.KeyStoreSSLContext;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -66,12 +79,22 @@ public class WebService implements AutoCloseable {
 
     public static final String ATTRIBUTE_PULSAR_NAME = "pulsar";
     public static final String HANDLER_CACHE_CONTROL = "max-age=3600";
+<<<<<<< HEAD
     public static final int MAX_CONCURRENT_REQUESTS = 1024; // make it configurable?
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final PulsarService pulsar;
     private final Server server;
     private final List<Handler> handlers;
     private final WebExecutorThreadPool webServiceExecutor;
+<<<<<<< HEAD
+=======
+    public final int maxConcurrentRequests;
+
+    private final ServerConnector httpConnector;
+    private final ServerConnector httpsConnector;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     public WebService(PulsarService pulsar) throws PulsarServerException {
         this.handlers = Lists.newArrayList();
@@ -80,19 +103,33 @@ public class WebService implements AutoCloseable {
                 pulsar.getConfiguration().getNumHttpServerThreads(),
                 "pulsar-web");
         this.server = new Server(webServiceExecutor);
+<<<<<<< HEAD
+=======
+        this.maxConcurrentRequests = pulsar.getConfiguration().getMaxConcurrentHttpRequests();
+>>>>>>> f773c602c... Test pr 10 (#27)
         List<ServerConnector> connectors = new ArrayList<>();
 
         Optional<Integer> port = pulsar.getConfiguration().getWebServicePort();
         if (port.isPresent()) {
+<<<<<<< HEAD
             ServerConnector connector = new PulsarServerConnector(server, 1, 1);
             connector.setPort(port.get());
             connector.setHost(pulsar.getBindAddress());
             connectors.add(connector);
+=======
+            httpConnector = new PulsarServerConnector(server, 1, 1);
+            httpConnector.setPort(port.get());
+            httpConnector.setHost(pulsar.getBindAddress());
+            connectors.add(httpConnector);
+        } else {
+            httpConnector = null;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         Optional<Integer> tlsPort = pulsar.getConfiguration().getWebServicePortTls();
         if (tlsPort.isPresent()) {
             try {
+<<<<<<< HEAD
                 SslContextFactory sslCtxFactory = SecurityUtility.createSslContextFactory(
                         pulsar.getConfiguration().isTlsAllowInsecureConnection(),
                         pulsar.getConfiguration().getTlsTrustCertsFilePath(),
@@ -110,6 +147,45 @@ public class WebService implements AutoCloseable {
 
         // Limit number of concurrent HTTP connections to avoid getting out of file descriptors
         connectors.forEach(c -> c.setAcceptQueueSize(WebService.MAX_CONCURRENT_REQUESTS / connectors.size()));
+=======
+                SslContextFactory sslCtxFactory;
+                ServiceConfiguration config = pulsar.getConfiguration();
+                if (config.isTlsEnabledWithKeyStore()) {
+                    sslCtxFactory = KeyStoreSSLContext.createSslContextFactory(
+                            config.getTlsProvider(),
+                            config.getTlsKeyStoreType(),
+                            config.getTlsKeyStore(),
+                            config.getTlsKeyStorePassword(),
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustStoreType(),
+                            config.getTlsTrustStore(),
+                            config.getTlsTrustStorePassword(),
+                            config.isTlsRequireTrustedClientCertOnConnect(),
+                            config.getTlsCertRefreshCheckDurationSec()
+                    );
+                } else {
+                    sslCtxFactory = SecurityUtility.createSslContextFactory(
+                            config.isTlsAllowInsecureConnection(),
+                            config.getTlsTrustCertsFilePath(),
+                            config.getTlsCertificateFilePath(),
+                            config.getTlsKeyFilePath(),
+                            config.isTlsRequireTrustedClientCertOnConnect(), true,
+                            config.getTlsCertRefreshCheckDurationSec());
+                }
+                httpsConnector = new PulsarServerConnector(server, 1, 1, sslCtxFactory);
+                httpsConnector.setPort(tlsPort.get());
+                httpsConnector.setHost(pulsar.getBindAddress());
+                connectors.add(httpsConnector);
+            } catch (Exception e) {
+                throw new PulsarServerException(e);
+            }
+        } else {
+            httpsConnector = null;
+        }
+
+        // Limit number of concurrent HTTP connections to avoid getting out of file descriptors
+        connectors.forEach(c -> c.setAcceptQueueSize(maxConcurrentRequests / connectors.size()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         server.setConnectors(connectors.toArray(new ServerConnector[connectors.size()]));
     }
 
@@ -133,15 +209,42 @@ public class WebService implements AutoCloseable {
             });
         }
 
+<<<<<<< HEAD
+=======
+        if (!pulsar.getConfig().getBrokerInterceptors().isEmpty() || !pulsar.getConfig().isDisableBrokerInterceptors()) {
+            // Enable PreInterceptFilter only when interceptors are enabled
+            context.addFilter(new FilterHolder(new PreInterceptFilter(pulsar.getBrokerInterceptor())),
+                MATCH_ALL, EnumSet.allOf(DispatcherType.class));
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (requiresAuthentication && pulsar.getConfiguration().isAuthenticationEnabled()) {
             FilterHolder filter = new FilterHolder(new AuthenticationFilter(
                                                            pulsar.getBrokerService().getAuthenticationService()));
             context.addFilter(filter, MATCH_ALL, EnumSet.allOf(DispatcherType.class));
         }
 
+<<<<<<< HEAD
         FilterHolder responseFilter = new FilterHolder(new ResponseHandlerFilter(pulsar));
         context.addFilter(responseFilter, MATCH_ALL, EnumSet.allOf(DispatcherType.class));
 
+=======
+        if (pulsar.getConfiguration().isHttpRequestsLimitEnabled()) {
+            context.addFilter(
+                    new FilterHolder(new RateLimitingFilter(pulsar.getConfiguration().getHttpRequestsMaxPerSecond())),
+                    MATCH_ALL, EnumSet.allOf(DispatcherType.class));
+        }
+
+        if (pulsar.getConfig().getHttpMaxRequestSize() > 0) {
+            context.addFilter(new FilterHolder(
+                    new MaxRequestSizeFilter(
+                            pulsar.getConfig().getHttpMaxRequestSize())),
+                    MATCH_ALL, EnumSet.allOf(DispatcherType.class));
+        }
+
+        FilterHolder responseFilter = new FilterHolder(new ResponseHandlerFilter(pulsar));
+        context.addFilter(responseFilter, MATCH_ALL, EnumSet.allOf(DispatcherType.class));
+>>>>>>> f773c602c... Test pr 10 (#27)
         handlers.add(context);
     }
 
@@ -184,10 +287,29 @@ public class WebService implements AutoCloseable {
             handlers.add(stats);
 
             server.setHandler(stats);
+<<<<<<< HEAD
 
             server.start();
 
             log.info("Web Service started at {}", pulsar.getWebServiceAddress());
+=======
+            server.start();
+
+            if (httpConnector != null) {
+                log.info("HTTP Service started at http://{}:{}", httpConnector.getHost(), httpConnector.getLocalPort());
+                pulsar.getConfiguration().setWebServicePort(Optional.of(httpConnector.getLocalPort()));
+            } else {
+                log.info("HTTP Service disabled");
+            }
+
+            if (httpsConnector != null) {
+                log.info("HTTPS Service started at https://{}:{}", httpsConnector.getHost(),
+                        httpsConnector.getLocalPort());
+                pulsar.getConfiguration().setWebServicePortTls(Optional.of(httpsConnector.getLocalPort()));
+            } else {
+                log.info("HTTPS Service disabled");
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Exception e) {
             throw new PulsarServerException(e);
         }
@@ -204,5 +326,24 @@ public class WebService implements AutoCloseable {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public Optional<Integer> getListenPortHTTP() {
+        if (httpConnector != null) {
+            return Optional.of(httpConnector.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Integer> getListenPortHTTPS() {
+        if (httpsConnector != null) {
+            return Optional.of(httpsConnector.getLocalPort());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static final Logger log = LoggerFactory.getLogger(WebService.class);
 }

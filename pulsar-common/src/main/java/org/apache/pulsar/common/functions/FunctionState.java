@@ -19,6 +19,7 @@
 package org.apache.pulsar.common.functions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -26,10 +27,28 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+=======
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Function state.
+ */
+@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+>>>>>>> f773c602c... Test pr 10 (#27)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FunctionState {
     private String key;
     private String stringValue;
+<<<<<<< HEAD
+=======
+    private byte[] byteValue;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private Long numberValue;
     private Long version;
 }

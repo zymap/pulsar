@@ -20,7 +20,11 @@ package org.apache.pulsar.client.impl;
 
 import static java.util.UUID.randomUUID;
 import static org.apache.pulsar.broker.service.BrokerService.BROKER_SERVICE_CONFIGURATION_PATH;
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyObject;
+=======
+import static org.mockito.Mockito.any;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -30,15 +34,24 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertNotNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.lang.reflect.Field;
+<<<<<<< HEAD
 import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+=======
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -53,6 +66,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Cleanup;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.bookkeeper.client.AsyncCallback.AddCallback;
 import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
@@ -68,22 +90,48 @@ import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
 import org.apache.pulsar.client.api.Message;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.MessageId;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerConsumerBase;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.impl.HandlerState.State;
 import org.apache.pulsar.common.api.PulsarHandler;
+=======
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.SubscriptionType;
+import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.api.schema.SchemaReader;
+import org.apache.pulsar.client.api.schema.SchemaWriter;
+import org.apache.pulsar.client.impl.HandlerState.State;
+import org.apache.pulsar.client.impl.schema.SchemaDefinitionBuilderImpl;
+import org.apache.pulsar.client.impl.schema.reader.JacksonJsonReader;
+import org.apache.pulsar.client.impl.schema.writer.JacksonJsonWriter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.naming.NamespaceBundle;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.protocol.PulsarHandler;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.apache.pulsar.common.util.collections.ConcurrentLongHashMap;
 import org.apache.pulsar.common.util.collections.ConcurrentOpenHashMap;
+<<<<<<< HEAD
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
+=======
+import org.apache.pulsar.zookeeper.GlobalZooKeeperCache;
+import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
+import org.mockito.Mockito;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -153,7 +201,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         doAnswer(invocationOnMock -> {
             cons1.connectionClosed((ClientCnx) invocationOnMock.getArguments()[0]);
             return null;
+<<<<<<< HEAD
         }).when(consumer1).connectionClosed(anyObject());
+=======
+        }).when(consumer1).connectionClosed(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
         ProducerImpl<byte[]> producer1 = spy(prod1);
         doAnswer(invocationOnMock -> prod1.getState()).when(producer1).getState();
         doAnswer(invocationOnMock -> prod1.getClientCnx()).when(producer1).getClientCnx();
@@ -161,7 +213,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         doAnswer(invocationOnMock -> {
             prod1.connectionClosed((ClientCnx) invocationOnMock.getArguments()[0]);
             return null;
+<<<<<<< HEAD
         }).when(producer1).connectionClosed(anyObject());
+=======
+        }).when(producer1).connectionClosed(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
         ProducerImpl<byte[]> producer2 = spy(prod2);
         doAnswer(invocationOnMock -> prod2.getState()).when(producer2).getState();
         doAnswer(invocationOnMock -> prod2.getClientCnx()).when(producer2).getClientCnx();
@@ -169,7 +225,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         doAnswer(invocationOnMock -> {
             prod2.connectionClosed((ClientCnx) invocationOnMock.getArguments()[0]);
             return null;
+<<<<<<< HEAD
         }).when(producer2).connectionClosed(anyObject());
+=======
+        }).when(producer2).connectionClosed(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ClientCnx clientCnx = producer1.getClientCnx();
 
@@ -196,6 +256,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         NamespaceBundle bundle2 = pulsar.getNamespaceService().getBundle(TopicName.get(topic2));
 
         // unload ns-bundle:1
+<<<<<<< HEAD
         pulsar.getNamespaceService().unloadNamespaceBundle((NamespaceBundle) bundle1);
         // let server send signal to close-connection and client close the connection
         Thread.sleep(1000);
@@ -205,12 +266,24 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         verify(consumer1, atLeastOnce()).connectionClosed(anyObject());
         // [3] Verify: producer2 should have not received connectionClosed signal
         verify(producer2, never()).connectionClosed(anyObject());
+=======
+        pulsar.getNamespaceService().unloadNamespaceBundle((NamespaceBundle) bundle1).join();
+        // let server send signal to close-connection and client close the connection
+        Thread.sleep(1000);
+        // [1] Verify: producer1 must get connectionClosed signal
+        verify(producer1, atLeastOnce()).connectionClosed(any());
+        // [2] Verify: consumer1 must get connectionClosed signal
+        verify(consumer1, atLeastOnce()).connectionClosed(any());
+        // [3] Verify: producer2 should have not received connectionClosed signal
+        verify(producer2, never()).connectionClosed(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // sleep for sometime to let other disconnected producer and consumer connect again: but they should not get
         // connected with same broker as that broker is already out from active-broker list
         Thread.sleep(200);
 
         // producer1 must not be able to connect again
+<<<<<<< HEAD
         assertTrue(prod1.getClientCnx() == null);
         assertTrue(prod1.getState().equals(State.Connecting));
         // consumer1 must not be able to connect again
@@ -235,6 +308,32 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         // producer2 must not be able to connect again
         assertTrue(prod2.getClientCnx() == null);
         assertTrue(prod2.getState().equals(State.Connecting));
+=======
+        assertNull(prod1.getClientCnx());
+        assertEquals(State.Connecting, prod1.getState());
+        // consumer1 must not be able to connect again
+        assertNull(cons1.getClientCnx());
+        assertEquals(State.Connecting, cons1.getState());
+        // producer2 must have live connection
+        assertNotNull(prod2.getClientCnx());
+        assertEquals(State.Ready, prod2.getState());
+
+        // unload ns-bundle2 as well
+        pulsar.getNamespaceService().unloadNamespaceBundle((NamespaceBundle) bundle2).join();
+        // let producer2 give some time to get disconnect signal and get disconnected
+        Thread.sleep(200);
+        verify(producer2, atLeastOnce()).connectionClosed(any());
+
+        // producer1 must not be able to connect again
+        assertNull(prod1.getClientCnx());
+        assertEquals(State.Connecting, prod1.getState());
+        // consumer1 must not be able to connect again
+        assertNull(cons1.getClientCnx());
+        assertEquals(State.Connecting, cons1.getState());
+        // producer2 must not be able to connect again
+        assertNull(prod2.getClientCnx());
+        assertEquals(State.Connecting, prod2.getState());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         producer1.close();
         producer2.close();
@@ -278,6 +377,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
                 && producer2.getClientCnx() == null), 5, 100);
         // [2] All clients must be disconnected and in connecting state
         // producer1 must not be able to connect again
+<<<<<<< HEAD
         assertTrue(producer1.getClientCnx() == null);
         assertTrue(producer1.getState().equals(State.Connecting));
         // consumer1 must not be able to connect again
@@ -286,6 +386,16 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         // producer2 must not be able to connect again
         assertTrue(producer2.getClientCnx() == null);
         assertTrue(producer2.getState().equals(State.Connecting));
+=======
+        assertNull(producer1.getClientCnx());
+        assertEquals(State.Connecting, producer1.getState());
+        // consumer1 must not be able to connect again
+        assertNull(consumer1.getClientCnx());
+        assertEquals(State.Connecting, consumer1.getState());
+        // producer2 must not be able to connect again
+        assertNull(producer2.getClientCnx());
+        assertEquals(State.Connecting, producer2.getState());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         producer1.close();
         producer2.close();
@@ -303,7 +413,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
      * @param subType
      * @throws Exception
      */
+<<<<<<< HEAD
     @Test(timeOut = 7000, dataProvider = "subType")
+=======
+    @Test(dataProvider = "subType")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testUnsupportedBatchMessageConsumer(SubscriptionType subType) throws Exception {
         log.info("-- Starting {} test --", methodName);
 
@@ -340,9 +454,16 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         versionField.set(cnx, 3);
 
         // (1) send non-batch message: consumer should be able to consume
+<<<<<<< HEAD
         for (int i = 0; i < numMessagesPerBatch; i++) {
             String message = "my-message-" + i;
             producer.send(message.getBytes());
+=======
+        MessageId lastNonBatchedMessageId = null;
+        for (int i = 0; i < numMessagesPerBatch; i++) {
+            String message = "my-message-" + i;
+            lastNonBatchedMessageId = producer.send(message.getBytes());
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         Set<String> messageSet = Sets.newHashSet();
         Message<byte[]> msg = null;
@@ -359,7 +480,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         consumer1.setClientCnx(null);
         // (2) send batch-message which should not be able to consume: as broker will disconnect the consumer
         for (int i = 0; i < numMessagesPerBatch; i++) {
+<<<<<<< HEAD
             String message = "my-message-" + i;
+=======
+            String message = "my-batch-message-" + i;
+>>>>>>> f773c602c... Test pr 10 (#27)
             batchProducer.sendAsync(message.getBytes());
         }
         batchProducer.flush();
@@ -375,6 +500,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
                 .subscriptionName(subscriptionName)
                 .subscriptionType(subType)
                 .subscribe();
+<<<<<<< HEAD
 
         messageSet.clear();
         for (int i = 0; i < numMessagesPerBatch; i++) {
@@ -382,6 +508,16 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
             String receivedMessage = new String(msg.getData());
             log.debug("Received message: [{}]", receivedMessage);
             String expectedMessage = "my-message-" + i;
+=======
+        consumer2.seek(lastNonBatchedMessageId);
+
+        messageSet.clear();
+        for (int i = 0; i < numMessagesPerBatch; i++) {
+            msg = consumer2.receive();
+            String receivedMessage = new String(msg.getData());
+            log.debug("Received message: [{}]", receivedMessage);
+            String expectedMessage = "my-batch-message-" + i;
+>>>>>>> f773c602c... Test pr 10 (#27)
             testMessageOrderAndDuplicates(messageSet, receivedMessage, expectedMessage);
             consumer2.acknowledge(msg);
         }
@@ -393,7 +529,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         log.info("-- Exiting {} test --", methodName);
     }
 
+<<<<<<< HEAD
     @Test(timeOut = 10000, dataProvider = "subType")
+=======
+    @Test(dataProvider = "subType")
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testResetCursor(SubscriptionType subType) throws Exception {
         final RetentionPolicies policy = new RetentionPolicies(60, 52 * 1024);
         final TopicName topicName = TopicName.get("persistent://my-property/my-ns/unacked-topic");
@@ -411,13 +551,21 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         admin.namespaces().setRetention(topicName.getNamespace(), policy);
 
         ConsumerBuilder<byte[]> consumerBuilder = pulsarClient.newConsumer().topic(topicName.toString())
+<<<<<<< HEAD
+=======
+                .startMessageIdInclusive()
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .subscriptionName(subsId).subscriptionType(subType).messageListener((consumer, msg) -> {
                     try {
                         synchronized (received) {
                             received.add(msg);
                         }
                         consumer.acknowledge(msg);
+<<<<<<< HEAD
                         long publishTime = ((MessageImpl<?>) msg).getPublishTime();
+=======
+                        long publishTime = msg.getPublishTime();
+>>>>>>> f773c602c... Test pr 10 (#27)
                         log.info(" publish time is " + publishTime + "," + msg.getMessageId());
                         TimestampEntryCount timestampEntryCount = publishTimeIdMap.computeIfAbsent(publishTime,
                                 (k) -> new TimestampEntryCount(publishTime));
@@ -433,7 +581,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         log.info("warm up started for " + topicName.toString());
         // send warmup msgs
         byte[] msgBytes = new byte[1000];
+<<<<<<< HEAD
         for (Integer i = 0; i < warmup; i++) {
+=======
+        for (int i = 0; i < warmup; i++) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             producer.send(msgBytes);
         }
         log.info("warm up finished.");
@@ -449,7 +601,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
 
         // publish testSize num of msgs
         log.info("Sending more messages.");
+<<<<<<< HEAD
         for (Integer n = 0; n < testSize; n++) {
+=======
+        for (int n = 0; n < testSize; n++) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             producer.send(msgBytes);
             Thread.sleep(1);
         }
@@ -511,6 +667,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
      *
      * @throws Exception
      */
+<<<<<<< HEAD
     @Test(timeOut = 5000)
     public void testCloseConnectionOnBrokerRejectedRequest() throws Exception {
 
@@ -529,12 +686,37 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
                     .maxNumberOfRejectedRequestPerConnection(0).build();
 
             pulsarClient2 = PulsarClient.builder().serviceUrl(lookupUrl).statsInterval(0, TimeUnit.SECONDS)
+=======
+    @Test
+    public void testCloseConnectionOnBrokerRejectedRequest() throws Exception {
+
+        final String topicName = "persistent://prop/usw/my-ns/newTopic";
+        final int maxConccurentLookupRequest = pulsar.getConfiguration().getMaxConcurrentLookupRequest();
+        final int concurrentLookupRequests = 20;
+        ExecutorService executor = Executors.newFixedThreadPool(concurrentLookupRequests);
+        try {
+            stopBroker();
+            pulsar.getConfiguration().setMaxConcurrentLookupRequest(1);
+            startBroker();
+            String lookupUrl = pulsar.getBrokerServiceUrl();
+
+            @Cleanup
+            PulsarClient pulsarClient = PulsarClient.builder().serviceUrl(lookupUrl).statsInterval(0, TimeUnit.SECONDS)
+                    .maxNumberOfRejectedRequestPerConnection(0).build();
+
+            @Cleanup
+            PulsarClient pulsarClient2 = PulsarClient.builder().serviceUrl(lookupUrl).statsInterval(0, TimeUnit.SECONDS)
+>>>>>>> f773c602c... Test pr 10 (#27)
                     .ioThreads(concurrentLookupRequests).connectionsPerBroker(20).build();
 
             ProducerImpl<byte[]> producer = (ProducerImpl<byte[]>) pulsarClient.newProducer().topic(topicName).create();
             ClientCnx cnx = producer.cnx();
             assertTrue(cnx.channel().isActive());
+<<<<<<< HEAD
             ExecutorService executor = Executors.newFixedThreadPool(concurrentLookupRequests);
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             final int totalProducer = 100;
             CountDownLatch latch = new CountDownLatch(totalProducer * 2);
             AtomicInteger failed = new AtomicInteger(0);
@@ -560,6 +742,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
 
             latch.await(10, TimeUnit.SECONDS);
             // connection must be closed
+<<<<<<< HEAD
             assertTrue(failed.get() == 1);
             try {
                 pulsarClient.close();
@@ -569,6 +752,12 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
             }
         } finally {
             pulsar.getConfiguration().setMaxConcurrentLookupRequest(maxConccurentLookupRequest);
+=======
+            assertEquals(failed.get(), 1);
+        } finally {
+            pulsar.getConfiguration().setMaxConcurrentLookupRequest(maxConccurentLookupRequest);
+            executor.shutdownNow();
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -584,7 +773,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
      *
      * @throws Exception
      */
+<<<<<<< HEAD
     @Test(timeOut = 5000)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testMaxConcurrentTopicLoading() throws Exception {
 
         final PulsarClientImpl pulsarClient;
@@ -592,6 +785,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
 
         final String topicName = "persistent://prop/usw/my-ns/cocurrentLoadingTopic";
         int concurrentTopic = pulsar.getConfiguration().getMaxConcurrentTopicLoadRequest();
+<<<<<<< HEAD
 
         try {
             pulsar.getConfiguration().setAuthorizationEnabled(false);
@@ -600,6 +794,17 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
             pulsar.getConfiguration().setMaxConcurrentTopicLoadRequest(1);
             startBroker();
             String lookupUrl = new URI("pulsar://localhost:" + BROKER_PORT).toString();
+=======
+        final int concurrentLookupRequests = 20;
+        ExecutorService executor = Executors.newFixedThreadPool(concurrentLookupRequests);
+
+        try {
+            pulsar.getConfiguration().setAuthorizationEnabled(false);
+            stopBroker();
+            pulsar.getConfiguration().setMaxConcurrentTopicLoadRequest(1);
+            startBroker();
+            String lookupUrl = pulsar.getBrokerServiceUrl();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             pulsarClient = (PulsarClientImpl) PulsarClient.builder().serviceUrl(lookupUrl)
                     .statsInterval(0, TimeUnit.SECONDS).maxNumberOfRejectedRequestPerConnection(0).build();
@@ -611,7 +816,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
             ProducerImpl<byte[]> producer = (ProducerImpl<byte[]>) pulsarClient.newProducer().topic(topicName).create();
             ClientCnx cnx = producer.cnx();
             assertTrue(cnx.channel().isActive());
+<<<<<<< HEAD
             ExecutorService executor = Executors.newFixedThreadPool(concurrentLookupRequests);
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             final List<CompletableFuture<Producer<byte[]>>> futures = Lists.newArrayList();
             final int totalProducers = 10;
             CountDownLatch latch = new CountDownLatch(totalProducers);
@@ -637,6 +846,10 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         } finally {
             // revert back to original value
             pulsar.getConfiguration().setMaxConcurrentTopicLoadRequest(concurrentTopic);
+<<<<<<< HEAD
+=======
+            executor.shutdownNow();
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -645,15 +858,27 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
      *
      * @throws Exception
      */
+<<<<<<< HEAD
     @Test(timeOut = 5000)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testCloseConnectionOnInternalServerError() throws Exception {
 
         final PulsarClient pulsarClient;
 
         final String topicName = "persistent://prop/usw/my-ns/newTopic";
 
+<<<<<<< HEAD
         String lookupUrl = new URI("pulsar://localhost:" + BROKER_PORT).toString();
         pulsarClient = PulsarClient.builder().serviceUrl(lookupUrl).statsInterval(0, TimeUnit.SECONDS).build();
+=======
+        pulsarClient = PulsarClient.builder()
+                .serviceUrl(pulsar.getBrokerServiceUrl())
+                .statsInterval(0, TimeUnit.SECONDS)
+                .operationTimeout(1000, TimeUnit.MILLISECONDS)
+                .build();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ProducerImpl<byte[]> producer = (ProducerImpl<byte[]>) pulsarClient.newProducer().topic(topicName).create();
         ClientCnx cnx = producer.cnx();
@@ -662,8 +887,16 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         // Need broker to throw InternalServerError. so, make global-zk unavailable
         Field globalZkCacheField = PulsarService.class.getDeclaredField("globalZkCache");
         globalZkCacheField.setAccessible(true);
+<<<<<<< HEAD
         globalZkCacheField.set(pulsar, null);
 
+=======
+        GlobalZooKeeperCache oldZkCache = (GlobalZooKeeperCache) globalZkCacheField.get(pulsar);
+        globalZkCacheField.set(pulsar, null);
+
+        oldZkCache.close();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             pulsarClient.newProducer().topic(topicName).create();
             fail("it should have fail with lookup-exception:");
@@ -702,6 +935,7 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         configurationMap.put("loadManagerClassName", "org.apache.pulsar.invalid.loadmanager");
         byte[] content = ObjectMapperFactory.getThreadLocal().writeValueAsBytes(configurationMap);
         dynamicConfigurationCache.invalidate(BROKER_SERVICE_CONFIGURATION_PATH);
+<<<<<<< HEAD
         mockZookKeeper.setData(BROKER_SERVICE_CONFIGURATION_PATH, content, -1);
 
         try {
@@ -711,6 +945,9 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         } catch (Exception e) {
             // Ok: should have failed due to invalid config value
         }
+=======
+        mockZooKeeper.setData(BROKER_SERVICE_CONFIGURATION_PATH, content, -1);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     static class TimestampEntryCount {
@@ -752,7 +989,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         Field prodField = PulsarClientImpl.class.getDeclaredField("producers");
         prodField.setAccessible(true);
         @SuppressWarnings("unchecked")
+<<<<<<< HEAD
         IdentityHashMap<ProducerBase<byte[]>, Boolean> producers = (IdentityHashMap<ProducerBase<byte[]>, Boolean>) prodField
+=======
+        Set<ProducerBase<byte[]>> producers = (Set<ProducerBase<byte[]>>) prodField
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .get(pulsarClient);
         assertTrue(producers.isEmpty());
         pulsarClient.close();
@@ -765,7 +1006,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
      *
      * @throws PulsarClientException
      */
+<<<<<<< HEAD
     @Test(expectedExceptions = PulsarClientException.TimeoutException.class, timeOut = 10000)
+=======
+    @Test(expectedExceptions = PulsarClientException.TimeoutException.class)
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testOperationTimeout() throws PulsarClientException {
         final String topicName = "persistent://my-property/my-ns/my-topic1";
         ConcurrentOpenHashMap<String, CompletableFuture<Optional<Topic>>> topics = pulsar.getBrokerService()
@@ -782,7 +1027,11 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         }
     }
 
+<<<<<<< HEAD
     @Test(timeOut = 20000)
+=======
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testAddEntryOperationTimeout() throws Exception {
 
         log.info("-- Starting {} test --", methodName);
@@ -844,4 +1093,48 @@ public class BrokerClientIntegrationTest extends ProducerConsumerBase {
         consumer.close();
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testProducerConsumerWithSpecifiedReaderAndWriter() throws PulsarClientException {
+        final String topicName = "persistent://my-property/my-ns/my-topic1";
+        ObjectMapper mapper = new ObjectMapper();
+        SchemaReader<TestMessageObject> reader = Mockito.spy(new JacksonJsonReader<>(mapper, TestMessageObject.class));
+        SchemaWriter<TestMessageObject> writer = Mockito.spy(new JacksonJsonWriter<>(mapper));
+
+        SchemaDefinition<TestMessageObject> schemaDefinition = new SchemaDefinitionBuilderImpl<TestMessageObject>()
+                .withPojo(TestMessageObject.class)
+                .withSchemaReader(reader)
+                .withSchemaWriter(writer)
+                .build();
+        Schema<TestMessageObject> schema = Schema.JSON(schemaDefinition);
+        PulsarClient client =  PulsarClient.builder()
+                .serviceUrl(lookupUrl.toString())
+                .build();
+
+        try(Producer<TestMessageObject> producer = client.newProducer(schema).topic(topicName).create();
+            Consumer<TestMessageObject> consumer = client.newConsumer(schema).topic(topicName).subscriptionName("my-subscriber-name").subscribe()) {
+            assertNotNull(producer);
+            assertNotNull(consumer);
+
+            TestMessageObject object = new TestMessageObject();
+            object.setValue("fooooo");
+            producer.newMessage().value(object).send();
+
+            TestMessageObject testObject = consumer.receive().getValue();
+            Assert.assertEquals(object.getValue(), testObject.getValue());
+
+            Mockito.verify(writer, Mockito.times(1)).write(Mockito.any());
+            Mockito.verify(reader, Mockito.times(1)).read(Mockito.any(byte[].class));
+        }
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    private static final class TestMessageObject{
+        private String value;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

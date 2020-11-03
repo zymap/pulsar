@@ -33,9 +33,18 @@ import org.apache.pulsar.client.api.RawReader;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 import org.apache.pulsar.common.api.proto.PulsarApi.MessageIdData;
 import org.apache.pulsar.common.naming.TopicName;
+=======
+import org.apache.pulsar.common.api.proto.PulsarApi.MessageMetadata;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
+import org.apache.pulsar.common.api.proto.PulsarApi.IntRange;
+import org.apache.pulsar.common.api.proto.PulsarApi.MessageIdData;
+import org.apache.pulsar.common.naming.TopicName;
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.collections.GrowableArrayBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +77,14 @@ public class RawReaderImpl implements RawReader {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public CompletableFuture<Boolean> hasMessageAvailableAsync() {
+        return consumer.hasMessageAvailableAsync();
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public CompletableFuture<Void> seekAsync(MessageId messageId) {
         return consumer.seekAsync(messageId);
     }
@@ -79,7 +96,11 @@ public class RawReaderImpl implements RawReader {
 
     @Override
     public CompletableFuture<Void> acknowledgeCumulativeAsync(MessageId messageId, Map<String,Long> properties) {
+<<<<<<< HEAD
         return consumer.doAcknowledge(messageId, AckType.Cumulative, properties);
+=======
+        return consumer.doAcknowledgeWithTxn(messageId, AckType.Cumulative, properties, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -108,10 +129,20 @@ public class RawReaderImpl implements RawReader {
                 conf,
                 client.externalExecutorProvider().getExecutor(),
                 TopicName.getPartitionIndex(conf.getSingleTopic()),
+<<<<<<< HEAD
                 consumerFuture,
                 SubscriptionMode.Durable,
                 MessageId.earliest,
                 Schema.BYTES, null);
+=======
+                false,
+                consumerFuture,
+                MessageId.earliest,
+                0 /* startMessageRollbackDurationInSec */,
+                Schema.BYTES, null,
+                true
+            );
+>>>>>>> f773c602c... Test pr 10 (#27)
             incomingRawMessages = new GrowableArrayBlockingQueue<>();
             pendingRawReceives = new ConcurrentLinkedQueue<>();
         }
@@ -130,6 +161,18 @@ public class RawReaderImpl implements RawReader {
             if (future == null) {
                 assert(messageAndCnx == null);
             } else {
+<<<<<<< HEAD
+=======
+                int numMsg;
+                try {
+                    MessageMetadata msgMetadata = Commands.parseMessageMetadata(messageAndCnx.msg.getHeadersAndPayload());
+                    numMsg = msgMetadata.getNumMessagesInBatch();
+                    msgMetadata.recycle();
+                } catch (Throwable t) {
+                    // TODO message validation
+                    numMsg = 1;
+                }
+>>>>>>> f773c602c... Test pr 10 (#27)
                 if (!future.complete(messageAndCnx.msg)) {
                     messageAndCnx.msg.close();
                     closeAsync();
@@ -137,7 +180,11 @@ public class RawReaderImpl implements RawReader {
 
                 ClientCnx currentCnx = cnx();
                 if (currentCnx == messageAndCnx.cnx) {
+<<<<<<< HEAD
                     increaseAvailablePermits(currentCnx);
+=======
+                    increaseAvailablePermits(currentCnx, numMsg);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 }
             }
         }
@@ -166,6 +213,15 @@ public class RawReaderImpl implements RawReader {
         }
 
         @Override
+<<<<<<< HEAD
+=======
+        public CompletableFuture<Void> seekAsync(long timestamp) {
+            reset();
+            return super.seekAsync(timestamp);
+        }
+
+        @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
         public CompletableFuture<Void> seekAsync(MessageId messageId) {
             reset();
             return super.seekAsync(messageId);
@@ -178,7 +234,11 @@ public class RawReaderImpl implements RawReader {
         }
 
         @Override
+<<<<<<< HEAD
         void messageReceived(MessageIdData messageId, int redeliveryCount, ByteBuf headersAndPayload, ClientCnx cnx) {
+=======
+        void messageReceived(MessageIdData messageId, int redeliveryCount, List<Long> ackSet, ByteBuf headersAndPayload, ClientCnx cnx) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (log.isDebugEnabled()) {
                 log.debug("[{}][{}] Received raw message: {}/{}/{}", topic, subscription,
                           messageId.getEntryId(), messageId.getLedgerId(), messageId.getPartition());

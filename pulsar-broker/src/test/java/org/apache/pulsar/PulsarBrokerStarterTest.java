@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar;
 
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.fail;
 
 import com.google.common.collect.Sets;
@@ -29,9 +35,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+<<<<<<< HEAD
 import org.apache.bookkeeper.bookie.LedgerDirsManager;
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.testng.Assert;
+=======
+import org.apache.pulsar.broker.ServiceConfiguration;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 /**
@@ -60,6 +70,11 @@ public class PulsarBrokerStarterTest {
         printWriter.println("bookkeeperClientHealthCheckErrorThresholdPerInterval=5");
         printWriter.println("bookkeeperClientRackawarePolicyEnabled=true");
         printWriter.println("bookkeeperClientRegionawarePolicyEnabled=false");
+<<<<<<< HEAD
+=======
+        printWriter.println("bookkeeperClientMinNumRacksPerWriteQuorum=5");
+        printWriter.println("bookkeeperClientEnforceMinNumRacksPerWriteQuorum=true");
+>>>>>>> f773c602c... Test pr 10 (#27)
         printWriter.println("bookkeeperClientReorderReadSequenceEnabled=false");
         printWriter.println("bookkeeperClientIsolationGroups=group1,group2");
         printWriter.println("backlogQuotaDefaultLimitGB=18");
@@ -77,6 +92,10 @@ public class PulsarBrokerStarterTest {
         printWriter.println("bookkeeperClientTimeoutInSeconds=12345");
         printWriter.println("bookkeeperClientSpeculativeReadTimeoutInMillis=3000");
         printWriter.println("enableRunBookieTogether=true");
+<<<<<<< HEAD
+=======
+        printWriter.println("bookkeeperExplicitLacIntervalInMills=5");
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         printWriter.close();
         testConfigFile.deleteOnExit();
@@ -98,6 +117,7 @@ public class PulsarBrokerStarterTest {
 
         Object returnValue = targetMethod.invoke(PulsarBrokerStarter.class, testConfigFile.getAbsolutePath());
 
+<<<<<<< HEAD
         Assert.assertTrue(ServiceConfiguration.class.isInstance(returnValue));
         ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
         Assert.assertEquals(serviceConfig.getZookeeperServers(), "z1.example.com,z2.example.com,z3.example.com");
@@ -127,6 +147,39 @@ public class PulsarBrokerStarterTest {
         Assert.assertEquals(serviceConfig.getBookkeeperClientIsolationGroups(), "group1,group2");
         Assert.assertEquals(serviceConfig.getBookkeeperClientSpeculativeReadTimeoutInMillis(), 3000);
         Assert.assertEquals(serviceConfig.getBookkeeperClientTimeoutInSeconds(), 12345);
+=======
+        assertTrue(returnValue instanceof ServiceConfiguration);
+        ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
+        assertEquals(serviceConfig.getZookeeperServers(), "z1.example.com,z2.example.com,z3.example.com");
+        assertEquals(serviceConfig.getConfigurationStoreServers(), "gz1.example.com,gz2.example.com,gz3.example.com/foo");
+        assertFalse(serviceConfig.isBrokerDeleteInactiveTopicsEnabled());
+        assertEquals(serviceConfig.getStatusFilePath(), "/tmp/status.html");
+        assertEquals(serviceConfig.getBacklogQuotaDefaultLimitGB(), 18);
+        assertEquals(serviceConfig.getClusterName(), "usc");
+        assertEquals(serviceConfig.getBrokerClientAuthenticationPlugin(), "test.xyz.client.auth.plugin");
+        assertEquals(serviceConfig.getBrokerClientAuthenticationParameters(), "role:my-role");
+        assertEquals(serviceConfig.getSuperUserRoles(), Sets.newHashSet("appid1", "appid2"));
+        assertEquals(serviceConfig.getManagedLedgerCursorRolloverTimeInSeconds(), 3000);
+        assertEquals(serviceConfig.getManagedLedgerMaxEntriesPerLedger(), 25);
+        assertEquals(serviceConfig.getManagedLedgerCursorMaxEntriesPerLedger(), 50);
+        assertTrue(serviceConfig.isClientLibraryVersionCheckEnabled());
+        assertEquals(serviceConfig.getManagedLedgerMinLedgerRolloverTimeMinutes(), 34);
+        assertTrue(serviceConfig.isBacklogQuotaCheckEnabled());
+        assertEquals(serviceConfig.getManagedLedgerDefaultMarkDeleteRateLimit(), 5.0);
+        assertEquals(serviceConfig.getReplicationProducerQueueSize(), 50);
+        assertFalse(serviceConfig.isReplicationMetricsEnabled());
+        assertTrue(serviceConfig.isBookkeeperClientHealthCheckEnabled());
+        assertEquals(serviceConfig.getBookkeeperClientHealthCheckErrorThresholdPerInterval(), 5);
+        assertTrue(serviceConfig.isBookkeeperClientRackawarePolicyEnabled());
+        assertEquals(serviceConfig.getBookkeeperClientMinNumRacksPerWriteQuorum(), 5);
+        assertTrue(serviceConfig.isBookkeeperClientEnforceMinNumRacksPerWriteQuorum());
+        assertFalse(serviceConfig.isBookkeeperClientRegionawarePolicyEnabled());
+        assertFalse(serviceConfig.isBookkeeperClientReorderReadSequenceEnabled());
+        assertEquals(serviceConfig.getBookkeeperClientIsolationGroups(), "group1,group2");
+        assertEquals(serviceConfig.getBookkeeperClientSpeculativeReadTimeoutInMillis(), 3000);
+        assertEquals(serviceConfig.getBookkeeperClientTimeoutInSeconds(), 12345);
+        assertEquals(serviceConfig.getBookkeeperExplicitLacIntervalInMills(), 5);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -153,7 +206,11 @@ public class PulsarBrokerStarterTest {
             fail("Should fail w/ illegal argument exception");
         } catch (InvocationTargetException e) {
             // OK, expected
+<<<<<<< HEAD
             Assert.assertTrue(e.getTargetException() instanceof IllegalArgumentException);
+=======
+            assertTrue(e.getTargetException() instanceof IllegalArgumentException);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -194,6 +251,7 @@ public class PulsarBrokerStarterTest {
         targetMethod.setAccessible(true);
         Object returnValue = targetMethod.invoke(PulsarBrokerStarter.class, testConfigFile.getAbsolutePath());
 
+<<<<<<< HEAD
         Assert.assertTrue(ServiceConfiguration.class.isInstance(returnValue));
         ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
         Assert.assertEquals(serviceConfig.isLoadBalancerEnabled(), false);
@@ -204,6 +262,18 @@ public class PulsarBrokerStarterTest {
         Assert.assertEquals(serviceConfig.getLoadBalancerBrokerUnderloadedThresholdPercentage(), 40);
         Assert.assertEquals(serviceConfig.getLoadBalancerSheddingIntervalMinutes(), 8);
         Assert.assertEquals(serviceConfig.getLoadBalancerSheddingGracePeriodMinutes(), 29);
+=======
+        assertTrue(returnValue instanceof ServiceConfiguration);
+        ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
+        assertFalse(serviceConfig.isLoadBalancerEnabled());
+        assertEquals(serviceConfig.getLoadBalancerHostUsageCheckIntervalMinutes(), 4);
+        assertEquals(serviceConfig.getLoadBalancerReportUpdateThresholdPercentage(), 15);
+        assertEquals(serviceConfig.getLoadBalancerReportUpdateMaxIntervalMinutes(), 20);
+        assertEquals(serviceConfig.getLoadBalancerBrokerOverloadedThresholdPercentage(), 80);
+        assertEquals(serviceConfig.getLoadBalancerBrokerUnderloadedThresholdPercentage(), 40);
+        assertEquals(serviceConfig.getLoadBalancerSheddingIntervalMinutes(), 8);
+        assertEquals(serviceConfig.getLoadBalancerSheddingGracePeriodMinutes(), 29);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -249,6 +319,7 @@ public class PulsarBrokerStarterTest {
 
         Object returnValue = targetMethod.invoke(PulsarBrokerStarter.class, testConfigFile.getAbsolutePath());
 
+<<<<<<< HEAD
         Assert.assertTrue(ServiceConfiguration.class.isInstance(returnValue));
         ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
         Assert.assertEquals(serviceConfig.getZookeeperServers(), "z1.example.com,z2.example.com,z3.example.com");
@@ -265,6 +336,24 @@ public class PulsarBrokerStarterTest {
         Assert.assertEquals(serviceConfig.getManagedLedgerCursorMaxEntriesPerLedger(), 50);
         Assert.assertTrue(serviceConfig.isClientLibraryVersionCheckEnabled());
         Assert.assertEquals(serviceConfig.getReplicationConnectionsPerBroker(), 12);
+=======
+        assertTrue(returnValue instanceof ServiceConfiguration);
+        ServiceConfiguration serviceConfig = (ServiceConfiguration) returnValue;
+        assertEquals(serviceConfig.getZookeeperServers(), "z1.example.com,z2.example.com,z3.example.com");
+        assertEquals(serviceConfig.getConfigurationStoreServers(), "z1.example.com,z2.example.com,z3.example.com");
+        assertFalse(serviceConfig.isBrokerDeleteInactiveTopicsEnabled());
+        assertEquals(serviceConfig.getStatusFilePath(), "/tmp/status.html");
+        assertEquals(serviceConfig.getBacklogQuotaDefaultLimitGB(), 18);
+        assertEquals(serviceConfig.getClusterName(), "usc");
+        assertEquals(serviceConfig.getBrokerClientAuthenticationPlugin(), "test.xyz.client.auth.plugin");
+        assertEquals(serviceConfig.getBrokerClientAuthenticationParameters(), "role:my-role");
+        assertEquals(serviceConfig.getSuperUserRoles(), Sets.newHashSet("appid1", "appid2"));
+        assertEquals(serviceConfig.getManagedLedgerCursorRolloverTimeInSeconds(), 3000);
+        assertEquals(serviceConfig.getManagedLedgerMaxEntriesPerLedger(), 25);
+        assertEquals(serviceConfig.getManagedLedgerCursorMaxEntriesPerLedger(), 50);
+        assertTrue(serviceConfig.isClientLibraryVersionCheckEnabled());
+        assertEquals(serviceConfig.getReplicationConnectionsPerBroker(), 12);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -274,7 +363,11 @@ public class PulsarBrokerStarterTest {
     public void testMainWithNoArgument() throws Exception {
         try {
             PulsarBrokerStarter.main(new String[0]);
+<<<<<<< HEAD
             Assert.fail("No argument to main should've raised FileNotFoundException for no broker config!");
+=======
+            fail("No argument to main should've raised FileNotFoundException for no broker config!");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (FileNotFoundException e) {
             // code should reach here.
         }
@@ -290,11 +383,19 @@ public class PulsarBrokerStarterTest {
             File testConfigFile = createValidBrokerConfigFile();
             String[] args = {"-c", testConfigFile.getAbsolutePath(), "-rb", "-ra", "-bc", ""};
             PulsarBrokerStarter.main(args);
+<<<<<<< HEAD
             Assert.fail("No Config file for bookie auto recovery should've raised IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
             // code should reach here.
             e.printStackTrace();
             Assert.assertEquals(e.getMessage(), "No configuration file for Bookie");
+=======
+            fail("No Config file for bookie auto recovery should've raised IllegalArgumentException!");
+        } catch (IllegalArgumentException e) {
+            // code should reach here.
+            e.printStackTrace();
+            assertEquals(e.getMessage(), "No configuration file for Bookie");
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -308,10 +409,17 @@ public class PulsarBrokerStarterTest {
             File testConfigFile = createValidBrokerConfigFile();
             String[] args = {"-c", testConfigFile.getAbsolutePath(), "-ra", "-bc", ""};
             PulsarBrokerStarter.main(args);
+<<<<<<< HEAD
             Assert.fail("No Config file for bookie auto recovery should've raised IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
             // code should reach here.
             Assert.assertEquals(e.getMessage(), "No configuration file for Bookie");
+=======
+            fail("No Config file for bookie auto recovery should've raised IllegalArgumentException!");
+        } catch (IllegalArgumentException e) {
+            // code should reach here.
+            assertEquals(e.getMessage(), "No configuration file for Bookie");
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -324,10 +432,17 @@ public class PulsarBrokerStarterTest {
             File testConfigFile = createValidBrokerConfigFile();
             String[] args = {"-c", testConfigFile.getAbsolutePath(), "-rb", "-bc", ""};
             PulsarBrokerStarter.main(args);
+<<<<<<< HEAD
             Assert.fail("No Config file for bookie should've raised IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
             // code should reach here
             Assert.assertEquals(e.getMessage(), "No configuration file for Bookie");
+=======
+            fail("No Config file for bookie should've raised IllegalArgumentException!");
+        } catch (IllegalArgumentException e) {
+            // code should reach here
+            assertEquals(e.getMessage(), "No configuration file for Bookie");
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -340,7 +455,11 @@ public class PulsarBrokerStarterTest {
             File testConfigFile = createValidBrokerConfigFile();
             String[] args = {"-c", testConfigFile.getAbsolutePath()};
             PulsarBrokerStarter.main(args);
+<<<<<<< HEAD
             Assert.fail("No argument to main should've raised IllegalArgumentException for no bookie config!");
+=======
+            fail("No argument to main should've raised IllegalArgumentException for no bookie config!");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (IllegalArgumentException e) {
             // code should reach here.
         }

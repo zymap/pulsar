@@ -20,7 +20,11 @@ package org.apache.pulsar.admin.cli;
 
 import static org.apache.pulsar.common.naming.TopicName.DEFAULT_NAMESPACE;
 import static org.apache.pulsar.common.naming.TopicName.PUBLIC_TENANT;
+<<<<<<< HEAD
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.Mockito.eq;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -38,12 +42,22 @@ import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.pulsar.admin.cli.utils.CmdUtils;
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.Sink;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.common.functions.Resources;
 import org.apache.pulsar.common.io.SinkConfig;
 import org.apache.pulsar.functions.utils.Utils;
+=======
+import org.apache.pulsar.client.admin.Sinks;
+import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.common.functions.FunctionConfig;
+import org.apache.pulsar.common.functions.Resources;
+import org.apache.pulsar.common.functions.UpdateOptions;
+import org.apache.pulsar.common.io.SinkConfig;
+import org.apache.pulsar.common.util.ClassLoaderUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -93,7 +107,11 @@ public class TestCmdSinks {
     private static final String SINK_CONFIG_STRING = "{\"created_at\":\"Mon Jul 02 00:33:15 0000 2018\"}";
 
     private PulsarAdmin pulsarAdmin;
+<<<<<<< HEAD
     private Sink sink;
+=======
+    private Sinks sink;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private CmdSinks cmdSinks;
     private CmdSinks.CreateSink createSink;
     private CmdSinks.UpdateSink updateSink;
@@ -104,8 +122,13 @@ public class TestCmdSinks {
     public void setup() throws Exception {
 
         pulsarAdmin = mock(PulsarAdmin.class);
+<<<<<<< HEAD
         sink = mock(Sink.class);
         when(pulsarAdmin.sink()).thenReturn(sink);
+=======
+        sink = mock(Sinks.class);
+        when(pulsarAdmin.sinks()).thenReturn(sink);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         cmdSinks = spy(new CmdSinks(pulsarAdmin));
         createSink = spy(cmdSinks.getCreateSink());
@@ -120,7 +143,11 @@ public class TestCmdSinks {
             throw new RuntimeException("Failed to file required test archive: " + JAR_FILE_NAME);
         }
         JAR_FILE_PATH = file.getFile();
+<<<<<<< HEAD
         Thread.currentThread().setContextClassLoader(Utils.loadJar(new File(JAR_FILE_PATH)));
+=======
+        Thread.currentThread().setContextClassLoader(ClassLoaderUtils.loadJar(new File(JAR_FILE_PATH)));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public SinkConfig getSinkConfig() {
@@ -165,7 +192,10 @@ public class TestCmdSinks {
     @Test
     public void testMissingInput() throws Exception {
         SinkConfig sinkConfig = getSinkConfig();
+<<<<<<< HEAD
         sinkConfig.setInputSpecs(new HashMap<>());
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         sinkConfig.setInputs(null);
         testCmdSinkCliMissingArgs(
                 TENANT,
@@ -190,7 +220,10 @@ public class TestCmdSinks {
         SinkConfig sinkConfig = getSinkConfig();
         sinkConfig.setTopicToSerdeClassName(null);
         sinkConfig.setTopicToSchemaType(null);
+<<<<<<< HEAD
         sinkConfig.setInputSpecs(new HashMap<>());
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         testCmdSinkCliMissingArgs(
                 TENANT,
                 NAMESPACE,
@@ -212,7 +245,10 @@ public class TestCmdSinks {
     @Test
     public void testMissingTopicPattern() throws Exception {
         SinkConfig sinkConfig = getSinkConfig();
+<<<<<<< HEAD
         sinkConfig.getInputSpecs().clear();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         sinkConfig.setTopicsPattern(null);
         testCmdSinkCliMissingArgs(
                 TENANT,
@@ -253,7 +289,11 @@ public class TestCmdSinks {
                 sinkConfig
         );
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Test(expectedExceptions = ParameterException.class, expectedExceptionsMessageRegExp = "Sink archive not specfied")
     public void testMissingArchive() throws Exception {
         SinkConfig sinkConfig = getSinkConfig();
@@ -522,7 +562,11 @@ public class TestCmdSinks {
         testSinkConfig.setParallelism(PARALLELISM + 1);
         testSinkConfig.setArchive(JAR_FILE_PATH + "-prime");
         testSinkConfig.setResources(new Resources(CPU + 1, RAM + 1, DISK + 1));
+<<<<<<< HEAD
         testSinkConfig.setConfigs(createSink.parseConfigs("{\"created_at-prime\":\"Mon Jul 02 00:33:15 +0000 2018\"}"));
+=======
+        testSinkConfig.setConfigs(createSink.parseConfigs("{\"created_at-prime\":\"Mon Jul 02 00:33:15 +0000 2018\", \"otherConfigProperties\":{\"property1.value\":\"value1\",\"property2.value\":\"value2\"}}"));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 
         SinkConfig expectedSinkConfig = getSinkConfig();
@@ -677,4 +721,50 @@ public class TestCmdSinks {
 
         verify(sink).deleteSink(eq(TENANT), eq(NAMESPACE), null);
     }
+<<<<<<< HEAD
+=======
+
+    @Test
+    public void testUpdateSink() throws Exception {
+
+        updateSink.name = "my-sink";
+
+        updateSink.archive = "new-archive";
+
+        updateSink.processArguments();
+
+        updateSink.runCmd();
+
+        verify(sink).updateSink(eq(SinkConfig.builder()
+                .tenant(PUBLIC_TENANT)
+                .namespace(DEFAULT_NAMESPACE)
+                .name(updateSink.name)
+                .archive(updateSink.archive)
+                .build()), eq(updateSink.archive), eq(new UpdateOptions()));
+
+
+        updateSink.archive = null;
+
+        updateSink.parallelism = 2;
+
+        updateSink.processArguments();
+
+        updateSink.updateAuthData = true;
+
+        updateSink.runCmd();
+
+        UpdateOptions updateOptions = new UpdateOptions();
+        updateOptions.setUpdateAuthData(true);
+
+        verify(sink).updateSink(eq(SinkConfig.builder()
+                .tenant(PUBLIC_TENANT)
+                .namespace(DEFAULT_NAMESPACE)
+                .name(updateSink.name)
+                .parallelism(2)
+                .build()), eq(null), eq(updateOptions));
+
+
+
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

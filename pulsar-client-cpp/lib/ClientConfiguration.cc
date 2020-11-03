@@ -36,7 +36,11 @@ ClientConfiguration& ClientConfiguration::setAuth(const AuthenticationPtr& authe
     return *this;
 }
 
+<<<<<<< HEAD
 const Authentication& ClientConfiguration::getAuth() const { return *impl_->authenticationPtr; }
+=======
+Authentication& ClientConfiguration::getAuth() const { return *impl_->authenticationPtr; }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 const AuthenticationPtr& ClientConfiguration::getAuthPtr() const { return impl_->authenticationPtr; }
 
@@ -103,6 +107,7 @@ ClientConfiguration& ClientConfiguration::setLogConfFilePath(const std::string& 
 
 const std::string& ClientConfiguration::getLogConfFilePath() const { return impl_->logConfFilePath; }
 
+<<<<<<< HEAD
 ClientConfiguration& ClientConfiguration::setLogger(LoggerFactoryPtr loggerFactory) {
     impl_->loggerFactory = loggerFactory;
     return *this;
@@ -110,6 +115,13 @@ ClientConfiguration& ClientConfiguration::setLogger(LoggerFactoryPtr loggerFacto
 
 LoggerFactoryPtr ClientConfiguration::getLogger() const { return impl_->loggerFactory; }
 
+=======
+ClientConfiguration& ClientConfiguration::setLogger(LoggerFactory* loggerFactory) {
+    impl_->loggerFactory.reset(loggerFactory);
+    return *this;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 ClientConfiguration& ClientConfiguration::setStatsIntervalInSeconds(
     const unsigned int& statsIntervalInSeconds) {
     impl_->statsIntervalInSeconds = statsIntervalInSeconds;
@@ -119,4 +131,16 @@ ClientConfiguration& ClientConfiguration::setStatsIntervalInSeconds(
 const unsigned int& ClientConfiguration::getStatsIntervalInSeconds() const {
     return impl_->statsIntervalInSeconds;
 }
+<<<<<<< HEAD
+=======
+
+ClientConfiguration& ClientConfiguration::setPartititionsUpdateInterval(unsigned int intervalInSeconds) {
+    impl_->partitionsUpdateInterval = intervalInSeconds;
+    return *this;
+}
+
+unsigned int ClientConfiguration::getPartitionsUpdateInterval() const {
+    return impl_->partitionsUpdateInterval;
+}
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

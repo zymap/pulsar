@@ -19,22 +19,33 @@
 
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/c/message.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 typedef struct _pulsar_topic_metadata pulsar_topic_metadata_t;
 
 typedef int (*pulsar_message_router)(pulsar_message_t *msg, pulsar_topic_metadata_t *topicMetadata,
                                      void *ctx);
 
+<<<<<<< HEAD
 int pulsar_topic_metadata_get_num_partitions(pulsar_topic_metadata_t *topicMetadata);
 
 #pragma GCC visibility pop
+=======
+PULSAR_PUBLIC int pulsar_topic_metadata_get_num_partitions(pulsar_topic_metadata_t *topicMetadata);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #ifdef __cplusplus
 }

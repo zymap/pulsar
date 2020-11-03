@@ -20,6 +20,12 @@ package org.apache.pulsar.common.naming;
 
 import java.util.Map;
 
+<<<<<<< HEAD
+=======
+/**
+ * Validator for metadata configuration.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class Metadata {
 
     private static final int MAX_METADATA_SIZE = 1024; // 1 Kb

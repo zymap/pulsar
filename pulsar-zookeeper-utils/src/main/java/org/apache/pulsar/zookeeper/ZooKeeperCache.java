@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+<<<<<<< HEAD
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
@@ -35,6 +36,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+=======
+import com.google.common.collect.Sets;
+
+import java.io.IOException;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,9 +57,20 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.bookkeeper.common.util.OrderedExecutor;
 import org.apache.bookkeeper.util.SafeRunnable;
+<<<<<<< HEAD
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.KeeperException.NoNodeException;
+=======
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.stats.CacheMetricsCollector;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.KeeperException.Code;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
@@ -77,6 +103,7 @@ public abstract class ZooKeeperCache implements Watcher {
 
     public static final String ZK_CACHE_INSTANCE = "zk_cache_instance";
 
+<<<<<<< HEAD
     protected final AsyncLoadingCache<String, Entry<Object, Stat>> dataCache;
     protected final Cache<String, Set<String>> childrenCache;
     protected final Cache<String, Boolean> existsCache;
@@ -102,6 +129,55 @@ public abstract class ZooKeeperCache implements Watcher {
 
     public ZooKeeperCache(ZooKeeper zkSession) {
         this(zkSession, OrderedExecutor.newBuilder().name("zk-cache-callback-executor").build());
+=======
+    protected final AsyncLoadingCache<String, Pair<Entry<Object, Stat>, Long>> dataCache;
+    protected final AsyncLoadingCache<String, Set<String>> childrenCache;
+    protected final AsyncLoadingCache<String, Boolean> existsCache;
+    private final OrderedExecutor executor;
+    private final OrderedExecutor backgroundExecutor = OrderedExecutor.newBuilder().name("zk-cache-background").numThreads(2).build();
+    private boolean shouldShutdownExecutor;
+    private final int zkOperationTimeoutSeconds;
+    private static final int DEFAULT_CACHE_EXPIRY_SECONDS = 300; //5 minutes
+    private final int cacheExpirySeconds;
+
+    protected AtomicReference<ZooKeeper> zkSession = new AtomicReference<ZooKeeper>(null);
+
+    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds, OrderedExecutor executor) {
+        this(cacheName, zkSession, zkOperationTimeoutSeconds, executor, DEFAULT_CACHE_EXPIRY_SECONDS);
+    }
+    
+    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds,
+            OrderedExecutor executor, int cacheExpirySeconds) {
+        checkNotNull(executor);
+        this.zkOperationTimeoutSeconds = zkOperationTimeoutSeconds;
+        this.executor = executor;
+        this.zkSession.set(zkSession);
+        this.shouldShutdownExecutor = false;
+        this.cacheExpirySeconds = cacheExpirySeconds;
+
+        this.dataCache = Caffeine.newBuilder()
+                .recordStats()
+                .buildAsync((key, executor1) -> null);
+
+        this.childrenCache = Caffeine.newBuilder()
+                .recordStats()
+                .expireAfterWrite(cacheExpirySeconds, TimeUnit.SECONDS)
+                .buildAsync((key, executor1) -> null);
+
+        this.existsCache = Caffeine.newBuilder()
+                .recordStats()
+                .expireAfterWrite(cacheExpirySeconds, TimeUnit.SECONDS)
+                .buildAsync((key, executor1) -> null);
+
+        CacheMetricsCollector.CAFFEINE.addCache(cacheName + "-data", dataCache);
+        CacheMetricsCollector.CAFFEINE.addCache(cacheName + "-children", childrenCache);
+        CacheMetricsCollector.CAFFEINE.addCache(cacheName + "-exists", existsCache);
+    }
+
+    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds) {
+        this(cacheName, zkSession, zkOperationTimeoutSeconds,
+                OrderedExecutor.newBuilder().name("zk-cache-callback-executor").build());
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.shouldShutdownExecutor = true;
     }
 
@@ -113,14 +189,24 @@ public abstract class ZooKeeperCache implements Watcher {
         final String path = event.getPath();
         if (path != null) {
             dataCache.synchronous().invalidate(path);
+<<<<<<< HEAD
             childrenCache.invalidate(path);
+=======
+            childrenCache.synchronous().invalidate(path);
+>>>>>>> f773c602c... Test pr 10 (#27)
             // sometimes zk triggers one watch per zk-session and if zkDataCache and ZkChildrenCache points to this
             // ZookeeperCache instance then ZkChildrenCache may not invalidate for it's parent. Therefore, invalidate
             // cache for parent if child is created/deleted
             if (event.getType().equals(EventType.NodeCreated) || event.getType().equals(EventType.NodeDeleted)) {
+<<<<<<< HEAD
                 childrenCache.invalidate(Paths.get(path).getParent().toString());
             }
             existsCache.invalidate(path);
+=======
+                childrenCache.synchronous().invalidate(ZkUtils.getParentForPath(path));
+            }
+            existsCache.synchronous().invalidate(path);
+>>>>>>> f773c602c... Test pr 10 (#27)
             if (executor != null && updater != null) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Submitting reload cache task to the executor for path: {}, updater: {}", path, updater);
@@ -151,7 +237,11 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     private void invalidateAllExists() {
+<<<<<<< HEAD
         existsCache.invalidateAll();
+=======
+        existsCache.synchronous().invalidateAll();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void invalidateAllData() {
@@ -159,7 +249,11 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     public void invalidateAllChildren() {
+<<<<<<< HEAD
         childrenCache.invalidateAll();
+=======
+        childrenCache.synchronous().invalidateAll();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void invalidateData(String path) {
@@ -167,17 +261,32 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     public void invalidateChildren(String path) {
+<<<<<<< HEAD
         childrenCache.invalidate(path);
     }
 
     private void invalidateExists(String path) {
         existsCache.invalidate(path);
+=======
+        childrenCache.synchronous().invalidate(path);
+    }
+
+    private void invalidateExists(String path) {
+        existsCache.synchronous().invalidate(path);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void asyncInvalidate(String path) {
         backgroundExecutor.execute(() -> invalidate(path));
     }
 
+<<<<<<< HEAD
+=======
+    public int getZkOperationTimeoutSeconds() {
+        return zkOperationTimeoutSeconds;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void invalidate(final String path) {
         invalidateData(path);
         invalidateChildren(path);
@@ -198,6 +307,7 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     private boolean exists(final String path, Watcher watcher) throws KeeperException, InterruptedException {
+<<<<<<< HEAD
         try {
             return existsCache.get(path, new Callable<Boolean>() {
                 @Override
@@ -217,6 +327,32 @@ public abstract class ZooKeeperCache implements Watcher {
                 throw new RuntimeException(cause);
             }
         }
+=======
+        return existsAsync(path, watcher).join();
+    }
+
+    @SuppressWarnings("deprecation")
+    public CompletableFuture<Boolean> existsAsync(String path, Watcher watcher) {
+        return existsCache.get(path, (p, executor) -> {
+            ZooKeeper zk = zkSession.get();
+            if (zk == null) {
+                return FutureUtil.failedFuture(new IOException("ZK session not ready"));
+            }
+
+            CompletableFuture<Boolean> future = new CompletableFuture<>();
+            zk.exists(path, watcher, (rc, path1, ctx, stat) -> {
+                if (rc == Code.OK.intValue()) {
+                    future.complete(true);
+                } else if (rc == Code.NONODE.intValue()) {
+                    future.complete(false);
+                } else {
+                    future.completeExceptionally(KeeperException.create(rc));
+                }
+            }, null);
+
+            return future;
+        });
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -225,7 +361,10 @@ public abstract class ZooKeeperCache implements Watcher {
      *
      * @param path
      * @param deserializer
+<<<<<<< HEAD
      * @param stat
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws Exception
      */
@@ -278,21 +417,32 @@ public abstract class ZooKeeperCache implements Watcher {
      * @param path
      * @param watcher
      * @param deserializer
+<<<<<<< HEAD
      * @param stat
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws Exception
      */
     public <T> Optional<Entry<T, Stat>> getData(final String path, final Watcher watcher,
             final Deserializer<T> deserializer) throws Exception {
         try {
+<<<<<<< HEAD
             return getDataAsync(path, watcher, deserializer).get(cacheTimeOutInSec, TimeUnit.SECONDS);
+=======
+            return getDataAsync(path, watcher, deserializer).get(this.zkOperationTimeoutSeconds, TimeUnit.SECONDS);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (ExecutionException e) {
             asyncInvalidate(path);
             Throwable cause = e.getCause();
             if (cause instanceof KeeperException) {
                 throw (KeeperException) cause;
             } else if (cause instanceof InterruptedException) {
+<<<<<<< HEAD
                 LOG.warn("Time-out while fetching {} zk-data in {} sec", path, cacheTimeOutInSec);
+=======
+                LOG.warn("Time-out while fetching {} zk-data in {} sec", path, this.zkOperationTimeoutSeconds);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 throw (InterruptedException) cause;
             } else if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
@@ -300,7 +450,11 @@ public abstract class ZooKeeperCache implements Watcher {
                 throw new RuntimeException(cause);
             }
         } catch (TimeoutException e) {
+<<<<<<< HEAD
             LOG.warn("Time-out while fetching {} zk-data in {} sec", path, cacheTimeOutInSec);
+=======
+            LOG.warn("Time-out while fetching {} zk-data in {} sec", path, this.zkOperationTimeoutSeconds);
+>>>>>>> f773c602c... Test pr 10 (#27)
             asyncInvalidate(path);
             throw e;
         }
@@ -312,10 +466,19 @@ public abstract class ZooKeeperCache implements Watcher {
         checkNotNull(path);
         checkNotNull(deserializer);
 
+<<<<<<< HEAD
         CompletableFuture<Optional<Entry<T, Stat>>> future = new CompletableFuture<>();
         dataCache.get(path, (p, executor) -> {
             // Return a future for the z-node to be fetched from ZK
             CompletableFuture<Entry<Object, Stat>> zkFuture = new CompletableFuture<>();
+=======
+        // refresh zk-cache entry in background if it's already expired
+        checkAndRefreshExpiredEntry(path, deserializer);
+        CompletableFuture<Optional<Entry<T,Stat>>> future = new CompletableFuture<>();
+        dataCache.get(path, (p, executor) -> {
+            // Return a future for the z-node to be fetched from ZK
+            CompletableFuture<Pair<Entry<Object, Stat>, Long>> zkFuture = new CompletableFuture<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             // Broker doesn't restart on global-zk session lost: so handling unexpected exception
             try {
@@ -324,8 +487,13 @@ public abstract class ZooKeeperCache implements Watcher {
                         try {
                             T obj = deserializer.deserialize(path, content);
                             // avoid using the zk-client thread to process the result
+<<<<<<< HEAD
                             executor.execute(
                                     () -> zkFuture.complete(new SimpleImmutableEntry<Object, Stat>(obj, stat)));
+=======
+                            executor.execute(() -> zkFuture.complete(ImmutablePair
+                                    .of(new SimpleImmutableEntry<Object, Stat>(obj, stat), System.nanoTime())));
+>>>>>>> f773c602c... Test pr 10 (#27)
                         } catch (Exception e) {
                             executor.execute(() -> zkFuture.completeExceptionally(e));
                         }
@@ -344,7 +512,11 @@ public abstract class ZooKeeperCache implements Watcher {
             return zkFuture;
         }).thenAccept(result -> {
             if (result != null) {
+<<<<<<< HEAD
                 future.complete(Optional.of((Entry<T, Stat>) result));
+=======
+                future.complete(Optional.of((Entry<T, Stat>) result.getLeft()));
+>>>>>>> f773c602c... Test pr 10 (#27)
             } else {
                 future.complete(Optional.empty());
             }
@@ -356,6 +528,33 @@ public abstract class ZooKeeperCache implements Watcher {
         return future;
     }
 
+<<<<<<< HEAD
+=======
+    private <T> void checkAndRefreshExpiredEntry(String path, final Deserializer<T> deserializer) {
+        CompletableFuture<Pair<Entry<Object, Stat>, Long>> result = dataCache.getIfPresent(path);
+        if (result != null && result.isDone()) {
+            Pair<Entry<Object, Stat>, Long> entryPair = result.getNow(null);
+            if (entryPair != null && entryPair.getRight() != null) {
+                if ((System.nanoTime() - entryPair.getRight()) > TimeUnit.SECONDS.toMillis(cacheExpirySeconds)) {
+                    this.zkSession.get().getData(path, this, (rc, path1, ctx, content, stat) -> {
+                        if (rc != Code.OK.intValue()) {
+                            log.warn("Failed to refresh zookeeper-cache for {} due to {}", path, rc);
+                            return;
+                        }
+                        try {
+                            T obj = deserializer.deserialize(path, content);
+                            dataCache.put(path, CompletableFuture.completedFuture(ImmutablePair
+                                    .of(new SimpleImmutableEntry<Object, Stat>(obj, stat), System.nanoTime())));
+                        } catch (Exception e) {
+                            log.warn("Failed to refresh zookeeper-cache for {}", path, e);
+                        }
+                    }, null);
+                }
+            }
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Simple ZooKeeperChildrenCache use this method to invalidate cache entry on watch event w/o automatic re-loading
      *
@@ -365,7 +564,19 @@ public abstract class ZooKeeperCache implements Watcher {
      * @throws InterruptedException
      */
     public Set<String> getChildren(final String path) throws KeeperException, InterruptedException {
+<<<<<<< HEAD
         return getChildren(path, this);
+=======
+        try {
+            return getChildrenAsync(path, this).join();
+        } catch (CompletionException e) {
+            if (e.getCause() instanceof KeeperException) {
+                throw (KeeperException)e.getCause();
+            } else {
+                throw e;
+            }
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -375,6 +586,7 @@ public abstract class ZooKeeperCache implements Watcher {
      * @param path
      * @param watcher
      * @return
+<<<<<<< HEAD
      * @throws KeeperException
      * @throws InterruptedException
      */
@@ -407,15 +619,79 @@ public abstract class ZooKeeperCache implements Watcher {
                 throw new RuntimeException(cause);
             }
         }
+=======
+     */
+    @SuppressWarnings("deprecation")
+    public CompletableFuture<Set<String>> getChildrenAsync(String path, Watcher watcher) {
+        return childrenCache.get(path, (p, executor) -> {
+            CompletableFuture<Set<String>> future = new CompletableFuture<>();
+            executor.execute(SafeRunnable.safeRun(() -> {
+                ZooKeeper zk = zkSession.get();
+                if (zk == null) {
+                    future.completeExceptionally(new IOException("ZK session not ready"));
+                    return;
+                }
+
+                zk.getChildren(path, watcher, (rc, path1, ctx, children) -> {
+                    if (rc == Code.OK.intValue()) {
+                        future.complete(Sets.newTreeSet(children));
+                    } else if (rc == Code.NONODE.intValue()) {
+                        // The node we want may not exist yet, so put a watcher on its existence
+                        // before throwing up the exception. Its possible that the node could have
+                        // been created after the call to getChildren, but before the call to exists().
+                        // If this is the case, exists will return true, and we just call getChildren again.
+                        existsAsync(path, watcher).thenAccept(exists -> {
+                            if (exists) {
+                                getChildrenAsync(path, watcher)
+                                        .thenAccept(c -> future.complete(c))
+                                        .exceptionally(ex -> {
+                                            future.completeExceptionally(ex);
+                                            return null;
+                                        });
+                            } else {
+                                // Z-node does not exist
+                                future.complete(Collections.emptySet());
+                            }
+                        }).exceptionally(ex -> {
+                            future.completeExceptionally(ex);
+                            return null;
+                        });
+                    } else {
+                        future.completeExceptionally(KeeperException.create(rc));
+                    }
+                }, null);
+            }));
+
+            return future;
+        });
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getDataIfPresent(String path) {
+<<<<<<< HEAD
         return (T) dataCache.getIfPresent(path);
     }
 
     public Set<String> getChildrenIfPresent(String path) {
         return childrenCache.getIfPresent(path);
+=======
+        CompletableFuture<Pair<Entry<Object, Stat>, Long>> f = dataCache.getIfPresent(path);
+        if (f != null && f.isDone() && !f.isCompletedExceptionally()) {
+            return (T) f.join().getLeft().getKey();
+        } else {
+            return null;
+        }
+    }
+
+    public Set<String> getChildrenIfPresent(String path) {
+        CompletableFuture<Set<String>> future = childrenCache.getIfPresent(path);
+        if (future != null && future.isDone() && !future.isCompletedExceptionally()) {
+            return future.getNow(null);
+        } else {
+            return null;
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -425,9 +701,15 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     public void invalidateRoot(String root) {
+<<<<<<< HEAD
         for (String key : childrenCache.asMap().keySet()) {
             if (key.startsWith(root)) {
                 childrenCache.invalidate(key);
+=======
+        for (String key : childrenCache.synchronous().asMap().keySet()) {
+            if (key.startsWith(root)) {
+                childrenCache.synchronous().invalidate(key);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         }
     }
@@ -439,4 +721,52 @@ public abstract class ZooKeeperCache implements Watcher {
 
         this.backgroundExecutor.shutdown();
     }
+<<<<<<< HEAD
+=======
+
+    public boolean checkRegNodeAndWaitExpired(String regPath) throws IOException {
+        final CountDownLatch prevNodeLatch = new CountDownLatch(1);
+        Watcher zkPrevRegNodewatcher = new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                // Check for prev znode deletion. Connection expiration is
+                // not handling, since bookie has logic to shutdown.
+                if (EventType.NodeDeleted == event.getType()) {
+                    prevNodeLatch.countDown();
+                }
+            }
+        };
+        try {
+            Stat stat = getZooKeeper().exists(regPath, zkPrevRegNodewatcher);
+            if (null != stat) {
+                // if the ephemeral owner isn't current zookeeper client
+                // wait for it to be expired.
+                if (stat.getEphemeralOwner() != getZooKeeper().getSessionId()) {
+                    log.info("Previous bookie registration znode: {} exists, so waiting zk sessiontimeout:"
+                        + " {} ms for znode deletion", regPath, getZooKeeper().getSessionTimeout());
+                    // waiting for the previous bookie reg znode deletion
+                    if (!prevNodeLatch.await(getZooKeeper().getSessionTimeout(), TimeUnit.MILLISECONDS)) {
+                        throw new NodeExistsException(regPath);
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (KeeperException ke) {
+            log.error("ZK exception checking and wait ephemeral znode {} expired : ", regPath, ke);
+            throw new IOException("ZK exception checking and wait ephemeral znode "
+                + regPath + " expired", ke);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            log.error("Interrupted checking and wait ephemeral znode {} expired : ", regPath, ie);
+            throw new IOException("Interrupted checking and wait ephemeral znode "
+                + regPath + " expired", ie);
+        }
+    }
+
+    private static Logger log = LoggerFactory.getLogger(ZooKeeperCache.class);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

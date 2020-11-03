@@ -18,25 +18,79 @@
  */
 package org.apache.pulsar.client.admin;
 
+<<<<<<< HEAD
+=======
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * This is an interface class to allow using command line tool to quickly lookup the broker serving the topic.
  */
 public interface Lookup {
 
     /**
+<<<<<<< HEAD
      * Lookup a topic
+=======
+     * Lookup a topic.
      *
      * @param topic
      * @return the broker URL that serves the topic
      */
+    String lookupTopic(String topic) throws PulsarAdminException;
+
+    /**
+     * Lookup a topic asynchronously.
+>>>>>>> f773c602c... Test pr 10 (#27)
+     *
+     * @param topic
+     * @return the broker URL that serves the topic
+     */
+<<<<<<< HEAD
     public String lookupTopic(String topic) throws PulsarAdminException;
 
     /**
      * Get a bundle range of a topic
+=======
+    CompletableFuture<String> lookupTopicAsync(String topic);
+
+    /**
+     * Lookup a partitioned topic.
+     *
+     * @param topic
+     * @return the broker URLs that serves the topic
+     */
+    Map<String, String> lookupPartitionedTopic(String topic) throws PulsarAdminException;
+
+
+    /**
+     * Lookup a partitioned topic.
+     *
+     * @param topic
+     * @return the broker URLs that serves the topic
+     */
+    CompletableFuture<Map<String, String>> lookupPartitionedTopicAsync(String topic);
+
+    /**
+     * Get a bundle range of a topic.
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * @param topic
      * @return
      * @throws PulsarAdminException
      */
+<<<<<<< HEAD
     public String getBundleRange(String topic) throws PulsarAdminException;
+=======
+    String getBundleRange(String topic) throws PulsarAdminException;
+
+    /**
+     * Get a bundle range of a topic asynchronously.
+     *
+     * @param topic
+     * @return
+     */
+    CompletableFuture<String> getBundleRangeAsync(String topic);
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

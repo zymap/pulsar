@@ -4,6 +4,7 @@ title: Extending Authentication and Authorization in Pulsar
 sidebar_label: Extending
 ---
 
+<<<<<<< HEAD
 Pulsar provides a way to use custom authentication and authorization mechanisms
 
 ## Authentication
@@ -19,6 +20,19 @@ the credentials.
 
 For client library, you will need to implement `org.apache.pulsar.client.api.Authentication`. This class can then be passed
 when creating a Pulsar client:
+=======
+Pulsar provides a way to use custom authentication and authorization mechanisms.
+
+## Authentication
+
+Pulsar supports mutual TLS and Athenz authentication plugins. For how to use these authentication plugins, you can refer to the description in [Security](security-overview.md).
+
+You can use a custom authentication mechanism by providing the implementation in the form of two plugins. One plugin is for the Client library and the other plugin is for the Pulsar Proxy and/or Pulsar Broker to validate the credentials.
+
+### Client authentication plugin
+
+For the client library, you need to implement `org.apache.pulsar.client.api.Authentication`. By entering the command below you can pass this class when you create a Pulsar client:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ```java
 PulsarClient client = PulsarClient.builder()
@@ -27,21 +41,33 @@ PulsarClient client = PulsarClient.builder()
     .build();
 ```
 
+<<<<<<< HEAD
 For reference, there are 2 interfaces to implement on the client side:
+=======
+You can use 2 interfaces to implement on the client side:
+>>>>>>> f773c602c... Test pr 10 (#27)
  * `Authentication` -> http://pulsar.apache.org/api/client/org/apache/pulsar/client/api/Authentication.html
  * `AuthenticationDataProvider` -> http://pulsar.apache.org/api/client/org/apache/pulsar/client/api/AuthenticationDataProvider.html
 
 
+<<<<<<< HEAD
 This in turn will need to provide the client credentials in the form of `org.apache.pulsar.client.api.AuthenticationDataProvider`. This will leave
 the chance to return different kinds of authentication token for different
 type of connection or by passing a certificate chain to use for TLS.
 
 
 Examples for client authentication providers can be found at:
+=======
+This in turn needs to provide the client credentials in the form of `org.apache.pulsar.client.api.AuthenticationDataProvider`. This leaves the chance to return different kinds of authentication token for different types of connection or by passing a certificate chain to use for TLS.
+
+
+You can find examples for client authentication providers at:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
  * Mutual TLS Auth -- https://github.com/apache/pulsar/tree/master/pulsar-client/src/main/java/org/apache/pulsar/client/impl/auth
  * Athenz -- https://github.com/apache/pulsar/tree/master/pulsar-client-auth-athenz/src/main/java/org/apache/pulsar/client/impl/auth
 
+<<<<<<< HEAD
 ### Broker authentication plugin
 
 On broker side, we need the corresponding plugin to validate the credentials
@@ -56,6 +82,19 @@ authenticationProviders=
 ```
 
 There is one single interface to implement `org.apache.pulsar.broker.authentication.AuthenticationProvider`:
+=======
+### Proxy/Broker authentication plugin
+
+On the proxy/broker side, you need to configure the corresponding plugin to validate the credentials that the client sends. The Proxy and Broker can support multiple authentication providers at the same time.
+
+In `conf/broker.conf` you can choose to specify a list of valid providers:
+
+```properties
+# Authentication provider name list, which is comma separated list of class names
+authenticationProviders=
+```
+To implement `org.apache.pulsar.broker.authentication.AuthenticationProvider` on one single interface:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 ```java
 /**
@@ -92,13 +131,18 @@ public interface AuthenticationProvider extends Closeable {
 }
 ```
 
+<<<<<<< HEAD
 Example for Broker authentication plugins:
+=======
+The following is the example for Broker authentication plugins:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
  * Mutual TLS -- https://github.com/apache/pulsar/blob/master/pulsar-broker-common/src/main/java/org/apache/pulsar/broker/authentication/AuthenticationProviderTls.java
  * Athenz -- https://github.com/apache/pulsar/blob/master/pulsar-broker-auth-athenz/src/main/java/org/apache/pulsar/broker/authentication/AuthenticationProviderAthenz.java
 
 ## Authorization
 
+<<<<<<< HEAD
 Authorization is the operation that checks whether a particular "role" or "principal" is
 allowed to perform a certain operation.
 
@@ -108,6 +152,15 @@ configure a different one through a plugin.
 To provide a custom provider, one needs to implement the
  `org.apache.pulsar.broker.authorization.AuthorizationProvider` interface, have this class in the
  Pulsar broker classpath and configure it in `conf/broker.conf`:
+=======
+Authorization is the operation that checks whether a particular "role" or "principal" has permission to perform a certain operation.
+
+By default, you can use the embedded authorization provider provided by Pulsar. You can also configure a different authorization provider through a plugin.
+Note that although the Authentication plugin is designed for use in both the Proxy and Broker,
+the Authorization plugin is designed only for use on the Broker however the Proxy does perform some simple Authorization checks of Roles if authorization is enabled.
+
+To provide a custom provider, you need to implement the `org.apache.pulsar.broker.authorization.AuthorizationProvider` interface, put this class in the Pulsar broker classpath and configure the class in `conf/broker.conf`:
+>>>>>>> f773c602c... Test pr 10 (#27)
 
  ```properties
  # Authorization provider fully qualified class-name
@@ -123,7 +176,11 @@ public interface AuthorizationProvider extends Closeable {
     /**
      * Perform initialization for the authorization provider
      *
+<<<<<<< HEAD
      * @param config
+=======
+     * @param conf
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            broker config object
      * @param configCache
      *            pulsar zk configuration cache service

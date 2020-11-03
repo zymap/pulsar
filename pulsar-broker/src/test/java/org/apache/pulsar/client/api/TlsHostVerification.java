@@ -33,8 +33,14 @@ public class TlsHostVerification extends TlsProducerConsumerBase {
         Map<String, String> authParams = new HashMap<>();
         authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
         authParams.put("tlsKeyFile", TLS_CLIENT_KEY_FILE_PATH);
+<<<<<<< HEAD
         PulsarAdmin adminClientTls = PulsarAdmin.builder()
                 .serviceHttpUrl("https://127.0.0.1:" + BROKER_WEBSERVICE_PORT_TLS)
+=======
+        String websocketTlsAddress = pulsar.getWebServiceAddressTls();
+        PulsarAdmin adminClientTls = PulsarAdmin.builder()
+                .serviceHttpUrl(websocketTlsAddress.replace("localhost", "127.0.0.1"))
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).allowTlsInsecureConnection(false)
                 .authentication(AuthenticationTls.class.getName(), authParams).enableTlsHostnameVerification(true)
                 .build();
@@ -53,7 +59,11 @@ public class TlsHostVerification extends TlsProducerConsumerBase {
         authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
         authParams.put("tlsKeyFile", TLS_CLIENT_KEY_FILE_PATH);
         PulsarAdmin adminClient = PulsarAdmin.builder()
+<<<<<<< HEAD
                 .serviceHttpUrl("https://127.0.0.1:" + BROKER_WEBSERVICE_PORT_TLS)
+=======
+                .serviceHttpUrl(pulsar.getWebServiceAddressTls())
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).allowTlsInsecureConnection(false)
                 .authentication(AuthenticationTls.class.getName(), authParams).enableTlsHostnameVerification(false)
                 .build();

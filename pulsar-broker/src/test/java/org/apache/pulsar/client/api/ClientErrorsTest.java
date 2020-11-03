@@ -24,11 +24,16 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import io.netty.channel.ChannelHandlerContext;
+<<<<<<< HEAD
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
 import org.apache.pulsar.client.api.PulsarClientException.LookupException;
 import org.apache.pulsar.client.impl.ConsumerBase;
@@ -37,6 +42,15 @@ import org.apache.pulsar.common.api.Commands;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandLookupTopicResponse.LookupType;
 import org.apache.pulsar.common.api.proto.PulsarApi.ServerError;
 import org.apache.pulsar.common.schema.SchemaVersion;
+=======
+
+import org.apache.pulsar.client.impl.ConsumerBase;
+import org.apache.pulsar.client.impl.ProducerBase;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandLookupTopicResponse.LookupType;
+import org.apache.pulsar.common.api.proto.PulsarApi.ServerError;
+import org.apache.pulsar.common.protocol.Commands;
+import org.apache.pulsar.common.protocol.schema.SchemaVersion;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,18 +60,25 @@ import org.testng.annotations.Test;
 public class ClientErrorsTest {
 
     MockBrokerService mockBrokerService;
+<<<<<<< HEAD
     private static final int WEB_SERVICE_PORT = PortManager.nextFreePort();
     private static final int WEB_SERVICE_TLS_PORT = PortManager.nextFreePort();
     private static final int BROKER_SERVICE_PORT = PortManager.nextFreePort();
     private static final int BROKER_SERVICE_TLS_PORT = PortManager.nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static int ASYNC_EVENT_COMPLETION_WAIT = 100;
 
     private final String ASSERTION_ERROR = "AssertionError";
 
     @BeforeClass
     public void setup() {
+<<<<<<< HEAD
         mockBrokerService = new MockBrokerService(WEB_SERVICE_PORT, WEB_SERVICE_TLS_PORT, BROKER_SERVICE_PORT,
                 BROKER_SERVICE_TLS_PORT);
+=======
+        mockBrokerService = new MockBrokerService();
+>>>>>>> f773c602c... Test pr 10 (#27)
         mockBrokerService.start();
     }
 
@@ -70,7 +91,11 @@ public class ClientErrorsTest {
     public void testMockBrokerService() throws Exception {
         // test default actions of mock broker service
         try {
+<<<<<<< HEAD
             PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+            PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             Consumer<byte[]> consumer = client.newConsumer().topic("persistent://prop/use/ns/t1")
                     .subscriptionName("sub1").subscribe();
@@ -101,7 +126,11 @@ public class ClientErrorsTest {
     }
 
     private void producerCreateFailWithoutRetry(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleProducer((ctx, producer) -> {
@@ -137,7 +166,11 @@ public class ClientErrorsTest {
     }
 
     private void producerCreateSuccessAfterRetry(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleProducer((ctx, producer) -> {
@@ -169,7 +202,11 @@ public class ClientErrorsTest {
     }
 
     private void producerCreateFailAfterRetryTimeout(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT)
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress())
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .operationTimeout(1, TimeUnit.SECONDS).build();
         final AtomicInteger counter = new AtomicInteger(0);
 
@@ -207,13 +244,21 @@ public class ClientErrorsTest {
     }
 
     private void producerFailDoesNotFailOtherProducer(String topic1, String topic2) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleProducer((ctx, producer) -> {
             if (counter.incrementAndGet() == 2) {
                 // fail second producer
+<<<<<<< HEAD
                 ctx.writeAndFlush(Commands.newError(producer.getRequestId(), ServerError.AuthenticationError, "msg"));
+=======
+                ctx.writeAndFlush(Commands.newError(producer.getRequestId(), ServerError.AuthorizationError, "msg"));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 return;
             }
             ctx.writeAndFlush(Commands.newProducerSuccess(producer.getRequestId(), "default-producer", SchemaVersion.Empty));
@@ -248,7 +293,11 @@ public class ClientErrorsTest {
     }
 
     private void producerContinuousRetryAfterSendFail(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleProducer((ctx, producer) -> {
@@ -268,7 +317,11 @@ public class ClientErrorsTest {
                 ctx.writeAndFlush(Commands.newSendError(0, 0, ServerError.PersistenceError, "Send Failed"));
                 return;
             }
+<<<<<<< HEAD
             ctx.writeAndFlush(Commands.newSendReceipt(0, 0, 1, 1));
+=======
+            ctx.writeAndFlush(Commands.newSendReceipt(0, 0, 0, 1, 1));
+>>>>>>> f773c602c... Test pr 10 (#27)
         });
 
         try {
@@ -295,8 +348,12 @@ public class ClientErrorsTest {
 
     @Test
     public void testLookupWithDisconnection() throws Exception {
+<<<<<<< HEAD
         final String brokerUrl = "pulsar://127.0.0.1:" + BROKER_SERVICE_PORT;
         PulsarClient client = PulsarClient.builder().serviceUrl(brokerUrl).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
         String topic = "persistent://prop/use/ns/t1";
 
@@ -310,8 +367,14 @@ public class ClientErrorsTest {
                 ctx.close();
                 return;
             }
+<<<<<<< HEAD
             ctx.writeAndFlush(Commands.newLookupResponse(brokerUrl, null, true, LookupType.Connect,
                     lookup.getRequestId(), false));
+=======
+            ctx.writeAndFlush(
+                    Commands.newLookupResponse(mockBrokerService.getBrokerAddress(), null, true, LookupType.Connect,
+                            lookup.getRequestId(), false));
+>>>>>>> f773c602c... Test pr 10 (#27)
         });
 
         try {
@@ -329,7 +392,11 @@ public class ClientErrorsTest {
     }
 
     private void subscribeFailWithoutRetry(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleSubscribe((ctx, subscribe) -> {
@@ -365,7 +432,11 @@ public class ClientErrorsTest {
     }
 
     private void subscribeSuccessAfterRetry(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleSubscribe((ctx, subscribe) -> {
@@ -397,7 +468,11 @@ public class ClientErrorsTest {
     }
 
     private void subscribeFailAfterRetryTimeout(String topic) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT)
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress())
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .operationTimeout(200, TimeUnit.MILLISECONDS).build();
         final AtomicInteger counter = new AtomicInteger(0);
 
@@ -435,13 +510,21 @@ public class ClientErrorsTest {
     }
 
     private void subscribeFailDoesNotFailOtherConsumer(String topic1, String topic2) throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger counter = new AtomicInteger(0);
 
         mockBrokerService.setHandleSubscribe((ctx, subscribe) -> {
             if (counter.incrementAndGet() == 2) {
                 // fail second producer
+<<<<<<< HEAD
                 ctx.writeAndFlush(Commands.newError(subscribe.getRequestId(), ServerError.AuthenticationError, "msg"));
+=======
+                ctx.writeAndFlush(Commands.newError(subscribe.getRequestId(), ServerError.AuthorizationError, "msg"));
+>>>>>>> f773c602c... Test pr 10 (#27)
                 return;
             }
             ctx.writeAndFlush(Commands.newSuccess(subscribe.getRequestId()));
@@ -470,7 +553,11 @@ public class ClientErrorsTest {
     // other producers and fail
     @Test
     public void testOneProducerFailShouldCloseAllProducersInPartitionedProducer() throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getHttpAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger producerCounter = new AtomicInteger(0);
         final AtomicInteger closeCounter = new AtomicInteger(0);
 
@@ -505,17 +592,30 @@ public class ClientErrorsTest {
     // of other consumers and fail
     @Test
     public void testOneConsumerFailShouldCloseAllConsumersInPartitionedConsumer() throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getHttpAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         final AtomicInteger subscribeCounter = new AtomicInteger(0);
         final AtomicInteger closeCounter = new AtomicInteger(0);
 
         mockBrokerService.setHandleSubscribe((ctx, subscribe) -> {
+<<<<<<< HEAD
             if (subscribeCounter.incrementAndGet() == 3) {
                 ctx.writeAndFlush(Commands.newError(subscribe.getRequestId(), ServerError.AuthenticationError, "msg"));
                 return;
             }
             ctx.writeAndFlush(Commands.newSuccess(subscribe.getRequestId()));
 
+=======
+            System.err.println("subscribeCounter: " + subscribeCounter.get());
+            if (subscribeCounter.incrementAndGet() == 3) {
+                ctx.writeAndFlush(Commands.newError(subscribe.getRequestId(), ServerError.AuthorizationError, "msg"));
+                return;
+            }
+            ctx.writeAndFlush(Commands.newSuccess(subscribe.getRequestId()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         });
 
         mockBrokerService.setHandleCloseConsumer((ctx, closeConsumer) -> {
@@ -525,6 +625,7 @@ public class ClientErrorsTest {
 
         try {
             client.newConsumer().topic("persistent://prop/use/ns/multi-part-t1").subscriptionName("sub1").subscribe();
+<<<<<<< HEAD
             fail("Should have failed with an authentication error");
         } catch (Exception e) {
             assertTrue(e instanceof PulsarClientException.AuthenticationException);
@@ -532,6 +633,15 @@ public class ClientErrorsTest {
             assertEquals(closeCounter.get(), 3);
         }
 
+=======
+            fail("Should have failed with an authorization error");
+        } catch (PulsarClientException.AuthorizationException e) {
+        }
+
+        // should call close for 3 partitions
+        assertEquals(closeCounter.get(), 3);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         mockBrokerService.resetHandleSubscribe();
         mockBrokerService.resetHandleCloseConsumer();
         client.close();
@@ -539,7 +649,11 @@ public class ClientErrorsTest {
 
     @Test
     public void testFlowSendWhenPartitionedSubscribeCompletes() throws Exception {
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getHttpAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         AtomicInteger subscribed = new AtomicInteger();
         AtomicBoolean fail = new AtomicBoolean(false);
@@ -577,7 +691,11 @@ public class ClientErrorsTest {
             channelCtx.set(ctx);
             ctx.writeAndFlush(Commands.newConnected(connect.getProtocolVersion()));
             if (numOfConnections.incrementAndGet() == 2) {
+<<<<<<< HEAD
                 // close the cnx immediately when trying to conenct the 2nd time
+=======
+                // close the cnx immediately when trying to connect the 2nd time
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ctx.channel().close();
             }
         });
@@ -588,10 +706,17 @@ public class ClientErrorsTest {
 
         mockBrokerService.setHandleSend((ctx, sendCmd, headersAndPayload) -> {
             msgSent.set(true);
+<<<<<<< HEAD
             ctx.writeAndFlush(Commands.newSendReceipt(0, 0, 1, 1));
         });
 
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+            ctx.writeAndFlush(Commands.newSendReceipt(0, 0, 0, 1, 1));
+        });
+
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Producer<byte[]> producer = client.newProducer().topic("persistent://prop/use/ns/t1").create();
 
         // close the cnx after creating the producer
@@ -599,7 +724,11 @@ public class ClientErrorsTest {
 
         producer.send(new byte[0]);
 
+<<<<<<< HEAD
         assertEquals(msgSent.get(), true);
+=======
+        assertTrue(msgSent.get());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertTrue(numOfConnections.get() >= 3);
 
         mockBrokerService.resetHandleConnect();
@@ -617,7 +746,11 @@ public class ClientErrorsTest {
             channelCtx.set(ctx);
             ctx.writeAndFlush(Commands.newConnected(connect.getProtocolVersion()));
             if (numOfConnections.incrementAndGet() == 2) {
+<<<<<<< HEAD
                 // close the cnx immediately when trying to conenct the 2nd time
+=======
+                // close the cnx immediately when trying to connect the 2nd time
+>>>>>>> f773c602c... Test pr 10 (#27)
                 ctx.channel().close();
             }
             if (numOfConnections.get() == 3) {
@@ -629,7 +762,11 @@ public class ClientErrorsTest {
             ctx.writeAndFlush(Commands.newSuccess(subscribe.getRequestId()));
         });
 
+<<<<<<< HEAD
         PulsarClient client = PulsarClient.builder().serviceUrl("http://127.0.0.1:" + WEB_SERVICE_PORT).build();
+=======
+        PulsarClient client = PulsarClient.builder().serviceUrl(mockBrokerService.getBrokerAddress()).build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         client.newConsumer().topic("persistent://prop/use/ns/t1").subscriptionName("sub1").subscribe();
 
         // close the cnx after creating the producer

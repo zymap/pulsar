@@ -28,9 +28,28 @@ public class AuthenticationDataCommand implements AuthenticationDataSource {
     protected final String authData;
     protected final SocketAddress remoteAddress;
     protected final SSLSession sslSession;
+<<<<<<< HEAD
 
     public AuthenticationDataCommand(String authData) {
         this(authData, null, null);
+=======
+    protected String subscription;
+
+    public AuthenticationDataCommand(String authData) {
+        this(authData, null, null, null);
+    }
+
+    public AuthenticationDataCommand(String authData, String subscription) {
+        this(authData, null, null, subscription);
+    }
+
+    public AuthenticationDataCommand(String authData, SocketAddress remoteAddress, SSLSession sslSession,
+                                     String subscription) {
+        this.authData = authData;
+        this.remoteAddress = remoteAddress;
+        this.sslSession = sslSession;
+        this.subscription = subscription;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public AuthenticationDataCommand(String authData, SocketAddress remoteAddress, SSLSession sslSession) {
@@ -79,10 +98,34 @@ public class AuthenticationDataCommand implements AuthenticationDataSource {
     @Override
     public Certificate[] getTlsCertificates() {
         try {
+<<<<<<< HEAD
             return (Certificate[]) sslSession.getPeerCertificates();
+=======
+            return sslSession.getPeerCertificates();
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (SSLPeerUnverifiedException e) {
             return null;
         }
     }
 
+<<<<<<< HEAD
+=======
+    /*
+     * Subscription
+     */
+    @Override
+    public boolean hasSubscription() {
+        return this.subscription != null;
+    }
+
+    @Override
+    public void setSubscription(String subscription) {
+        this.subscription = subscription;
+    }
+
+    @Override
+    public String getSubscription() {
+        return subscription;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

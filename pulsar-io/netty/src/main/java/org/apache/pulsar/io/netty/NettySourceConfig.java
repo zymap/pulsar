@@ -27,10 +27,13 @@ import java.io.Serializable;
 import java.util.Map;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import lombok.experimental.Accessors;
 import org.apache.pulsar.io.core.annotations.FieldDoc;
 
@@ -38,10 +41,13 @@ import org.apache.pulsar.io.core.annotations.FieldDoc;
  * Netty Source Connector Config.
  */
 @Data
+<<<<<<< HEAD
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Accessors(chain = true)
 public class NettySourceConfig implements Serializable {
 

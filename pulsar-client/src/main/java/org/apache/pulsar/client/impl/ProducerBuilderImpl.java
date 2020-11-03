@@ -25,10 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+<<<<<<< HEAD
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+=======
+import java.util.concurrent.TimeUnit;
+
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.api.BatcherBuilder;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.CompressionType;
 import org.apache.pulsar.client.api.CryptoKeyReader;
 import org.apache.pulsar.client.api.HashingScheme;
@@ -37,9 +47,16 @@ import org.apache.pulsar.client.api.MessageRoutingMode;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.ProducerCryptoFailureAction;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.ProducerInterceptor;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
+=======
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.interceptor.ProducerInterceptor;
+import org.apache.pulsar.client.api.interceptor.ProducerInterceptorWrapper;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.conf.ConfigurationDataUtils;
 import org.apache.pulsar.client.impl.conf.ProducerConfigurationData;
 import org.apache.pulsar.common.util.FutureUtil;
@@ -48,12 +65,20 @@ import lombok.NonNull;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+<<<<<<< HEAD
+=======
+@Getter(AccessLevel.PUBLIC)
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
 
     private final PulsarClientImpl client;
     private ProducerConfigurationData conf;
     private Schema<T> schema;
+<<<<<<< HEAD
     private List<ProducerInterceptor<T>> interceptorList;
+=======
+    private List<ProducerInterceptor> interceptorList;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @VisibleForTesting
     public ProducerBuilderImpl(PulsarClientImpl client, Schema<T> schema) {
@@ -84,6 +109,7 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     public Producer<T> create() throws PulsarClientException {
         try {
             return createAsync().get();
+<<<<<<< HEAD
         } catch (ExecutionException e) {
             Throwable t = e.getCause();
             if (t instanceof PulsarClientException) {
@@ -94,11 +120,21 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PulsarClientException(e);
+=======
+        } catch (Exception e) {
+            throw PulsarClientException.unwrap(e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
     @Override
     public CompletableFuture<Producer<T>> createAsync() {
+<<<<<<< HEAD
+=======
+        // config validation
+        checkArgument(!(conf.isBatchingEnabled() && conf.isChunkingEnabled()),
+                "Batching and chunking of messages can't be enabled together");
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (conf.getTopicName() == null) {
             return FutureUtil
                     .failedFuture(new IllegalArgumentException("Topic name must be set on the producer builder"));
@@ -112,7 +148,11 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
 
         return interceptorList == null || interceptorList.size() == 0 ?
                 client.createProducerAsync(conf, schema, null) :
+<<<<<<< HEAD
                 client.createProducerAsync(conf, schema, new ProducerInterceptors<>(interceptorList));
+=======
+                client.createProducerAsync(conf, schema, new ProducerInterceptors(interceptorList));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -125,27 +165,41 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     @Override
     public ProducerBuilder<T> topic(String topicName) {
         checkArgument(StringUtils.isNotBlank(topicName), "topicName cannot be blank");
+<<<<<<< HEAD
         conf.setTopicName(topicName);
+=======
+        conf.setTopicName(StringUtils.trim(topicName));
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
     @Override
     public ProducerBuilder<T> producerName(String producerName) {
+<<<<<<< HEAD
         checkArgument(StringUtils.isNotBlank(producerName), "producerName cannot be blank");
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setProducerName(producerName);
         return this;
     }
 
     @Override
     public ProducerBuilder<T> sendTimeout(int sendTimeout, @NonNull TimeUnit unit) {
+<<<<<<< HEAD
         checkArgument(sendTimeout >= 0, "sendTimeout needs to be >= 0");
         conf.setSendTimeoutMs(unit.toMillis(sendTimeout));
+=======
+        conf.setSendTimeoutMs(sendTimeout, unit);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
     @Override
     public ProducerBuilder<T> maxPendingMessages(int maxPendingMessages) {
+<<<<<<< HEAD
         checkArgument(maxPendingMessages > 0, "maxPendingMessages needs to be > 0");
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setMaxPendingMessages(maxPendingMessages);
         return this;
     }
@@ -193,6 +247,15 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ProducerBuilder<T> enableChunking(boolean chunkingEnabled) {
+        conf.setChunkingEnabled(chunkingEnabled);
+        return this;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ProducerBuilder<T> cryptoKeyReader(@NonNull CryptoKeyReader cryptoKeyReader) {
         conf.setCryptoKeyReader(cryptoKeyReader);
         return this;
@@ -213,7 +276,17 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
 
     @Override
     public ProducerBuilder<T> batchingMaxPublishDelay(long batchDelay, @NonNull TimeUnit timeUnit) {
+<<<<<<< HEAD
         conf.setBatchingMaxPublishDelayMicros(timeUnit.toMicros(batchDelay));
+=======
+        conf.setBatchingMaxPublishDelayMicros(batchDelay, timeUnit);
+        return this;
+    }
+
+    @Override
+    public ProducerBuilder<T> roundRobinRouterBatchingPartitionSwitchFrequency(int frequency) {
+        conf.setBatchingPartitionSwitchFrequencyByPublishDelay(frequency);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -224,6 +297,22 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ProducerBuilder<T> batchingMaxBytes(int batchingMaxBytes) {
+        conf.setBatchingMaxBytes(batchingMaxBytes);
+        return this;
+    }
+
+    @Override
+    public ProducerBuilder<T> batcherBuilder(BatcherBuilder batcherBuilder) {
+        conf.setBatcherBuilder(batcherBuilder);
+        return this;
+    }
+
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public ProducerBuilder<T> initialSequenceId(long initialSequenceId) {
         conf.setInitialSequenceId(initialSequenceId);
         return this;
@@ -248,19 +337,52 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     }
 
     @Override
+<<<<<<< HEAD
     public ProducerBuilder<T> intercept(ProducerInterceptor<T>... interceptors) {
+=======
+    public ProducerBuilder<T> intercept(ProducerInterceptor... interceptors) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (interceptorList == null) {
             interceptorList = new ArrayList<>();
         }
         interceptorList.addAll(Arrays.asList(interceptors));
         return this;
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    @Deprecated
+    public ProducerBuilder<T> intercept(org.apache.pulsar.client.api.ProducerInterceptor<T>... interceptors) {
+        if (interceptorList == null) {
+            interceptorList = new ArrayList<>();
+        }
+        interceptorList.addAll(Arrays.stream(interceptors).map(ProducerInterceptorWrapper::new)
+                                     .collect(Collectors.toList()));
+        return this;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Override
     public ProducerBuilder<T> autoUpdatePartitions(boolean autoUpdate) {
         conf.setAutoUpdatePartitions(autoUpdate);
         return this;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public ProducerBuilder<T> autoUpdatePartitionsInterval(int interval, TimeUnit unit) {
+        conf.setAutoUpdatePartitionsIntervalSeconds(interval, unit);
+        return this;
+    }
+
+    @Override
+    public ProducerBuilder<T> enableMultiSchema(boolean multiSchema) {
+        conf.setMultiSchema(multiSchema);
+        return this;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private void setMessageRoutingMode() throws PulsarClientException {
         if(conf.getMessageRoutingMode() == null && conf.getCustomMessageRouter() == null) {
             messageRoutingMode(MessageRoutingMode.RoundRobinPartition);
@@ -274,4 +396,12 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
                     "should be set as " + MessageRoutingMode.CustomPartition);
         }
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public String toString() {
+        return conf != null ? conf.toString() : null;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

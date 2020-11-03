@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+<<<<<<< HEAD
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.MessageListener;
@@ -34,12 +35,22 @@ import org.apache.pulsar.client.api.ReaderListener;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.impl.ConsumerImpl.SubscriptionMode;
+=======
+import org.apache.pulsar.client.api.*;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
 import org.apache.pulsar.client.impl.conf.ReaderConfigurationData;
 import org.apache.pulsar.common.naming.TopicName;
 
 public class ReaderImpl<T> implements Reader<T> {
+<<<<<<< HEAD
 
+=======
+    private static final BatchReceivePolicy DISABLED_BATCH_RECEIVE_POLICY = BatchReceivePolicy.builder()
+            .timeout(0, TimeUnit.MILLISECONDS)
+            .maxNumMessages(1)
+            .build();
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final ConsumerImpl<T> consumer;
 
     public ReaderImpl(PulsarClientImpl client, ReaderConfigurationData<T> readerConfiguration,
@@ -54,12 +65,30 @@ public class ReaderImpl<T> implements Reader<T> {
         consumerConfiguration.getTopicNames().add(readerConfiguration.getTopicName());
         consumerConfiguration.setSubscriptionName(subscription);
         consumerConfiguration.setSubscriptionType(SubscriptionType.Exclusive);
+<<<<<<< HEAD
         consumerConfiguration.setReceiverQueueSize(readerConfiguration.getReceiverQueueSize());
         consumerConfiguration.setReadCompacted(readerConfiguration.isReadCompacted());
+=======
+        consumerConfiguration.setSubscriptionMode(SubscriptionMode.NonDurable);
+        consumerConfiguration.setReceiverQueueSize(readerConfiguration.getReceiverQueueSize());
+        consumerConfiguration.setReadCompacted(readerConfiguration.isReadCompacted());
+
+        // Reader doesn't need any batch receiving behaviours
+        // disable the batch receive timer for the ConsumerImpl instance wrapped by the ReaderImpl
+        consumerConfiguration.setBatchReceivePolicy(DISABLED_BATCH_RECEIVE_POLICY);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (readerConfiguration.getReaderName() != null) {
             consumerConfiguration.setConsumerName(readerConfiguration.getReaderName());
         }
 
+<<<<<<< HEAD
+=======
+        if (readerConfiguration.isResetIncludeHead()) {
+            consumerConfiguration.setResetIncludeHead(true);
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (readerConfiguration.getReaderListener() != null) {
             ReaderListener<T> readerListener = readerConfiguration.getReaderListener();
             consumerConfiguration.setMessageListener(new MessageListener<T>() {
@@ -83,9 +112,25 @@ public class ReaderImpl<T> implements Reader<T> {
             consumerConfiguration.setCryptoKeyReader(readerConfiguration.getCryptoKeyReader());
         }
 
+<<<<<<< HEAD
         final int partitionIdx = TopicName.getPartitionIndex(readerConfiguration.getTopicName());
         consumer = new ConsumerImpl<>(client, readerConfiguration.getTopicName(), consumerConfiguration, listenerExecutor,
                 partitionIdx, consumerFuture, SubscriptionMode.NonDurable, readerConfiguration.getStartMessageId(), schema, null);
+=======
+        if (readerConfiguration.getKeyHashRanges() != null) {
+            consumerConfiguration.setKeySharedPolicy(
+                KeySharedPolicy
+                    .stickyHashRange()
+                    .ranges(readerConfiguration.getKeyHashRanges())
+            );
+        }
+
+        final int partitionIdx = TopicName.getPartitionIndex(readerConfiguration.getTopicName());
+        consumer = new ConsumerImpl<>(client, readerConfiguration.getTopicName(), consumerConfiguration,
+                listenerExecutor, partitionIdx, false, consumerFuture,
+                readerConfiguration.getStartMessageId(), readerConfiguration.getStartMessageFromRollbackDurationInSec(),
+                schema, null, true /* createTopicIfDoesNotExist */);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -124,10 +169,20 @@ public class ReaderImpl<T> implements Reader<T> {
 
     @Override
     public CompletableFuture<Message<T>> readNextAsync() {
+<<<<<<< HEAD
         return consumer.receiveAsync().thenApply(msg -> {
             consumer.acknowledgeCumulativeAsync(msg);
             return msg;
         });
+=======
+        CompletableFuture<Message<T>> receiveFuture = consumer.receiveAsync();
+        receiveFuture.whenComplete((msg, t) -> {
+           if (msg != null) {
+               consumer.acknowledgeCumulativeAsync(msg);
+           }
+        });
+        return receiveFuture;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -154,4 +209,27 @@ public class ReaderImpl<T> implements Reader<T> {
     public boolean isConnected() {
         return consumer.isConnected();
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void seek(MessageId messageId) throws PulsarClientException {
+        consumer.seek(messageId);
+    }
+
+    @Override
+    public void seek(long timestamp) throws PulsarClientException {
+        consumer.seek(timestamp);
+    }
+
+    @Override
+    public CompletableFuture<Void> seekAsync(MessageId messageId) {
+        return consumer.seekAsync(messageId);
+    }
+
+    @Override
+    public CompletableFuture<Void> seekAsync(long timestamp) {
+        return consumer.seekAsync(timestamp);
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

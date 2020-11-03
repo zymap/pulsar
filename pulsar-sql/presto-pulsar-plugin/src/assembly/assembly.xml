@@ -31,6 +31,12 @@
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
             <scope>runtime</scope>
+<<<<<<< HEAD
+=======
+            <excludes>
+              <exclude>jakarta.ws.rs:jakarta.ws.rs-api</exclude>
+            </excludes>
+>>>>>>> f773c602c... Test pr 10 (#27)
         </dependencySet>
     </dependencySets>
 </assembly>

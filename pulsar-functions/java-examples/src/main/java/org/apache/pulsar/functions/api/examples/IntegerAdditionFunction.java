@@ -22,7 +22,11 @@ import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
 
 /**
+<<<<<<< HEAD
  * Function that appends to an integer input value and outputs the new value
+=======
+ * Function that appends to an integer input value and outputs the new value.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class IntegerAdditionFunction implements Function<Integer, Integer> {
 

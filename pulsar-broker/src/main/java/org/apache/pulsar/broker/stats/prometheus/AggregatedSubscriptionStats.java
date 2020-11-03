@@ -27,6 +27,11 @@ public class AggregatedSubscriptionStats {
 
     public long msgBacklog;
 
+<<<<<<< HEAD
+=======
+    public long msgBacklogNoDelayed;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean blockedSubscriptionOnUnackedMsgs;
 
     public double msgRateRedeliver;
@@ -37,5 +42,14 @@ public class AggregatedSubscriptionStats {
 
     public double msgThroughputOut;
 
+<<<<<<< HEAD
+=======
+    public long msgDelayed;
+
+    long msgOutCounter;
+
+    long bytesOutCounter;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Map<Consumer, AggregatedConsumerStats> consumerStat = new HashMap<>();
 }

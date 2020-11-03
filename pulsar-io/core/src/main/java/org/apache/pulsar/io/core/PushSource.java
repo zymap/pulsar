@@ -25,13 +25,21 @@ import org.apache.pulsar.functions.api.Record;
 
 /**
  * Pulsar's Push Source interface. PushSource read data from
+<<<<<<< HEAD
  * external sources(database changes, twitter firehose, etc)
+=======
+ * external sources (database changes, twitter firehose, etc)
+>>>>>>> f773c602c... Test pr 10 (#27)
  * and publish to a Pulsar topic. The reason its called Push is
  * because PushSources get passed a consumer that they
  * invoke whenever they have data to be published to Pulsar.
  * The lifecycle of a PushSource is to open it passing any config needed
  * by it to initialize(like open network connection, authenticate, etc).
+<<<<<<< HEAD
  * A consumer  is then to it which is invoked by the source whenever
+=======
+ * A consumer is then to it which is invoked by the source whenever
+>>>>>>> f773c602c... Test pr 10 (#27)
  * there is data to be published. Once all data has been read, one can use close
  * at the end of the session to do any cleanup
  */
@@ -50,10 +58,17 @@ public abstract class PushSource<T> implements Source<T> {
     }
 
     /**
+<<<<<<< HEAD
      * Open connector with configuration
      *
      * @param config initialization config
      * @param sourceContext
+=======
+     * Open connector with configuration.
+     *
+     * @param config initialization config
+     * @param sourceContext environment where the source connector is running
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws Exception IO type exceptions when opening a connector
      */
     abstract public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception;
@@ -61,7 +76,12 @@ public abstract class PushSource<T> implements Source<T> {
     /**
      * Attach a consumer function to this Source. This is invoked by the implementation
      * to pass messages whenever there is data to be pushed to Pulsar.
+<<<<<<< HEAD
      * @param consumer
+=======
+     *
+     * @param record next message from source which should be sent to a Pulsar topic
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public void consume(Record<T> record) {
         try {

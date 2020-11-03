@@ -19,6 +19,7 @@
 
 package org.apache.pulsar.io.kinesis;
 
+<<<<<<< HEAD
 import java.io.Closeable;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -47,4 +48,14 @@ public interface AwsCredentialProviderPlugin extends Closeable {
      */
     AWSCredentialsProvider getCredentialProvider();
 
+=======
+/**
+ * This is a stub class for backwards compatibility.  In new code and configurations, please use the plugins
+ * from org.apache.pulsar.io.aws
+ *
+ * @see org.apache.pulsar.io.aws.AwsCredentialProviderPlugin
+ */
+@Deprecated
+public interface AwsCredentialProviderPlugin extends org.apache.pulsar.io.aws.AwsCredentialProviderPlugin {
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

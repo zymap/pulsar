@@ -18,13 +18,21 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.TypeManager;
+=======
+import static io.airlift.configuration.ConfigBinder.configBinder;
+import static io.airlift.json.JsonBinder.jsonBinder;
+import static java.util.Objects.requireNonNull;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
+<<<<<<< HEAD
 
 import javax.inject.Inject;
 
@@ -33,6 +41,16 @@ import static io.airlift.configuration.ConfigBinder.configBinder;
 import static io.airlift.json.JsonBinder.jsonBinder;
 import static java.util.Objects.requireNonNull;
 
+=======
+import io.prestosql.spi.type.Type;
+import io.prestosql.spi.type.TypeId;
+import io.prestosql.spi.type.TypeManager;
+import javax.inject.Inject;
+
+/**
+ * This class defines binding of classes in the Presto connector.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class PulsarConnectorModule implements Module {
 
     private final String connectorId;
@@ -56,9 +74,17 @@ public class PulsarConnectorModule implements Module {
         configBinder(binder).bindConfig(PulsarConnectorConfig.class);
 
         jsonBinder(binder).addDeserializerBinding(Type.class).to(TypeDeserializer.class);
+<<<<<<< HEAD
 
     }
 
+=======
+    }
+
+    /**
+     * A wrapper to deserialize the Presto types.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static final class TypeDeserializer
             extends FromStringDeserializer<Type> {
         private static final long serialVersionUID = 1L;
@@ -73,7 +99,11 @@ public class PulsarConnectorModule implements Module {
 
         @Override
         protected Type _deserialize(String value, DeserializationContext context) {
+<<<<<<< HEAD
             return typeManager.getType(parseTypeSignature(value));
+=======
+            return typeManager.getType(TypeId.of(value));
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 }

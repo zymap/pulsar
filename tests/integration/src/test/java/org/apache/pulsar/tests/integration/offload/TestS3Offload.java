@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.tests.integration.offload;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,11 +39,19 @@ import org.apache.pulsar.tests.integration.containers.S3Container;
 import org.apache.pulsar.tests.integration.suites.PulsarTieredStorageTestSuite;
 
 import org.testng.Assert;
+=======
+import java.util.HashMap;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.tests.integration.containers.S3Container;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Slf4j
+<<<<<<< HEAD
 public class TestS3Offload extends PulsarTieredStorageTestSuite {
 
     private static final int ENTRY_SIZE = 1024;
@@ -67,6 +76,24 @@ public class TestS3Offload extends PulsarTieredStorageTestSuite {
             .withNetwork(pulsarCluster.getNetwork())
             .withNetworkAliases(S3Container.NAME);
         s3Container.start();
+=======
+public class TestS3Offload extends TestBaseOffload {
+
+    private S3Container s3Container;
+
+    @Override
+    protected void beforeStartCluster() throws Exception {
+        super.beforeStartCluster();
+
+        log.info("s3 container init");
+        s3Container = new S3Container(
+                pulsarCluster.getClusterName(),
+                S3Container.NAME)
+                .withNetwork(pulsarCluster.getNetwork())
+                .withNetworkAliases(S3Container.NAME);
+        s3Container.start();
+        log.info("s3 container start finish.");
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterClass
@@ -78,6 +105,7 @@ public class TestS3Offload extends PulsarTieredStorageTestSuite {
 
     @Test(dataProvider =  "ServiceAndAdminUrls")
     public void testPublishOffloadAndConsumeViaCLI(String serviceUrl, String adminUrl) throws Exception {
+<<<<<<< HEAD
         final String tenant = "s3-offload-test-cli-" + randomName(4);
         final String namespace = tenant + "/ns1";
         final String topic = "persistent://" + namespace + "/topic1";
@@ -147,10 +175,14 @@ public class TestS3Offload extends PulsarTieredStorageTestSuite {
                 Assert.assertEquals(buildEntry("offload-message" + i), m.getData());
             }
         }
+=======
+        super.testPublishOffloadAndConsumeViaCLI(serviceUrl, adminUrl);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(dataProvider =  "ServiceAndAdminUrls")
     public void testPublishOffloadAndConsumeViaThreshold(String serviceUrl, String adminUrl) throws Exception {
+<<<<<<< HEAD
         final String tenant = "s3-offload-test-threshold-" + randomName(4);
         final String namespace = tenant + "/ns1";
         final String topic = "persistent://" + namespace + "/topic1";
@@ -267,10 +299,14 @@ public class TestS3Offload extends PulsarTieredStorageTestSuite {
                 return false;
             }
         }
+=======
+        super.testPublishOffloadAndConsumeViaThreshold(serviceUrl, adminUrl);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(dataProvider =  "ServiceAndAdminUrls")
     public void testPublishOffloadAndConsumeDeletionLag(String serviceUrl, String adminUrl) throws Exception {
+<<<<<<< HEAD
         final String tenant = "s3-offload-test-deletion-lag-" + randomName(4);
         final String namespace = tenant + "/ns1";
         final String topic = "persistent://" + namespace + "/topic1";
@@ -324,6 +360,23 @@ public class TestS3Offload extends PulsarTieredStorageTestSuite {
         // so we wait this every time
         Thread.sleep(5000);
         Assert.assertTrue(ledgerExistsInBookKeeper(offloadedLedger));
+=======
+        super.testPublishOffloadAndConsumeDeletionLag(serviceUrl, adminUrl);
+
+    }
+
+
+    @Override
+    protected Map<String, String> getEnv() {
+        Map<String, String> result = new HashMap<>();
+        result.put("managedLedgerMaxEntriesPerLedger", String.valueOf(ENTRIES_PER_LEDGER));
+        result.put("managedLedgerMinLedgerRolloverTimeMinutes", "0");
+        result.put("managedLedgerOffloadDriver", "aws-s3");
+        result.put("s3ManagedLedgerOffloadBucket", "pulsar-integtest");
+        result.put("s3ManagedLedgerOffloadServiceEndpoint", "http://" + S3Container.NAME + ":9090");
+
+        return result;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
 

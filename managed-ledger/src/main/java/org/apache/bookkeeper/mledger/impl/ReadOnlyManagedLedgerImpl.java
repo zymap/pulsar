@@ -34,9 +34,15 @@ import org.apache.bookkeeper.mledger.ManagedLedgerException.MetaStoreException;
 import org.apache.bookkeeper.mledger.ManagedLedgerException.MetadataNotFoundException;
 import org.apache.bookkeeper.mledger.ReadOnlyCursor;
 import org.apache.bookkeeper.mledger.impl.MetaStore.MetaStoreCallback;
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.impl.MetaStore.Stat;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo;
 import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo.LedgerInfo;
+=======
+import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo;
+import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo.LedgerInfo;
+import org.apache.pulsar.metadata.api.Stat;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 @Slf4j
 public class ReadOnlyManagedLedgerImpl extends ManagedLedgerImpl {
@@ -137,6 +143,7 @@ public class ReadOnlyManagedLedgerImpl extends ManagedLedgerImpl {
             }
         }
 
+<<<<<<< HEAD
         ReadOnlyCursorImpl cursor = new ReadOnlyCursorImpl(bookKeeper, config, this, startPosition, "read-only-cursor");
         return cursor;
     }
@@ -150,6 +157,20 @@ public class ReadOnlyManagedLedgerImpl extends ManagedLedgerImpl {
                 callback.readEntryFailed(ManagedLedgerException.getManagedLedgerException(ex.getCause()), ctx);
                 return null;
             });
+=======
+        return new ReadOnlyCursorImpl(bookKeeper, config, this, startPosition, "read-only-cursor");
+    }
+
+    @Override
+    public void asyncReadEntry(PositionImpl position, AsyncCallbacks.ReadEntryCallback callback, Object ctx) {
+            this.getLedgerHandle(position.getLedgerId())
+                    .thenAccept((ledger) -> asyncReadEntry(ledger, position, callback, ctx))
+                    .exceptionally((ex) -> {
+                        log.error("[{}] Error opening ledger for reading at position {} - {}", this.name, position, ex.getMessage());
+                        callback.readEntryFailed(ManagedLedgerException.getManagedLedgerException(ex.getCause()), ctx);
+                        return null;
+                    });
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -157,6 +178,10 @@ public class ReadOnlyManagedLedgerImpl extends ManagedLedgerImpl {
         return getNumberOfEntries(Range.openClosed(PositionImpl.earliest, getLastPosition()));
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected boolean isReadOnly() {
         return true;
     }

@@ -31,7 +31,12 @@ producer = client.create_producer(
                     properties={
                         "producer-name": "test-producer-name",
                         "producer-id": "test-producer-id"
+<<<<<<< HEAD
                     }
+=======
+                    },
+                    batching_type=BatchingType.KeyBased
+>>>>>>> f773c602c... Test pr 10 (#27)
                 )
 
 for i in range(10):
@@ -40,4 +45,8 @@ for i in range(10):
     except Exception as e:
         print("Failed to send message: %s", e)
 
+<<<<<<< HEAD
+=======
+producer.flush()
+>>>>>>> f773c602c... Test pr 10 (#27)
 producer.close()

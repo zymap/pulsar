@@ -26,17 +26,33 @@ import org.apache.pulsar.io.core.SourceContext;
 import java.util.Map;
 import java.util.Optional;
 
+<<<<<<< HEAD
 
 public class DataGeneratorSource implements Source<Person> {
 
     @Override
     public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception {
 
+=======
+public class DataGeneratorSource implements Source<Person> {
+
+    private Fairy fairy;
+    private DataGeneratorSourceConfig dataGeneratorSourceConfig;
+
+    @Override
+    public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception {
+        dataGeneratorSourceConfig = DataGeneratorSourceConfig.loadOrGetDefault(config);
+        this.fairy = Fairy.create();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public Record<Person> read() throws Exception {
+<<<<<<< HEAD
         Thread.sleep(50);
+=======
+        Thread.sleep(dataGeneratorSourceConfig.getSleepBetweenMessages());
+>>>>>>> f773c602c... Test pr 10 (#27)
         return new Record<Person>() {
             @Override
             public Optional<String> getKey() {
@@ -45,7 +61,11 @@ public class DataGeneratorSource implements Source<Person> {
 
             @Override
             public Person getValue() {
+<<<<<<< HEAD
                 return new Person(Fairy.create().person());
+=======
+                return new Person(fairy.person());
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
         };
     }

@@ -82,6 +82,7 @@ public class JvmMetrics {
         m.put("jvm_gc_old_pause", currentOldGcTime);
         m.put("jvm_gc_old_count", currentOldGcCount);
 
+<<<<<<< HEAD
         long totalAllocated = 0;
         long totalUsed = 0;
 
@@ -100,6 +101,8 @@ public class JvmMetrics {
         m.put("proxy_default_pool_allocated", totalAllocated);
         m.put("proxy_default_pool_used", totalUsed);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         return m;
     }
 

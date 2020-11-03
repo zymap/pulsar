@@ -18,6 +18,15 @@
  */
 package org.apache.bookkeeper.mledger.impl;
 
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.google.common.collect.ImmutableSet;
 
 import java.lang.reflect.Field;
@@ -45,10 +54,17 @@ import org.apache.bookkeeper.mledger.proto.MLDataFormats.ManagedLedgerInfo.Ledge
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
 import org.apache.commons.lang3.tuple.Pair;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.testng.Assert;
+=======
+import org.apache.pulsar.common.policies.data.OffloadPolicies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 public class OffloadPrefixTest extends MockedBookKeeperTestCase {
@@ -60,6 +76,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
         int i = 0;
@@ -67,7 +87,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Position p = ledger.getLastConfirmedEntry();
 
@@ -75,6 +99,7 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 5);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
@@ -86,6 +111,19 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         }
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 5);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 5);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
+        try {
+            ledger.offloadPrefix(p);
+            fail("Should have thrown an exception");
+        } catch (ManagedLedgerException e) {
+            assertEquals(e.getCause().getClass(), CompletionException.class);
+        }
+        assertEquals(ledger.getLedgersInfoAsList().size(), 5);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
 
         // add more entries to ensure we can update the ledger list
@@ -93,8 +131,13 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 6);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 6);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
     }
 
@@ -105,6 +148,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -113,12 +160,21 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
 
         ledger.offloadPrefix(ledger.getLastConfirmedEntry());
 
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+
+        ledger.offloadPrefix(ledger.getLastConfirmedEntry());
+
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete())
                             .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
                             offloader.offloadedLedgers());
@@ -131,6 +187,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -139,24 +199,42 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
 
         try {
             ledger.offloadPrefix(PositionImpl.earliest);
             Assert.fail("Should have thrown an exception");
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+
+        try {
+            ledger.offloadPrefix(PositionImpl.earliest);
+            fail("Should have thrown an exception");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (ManagedLedgerException.InvalidCursorPositionException e) {
             // expected
         }
         try {
             ledger.offloadPrefix(PositionImpl.latest);
+<<<<<<< HEAD
             Assert.fail("Should have thrown an exception");
+=======
+            fail("Should have thrown an exception");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (ManagedLedgerException.InvalidCursorPositionException e) {
             // expected
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
         Assert.assertEquals(offloader.offloadedLedgers().size(), 0);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
+        assertEquals(offloader.offloadedLedgers().size(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -166,6 +244,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -174,16 +256,25 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Position p = ledger.getLastConfirmedEntry(); // position at end of second ledger
 
         ledger.addEntry("entry-blah".getBytes());
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         PositionImpl firstUnoffloaded = (PositionImpl)ledger.offloadPrefix(p);
 
         // only the first ledger should have been offloaded
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
         Assert.assertEquals(offloader.offloadedLedgers().size(), 1);
         Assert.assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
@@ -204,6 +295,68 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 2);
         Assert.assertEquals(firstUnoffloaded2.getLedgerId(), ledger.getLedgersInfoAsList().get(2).getLedgerId());
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(offloader.offloadedLedgers().size(), 1);
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
+        assertEquals(firstUnoffloaded.getLedgerId(), ledger.getLedgersInfoAsList().get(1).getLedgerId());
+        assertEquals(firstUnoffloaded.getEntryId(), 0);
+
+        // offload again, with the position in the third ledger
+        PositionImpl firstUnoffloaded2 = (PositionImpl)ledger.offloadPrefix(ledger.getLastConfirmedEntry());
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(offloader.offloadedLedgers().size(), 2);
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(1).getLedgerId()));
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+        assertTrue(ledger.getLedgersInfoAsList().get(1).getOffloadContext().getComplete());
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 2);
+        assertEquals(firstUnoffloaded2.getLedgerId(), ledger.getLedgersInfoAsList().get(2).getLedgerId());
+    }
+
+    @Test
+    public void testPositionOnLastEmptyLedger() throws Exception {
+        MockLedgerOffloader offloader = new MockLedgerOffloader();
+        ManagedLedgerConfig config = new ManagedLedgerConfig();
+        config.setMaxEntriesPerLedger(10);
+        config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setLedgerOffloader(offloader);
+        ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
+
+        for (int i = 0; i < 5; i++) {
+            String content = "entry-" + i;
+            ledger.addEntry(content.getBytes());
+        }
+
+        // Re-open to trigger the case of empty ledger
+        ledger.close();
+        ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
+
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getSize() > 0);
+        assertEquals(ledger.getLedgersInfoAsList().get(1).getSize(), 0);
+
+        // position past the end of first ledger
+        Position p = new PositionImpl(ledger.getLedgersInfoAsList().get(1).getLedgerId(), 0);
+
+        PositionImpl firstUnoffloaded = (PositionImpl)ledger.offloadPrefix(p);
+
+        // only the first ledger should have been offloaded
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+        assertEquals(offloader.offloadedLedgers().size(), 1);
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
+        assertEquals(firstUnoffloaded.getLedgerId(), ledger.getLedgersInfoAsList().get(1).getLedgerId());
+        assertEquals(firstUnoffloaded.getEntryId(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -233,7 +386,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         PositionImpl startOfSecondLedger = PositionImpl.get(ledger.getLedgersInfoAsList().get(1).getLedgerId(), 0);
         PositionImpl startOfThirdLedger = PositionImpl.get(ledger.getLedgersInfoAsList().get(2).getLedgerId(), 0);
@@ -246,19 +403,32 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         // trim first ledger
         cursor.markDelete(startOfSecondLedger, new HashMap<>());
         assertEventuallyTrue(() -> ledger.getLedgersInfoAsList().size() == 2);
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
 
         // complete offloading
         blocker.complete(null);
         cbPromise.get();
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
         Assert.assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
         Assert.assertEquals(offloader.offloadedLedgers().size(), 1);
         Assert.assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+        assertEquals(offloader.offloadedLedgers().size(), 1);
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -296,7 +466,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         PositionImpl startOfSecondLedger = PositionImpl.get(ledger.getLedgersInfoAsList().get(1).getLedgerId(), 0);
         PositionImpl startOfThirdLedger = PositionImpl.get(ledger.getLedgersInfoAsList().get(2).getLedgerId(), 0);
@@ -310,21 +484,36 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         long trimmedLedger = ledger.getLedgersInfoAsList().get(0).getLedgerId();
         cursor.markDelete(startOfSecondLedger, new HashMap<>());
         assertEventuallyTrue(() -> ledger.getLedgersInfoAsList().size() == 2);
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getLedgerId() == trimmedLedger).count(), 0);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getLedgerId() == trimmedLedger).count(), 0);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
 
         // complete offloading
         blocker.complete(trimmedLedger);
         cbPromise.get();
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
         Assert.assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
         Assert.assertEquals(offloader.offloadedLedgers().size(), 1);
         Assert.assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+        assertEquals(offloader.offloadedLedgers().size(), 1);
+        assertTrue(offloader.offloadedLedgers().contains(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -334,6 +523,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -347,15 +540,26 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         try {
             ledger.offloadPrefix(p);
+<<<<<<< HEAD
             Assert.fail("Should fail because ML is closed");
+=======
+            fail("Should fail because ML is closed");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (ManagedLedgerException.ManagedLedgerAlreadyClosedException e) {
             // expected
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
         Assert.assertEquals(offloader.offloadedLedgers().size(), 0);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
+        assertEquals(offloader.offloadedLedgers().size(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -365,6 +569,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -373,20 +581,34 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
 
         ledger.offloadPrefix(ledger.getLastConfirmedEntry());
 
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+
+        ledger.offloadPrefix(ledger.getLastConfirmedEntry());
+
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete())
                             .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
                             offloader.offloadedLedgers());
 
         ledger.offloadPrefix(ledger.getLastConfirmedEntry());
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+>>>>>>> f773c602c... Test pr 10 (#27)
                             .filter(e -> e.getOffloadContext().getComplete())
                             .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
                             offloader.offloadedLedgers());
@@ -400,6 +622,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -408,7 +634,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // mark ledgers to fail
         promise.complete(ImmutableSet.of(ledger.getLedgersInfoAsList().get(failIndex).getLedgerId()));
@@ -416,6 +646,7 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         try {
             ledger.offloadPrefix(ledger.getLastConfirmedEntry());
         } catch (ManagedLedgerException e) {
+<<<<<<< HEAD
             Assert.assertEquals(e.getCause().getClass(), CompletionException.class);
         }
 
@@ -427,6 +658,19 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 2);
         Assert.assertFalse(ledger.getLedgersInfoAsList().get(failIndex).getOffloadContext().getComplete());
+=======
+            assertEquals(e.getCause().getClass(), CompletionException.class);
+        }
+
+        assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete())
+                            .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
+                            offloader.offloadedLedgers());
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 2);
+        assertFalse(ledger.getLedgersInfoAsList().get(failIndex).getOffloadContext().getComplete());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -463,9 +707,15 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         ledger.addEntry("foobar".getBytes());
 
         Position p = ledger.getLastConfirmedEntry();
+<<<<<<< HEAD
         Assert.assertEquals(p, ledger.offloadPrefix(ledger.getLastConfirmedEntry()));
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 1);
         Assert.assertEquals(offloader.offloadedLedgers().size(), 0);
+=======
+        assertEquals(p, ledger.offloadPrefix(ledger.getLastConfirmedEntry()));
+        assertEquals(ledger.getLedgersInfoAsList().size(), 1);
+        assertEquals(offloader.offloadedLedgers().size(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -520,20 +770,33 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         } catch (ManagedLedgerException e) {
             // expected
         }
+<<<<<<< HEAD
         Assert.assertTrue(errorSet.isEmpty());
         Assert.assertEquals(failedOffloads.size(), 1);
         Assert.assertEquals(deleted.size(), 0);
+=======
+        assertTrue(errorSet.isEmpty());
+        assertEquals(failedOffloads.size(), 1);
+        assertEquals(deleted.size(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         long expectedFailedLedger = ledger.getLedgersInfoAsList().get(0).getLedgerId();
         UUID expectedFailedUUID = new UUID(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getUidMsb(),
                                            ledger.getLedgersInfoAsList().get(0).getOffloadContext().getUidLsb());
+<<<<<<< HEAD
         Assert.assertEquals(failedOffloads.stream().findFirst().get(),
                             Pair.of(expectedFailedLedger, expectedFailedUUID));
         Assert.assertFalse(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+=======
+        assertEquals(failedOffloads.stream().findFirst().get(),
+                            Pair.of(expectedFailedLedger, expectedFailedUUID));
+        assertFalse(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // try offload again
         ledger.offloadPrefix(ledger.getLastConfirmedEntry());
 
+<<<<<<< HEAD
         Assert.assertEquals(failedOffloads.size(), 1);
         Assert.assertEquals(deleted.size(), 1);
         Assert.assertEquals(deleted.stream().findFirst().get(),
@@ -542,6 +805,16 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
                                     ledger.getLedgersInfoAsList().get(0).getOffloadContext().getUidLsb());
         Assert.assertFalse(successUUID.equals(expectedFailedUUID));
         Assert.assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+=======
+        assertEquals(failedOffloads.size(), 1);
+        assertEquals(deleted.size(), 1);
+        assertEquals(deleted.stream().findFirst().get(),
+                            Pair.of(expectedFailedLedger, expectedFailedUUID));
+        UUID successUUID = new UUID(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getUidMsb(),
+                                    ledger.getLedgersInfoAsList().get(0).getOffloadContext().getUidLsb());
+        assertNotEquals(expectedFailedUUID, successUUID);
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -555,14 +828,24 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(0, TimeUnit.MINUTES);
+<<<<<<< HEAD
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
         ManagedCursor cursor = ledger.openCursor("foobar");
+=======
+        offloader.getOffloadPolicies().setManagedLedgerOffloadDeletionLagInMillis(100L);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(100L);
+        config.setLedgerOffloader(offloader);
+        ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
+        ManagedCursor cursor = ledger.openCursor("foobar");
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         for (int i = 0; i < 15; i++) {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
         ledger.offloadPrefix(ledger.getLastConfirmedEntry());
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
@@ -570,12 +853,25 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
         Assert.assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+        ledger.offloadPrefix(ledger.getLastConfirmedEntry());
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 1);
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().getComplete());
+>>>>>>> f773c602c... Test pr 10 (#27)
         long firstLedger = ledger.getLedgersInfoAsList().get(0).getLedgerId();
         long secondLedger = ledger.getLedgersInfoAsList().get(1).getLedgerId();
 
         cursor.markDelete(ledger.getLastConfirmedEntry());
         assertEventuallyTrue(() -> ledger.getLedgersInfoAsList().size() == 1);
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().get(0).getLedgerId(), secondLedger);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().get(0).getLedgerId(), secondLedger);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertEventuallyTrue(() -> offloader.deletedOffloads().contains(firstLedger));
     }
@@ -611,13 +907,18 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             ledger.addEntry(content.getBytes());
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+>>>>>>> f773c602c... Test pr 10 (#27)
         try {
             ledger.offloadPrefix(ledger.getLastConfirmedEntry());
         } catch (ManagedLedgerException mle) {
             // expected
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 2);
 
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
@@ -625,13 +926,26 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         Assert.assertEquals(ledger.getLedgersInfoAsList().stream()
                             .filter(e -> e.getOffloadContext().hasUidMsb()).count(), 1);
         Assert.assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().hasUidMsb());
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 2);
+
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete()).count(), 0);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().hasUidMsb()).count(), 1);
+        assertTrue(ledger.getLedgersInfoAsList().get(0).getOffloadContext().hasUidMsb());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         long firstLedger = ledger.getLedgersInfoAsList().get(0).getLedgerId();
         long secondLedger = ledger.getLedgersInfoAsList().get(1).getLedgerId();
 
         cursor.markDelete(ledger.getLastConfirmedEntry());
         assertEventuallyTrue(() -> ledger.getLedgersInfoAsList().size() == 1);
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().get(0).getLedgerId(), secondLedger);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().get(0).getLedgerId(), secondLedger);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertEventuallyTrue(() -> offloader.deletedOffloads().contains(firstLedger));
     }
@@ -643,6 +957,10 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         config.setMaxEntriesPerLedger(10);
         config.setMinimumRolloverTime(0, TimeUnit.SECONDS);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+<<<<<<< HEAD
+=======
+        config.setRetentionSizeInMB(10);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
 
@@ -651,7 +969,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             String content = "entry-" + i;
             ledger.addEntry(content.getBytes());
         }
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         long firstLedgerId = ledger.getLedgersInfoAsList().get(0).getLedgerId();
         long secondLedgerId = ledger.getLedgersInfoAsList().get(1).getLedgerId();
@@ -666,6 +988,7 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
                     ledgers.get(secondLedgerId).toBuilder().setEntries(0).setSize(0).build());
 
         PositionImpl firstUnoffloaded = (PositionImpl)ledger.offloadPrefix(ledger.getLastConfirmedEntry());
+<<<<<<< HEAD
         Assert.assertEquals(firstUnoffloaded.getLedgerId(), fourthLedgerId);
         Assert.assertEquals(firstUnoffloaded.getEntryId(), 0);
 
@@ -675,6 +998,17 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
                             .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
                             offloader.offloadedLedgers());
         Assert.assertEquals(offloader.offloadedLedgers(), ImmutableSet.of(firstLedgerId, thirdLedgerId));
+=======
+        assertEquals(firstUnoffloaded.getLedgerId(), fourthLedgerId);
+        assertEquals(firstUnoffloaded.getEntryId(), 0);
+
+        assertEquals(ledger.getLedgersInfoAsList().size(), 4);
+        assertEquals(ledger.getLedgersInfoAsList().stream()
+                            .filter(e -> e.getOffloadContext().getComplete())
+                            .map(e -> e.getLedgerId()).collect(Collectors.toSet()),
+                            offloader.offloadedLedgers());
+        assertEquals(offloader.offloadedLedgers(), ImmutableSet.of(firstLedgerId, thirdLedgerId));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private static byte[] buildEntry(int size, String pattern) {
@@ -692,8 +1026,14 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         MockLedgerOffloader offloader = new MockLedgerOffloader();
         ManagedLedgerConfig config = new ManagedLedgerConfig();
         config.setMaxEntriesPerLedger(10);
+<<<<<<< HEAD
         config.setOffloadAutoTriggerSizeThresholdBytes(100);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+=======
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setRetentionSizeInMB(10);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(100L);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
 
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
@@ -703,11 +1043,19 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             ledger.addEntry(buildEntry(10, "entry-" + i));
         }
 
+<<<<<<< HEAD
         Assert.assertEquals(ledger.getLedgersInfoAsList().size(), 3);
 
         // offload should eventually be triggered
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 1);
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(ledger.getLedgersInfoAsList().size(), 3);
+
+        // offload should eventually be triggered
+        assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 1);
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
     }
 
@@ -727,8 +1075,14 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         ManagedLedgerConfig config = new ManagedLedgerConfig();
         config.setMaxEntriesPerLedger(10);
+<<<<<<< HEAD
         config.setOffloadAutoTriggerSizeThresholdBytes(100);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+=======
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setRetentionSizeInMB(10);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(100L);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
 
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
@@ -746,7 +1100,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         try {
             ledger.offloadPrefix(p);
+<<<<<<< HEAD
             Assert.fail("Shouldn't have succeeded");
+=======
+            fail("Shouldn't have succeeded");
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (ManagedLedgerException.OffloadInProgressException e) {
             // expected
         }
@@ -755,7 +1113,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         // eventually all over threshold will be offloaded
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 3);
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(1).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(2).getLedgerId()));
@@ -763,8 +1125,13 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         // then a manual offload can run and offload the one ledger under the threshold
         ledger.offloadPrefix(p);
 
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers().size(), 4);
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers().size(), 4);
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(1).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(2).getLedgerId(),
@@ -787,8 +1154,14 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         ManagedLedgerConfig config = new ManagedLedgerConfig();
         config.setMaxEntriesPerLedger(10);
+<<<<<<< HEAD
         config.setOffloadAutoTriggerSizeThresholdBytes(100);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+=======
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setRetentionSizeInMB(10);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(100L);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
 
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
@@ -811,12 +1184,20 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         // allow the manual offload to complete
         slowOffload.complete(null);
 
+<<<<<<< HEAD
         Assert.assertEquals(cbPromise.join(),
+=======
+        assertEquals(cbPromise.join(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             PositionImpl.get(ledger.getLedgersInfoAsList().get(1).getLedgerId(), 0));
 
         // auto trigger should eventually offload everything else over threshold
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 2);
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(1).getLedgerId()));
     }
@@ -837,8 +1218,14 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
         ManagedLedgerConfig config = new ManagedLedgerConfig();
         config.setMaxEntriesPerLedger(10);
+<<<<<<< HEAD
         config.setOffloadAutoTriggerSizeThresholdBytes(100);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+=======
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setRetentionSizeInMB(10);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(100L);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
 
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
@@ -860,7 +1247,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         slowOffload.complete(null);
 
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 3);
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(1).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(2).getLedgerId()));
@@ -868,12 +1259,21 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
 
     @Test
     public void offloadAsSoonAsClosed() throws Exception {
+<<<<<<< HEAD
 
         MockLedgerOffloader offloader = new MockLedgerOffloader();
         ManagedLedgerConfig config = new ManagedLedgerConfig();
         config.setMaxEntriesPerLedger(10);
         config.setOffloadAutoTriggerSizeThresholdBytes(0);
         config.setRetentionTime(10, TimeUnit.MINUTES);
+=======
+        MockLedgerOffloader offloader = new MockLedgerOffloader();
+        ManagedLedgerConfig config = new ManagedLedgerConfig();
+        config.setMaxEntriesPerLedger(10);
+        config.setRetentionTime(10, TimeUnit.MINUTES);
+        config.setRetentionSizeInMB(10);
+        offloader.getOffloadPolicies().setManagedLedgerOffloadThresholdInBytes(0L);
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setLedgerOffloader(offloader);
 
         ManagedLedgerImpl ledger = (ManagedLedgerImpl)factory.open("my_test_ledger", config);
@@ -883,7 +1283,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         }
 
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 1);
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId()));
 
         for (int i = 0; i < 10; i++) {
@@ -891,7 +1295,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         }
 
         assertEventuallyTrue(() -> offloader.offloadedLedgers().size() == 2);
+<<<<<<< HEAD
         Assert.assertEquals(offloader.offloadedLedgers(),
+=======
+        assertEquals(offloader.offloadedLedgers(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                             ImmutableSet.of(ledger.getLedgersInfoAsList().get(0).getLedgerId(),
                                             ledger.getLedgersInfoAsList().get(1).getLedgerId()));
     }
@@ -902,7 +1310,11 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
         for (int i = 0; i < 30 && !predicate.getAsBoolean(); i++) {
             Thread.sleep(100);
         }
+<<<<<<< HEAD
         Assert.assertTrue(predicate.getAsBoolean());
+=======
+        assertTrue(predicate.getAsBoolean());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     static class OffloadCallbackPromise extends CompletableFuture<Position> implements OffloadCallback {
@@ -929,6 +1341,15 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             return deletes.keySet();
         }
 
+<<<<<<< HEAD
+=======
+        OffloadPolicies offloadPolicies = OffloadPolicies.create("S3", "", "", "",
+                OffloadPolicies.DEFAULT_MAX_BLOCK_SIZE_IN_BYTES,
+                OffloadPolicies.DEFAULT_READ_BUFFER_SIZE_IN_BYTES,
+                OffloadPolicies.DEFAULT_OFFLOAD_THRESHOLD_IN_BYTES,
+                OffloadPolicies.DEFAULT_OFFLOAD_DELETION_LAG_IN_MILLIS);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Override
         public String getOffloadDriverName() {
             return "mock";
@@ -967,6 +1388,19 @@ public class OffloadPrefixTest extends MockedBookKeeperTestCase {
             }
             return promise;
         };
+<<<<<<< HEAD
+=======
+
+        @Override
+        public OffloadPolicies getOffloadPolicies() {
+            return offloadPolicies;
+        }
+
+        @Override
+        public void close() {
+
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     static class ErroringMockLedgerOffloader extends MockLedgerOffloader {

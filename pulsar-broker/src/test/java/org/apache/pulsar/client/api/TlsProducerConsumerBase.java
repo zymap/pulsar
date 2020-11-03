@@ -22,7 +22,13 @@ import static org.mockito.Mockito.spy;
 
 import java.util.HashMap;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.Set;
+=======
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.impl.auth.AuthenticationTls;
@@ -58,8 +64,13 @@ public class TlsProducerConsumerBase extends ProducerConsumerBase {
     }
 
     protected void internalSetUpForBroker() throws Exception {
+<<<<<<< HEAD
         conf.setBrokerServicePortTls(BROKER_PORT_TLS);
         conf.setWebServicePortTls(BROKER_WEBSERVICE_PORT_TLS);
+=======
+        conf.setBrokerServicePortTls(Optional.of(0));
+        conf.setWebServicePortTls(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setTlsCertificateFilePath(TLS_SERVER_CERT_FILE_PATH);
         conf.setTlsKeyFilePath(TLS_SERVER_KEY_FILE_PATH);
         conf.setTlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH);
@@ -68,11 +79,25 @@ public class TlsProducerConsumerBase extends ProducerConsumerBase {
         Set<String> tlsProtocols = Sets.newConcurrentHashSet();
         tlsProtocols.add("TLSv1.2");
         conf.setTlsProtocols(tlsProtocols);
+<<<<<<< HEAD
     }
 
     protected void internalSetUpForClient(boolean addCertificates, String lookupUrl) throws Exception {
         ClientBuilder clientBuilder = PulsarClient.builder().serviceUrl(lookupUrl)
                 .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).enableTls(true).allowTlsInsecureConnection(false);
+=======
+        conf.setNumExecutorThreadPoolSize(5);
+    }
+
+    protected void internalSetUpForClient(boolean addCertificates, String lookupUrl) throws Exception {
+        if (pulsarClient != null) {
+            pulsarClient.close();
+        }
+
+        ClientBuilder clientBuilder = PulsarClient.builder().serviceUrl(lookupUrl)
+                .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).enableTls(true).allowTlsInsecureConnection(false)
+                .operationTimeout(1000, TimeUnit.MILLISECONDS);
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (addCertificates) {
             Map<String, String> authParams = new HashMap<>();
             authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
@@ -86,11 +111,23 @@ public class TlsProducerConsumerBase extends ProducerConsumerBase {
         Map<String, String> authParams = new HashMap<>();
         authParams.put("tlsCertFile", TLS_CLIENT_CERT_FILE_PATH);
         authParams.put("tlsKeyFile", TLS_CLIENT_KEY_FILE_PATH);
+<<<<<<< HEAD
+=======
+
+        if (admin != null) {
+            admin.close();
+        }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin = spy(PulsarAdmin.builder().serviceHttpUrl(brokerUrlTls.toString())
                 .tlsTrustCertsFilePath(TLS_TRUST_CERT_FILE_PATH).allowTlsInsecureConnection(false)
                 .authentication(AuthenticationTls.class.getName(), authParams).build());
         admin.clusters().createCluster(clusterName, new ClusterData(brokerUrl.toString(), brokerUrlTls.toString(),
+<<<<<<< HEAD
                 "pulsar://localhost:" + BROKER_PORT, "pulsar+ssl://localhost:" + BROKER_PORT_TLS));
+=======
+                pulsar.getBrokerServiceUrl(), pulsar.getBrokerServiceUrlTls()));
+>>>>>>> f773c602c... Test pr 10 (#27)
         admin.tenants().createTenant("my-property",
                 new TenantInfo(Sets.newHashSet("appid1", "appid2"), Sets.newHashSet("use")));
         admin.namespaces().createNamespace("my-property/my-ns");

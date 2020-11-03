@@ -19,6 +19,7 @@
 package org.apache.pulsar.functions.utils;
 
 import com.google.gson.Gson;
+<<<<<<< HEAD
 import org.apache.pulsar.client.impl.schema.JSONSchema;
 import org.apache.pulsar.common.functions.ConsumerConfig;
 import org.apache.pulsar.common.functions.FunctionConfig;
@@ -26,6 +27,19 @@ import org.apache.pulsar.common.functions.Resources;
 import org.apache.pulsar.common.functions.WindowConfig;
 import org.apache.pulsar.functions.api.utils.IdentityFunction;
 import org.apache.pulsar.functions.proto.Function;
+=======
+
+import org.apache.pulsar.client.api.SubscriptionInitialPosition;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.client.impl.schema.JSONSchema;
+import org.apache.pulsar.common.functions.*;
+import org.apache.pulsar.common.util.Reflections;
+import org.apache.pulsar.functions.api.utils.IdentityFunction;
+import org.apache.pulsar.functions.proto.Function;
+import org.apache.pulsar.functions.proto.Function.FunctionDetails;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
@@ -35,10 +49,20 @@ import java.util.Map;
 import static org.apache.pulsar.common.functions.FunctionConfig.ProcessingGuarantees.EFFECTIVELY_ONCE;
 import static org.apache.pulsar.common.functions.FunctionConfig.Runtime.PYTHON;
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Unit test of {@link Reflections}.
  */
+<<<<<<< HEAD
+=======
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class FunctionConfigUtilsTest {
 
     @Test
@@ -57,11 +81,32 @@ public class FunctionConfigUtilsTest {
         functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
         functionConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
         functionConfig.setRetainOrdering(false);
+<<<<<<< HEAD
         functionConfig.setUserConfig(new HashMap<>());
         functionConfig.setAutoAck(true);
         functionConfig.setTimeoutMs(2000l);
         Function.FunctionDetails functionDetails = FunctionConfigUtils.convert(functionConfig, null);
         FunctionConfig convertedConfig = FunctionConfigUtils.convertFromDetails(functionDetails);
+=======
+        functionConfig.setRetainKeyOrdering(false);
+        functionConfig.setForwardSourceMessageProperty(true);
+        functionConfig.setUserConfig(new HashMap<>());
+        functionConfig.setAutoAck(true);
+        functionConfig.setTimeoutMs(2000l);
+        functionConfig.setRuntimeFlags("-DKerberos");
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setMaxPendingMessages(100);
+        producerConfig.setMaxPendingMessagesAcrossPartitions(1000);
+        producerConfig.setUseThreadLocalProducers(true);
+        functionConfig.setProducerConfig(producerConfig);
+        Function.FunctionDetails functionDetails = FunctionConfigUtils.convert(functionConfig, null);
+        FunctionConfig convertedConfig = FunctionConfigUtils.convertFromDetails(functionDetails);
+
+        // add default resources
+        functionConfig.setResources(Resources.getDefaultResources());
+        // set default cleanupSubscription config
+        functionConfig.setCleanupSubscription(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(
                 new Gson().toJson(functionConfig),
                 new Gson().toJson(convertedConfig)
@@ -84,12 +129,32 @@ public class FunctionConfigUtilsTest {
         functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
         functionConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
         functionConfig.setRetainOrdering(false);
+<<<<<<< HEAD
+=======
+        functionConfig.setRetainKeyOrdering(false);
+        functionConfig.setForwardSourceMessageProperty(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         functionConfig.setUserConfig(new HashMap<>());
         functionConfig.setAutoAck(true);
         functionConfig.setTimeoutMs(2000l);
         functionConfig.setWindowConfig(new WindowConfig().setWindowLengthCount(10));
+<<<<<<< HEAD
         Function.FunctionDetails functionDetails = FunctionConfigUtils.convert(functionConfig, null);
         FunctionConfig convertedConfig = FunctionConfigUtils.convertFromDetails(functionDetails);
+=======
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setMaxPendingMessages(100);
+        producerConfig.setMaxPendingMessagesAcrossPartitions(1000);
+        producerConfig.setUseThreadLocalProducers(true);
+        functionConfig.setProducerConfig(producerConfig);
+        Function.FunctionDetails functionDetails = FunctionConfigUtils.convert(functionConfig, null);
+        FunctionConfig convertedConfig = FunctionConfigUtils.convertFromDetails(functionDetails);
+
+        // add default resources
+        functionConfig.setResources(Resources.getDefaultResources());
+        // set default cleanupSubscription config
+        functionConfig.setCleanupSubscription(true);
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(
                 new Gson().toJson(functionConfig),
                 new Gson().toJson(convertedConfig)
@@ -151,14 +216,36 @@ public class FunctionConfigUtilsTest {
         FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Output topics differ")
     public void testMergeDifferentOutput() {
         FunctionConfig functionConfig = createFunctionConfig();
         FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("output", "Different");
+=======
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "isRegexPattern for input topic test-input cannot be altered")
+    public void testMergeDifferentInputSpecWithRegexChange() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(false).serdeClassName("my-serde").build());
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("inputSpecs", inputSpecs);
+>>>>>>> f773c602c... Test pr 10 (#27)
         FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
     }
 
     @Test
+<<<<<<< HEAD
+=======
+    public void testMergeDifferentInputSpec() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(true).serdeClassName("test-serde").receiverQueueSize(58).build());
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("inputSpecs", inputSpecs);
+        FunctionConfig mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+        assertEquals(mergedConfig.getInputSpecs().get("test-input"), newFunctionConfig.getInputSpecs().get("test-input"));
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testMergeDifferentLogTopic() {
         FunctionConfig functionConfig = createFunctionConfig();
         FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("logTopic", "Different");
@@ -174,6 +261,7 @@ public class FunctionConfigUtilsTest {
         );
     }
 
+<<<<<<< HEAD
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Processing Guarantess cannot be alterted")
     public void testMergeDifferentProcessingGuarantees() {
         FunctionConfig functionConfig = createFunctionConfig();
@@ -186,6 +274,43 @@ public class FunctionConfigUtilsTest {
         FunctionConfig functionConfig = createFunctionConfig();
         FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("retainOrdering", true);
         FunctionConfig mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+=======
+    @Test
+    public void testMergeCleanupSubscription() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("cleanupSubscription", true);
+        FunctionConfig mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+        assertTrue(mergedConfig.getCleanupSubscription());
+
+        newFunctionConfig = createUpdatedFunctionConfig("cleanupSubscription", false);
+        mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+        assertFalse(mergedConfig.getCleanupSubscription());
+
+        newFunctionConfig = createUpdatedFunctionConfig("cleanupSubscription", true);
+        mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+        assertTrue(mergedConfig.getCleanupSubscription());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Processing Guarantees cannot be altered")
+    public void testMergeDifferentProcessingGuarantees() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("processingGuarantees", EFFECTIVELY_ONCE);
+        FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Retain Ordering cannot be altered")
+    public void testMergeDifferentRetainOrdering() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("retainOrdering", true);
+        FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Retain Key Ordering cannot be altered")
+    public void testMergeDifferentRetainKeyOrdering() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("retainKeyOrdering", true);
+        FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -348,6 +473,24 @@ public class FunctionConfigUtilsTest {
         );
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testMergeRuntimeFlags() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("runtimeFlags", "-Dfoo=bar2");
+        FunctionConfig mergedConfig = FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+        assertEquals(
+                mergedConfig.getRuntimeFlags(), "-Dfoo=bar2"
+        );
+        mergedConfig.setRuntimeFlags(functionConfig.getRuntimeFlags());
+        assertEquals(
+                new Gson().toJson(functionConfig),
+                new Gson().toJson(mergedConfig)
+        );
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private FunctionConfig createFunctionConfig() {
         FunctionConfig functionConfig = new FunctionConfig();
         functionConfig.setTenant("test-tenant");
@@ -360,13 +503,28 @@ public class FunctionConfigUtilsTest {
         functionConfig.setInputSpecs(inputSpecs);
         functionConfig.setOutput("test-output");
         functionConfig.setOutputSerdeClassName("test-serde");
+<<<<<<< HEAD
         functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
         functionConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
         functionConfig.setRetainOrdering(false);
+=======
+        functionConfig.setOutputSchemaType("json");
+        functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
+        functionConfig.setProcessingGuarantees(FunctionConfig.ProcessingGuarantees.ATLEAST_ONCE);
+        functionConfig.setRetainOrdering(false);
+        functionConfig.setRetainKeyOrdering(false);
+        functionConfig.setSubscriptionPosition(SubscriptionInitialPosition.Earliest);
+        functionConfig.setForwardSourceMessageProperty(false);
+>>>>>>> f773c602c... Test pr 10 (#27)
         functionConfig.setUserConfig(new HashMap<>());
         functionConfig.setAutoAck(true);
         functionConfig.setTimeoutMs(2000l);
         functionConfig.setWindowConfig(new WindowConfig().setWindowLengthCount(10));
+<<<<<<< HEAD
+=======
+        functionConfig.setCleanupSubscription(true);
+        functionConfig.setRuntimeFlags("-Dfoo=bar");
+>>>>>>> f773c602c... Test pr 10 (#27)
         return functionConfig;
     }
 
@@ -384,6 +542,31 @@ public class FunctionConfigUtilsTest {
     }
 
     @Test
+<<<<<<< HEAD
+=======
+    public void testDisableForwardSourceMessageProperty() throws InvalidProtocolBufferException {
+        FunctionConfig config = new FunctionConfig();
+        config.setTenant("test-tenant");
+        config.setNamespace("test-namespace");
+        config.setName("test-function");
+        config.setParallelism(1);
+        config.setClassName(IdentityFunction.class.getName());
+        Map<String, ConsumerConfig> inputSpecs = new HashMap<>();
+        inputSpecs.put("test-input", ConsumerConfig.builder().isRegexPattern(true).serdeClassName("test-serde").build());
+        config.setInputSpecs(inputSpecs);
+        config.setOutput("test-output");
+        config.setForwardSourceMessageProperty(true);
+        FunctionConfigUtils.inferMissingArguments(config, false);
+        assertNull(config.getForwardSourceMessageProperty());
+        FunctionDetails details = FunctionConfigUtils.convert(config, FunctionConfigUtilsTest.class.getClassLoader());
+        assertFalse(details.getSink().getForwardSourceMessageProperty());
+        String detailsJson = "'" + JsonFormat.printer().omittingInsignificantWhitespace().print(details) + "'";
+        log.info("Function details : {}", detailsJson);
+        assertFalse(detailsJson.contains("forwardSourceMessageProperty"));
+    }
+
+    @Test
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void testFunctionConfigConvertFromDetails() {
         String name = "test1";
         String namespace = "ns1";
@@ -400,7 +583,13 @@ public class FunctionConfigUtilsTest {
                 .setSchemaType(JSONSchema.class.getName()).build());
         Function.SourceSpec sourceSpec = Function.SourceSpec.newBuilder()
                 .putAllInputSpecs(consumerSpecMap)
+<<<<<<< HEAD
                 .setSubscriptionType(Function.SubscriptionType.FAILOVER).build();
+=======
+                .setSubscriptionType(Function.SubscriptionType.FAILOVER)
+                .setCleanupSubscription(true)
+                .build();
+>>>>>>> f773c602c... Test pr 10 (#27)
         boolean autoAck = true;
         String logTopic = "log-topic1";
         Function.Resources resources = Function.Resources.newBuilder().setCpu(1.5).setDisk(1024 * 20).setRam(1024 * 10).build();
@@ -441,5 +630,23 @@ public class FunctionConfigUtilsTest {
         assertEquals(functionConfig.getResources().getRam().longValue(), resources.getRam());
         assertEquals(functionConfig.getOutput(), sinkSpec.getTopic());
         assertEquals(functionConfig.getInputSpecs().keySet(), sourceSpec.getInputSpecsMap().keySet());
+<<<<<<< HEAD
+=======
+        assertEquals(functionConfig.getCleanupSubscription().booleanValue(), sourceSpec.getCleanupSubscription());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Output Serde mismatch")
+    public void testMergeDifferentSerde() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("outputSerdeClassName", "test-updated-serde");
+        FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Output Schema mismatch")
+    public void testMergeDifferentOutputSchemaTypes() {
+        FunctionConfig functionConfig = createFunctionConfig();
+        FunctionConfig newFunctionConfig = createUpdatedFunctionConfig("outputSchemaType", "avro");
+        FunctionConfigUtils.validateUpdate(functionConfig, newFunctionConfig);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

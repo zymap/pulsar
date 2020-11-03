@@ -63,6 +63,27 @@ public class OffloadIndexTest {
         assertEquals(entry2.getDataOffset(), 1254L);
     }
 
+<<<<<<< HEAD
+=======
+
+    // use mock to setLastEntryId
+//    public static class LedgerMetadataMock extends org.apache.bookkeeper.client.LedgerMetadata {
+//        long lastId = 0;
+//        public LedgerMetadataMock(int ensembleSize, int writeQuorumSize, int ackQuorumSize, org.apache.bookkeeper.client.BookKeeper.DigestType digestType, byte[] password, Map<String, byte[]> customMetadata, boolean storeSystemtimeAsLedgerCreationTime) {
+//            super(ensembleSize, writeQuorumSize, ackQuorumSize, digestType, password, customMetadata, storeSystemtimeAsLedgerCreationTime);
+//        }
+//
+//        @Override
+//        public long getLastEntryId(){
+//            return  lastId;
+//        }
+//
+//        public void setLastEntryId(long lastId) {
+//            this.lastId = lastId;
+//        }
+//    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private LedgerMetadata createLedgerMetadata() throws Exception {
 
         Map<String, byte[]> metadataCustom = Maps.newHashMap();
@@ -70,6 +91,7 @@ public class OffloadIndexTest {
         metadataCustom.put("key7", "value7".getBytes(UTF_8));
 
         ArrayList<BookieSocketAddress> bookies = Lists.newArrayList();
+<<<<<<< HEAD
         BookieSocketAddress BOOKIE1 = new BookieSocketAddress("127.0.0.1:3181");
         BookieSocketAddress BOOKIE2 = new BookieSocketAddress("127.0.0.2:3181");
         BookieSocketAddress BOOKIE3 = new BookieSocketAddress("127.0.0.3:3181");
@@ -81,6 +103,17 @@ public class OffloadIndexTest {
             .withDigestType(DigestType.CRC32C).withPassword("password".getBytes(UTF_8))
             .withCustomMetadata(metadataCustom).withClosedState().withLastEntryId(5000).withLength(100)
             .newEnsembleEntry(0L, bookies).build();
+=======
+        bookies.add(0, new BookieSocketAddress("127.0.0.1:3181"));
+        bookies.add(1, new BookieSocketAddress("127.0.0.2:3181"));
+        bookies.add(2, new BookieSocketAddress("127.0.0.3:3181"));
+        
+        return LedgerMetadataBuilder.create().withEnsembleSize(3).withWriteQuorumSize(3).withAckQuorumSize(2)
+                .withDigestType(DigestType.CRC32C).withPassword("password".getBytes(UTF_8))
+                .withCustomMetadata(metadataCustom).withClosedState().withLastEntryId(5000).withLength(100)
+                .newEnsembleEntry(0L, bookies).build();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     // prepare metadata, then use builder to build a OffloadIndexBlockImpl
@@ -166,7 +199,11 @@ public class OffloadIndexTest {
         OffloadIndexEntry e2 = OffloadIndexEntryImpl.of(wrapper.readLong(), wrapper.readInt(),
                                                         wrapper.readLong(), dataHeaderLength);
         OffloadIndexEntry e3 = OffloadIndexEntryImpl.of(wrapper.readLong(), wrapper.readInt(),
+<<<<<<< HEAD
                                                         wrapper.readLong(), dataHeaderLength);;
+=======
+                                                        wrapper.readLong(), dataHeaderLength);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         assertEquals(e1.getEntryId(),entry1.getEntryId());
         assertEquals(e1.getPartId(), entry1.getPartId());

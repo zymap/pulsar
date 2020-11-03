@@ -26,7 +26,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.zookeeper.ZooKeeperClientFactory.SessionType;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooKeeper.States;
@@ -34,17 +37,27 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ZookeeperClientFactoryImplTest {
 
     private ZookeeperServerTest localZkS;
     private ZooKeeper localZkc;
+<<<<<<< HEAD
     private final int LOCAL_ZOOKEEPER_PORT = PortManager.nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final long ZOOKEEPER_SESSION_TIMEOUT_MILLIS = 5000;
 
     @BeforeMethod
     void setup() throws Exception {
+<<<<<<< HEAD
         localZkS = new ZookeeperServerTest(LOCAL_ZOOKEEPER_PORT);
+=======
+        localZkS = new ZookeeperServerTest(0);
+>>>>>>> f773c602c... Test pr 10 (#27)
         localZkS.start();
     }
 
@@ -54,9 +67,15 @@ public class ZookeeperClientFactoryImplTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testZKCreationRW() throws Exception {
         ZooKeeperClientFactory zkf = new ZookeeperClientFactoryImpl();
         CompletableFuture<ZooKeeper> zkFuture = zkf.create("127.0.0.1:" + LOCAL_ZOOKEEPER_PORT, SessionType.ReadWrite,
+=======
+    public void testZKCreationRW() throws Exception {
+        ZooKeeperClientFactory zkf = new ZookeeperClientFactoryImpl();
+        CompletableFuture<ZooKeeper> zkFuture = zkf.create("127.0.0.1:" + localZkS.getZookeeperPort(), SessionType.ReadWrite,
+>>>>>>> f773c602c... Test pr 10 (#27)
                 (int) ZOOKEEPER_SESSION_TIMEOUT_MILLIS);
         localZkc = zkFuture.get(ZOOKEEPER_SESSION_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         assertTrue(localZkc.getState().isConnected());
@@ -65,9 +84,15 @@ public class ZookeeperClientFactoryImplTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testZKCreationRO() throws Exception {
         ZooKeeperClientFactory zkf = new ZookeeperClientFactoryImpl();
         CompletableFuture<ZooKeeper> zkFuture = zkf.create("127.0.0.1:" + LOCAL_ZOOKEEPER_PORT,
+=======
+    public void testZKCreationRO() throws Exception {
+        ZooKeeperClientFactory zkf = new ZookeeperClientFactoryImpl();
+        CompletableFuture<ZooKeeper> zkFuture = zkf.create("127.0.0.1:" + localZkS.getZookeeperPort(),
+>>>>>>> f773c602c... Test pr 10 (#27)
                 SessionType.AllowReadOnly, (int) ZOOKEEPER_SESSION_TIMEOUT_MILLIS);
         localZkc = zkFuture.get(ZOOKEEPER_SESSION_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         assertTrue(localZkc.getState().isConnected());
@@ -75,7 +100,11 @@ public class ZookeeperClientFactoryImplTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testZKCreationFailure() throws Exception {
+=======
+    public void testZKCreationFailure() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         ZooKeeperClientFactory zkf = new ZookeeperClientFactoryImpl();
         CompletableFuture<ZooKeeper> zkFuture = zkf.create("invalid", SessionType.ReadWrite,
                 (int) ZOOKEEPER_SESSION_TIMEOUT_MILLIS);

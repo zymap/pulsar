@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.broker.service.schema;
 
+<<<<<<< HEAD
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaValidationException;
 import org.apache.avro.SchemaValidator;
@@ -33,12 +34,21 @@ import org.slf4j.LoggerFactory;
 
 public class AvroSchemaCompatibilityCheck implements SchemaCompatibilityCheck {
     private final static Logger log = LoggerFactory.getLogger(AvroSchemaCompatibilityCheck.class);
+=======
+import org.apache.pulsar.common.schema.SchemaType;
+
+/**
+ * {@link SchemaCompatibilityCheck} for {@link SchemaType#AVRO}.
+ */
+public class AvroSchemaCompatibilityCheck extends AvroSchemaBasedCompatibilityCheck {
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @Override
     public SchemaType getSchemaType() {
         return SchemaType.AVRO;
     }
 
+<<<<<<< HEAD
     @Override
     public boolean isCompatible(SchemaData from, SchemaData to, SchemaCompatibilityStrategy strategy) {
         Schema.Parser fromParser = new Schema.Parser();
@@ -73,4 +83,6 @@ public class AvroSchemaCompatibilityCheck implements SchemaCompatibilityCheck {
     private static SchemaValidator createLatestOrAllValidator(SchemaValidatorBuilder validatorBuilder, boolean onlyLatest) {
         return onlyLatest ? validatorBuilder.validateLatest() : validatorBuilder.validateAll();
     }
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

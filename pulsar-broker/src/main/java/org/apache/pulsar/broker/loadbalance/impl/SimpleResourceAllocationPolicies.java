@@ -54,7 +54,11 @@ public class SimpleResourceAllocationPolicies {
             return namespaceIsolationPolicies
                     .get(AdminResource.path("clusters", clusterName, NAMESPACE_ISOLATION_POLICIES));
         } catch (Exception e) {
+<<<<<<< HEAD
             LOG.warn("GetIsolationPolicies: Unable to get the namespaceIsolationPolicies [{}]", e);
+=======
+            LOG.warn("GetIsolationPolicies: Unable to get the namespaceIsolationPolicies", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Optional.empty();
         }
     }
@@ -62,6 +66,7 @@ public class SimpleResourceAllocationPolicies {
     public boolean areIsolationPoliciesPresent(NamespaceName namespace) {
         try {
             Optional<NamespaceIsolationPolicies> policies = getIsolationPolicies(pulsar.getConfiguration().getClusterName());
+<<<<<<< HEAD
             if (policies.isPresent()) {
                 return policies.get().getPolicyByNamespace(namespace) != null;
             } else {
@@ -69,6 +74,11 @@ public class SimpleResourceAllocationPolicies {
             }
         } catch (Exception e) {
             LOG.warn("IsIsolationPoliciesPresent: Unable to get the namespaceIsolationPolicies [{}]", e);
+=======
+            return policies.filter(isolationPolicies -> isolationPolicies.getPolicyByNamespace(namespace) != null).isPresent();
+        } catch (Exception e) {
+            LOG.warn("IsIsolationPoliciesPresent: Unable to get the namespaceIsolationPolicies", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return false;
         }
     }
@@ -76,6 +86,7 @@ public class SimpleResourceAllocationPolicies {
     private Optional<NamespaceIsolationPolicy> getNamespaceIsolationPolicy(NamespaceName namespace) {
         try {
             Optional<NamespaceIsolationPolicies> policies =getIsolationPolicies(pulsar.getConfiguration().getClusterName());
+<<<<<<< HEAD
             if (!policies.isPresent()) {
                 return Optional.empty();
             }
@@ -83,6 +94,12 @@ public class SimpleResourceAllocationPolicies {
             return Optional.ofNullable(policies.get().getPolicyByNamespace(namespace));
         } catch (Exception e) {
             LOG.warn("Unable to get the namespaceIsolationPolicies [{}]", e);
+=======
+            return policies.map(isolationPolicies -> isolationPolicies.getPolicyByNamespace(namespace));
+
+        } catch (Exception e) {
+            LOG.warn("Unable to get the namespaceIsolationPolicies", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Optional.empty();
         }
     }
@@ -100,6 +117,7 @@ public class SimpleResourceAllocationPolicies {
     public boolean isSharedBroker(String broker) {
         try {
             Optional<NamespaceIsolationPolicies> policies = getIsolationPolicies(pulsar.getConfiguration().getClusterName());
+<<<<<<< HEAD
             if (!policies.isPresent()) {
                 return true;
             }
@@ -107,6 +125,12 @@ public class SimpleResourceAllocationPolicies {
             return policies.get().isSharedBroker(broker);
         } catch (Exception e) {
             LOG.warn("isPrimaryForAnyNamespace: [{}]", e);
+=======
+            return policies.map(isolationPolicies -> isolationPolicies.isSharedBroker(broker)).orElse(true);
+
+        } catch (Exception e) {
+            LOG.warn("isPrimaryForAnyNamespace", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         return false;
     }

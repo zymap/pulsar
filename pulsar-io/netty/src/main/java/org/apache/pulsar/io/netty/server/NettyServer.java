@@ -21,6 +21,20 @@ package org.apache.pulsar.io.netty.server;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+<<<<<<< HEAD
+=======
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.io.netty.NettySource;
+import org.apache.pulsar.io.netty.http.NettyHttpChannelInitializer;
+import org.apache.pulsar.io.netty.http.NettyHttpServerHandler;
+import org.apache.pulsar.io.netty.tcp.NettyTCPChannelInitializer;
+import org.apache.pulsar.io.netty.tcp.NettyTCPServerHandler;
+import org.apache.pulsar.io.netty.udp.NettyUDPChannelInitializer;
+import org.apache.pulsar.io.netty.udp.NettyUDPServerHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -30,12 +44,15 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+<<<<<<< HEAD
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.io.netty.NettySource;
 import org.apache.pulsar.io.netty.http.NettyHttpChannelInitializer;
 import org.apache.pulsar.io.netty.http.NettyHttpServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Netty Server to accept incoming data via the configured type.
@@ -96,7 +113,11 @@ public class NettyServer {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioDatagramChannel.class);
+<<<<<<< HEAD
         bootstrap.handler(new NettyChannelInitializer(new NettyServerHandler(this.nettySource)))
+=======
+        bootstrap.handler(new NettyUDPChannelInitializer(new NettyUDPServerHandler(this.nettySource)))
+>>>>>>> f773c602c... Test pr 10 (#27)
                 .option(ChannelOption.SO_BACKLOG, 1024);
 
         ChannelFuture channelFuture = bootstrap.bind(this.host, this.port).sync();
@@ -105,7 +126,11 @@ public class NettyServer {
 
     private void runTcp() throws InterruptedException {
         ServerBootstrap serverBootstrap = getServerBootstrap(
+<<<<<<< HEAD
                 new NettyChannelInitializer(new NettyServerHandler(this.nettySource)));
+=======
+                new NettyTCPChannelInitializer(new NettyTCPServerHandler(this.nettySource)));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ChannelFuture channelFuture = serverBootstrap.bind(this.host, this.port).sync();
         channelFuture.channel().closeFuture().sync();

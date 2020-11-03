@@ -19,11 +19,18 @@
 #ifndef PULSAR_READER_HPP_
 #define PULSAR_READER_HPP_
 
+<<<<<<< HEAD
 #include <pulsar/Message.h>
 #include <pulsar/ReaderConfiguration.h>
 
 #pragma GCC visibility push(default)
 
+=======
+#include <pulsar/defines.h>
+#include <pulsar/Message.h>
+#include <pulsar/ReaderConfiguration.h>
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 class PulsarWrapper;
 class PulsarFriend;
@@ -34,7 +41,11 @@ typedef std::function<void(Result result, bool hasMessageAvailable)> HasMessageA
 /**
  * A Reader can be used to scan through all the messages currently available in a topic.
  */
+<<<<<<< HEAD
 class Reader {
+=======
+class PULSAR_PUBLIC Reader {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     /**
      * Construct an uninitialized reader object
@@ -83,6 +94,49 @@ class Reader {
      */
     Result hasMessageAvailable(bool& hasMessageAvailable);
 
+<<<<<<< HEAD
+=======
+    /**
+     * Reset the this reader to a specific message id.
+     * The message id can either be a specific message or represent the first or last messages in the topic.
+     *
+     * Note: this operation can only be done on non-partitioned topics. For these, one can rather perform the
+     * seek() on the individual partitions.
+     *
+     * @param messageId
+     *            the message id where to reposition the subscription
+     */
+    Result seek(const MessageId& msgId);
+
+    /**
+     * Reset this reader to a specific message publish time.
+     *
+     * @param timestamp
+     *            the message publish time where to reposition the subscription
+     */
+    Result seek(uint64_t timestamp);
+
+    /**
+     * Asynchronously reset this reader to a specific message id.
+     * The message id can either be a specific message or represent the first or last messages in the topic.
+     *
+     * Note: this operation can only be done on non-partitioned topics. For these, one can rather perform the
+     * seek() on the individual partitions.
+     *
+     * @param messageId
+     *            the message id where to reposition the subscription
+     */
+    void seekAsync(const MessageId& msgId, ResultCallback callback);
+
+    /**
+     * Asynchronously reset this reader to a specific message publish time.
+     *
+     * @param timestamp
+     *            the message publish time where to reposition the subscription
+     */
+    void seekAsync(uint64_t timestamp, ResultCallback callback);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     typedef std::shared_ptr<ReaderImpl> ReaderImplPtr;
     ReaderImplPtr impl_;
@@ -95,6 +149,9 @@ class Reader {
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PULSAR_READER_HPP_ */

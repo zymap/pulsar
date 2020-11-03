@@ -27,7 +27,11 @@ import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedExc
 import org.apache.pulsar.common.policies.data.TenantInfo;
 
 /**
+<<<<<<< HEAD
  * Admin interface for properties management
+=======
+ * Admin interface for properties management.
+>>>>>>> f773c602c... Test pr 10 (#27)
  *
  * @deprecated see {@link Tenants} from {@link PulsarAdmin#tenants()}
  */
@@ -35,9 +39,15 @@ import org.apache.pulsar.common.policies.data.TenantInfo;
 public interface Properties {
     /**
      * Get the list of properties.
+<<<<<<< HEAD
      * <p>
      * Get the list of all the properties.
      * <p>
+=======
+     * <p/>
+     * Get the list of all the properties.
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Response Example:
      *
      * <pre>
@@ -54,7 +64,11 @@ public interface Properties {
 
     /**
      * Get the config of the property.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Get the admin configuration for a given property.
      *
      * @param property
@@ -72,7 +86,11 @@ public interface Properties {
 
     /**
      * Create a new property.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Provisions a new property. This operation requires Pulsar super-user privileges.
      *
      * @param property
@@ -93,7 +111,11 @@ public interface Properties {
 
     /**
      * Update the admins for a property.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * This operation requires Pulsar super-user privileges.
      *
      * @param property
@@ -112,7 +134,11 @@ public interface Properties {
 
     /**
      * Delete an existing property.
+<<<<<<< HEAD
      * <p>
+=======
+     * <p/>
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Delete a property and all namespaces and topics under it.
      *
      * @param property

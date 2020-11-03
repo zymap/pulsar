@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.admin;
 
+<<<<<<< HEAD
 import org.apache.pulsar.client.admin.PulsarAdminException.NotAuthorizedException;
 import org.apache.pulsar.client.admin.PulsarAdminException.NotFoundException;
 import org.apache.pulsar.client.admin.PulsarAdminException.PreconditionFailedException;
@@ -305,4 +306,11 @@ public interface Source {
      *
      */
     List<ConnectorDefinition> getBuiltInSources() throws PulsarAdminException;
+=======
+/**
+ * @deprecated in favor of {@link Sources}
+ */
+@Deprecated
+public interface Source extends Sources {
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

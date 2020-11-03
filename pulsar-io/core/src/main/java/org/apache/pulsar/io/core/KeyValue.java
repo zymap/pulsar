@@ -19,7 +19,11 @@
 package org.apache.pulsar.io.core;
 
 /**
+<<<<<<< HEAD
  * A simple KeyValue class
+=======
+ * A simple KeyValue class.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class KeyValue<K, V> {
     private K key;

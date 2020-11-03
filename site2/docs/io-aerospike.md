@@ -3,6 +3,7 @@ id: io-aerospike
 title: Aerospike Sink Connector
 sidebar_label: Aerospike Sink Connector
 ---
+<<<<<<< HEAD
 
 The Aerospike Sink connector is used to write messages to an Aerospike Cluster.
 
@@ -19,3 +20,5 @@ The following configuration options are specific to the Aerospike Connector:
 | `maxConcurrentRequests` | `false` | `100` | Maximum number of concurrent Aerospike transactions that a Sink can open. |
 | `timeoutMs` | `false` | `100` | A single timeout value controls `socketTimeout` and `totalTimeout` for Aerospike transactions.  |
 | `retries` | `false` | `1` | Maximum number of retries before aborting a write transaction to Aerospike. |
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

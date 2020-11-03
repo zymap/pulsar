@@ -77,6 +77,7 @@ void Reader::hasMessageAvailableAsync(HasMessageAvailableCallback callback) {
 }
 
 Result Reader::hasMessageAvailable(bool& hasMessageAvailable) {
+<<<<<<< HEAD
     if (!impl_) {
         return ResultConsumerNotInitialized;
     }
@@ -85,6 +86,44 @@ Result Reader::hasMessageAvailable(bool& hasMessageAvailable) {
 
     impl_->hasMessageAvailableAsync(WaitForCallbackValue<bool>(promise));
     return promise.getFuture().get(hasMessageAvailable);
+=======
+    Promise<Result, bool> promise;
+
+    hasMessageAvailableAsync(WaitForCallbackValue<bool>(promise));
+    return promise.getFuture().get(hasMessageAvailable);
+}
+
+void Reader::seekAsync(const MessageId& msgId, ResultCallback callback) {
+    if (!impl_) {
+        callback(ResultConsumerNotInitialized);
+        return;
+    }
+    impl_->seekAsync(msgId, callback);
+}
+
+void Reader::seekAsync(uint64_t timestamp, ResultCallback callback) {
+    if (!impl_) {
+        callback(ResultConsumerNotInitialized);
+        return;
+    }
+    impl_->seekAsync(timestamp, callback);
+}
+
+Result Reader::seek(const MessageId& msgId) {
+    Promise<bool, Result> promise;
+    impl_->seekAsync(msgId, WaitForCallback(promise));
+    Result result;
+    promise.getFuture().get(result);
+    return result;
+}
+
+Result Reader::seek(uint64_t timestamp) {
+    Promise<bool, Result> promise;
+    impl_->seekAsync(timestamp, WaitForCallback(promise));
+    Result result;
+    promise.getFuture().get(result);
+    return result;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 
 }  // namespace pulsar

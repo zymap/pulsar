@@ -48,11 +48,19 @@ public class ClusterServiceCoordinator implements AutoCloseable {
     private final String workerId;
     private final Map<String, TimerTaskInfo> tasks = new HashMap<>();
     private final ScheduledExecutorService executor;
+<<<<<<< HEAD
     private final MembershipManager membershipManager;
 
     public ClusterServiceCoordinator(String workerId, MembershipManager membershipManager) {
         this.workerId = workerId;
         this.membershipManager = membershipManager;
+=======
+    private final LeaderService leaderService;
+
+    public ClusterServiceCoordinator(String workerId, LeaderService leaderService) {
+        this.workerId = workerId;
+        this.leaderService = leaderService;
+>>>>>>> f773c602c... Test pr 10 (#27)
         this.executor = Executors.newSingleThreadScheduledExecutor(
             new ThreadFactoryBuilder().setNameFormat("cluster-service-coordinator-timer").build());
     }
@@ -62,11 +70,19 @@ public class ClusterServiceCoordinator implements AutoCloseable {
     }
 
     public void start() {
+<<<<<<< HEAD
+=======
+        log.info("/** Starting cluster service coordinator **/");
+>>>>>>> f773c602c... Test pr 10 (#27)
         for (Map.Entry<String, TimerTaskInfo> entry : this.tasks.entrySet()) {
             TimerTaskInfo timerTaskInfo = entry.getValue();
             String taskName = entry.getKey();
             this.executor.scheduleAtFixedRate(() -> {
+<<<<<<< HEAD
                 boolean isLeader = membershipManager.isLeader();
+=======
+                boolean isLeader = leaderService.isLeader();
+>>>>>>> f773c602c... Test pr 10 (#27)
                 if (isLeader) {
                     try {
                         timerTaskInfo.getTask().run();
@@ -82,6 +98,10 @@ public class ClusterServiceCoordinator implements AutoCloseable {
     public void close() {
         log.info("Stopping Cluster Service Coordinator for worker {}", this.workerId);
         this.executor.shutdown();
+<<<<<<< HEAD
         log.info("Stopped Cluster Service Coordinator for worker", this.workerId);
+=======
+        log.info("Stopped Cluster Service Coordinator for worker {}", this.workerId);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

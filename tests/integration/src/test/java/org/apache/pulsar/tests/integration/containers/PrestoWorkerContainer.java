@@ -18,6 +18,11 @@
  */
 package org.apache.pulsar.tests.integration.containers;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.tests.integration.utils.DockerUtils;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 /**
  * A pulsar container that runs the presto worker
  */
@@ -35,5 +40,25 @@ public class PrestoWorkerContainer extends PulsarContainer<PrestoWorkerContainer
                 -1,
                 PRESTO_HTTP_PORT,
                 "/v1/node");
+<<<<<<< HEAD
+=======
+
+    }
+
+    @Override
+    protected void beforeStop() {
+        super.beforeStop();
+        if (null != containerId) {
+            DockerUtils.dumpContainerDirToTargetCompressed(
+                    getDockerClient(),
+                    containerId,
+                    "/pulsar/lib/presto/var/log"
+            );
+        }
+    }
+
+    public String getUrl() {
+        return String.format("%s:%s",  getContainerIpAddress(), getMappedPort(PrestoWorkerContainer.PRESTO_HTTP_PORT));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

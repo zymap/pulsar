@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.ConnectorTableHandle;
 import com.facebook.presto.spi.SchemaTableName;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -32,6 +33,24 @@ public class PulsarTableHandle implements ConnectorTableHandle {
 
     /**
      * connector id
+=======
+import static com.google.common.base.MoreObjects.toStringHelper;
+import static java.util.Objects.requireNonNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.prestosql.spi.connector.ConnectorTableHandle;
+import io.prestosql.spi.connector.SchemaTableName;
+import java.util.Objects;
+
+/**
+ * Description of basic metadata of a table.
+ */
+public class PulsarTableHandle implements ConnectorTableHandle {
+
+    /**
+     * Connector id.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     private final String connectorId;
 

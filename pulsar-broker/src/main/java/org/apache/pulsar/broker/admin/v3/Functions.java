@@ -27,7 +27,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/functions")
+<<<<<<< HEAD
 @Api(value = "/functions", description = "Functions admin apis", tags = "functions", hidden = true)
+=======
+@Api(value = "/functions", description = "Functions admin apis", tags = "functions")
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class Functions extends FunctionsBase {

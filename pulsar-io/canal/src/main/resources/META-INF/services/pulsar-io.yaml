@@ -20,3 +20,7 @@
 name: canal
 description: canal source and read data from mysql
 sourceClass: org.apache.pulsar.io.canal.CanalStringSource
+<<<<<<< HEAD
+=======
+sourceConfigClass: org.apache.pulsar.io.canal.CanalSourceConfig
+>>>>>>> f773c602c... Test pr 10 (#27)

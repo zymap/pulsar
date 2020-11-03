@@ -30,6 +30,14 @@
 #  CLANG_FORMAT_BIN, The path to the clang format binary
 #  CLANG_TIDY_FOUND, Whether clang format was found
 
+<<<<<<< HEAD
+=======
+list(APPEND CLANG_SEARCH_PATHS ${ClangTools_PATH} $ENV{CLANG_TOOLS_PATH} /usr/local/bin /usr/bin)
+if (WIN32)
+       list(APPEND CLANG_SEARCH_PATHS "C:/Program Files/LLVM/bin" "C:/Program Files (x86)/LLVM/bin")
+endif()
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 find_program(CLANG_TIDY_BIN
         NAMES clang-tidy-4.0
         clang-tidy-3.9
@@ -37,7 +45,11 @@ find_program(CLANG_TIDY_BIN
         clang-tidy-3.7
         clang-tidy-3.6
         clang-tidy
+<<<<<<< HEAD
         PATHS ${ClangTools_PATH} $ENV{CLANG_TOOLS_PATH} /usr/local/bin /usr/bin
+=======
+        PATHS ${CLANG_SEARCH_PATHS}
+>>>>>>> f773c602c... Test pr 10 (#27)
         NO_DEFAULT_PATH
         )
 
@@ -52,10 +64,14 @@ endif()
 if (CLANG_FORMAT_VERSION)
     find_program(CLANG_FORMAT_BIN
             NAMES clang-format-${CLANG_FORMAT_VERSION}
+<<<<<<< HEAD
             PATHS
             ${ClangTools_PATH}
             $ENV{CLANG_TOOLS_PATH}
             /usr/local/bin /usr/bin
+=======
+            PATHS ${CLANG_SEARCH_PATHS}
+>>>>>>> f773c602c... Test pr 10 (#27)
             NO_DEFAULT_PATH
             )
 
@@ -86,7 +102,11 @@ else()
             clang-format-3.7
             clang-format-3.6
             clang-format
+<<<<<<< HEAD
             PATHS ${ClangTools_PATH} $ENV{CLANG_TOOLS_PATH} /usr/local/bin /usr/bin
+=======
+            PATHS ${CLANG_SEARCH_PATHS}
+>>>>>>> f773c602c... Test pr 10 (#27)
             NO_DEFAULT_PATH
             )
 endif()
@@ -97,4 +117,9 @@ if ( "${CLANG_FORMAT_BIN}" STREQUAL "CLANG_FORMAT_BIN-NOTFOUND" )
 else()
     set(CLANG_FORMAT_FOUND 1)
     message("clang-format found at ${CLANG_FORMAT_BIN}")
+<<<<<<< HEAD
 endif()
+=======
+endif()
+
+>>>>>>> f773c602c... Test pr 10 (#27)

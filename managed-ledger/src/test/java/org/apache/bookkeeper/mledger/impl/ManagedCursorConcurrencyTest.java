@@ -19,7 +19,13 @@
 package org.apache.bookkeeper.mledger.impl;
 
 import static org.apache.bookkeeper.mledger.util.SafeRun.safeRun;
+<<<<<<< HEAD
 import static org.testng.Assert.*;
+=======
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -42,11 +48,23 @@ import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+<<<<<<< HEAD
+=======
+import org.testng.annotations.DataProvider;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.testng.annotations.Test;
 
 public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
 
     private static final Logger log = LoggerFactory.getLogger(ManagedCursorConcurrencyTest.class);
+<<<<<<< HEAD
+=======
+    
+    @DataProvider(name = "useOpenRangeSet")
+    public static Object[][] useOpenRangeSet() {
+        return new Object[][] { { Boolean.TRUE }, { Boolean.FALSE } };
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private final AsyncCallbacks.DeleteCallback deleteCallback = new AsyncCallbacks.DeleteCallback() {
         @Override
@@ -60,9 +78,17 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
         }
     };
 
+<<<<<<< HEAD
     @Test
     public void testMarkDeleteAndRead() throws Exception {
         ManagedLedger ledger = factory.open("my_test_ledger", new ManagedLedgerConfig().setMaxEntriesPerLedger(2));
+=======
+    @Test(dataProvider = "useOpenRangeSet")
+    public void testMarkDeleteAndRead(boolean useOpenRangeSet) throws Exception {
+        ManagedLedgerConfig config = new ManagedLedgerConfig().setMaxEntriesPerLedger(2)
+                .setUnackedRangesOpenCacheSetEnabled(useOpenRangeSet);
+        ManagedLedger ledger = factory.open("my_test_ledger", config);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         final ManagedCursor cursor = ledger.openCursor("c1");
 
@@ -118,7 +144,11 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
 
         counter.await();
 
+<<<<<<< HEAD
         assertEquals(gotException.get(), false);
+=======
+        assertFalse(gotException.get());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -202,7 +232,11 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
 
         counter.await();
 
+<<<<<<< HEAD
         assertEquals(gotException.get(), false);
+=======
+        assertFalse(gotException.get());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(closeFuture.get(), CLOSED);
     }
 
@@ -258,7 +292,11 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
 
         counter.await();
 
+<<<<<<< HEAD
         assertEquals(gotException.get(), false);
+=======
+        assertFalse(gotException.get());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(timeOut = 30000)
@@ -304,7 +342,11 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
 
         counter.await();
 
+<<<<<<< HEAD
         assertEquals(gotException.get(), false);
+=======
+        assertFalse(gotException.get());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertEquals(cursor.getMarkDeletedPosition(), addedEntries.get(addedEntries.size() - 1));
     }
 
@@ -330,7 +372,11 @@ public class ManagedCursorConcurrencyTest extends MockedBookKeeperTestCase {
         final CyclicBarrier barrier = new CyclicBarrier(numCursors);
         final CountDownLatch counter = new CountDownLatch(numCursors);
 
+<<<<<<< HEAD
         AtomicReference<String> result = new AtomicReference<String>();
+=======
+        AtomicReference<String> result = new AtomicReference<>();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         for (int i = 0; i < numCursors; i++) {
             final int cursorIndex = i;

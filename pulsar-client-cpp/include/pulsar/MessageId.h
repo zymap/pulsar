@@ -22,15 +22,24 @@
 #include <iosfwd>
 #include <stdint.h>
 #include <memory>
+<<<<<<< HEAD
 //#include <lib/MessageIdImpl.h>
 
 #pragma GCC visibility push(default)
+=======
+#include <string>
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 
 class MessageIdImpl;
 
+<<<<<<< HEAD
 class MessageId {
+=======
+class PULSAR_PUBLIC MessageId {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     MessageId& operator=(const MessageId&);
     MessageId();
@@ -74,6 +83,14 @@ class MessageId {
     bool operator==(const MessageId& other) const;
     bool operator!=(const MessageId& other) const;
 
+<<<<<<< HEAD
+=======
+    int64_t ledgerId() const;
+    int64_t entryId() const;
+    int32_t batchIndex() const;
+    int32_t partition() const;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
    private:
     friend class ConsumerImpl;
     friend class ReaderImpl;
@@ -87,6 +104,7 @@ class MessageId {
     friend class BatchAcknowledgementTracker;
     friend class PulsarWrapper;
     friend class PulsarFriend;
+<<<<<<< HEAD
 
     friend std::ostream& operator<<(std::ostream& s, const MessageId& messageId);
 
@@ -94,12 +112,20 @@ class MessageId {
     int64_t entryId() const;
     int32_t batchIndex() const;
     int32_t partition() const;
+=======
+    friend class NegativeAcksTracker;
+
+    friend PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const MessageId& messageId);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     typedef std::shared_ptr<MessageIdImpl> MessageIdImplPtr;
     MessageIdImplPtr impl_;
 };
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // MESSAGE_ID_H

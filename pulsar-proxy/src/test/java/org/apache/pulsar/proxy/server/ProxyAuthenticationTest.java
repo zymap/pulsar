@@ -20,16 +20,30 @@ package org.apache.pulsar.proxy.server;
 
 import static org.mockito.Mockito.spy;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Set;
 
 import javax.naming.AuthenticationException;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.authentication.AuthenticationDataSource;
 import org.apache.pulsar.broker.authentication.AuthenticationProvider;
@@ -49,6 +63,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,6 +73,11 @@ public class ProxyAuthenticationTest extends ProducerConsumerBase {
     private int webServicePort;
     private int servicePort;
     
+=======
+public class ProxyAuthenticationTest extends ProducerConsumerBase {
+	private static final Logger log = LoggerFactory.getLogger(ProxyAuthenticationTest.class);
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 	public static class BasicAuthenticationData implements AuthenticationDataProvider {
 		private String authParam;
 
@@ -158,8 +178,11 @@ public class ProxyAuthenticationTest extends ProducerConsumerBase {
 	@BeforeMethod
 	@Override
 	protected void setup() throws Exception {
+<<<<<<< HEAD
 		webServicePort = PortManager.nextFreePort();
 		servicePort = PortManager.nextFreePort();
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 		conf.setAuthenticationEnabled(true);
 		conf.setAuthorizationEnabled(true);
 		conf.setBrokerClientAuthenticationPlugin(BasicAuthentication.class.getName());
@@ -198,7 +221,10 @@ public class ProxyAuthenticationTest extends ProducerConsumerBase {
 
 		// Step 1: Create Admin Client
 		updateAdminClient();
+<<<<<<< HEAD
 		final String proxyServiceUrl = "pulsar://localhost:" + servicePort;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 		// create a client which connects to proxy and pass authData
 		String namespaceName = "my-property/my-ns";
 		String topicName = "persistent://my-property/my-ns/my-topic1";
@@ -216,9 +242,15 @@ public class ProxyAuthenticationTest extends ProducerConsumerBase {
 		// Step 2: Try to use proxy Client as a normal Client - expect exception
 		ProxyConfiguration proxyConfig = new ProxyConfiguration();
 		proxyConfig.setAuthenticationEnabled(true);
+<<<<<<< HEAD
 		proxyConfig.setServicePort(servicePort);
 		proxyConfig.setWebServicePort(webServicePort);
 		proxyConfig.setBrokerServiceURL("pulsar://localhost:" + BROKER_PORT);
+=======
+		proxyConfig.setServicePort(Optional.of(0));
+		proxyConfig.setWebServicePort(Optional.of(0));
+		proxyConfig.setBrokerServiceURL(pulsar.getBrokerServiceUrl());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 		proxyConfig.setBrokerClientAuthenticationPlugin(BasicAuthentication.class.getName());
 		proxyConfig.setBrokerClientAuthenticationParameters(proxyAuthParams);
@@ -232,6 +264,10 @@ public class ProxyAuthenticationTest extends ProducerConsumerBase {
 		ProxyService proxyService = new ProxyService(proxyConfig, authenticationService);
 
 		proxyService.start();
+<<<<<<< HEAD
+=======
+		final String proxyServiceUrl = proxyService.getServiceUrl();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 		// Step 3: Pass correct client params
 		PulsarClient proxyClient = createPulsarClient(proxyServiceUrl, clientAuthParams, 1);

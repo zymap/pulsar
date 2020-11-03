@@ -22,13 +22,30 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+<<<<<<< HEAD
 
+=======
+import java.util.concurrent.ExecutionException;
+
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.authentication.AuthenticationDataSource;
 import org.apache.pulsar.broker.cache.ConfigurationCacheService;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.AuthAction;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.policies.data.PolicyName;
+import org.apache.pulsar.common.policies.data.PolicyOperation;
+import org.apache.pulsar.common.policies.data.TenantInfo;
+import org.apache.pulsar.common.policies.data.NamespaceOperation;
+import org.apache.pulsar.common.policies.data.TenantOperation;
+import org.apache.pulsar.common.policies.data.TopicOperation;
+import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.common.util.RestException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Provider of authorization mechanism
@@ -38,6 +55,24 @@ public interface AuthorizationProvider extends Closeable {
     /**
      * Check if specified role is a super user
      * @param role the role to check
+<<<<<<< HEAD
+=======
+     * @param authenticationData authentication data related to the role
+     * @return a CompletableFuture containing a boolean in which true means the role is a super user
+     * and false if it is not
+     */
+    default CompletableFuture<Boolean> isSuperUser(String role,
+                                                   AuthenticationDataSource authenticationData,
+                                                   ServiceConfiguration serviceConfiguration) {
+        Set<String> superUserRoles = serviceConfiguration.getSuperUserRoles();
+        return CompletableFuture.completedFuture(role != null && superUserRoles.contains(role) ? true : false);
+    }
+
+    /**
+     * @deprecated Use method {@link #isSuperUser(String, AuthenticationDataSource, ServiceConfiguration)}
+     * Check if specified role is a super user
+     * @param role the role to check
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return a CompletableFuture containing a boolean in which true means the role is a super user
      * and false if it is not
      */
@@ -47,6 +82,21 @@ public interface AuthorizationProvider extends Closeable {
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Check if specified role is an admin of the tenant
+     * @param tenant the tenant to check
+     * @param role the role to check
+     * @return a CompletableFuture containing a boolean in which true means the role is an admin user
+     * and false if it is not
+     */
+    default CompletableFuture<Boolean> isTenantAdmin(String tenant, String role, TenantInfo tenantInfo,
+                                                     AuthenticationDataSource authenticationData) {
+        return CompletableFuture.completedFuture(role != null && tenantInfo.getAdminRoles() != null && tenantInfo.getAdminRoles().contains(role) ? true : false);
+    }
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      * Perform initialization for the authorization provider
      *
      * @param conf
@@ -96,6 +146,39 @@ public interface AuthorizationProvider extends Closeable {
             AuthenticationDataSource authenticationData);
 
     /**
+<<<<<<< HEAD
+=======
+     * Allow all function operations with in this namespace
+     * @param namespaceName The namespace that the function operations can be executed in
+     * @param role The role to check
+     * @param authenticationData authentication data related to the role
+     * @return a boolean to determine whether authorized or not
+     */
+    CompletableFuture<Boolean> allowFunctionOpsAsync(NamespaceName namespaceName, String role,
+                                                     AuthenticationDataSource authenticationData);
+
+    /**
+     * Allow all source operations with in this namespace
+     * @param namespaceName The namespace that the sources operations can be executed in
+     * @param role The role to check
+     * @param authenticationData authentication data related to the role
+     * @return a boolean to determine whether authorized or not
+     */
+    CompletableFuture<Boolean> allowSourceOpsAsync(NamespaceName namespaceName, String role,
+                                                   AuthenticationDataSource authenticationData);
+
+    /**
+     * Allow all sink operations with in this namespace
+     * @param namespaceName The namespace that the sink operations can be executed in
+     * @param role The role to check
+     * @param authenticationData authentication data related to the role
+     * @return a boolean to determine whether authorized or not
+     */
+    CompletableFuture<Boolean> allowSinkOpsAsync(NamespaceName namespaceName, String role,
+                                                 AuthenticationDataSource authenticationData);
+
+    /**
+>>>>>>> f773c602c... Test pr 10 (#27)
      *
      * Grant authorization-action permission on a namespace to the given client
      *
@@ -114,7 +197,11 @@ public interface AuthorizationProvider extends Closeable {
 
     /**
      * Grant permission to roles that can access subscription-admin api
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @param namespace
      * @param subscriptionName
      * @param roles
@@ -124,7 +211,11 @@ public interface AuthorizationProvider extends Closeable {
      */
     CompletableFuture<Void> grantSubscriptionPermissionAsync(NamespaceName namespace, String subscriptionName, Set<String> roles,
             String authDataJson);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Revoke subscription admin-api access for a role
      * @param namespace
@@ -134,7 +225,11 @@ public interface AuthorizationProvider extends Closeable {
      */
     CompletableFuture<Void> revokeSubscriptionPermissionAsync(NamespaceName namespace, String subscriptionName,
             String role, String authDataJson);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /**
      * Grant authorization-action permission on a topic to the given client
      *
@@ -150,4 +245,279 @@ public interface AuthorizationProvider extends Closeable {
     CompletableFuture<Void> grantPermissionAsync(TopicName topicName, Set<AuthAction> actions, String role,
             String authDataJson);
 
+<<<<<<< HEAD
+=======
+    /**
+     * Grant authorization-action permission on a tenant to the given client
+     * @param tenantName
+     * @param originalRole role not overriden by proxy role if request do pass through proxy
+     * @param role originalRole | proxyRole if the request didn't pass through proxy
+     * @param operation
+     * @param authData
+     * @return CompletableFuture<Boolean>
+     */
+    @Deprecated
+    default CompletableFuture<Boolean> allowTenantOperationAsync(String tenantName, String originalRole, String role,
+                                                            TenantOperation operation,
+                                                            AuthenticationDataSource authData) {
+        return allowTenantOperationAsync(
+            tenantName,
+            StringUtils.isBlank(originalRole) ? role : originalRole,
+            operation,
+            authData
+        );
+    }
+
+    @Deprecated
+    default Boolean allowTenantOperation(String tenantName, String originalRole, String role, TenantOperation operation,
+                                      AuthenticationDataSource authData) {
+        try {
+            return allowTenantOperationAsync(tenantName, originalRole, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Check if a given <tt>role</tt> is allowed to execute a given <tt>operation</tt> on the tenant.
+     *
+     * @param tenantName tenant name
+     * @param role role name
+     * @param operation tenant operation
+     * @param authData authenticated data of the role
+     * @return a completable future represents check result
+     */
+    default CompletableFuture<Boolean> allowTenantOperationAsync(String tenantName, String role,
+                                                                 TenantOperation operation,
+                                                                 AuthenticationDataSource authData) {
+        return FutureUtil.failedFuture(new IllegalStateException(
+            String.format("allowTenantOperation(%s) on tenant %s is not supported by the Authorization" +
+                    " provider you are using.",
+                operation.toString(), tenantName)));
+    }
+
+    default Boolean allowTenantOperation(String tenantName, String role, TenantOperation operation,
+                                         AuthenticationDataSource authData) {
+        try {
+            return allowTenantOperationAsync(tenantName, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Check if a given <tt>role</tt> is allowed to execute a given <tt>operation</tt> on the namespace.
+     *
+     * @param namespaceName namespace name
+     * @param role role name
+     * @param operation namespace operation
+     * @param authData authenticated data
+     * @return a completable future represents check result
+     */
+    default CompletableFuture<Boolean> allowNamespaceOperationAsync(NamespaceName namespaceName,
+                                                                    String role,
+                                                                    NamespaceOperation operation,
+                                                                    AuthenticationDataSource authData) {
+        return FutureUtil.failedFuture(
+            new IllegalStateException("NamespaceOperation is not supported by the Authorization provider you are using."));
+    }
+
+    default Boolean allowNamespaceOperation(NamespaceName namespaceName,
+                                            String role,
+                                            NamespaceOperation operation,
+                                            AuthenticationDataSource authData) {
+        try {
+            return allowNamespaceOperationAsync(namespaceName, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Grant authorization-action permission on a namespace to the given client
+     *
+     * @param namespaceName
+     * @param role
+     * @param operation
+     * @param authData
+     * @return CompletableFuture<Boolean>
+     */
+    @Deprecated
+    default CompletableFuture<Boolean> allowNamespaceOperationAsync(NamespaceName namespaceName,
+                                                                    String originalRole,
+                                                                    String role,
+                                                                    NamespaceOperation operation,
+                                                                    AuthenticationDataSource authData) {
+        return allowNamespaceOperationAsync(
+            namespaceName,
+            StringUtils.isBlank(originalRole) ? role : originalRole,
+            operation,
+            authData
+        );
+    }
+
+    @Deprecated
+    default Boolean allowNamespaceOperation(NamespaceName namespaceName,
+                                            String originalRole,
+                                            String role,
+                                            NamespaceOperation operation,
+                                            AuthenticationDataSource authData) {
+        try {
+            return allowNamespaceOperationAsync(namespaceName, originalRole, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Check if a given <tt>role</tt> is allowed to execute a given policy <tt>operation</tt> on the namespace.
+     *
+     * @param namespaceName namespace name
+     * @param policy policy name
+     * @param operation policy operation
+     * @param role role name
+     * @param authData authenticated data
+     * @return a completable future represents check result
+     */
+    default CompletableFuture<Boolean> allowNamespacePolicyOperationAsync(NamespaceName namespaceName,
+                                                                          PolicyName policy,
+                                                                          PolicyOperation operation,
+                                                                          String role,
+                                                                          AuthenticationDataSource authData) {
+        return FutureUtil.failedFuture(
+                new IllegalStateException("NamespacePolicyOperation is not supported by the Authorization provider you are using."));
+    }
+
+    default Boolean allowNamespacePolicyOperation(NamespaceName namespaceName,
+                                                  PolicyName policy,
+                                                  PolicyOperation operation,
+                                                  String role,
+                                                  AuthenticationDataSource authData) {
+        try {
+            return allowNamespacePolicyOperationAsync(namespaceName, policy, operation, role, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Grant authorization-action permission on a namespace to the given client
+     * @param namespaceName
+     * @param originalRole role not overriden by proxy role if request do pass through proxy
+     * @param role originalRole | proxyRole if the request didn't pass through proxy
+     * @param operation
+     * @param authData
+     * @return CompletableFuture<Boolean>
+     */
+    @Deprecated
+    default CompletableFuture<Boolean> allowNamespacePolicyOperationAsync(NamespaceName namespaceName,
+                                                                          PolicyName policy,
+                                                                          PolicyOperation operation,
+                                                                          String originalRole,
+                                                                          String role,
+                                                                          AuthenticationDataSource authData) {
+        return allowNamespacePolicyOperationAsync(
+            namespaceName,
+            policy,
+            operation,
+            StringUtils.isBlank(originalRole) ? role : originalRole,
+            authData
+        );
+    }
+
+    @Deprecated
+    default Boolean allowNamespacePolicyOperation(NamespaceName namespaceName,
+                                                  PolicyName policy,
+                                                  PolicyOperation operation,
+                                                  String originalRole,
+                                                  String role,
+                                                  AuthenticationDataSource authData) {
+        try {
+            return allowNamespacePolicyOperationAsync(
+                namespaceName, policy, operation, originalRole, role, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Check if a given <tt>role</tt> is allowed to execute a given topic <tt>operation</tt> on the topic.
+     *
+     * @param topic topic name
+     * @param role role name
+     * @param operation topic operation
+     * @param authData authenticated data
+     * @return CompletableFuture<Boolean>
+     */
+    default CompletableFuture<Boolean> allowTopicOperationAsync(TopicName topic,
+                                                                String role,
+                                                                TopicOperation operation,
+                                                                AuthenticationDataSource authData) {
+        return FutureUtil.failedFuture(
+            new IllegalStateException("TopicOperation is not supported by the Authorization provider you are using."));
+    }
+
+    default Boolean allowTopicOperation(TopicName topicName,
+                                        String role,
+                                        TopicOperation operation,
+                                        AuthenticationDataSource authData) {
+        try {
+            return allowTopicOperationAsync(topicName, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+
+    /**
+     * Grant authorization-action permission on a topic to the given client
+     * @param topic
+     * @param originalRole role not overriden by proxy role if request do pass through proxy
+     * @param role originalRole | proxyRole if the request didn't pass through proxy
+     * @param operation
+     * @param authData
+     * @return CompletableFuture<Boolean>
+     */
+    @Deprecated
+    default CompletableFuture<Boolean> allowTopicOperationAsync(TopicName topic,
+                                                                String originalRole,
+                                                                String role,
+                                                                TopicOperation operation,
+                                                                AuthenticationDataSource authData) {
+        return allowTopicOperationAsync(
+            topic,
+            StringUtils.isBlank(originalRole) ? role : originalRole,
+            operation,
+            authData
+        );
+    }
+
+    @Deprecated
+    default Boolean allowTopicOperation(TopicName topicName,
+                                        String originalRole,
+                                        String role,
+                                        TopicOperation operation,
+                                        AuthenticationDataSource authData) {
+        try {
+            return allowTopicOperationAsync(topicName, originalRole, role, operation, authData).get();
+        } catch (InterruptedException e) {
+            throw new RestException(e);
+        } catch (ExecutionException e) {
+            throw new RestException(e.getCause());
+        }
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

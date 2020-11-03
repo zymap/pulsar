@@ -19,20 +19,31 @@
 #ifndef PULSAR_MESSAGE_ROUTING_POLICY_HEADER_
 #define PULSAR_MESSAGE_ROUTING_POLICY_HEADER_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/DeprecatedException.h>
 #include <pulsar/Message.h>
 #include <pulsar/TopicMetadata.h>
 #include <memory>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 /*
  * Implement this interface to define custom policy giving message to
  * partition mapping.
  */
 namespace pulsar {
 
+<<<<<<< HEAD
 class MessageRoutingPolicy {
+=======
+class PULSAR_PUBLIC MessageRoutingPolicy {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     virtual ~MessageRoutingPolicy() {}
 
@@ -53,6 +64,9 @@ class MessageRoutingPolicy {
 typedef std::shared_ptr<MessageRoutingPolicy> MessageRoutingPolicyPtr;
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  // PULSAR_MESSAGE_ROUTING_POLICY_HEADER_

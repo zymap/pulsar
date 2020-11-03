@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Message.h>
 #include <pulsar/MessageBuilder.h>
 
@@ -95,6 +99,16 @@ const MessageId& Message::getMessageId() const {
     }
 }
 
+<<<<<<< HEAD
+=======
+void Message::setMessageId(const MessageId& messageID) const {
+    if (impl_) {
+        impl_->messageId = messageID;
+    }
+    return;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 bool Message::hasPartitionKey() const {
     if (impl_) {
         return impl_->hasPartitionKey();
@@ -109,6 +123,23 @@ const std::string& Message::getPartitionKey() const {
     return impl_->getPartitionKey();
 }
 
+<<<<<<< HEAD
+=======
+bool Message::hasOrderingKey() const {
+    if (impl_) {
+        return impl_->hasOrderingKey();
+    }
+    return false;
+}
+
+const std::string& Message::getOrderingKey() const {
+    if (!impl_) {
+        return emptyString;
+    }
+    return impl_->getOrderingKey();
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 const std::string& Message::getTopicName() const {
     if (!impl_) {
         return emptyString;
@@ -116,13 +147,43 @@ const std::string& Message::getTopicName() const {
     return impl_->getTopicName();
 }
 
+<<<<<<< HEAD
+=======
+const int Message::getRedeliveryCount() const {
+    if (!impl_) {
+        return 0;
+    }
+    return impl_->getRedeliveryCount();
+}
+
+bool Message::hasSchemaVersion() const {
+    if (impl_) {
+        return impl_->hasSchemaVersion();
+    }
+    return false;
+}
+
+const std::string& Message::getSchemaVersion() const {
+    if (!impl_) {
+        return emptyString;
+    }
+    return impl_->getSchemaVersion();
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 uint64_t Message::getPublishTimestamp() const { return impl_ ? impl_->getPublishTimestamp() : 0ull; }
 
 uint64_t Message::getEventTimestamp() const { return impl_ ? impl_->getEventTimestamp() : 0ull; }
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
 
 std::ostream& operator<<(std::ostream& s, const Message::StringMap& map) {
+=======
+bool Message::operator==(const Message& msg) const { return getMessageId() == msg.getMessageId(); }
+
+PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const Message::StringMap& map) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     // Output at most 10 elements -- appropriate if used for logging.
     s << '{';
 
@@ -144,7 +205,11 @@ std::ostream& operator<<(std::ostream& s, const Message::StringMap& map) {
     return s;
 }
 
+<<<<<<< HEAD
 std::ostream& operator<<(std::ostream& s, const Message& msg) {
+=======
+PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const Message& msg) {
+>>>>>>> f773c602c... Test pr 10 (#27)
     assert(msg.impl_.get());
     assert(msg.impl_->metadata.has_sequence_id());
     assert(msg.impl_->metadata.has_publish_time());
@@ -155,5 +220,8 @@ std::ostream& operator<<(std::ostream& s, const Message& msg) {
     return s;
 }
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar

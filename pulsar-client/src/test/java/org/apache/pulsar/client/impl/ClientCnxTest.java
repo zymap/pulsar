@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,6 +29,22 @@ import java.lang.reflect.Field;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
 import org.apache.pulsar.common.api.PulsarHandler;
+=======
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.util.concurrent.ThreadFactory;
+
+import io.netty.channel.Channel;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.common.api.proto.PulsarApi;
+import org.apache.pulsar.common.protocol.PulsarHandler;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.netty.EventLoopUtil;
 import org.testng.annotations.Test;
 
@@ -47,8 +64,13 @@ public class ClientCnxTest {
 
         ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         ChannelFuture listenerFuture = mock(ChannelFuture.class);
+<<<<<<< HEAD
         when(listenerFuture.addListener(anyObject())).thenReturn(listenerFuture);
         when(ctx.writeAndFlush(anyObject())).thenReturn(listenerFuture);
+=======
+        when(listenerFuture.addListener(any())).thenReturn(listenerFuture);
+        when(ctx.writeAndFlush(any())).thenReturn(listenerFuture);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Field ctxField = PulsarHandler.class.getDeclaredField("ctx");
         ctxField.setAccessible(true);
@@ -60,4 +82,38 @@ public class ClientCnxTest {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testReceiveErrorAtSendConnectFrameState() throws Exception {
+        ThreadFactory threadFactory = new DefaultThreadFactory("testReceiveErrorAtSendConnectFrameState");
+        EventLoopGroup eventLoop = EventLoopUtil.newEventLoopGroup(1, threadFactory);
+        ClientConfigurationData conf = new ClientConfigurationData();
+        conf.setOperationTimeoutMs(10);
+        ClientCnx cnx = new ClientCnx(conf, eventLoop);
+
+        ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
+        Channel channel = mock(Channel.class);
+        when(ctx.channel()).thenReturn(channel);
+
+        Field ctxField = PulsarHandler.class.getDeclaredField("ctx");
+        ctxField.setAccessible(true);
+        ctxField.set(cnx, ctx);
+
+        // set connection as SentConnectFrame
+        Field cnxField = ClientCnx.class.getDeclaredField("state");
+        cnxField.setAccessible(true);
+        cnxField.set(cnx, ClientCnx.State.SentConnectFrame);
+
+        // receive error
+        PulsarApi.CommandError commandError = PulsarApi.CommandError.newBuilder()
+            .setRequestId(-1).setError(PulsarApi.ServerError.AuthenticationError).setMessage("authentication was failed").build();
+        try {
+            cnx.handleError(commandError);
+        } catch (Exception e) {
+            fail("should not throw any error");
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

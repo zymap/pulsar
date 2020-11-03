@@ -18,10 +18,17 @@
  */
 package org.apache.pulsar.broker.service;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.mledger.Position;
 
 import java.util.List;
 
+=======
+import java.util.List;
+
+import org.apache.bookkeeper.mledger.Position;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class RedeliveryTrackerDisabled implements RedeliveryTracker {
 
     public static final RedeliveryTrackerDisabled REDELIVERY_TRACKER_DISABLED = new RedeliveryTrackerDisabled();
@@ -52,4 +59,17 @@ public class RedeliveryTrackerDisabled implements RedeliveryTracker {
     public void clear() {
         // no-op
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public boolean contains(Position position) {
+        return false;
+    }
+
+    @Override
+    public void addIfAbsent(Position position) {
+        // no-op
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

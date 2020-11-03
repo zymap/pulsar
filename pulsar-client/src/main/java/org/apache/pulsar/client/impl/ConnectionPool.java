@@ -18,24 +18,61 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
+=======
+import static org.apache.pulsar.common.util.netty.ChannelFutures.toCompletableFuture;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.resolver.dns.DnsNameResolver;
+import io.netty.resolver.dns.DnsNameResolverBuilder;
+import io.netty.util.concurrent.Future;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+<<<<<<< HEAD
 import java.util.Iterator;
 import java.util.List;
+=======
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+<<<<<<< HEAD
 import java.util.function.Supplier;
 
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+=======
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.PulsarClientException.InvalidServiceURL;
+import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
+import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
+import org.apache.pulsar.common.util.FutureUtil;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.util.netty.EventLoopUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.google.common.annotations.VisibleForTesting;
 
 import io.netty.bootstrap.Bootstrap;
@@ -49,12 +86,22 @@ import io.netty.resolver.dns.DnsNameResolver;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.util.concurrent.Future;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ConnectionPool implements Closeable {
     protected final ConcurrentHashMap<InetSocketAddress, ConcurrentMap<Integer, CompletableFuture<ClientCnx>>> pool;
 
     private final Bootstrap bootstrap;
+<<<<<<< HEAD
     private final EventLoopGroup eventLoopGroup;
     private final int maxConnectionsPerHosts;
+=======
+    private final PulsarChannelInitializer channelInitializerHandler;
+    private final ClientConfigurationData clientConfig;
+    private final EventLoopGroup eventLoopGroup;
+    private final int maxConnectionsPerHosts;
+    private final boolean isSniProxy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     protected final DnsNameResolver dnsResolver;
 
@@ -65,7 +112,14 @@ public class ConnectionPool implements Closeable {
     public ConnectionPool(ClientConfigurationData conf, EventLoopGroup eventLoopGroup,
             Supplier<ClientCnx> clientCnxSupplier) throws PulsarClientException {
         this.eventLoopGroup = eventLoopGroup;
+<<<<<<< HEAD
         this.maxConnectionsPerHosts = conf.getConnectionsPerBroker();
+=======
+        this.clientConfig = conf;
+        this.maxConnectionsPerHosts = conf.getConnectionsPerBroker();
+        this.isSniProxy = clientConfig.isUseTls() && clientConfig.getProxyProtocol() != null
+                && StringUtils.isNotBlank(clientConfig.getProxyServiceUrl());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         pool = new ConcurrentHashMap<>();
         bootstrap = new Bootstrap();
@@ -74,10 +128,18 @@ public class ConnectionPool implements Closeable {
 
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, conf.getConnectionTimeoutMs());
         bootstrap.option(ChannelOption.TCP_NODELAY, conf.isUseTcpNoDelay());
+<<<<<<< HEAD
         bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 
         try {
             bootstrap.handler(new PulsarChannelInitializer(conf, clientCnxSupplier));
+=======
+        bootstrap.option(ChannelOption.ALLOCATOR, PulsarByteBufAllocator.DEFAULT);
+
+        try {
+            channelInitializerHandler = new PulsarChannelInitializer(conf, clientCnxSupplier);
+            bootstrap.handler(channelInitializerHandler);
+>>>>>>> f773c602c... Test pr 10 (#27)
         } catch (Exception e) {
             log.error("Failed to create channel initializer");
             throw new PulsarClientException(e);
@@ -211,28 +273,61 @@ public class ConnectionPool implements Closeable {
      * Resolve DNS asynchronously and attempt to connect to any IP address returned by DNS server
      */
     private CompletableFuture<Channel> createConnection(InetSocketAddress unresolvedAddress) {
+<<<<<<< HEAD
         String hostname = unresolvedAddress.getHostString();
         int port = unresolvedAddress.getPort();
 
         // Resolve DNS --> Attempt to connect to all IP addresses until once succeeds
         return resolveName(hostname)
                 .thenCompose(inetAddresses -> connectToResolvedAddresses(inetAddresses.iterator(), port));
+=======
+        int port;
+        CompletableFuture<List<InetAddress>> resolvedAddress = null;
+        try {
+            if (isSniProxy) {
+                URI proxyURI = new URI(clientConfig.getProxyServiceUrl());
+                port = proxyURI.getPort();
+                resolvedAddress = resolveName(proxyURI.getHost());
+            } else {
+                port = unresolvedAddress.getPort();
+                resolvedAddress = resolveName(unresolvedAddress.getHostString());
+            }
+            return resolvedAddress.thenCompose(
+                    inetAddresses -> connectToResolvedAddresses(inetAddresses.iterator(), port,
+                            isSniProxy ? unresolvedAddress : null));
+        } catch (URISyntaxException e) {
+            log.error("Invalid Proxy url {}", clientConfig.getProxyServiceUrl(), e);
+            return FutureUtil
+                    .failedFuture(new InvalidServiceURL("Invalid url " + clientConfig.getProxyServiceUrl(), e));
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
      * Try to connect to a sequence of IP addresses until a successfull connection can be made, or fail if no address is
      * working
      */
+<<<<<<< HEAD
     private CompletableFuture<Channel> connectToResolvedAddresses(Iterator<InetAddress> unresolvedAddresses, int port) {
         CompletableFuture<Channel> future = new CompletableFuture<>();
 
         connectToAddress(unresolvedAddresses.next(), port).thenAccept(channel -> {
+=======
+    private CompletableFuture<Channel> connectToResolvedAddresses(Iterator<InetAddress> unresolvedAddresses, int port, InetSocketAddress sniHost) {
+        CompletableFuture<Channel> future = new CompletableFuture<>();
+
+        connectToAddress(unresolvedAddresses.next(), port, sniHost).thenAccept(channel -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
             // Successfully connected to server
             future.complete(channel);
         }).exceptionally(exception -> {
             if (unresolvedAddresses.hasNext()) {
                 // Try next IP address
+<<<<<<< HEAD
                 connectToResolvedAddresses(unresolvedAddresses, port).thenAccept(channel -> {
+=======
+                connectToResolvedAddresses(unresolvedAddresses, port, sniHost).thenAccept(channel -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
                     future.complete(channel);
                 }).exceptionally(ex -> {
                     // This is already unwinding the recursive call
@@ -265,6 +360,7 @@ public class ConnectionPool implements Closeable {
     /**
      * Attempt to establish a TCP connection to an already resolved single IP address
      */
+<<<<<<< HEAD
     private CompletableFuture<Channel> connectToAddress(InetAddress ipAddress, int port) {
         CompletableFuture<Channel> future = new CompletableFuture<>();
 
@@ -277,11 +373,43 @@ public class ConnectionPool implements Closeable {
         });
 
         return future;
+=======
+    private CompletableFuture<Channel> connectToAddress(InetAddress ipAddress, int port, InetSocketAddress sniHost) {
+        InetSocketAddress remoteAddress = new InetSocketAddress(ipAddress, port);
+        if (clientConfig.isUseTls()) {
+            return toCompletableFuture(bootstrap.register())
+                    .thenCompose(channel -> channelInitializerHandler
+                            .initTls(channel, sniHost != null ? sniHost : remoteAddress))
+                    .thenCompose(channel -> toCompletableFuture(channel.connect(remoteAddress)));
+        } else {
+            return toCompletableFuture(bootstrap.connect(remoteAddress));
+        }
+    }
+
+    public void releaseConnection(ClientCnx cnx) {
+        if (maxConnectionsPerHosts == 0) {
+            //Disable pooling
+            if (cnx.channel().isActive()) {
+                if(log.isDebugEnabled()) {
+                    log.debug("close connection due to pooling disabled.");
+                }
+                cnx.close();
+            }
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public void close() throws IOException {
+<<<<<<< HEAD
         eventLoopGroup.shutdownGracefully();
+=======
+        try {
+            eventLoopGroup.shutdownGracefully(0, 10, TimeUnit.SECONDS).await();
+        } catch (InterruptedException e) {
+            log.warn("EventLoopGroup shutdown was interrupted", e);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
         dnsResolver.close();
     }
 
@@ -293,8 +421,18 @@ public class ConnectionPool implements Closeable {
         }
     }
 
+<<<<<<< HEAD
     public static int signSafeMod(long dividend, int divisor) {
         int mod = (int) (dividend % (long) divisor);
+=======
+    @VisibleForTesting
+    int getPoolSize() {
+        return pool.values().stream().mapToInt(Map::size).sum();
+    }
+
+    public static int signSafeMod(long dividend, int divisor) {
+        int mod = (int) (dividend % divisor);
+>>>>>>> f773c602c... Test pr 10 (#27)
         if (mod < 0) {
             mod += divisor;
         }
@@ -302,4 +440,10 @@ public class ConnectionPool implements Closeable {
     }
 
     private static final Logger log = LoggerFactory.getLogger(ConnectionPool.class);
+<<<<<<< HEAD
 }
+=======
+
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)

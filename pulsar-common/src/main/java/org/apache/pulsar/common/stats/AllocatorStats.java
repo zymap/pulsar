@@ -20,6 +20,12 @@ package org.apache.pulsar.common.stats;
 
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+/**
+ * Allocator statistics.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class AllocatorStats {
     public int numDirectArenas;
     public int numHeapArenas;
@@ -31,6 +37,12 @@ public class AllocatorStats {
     public List<PoolArenaStats> directArenas;
     public List<PoolArenaStats> heapArenas;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pool arena statistics.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PoolArenaStats {
         public int numTinySubpages;
         public int numSmallSubpages;
@@ -56,6 +68,12 @@ public class AllocatorStats {
         public long numActiveHugeAllocations;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pool subpage statistics.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PoolSubpageStats {
         public int maxNumElements;
         public int numAvailable;
@@ -63,12 +81,24 @@ public class AllocatorStats {
         public int pageSize;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pool chunk list statistics.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PoolChunkListStats {
         public int minUsage;
         public int maxUsage;
         public List<PoolChunkStats> chunks;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pool chunk statistics.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static class PoolChunkStats {
         public int usage;
         public int chunkSize;

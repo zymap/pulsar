@@ -24,6 +24,10 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.avro.generated.NasaMission;
 import org.apache.flink.batch.connectors.pulsar.PulsarAvroOutputFormat;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.impl.auth.AuthenticationDisabled;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +67,11 @@ public class FlinkPulsarBatchAvroSinkExample {
         System.out.println("\tTopic:\t" + topic);
 
         // create PulsarAvroOutputFormat instance
+<<<<<<< HEAD
         final OutputFormat<NasaMission> pulsarAvroOutputFormat = new PulsarAvroOutputFormat<>(serviceUrl, topic);
+=======
+        final OutputFormat<NasaMission> pulsarAvroOutputFormat = new PulsarAvroOutputFormat<>(serviceUrl, topic, new AuthenticationDisabled());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // create DataSet
         DataSet<NasaMission> nasaMissionDS = env.fromCollection(nasaMissions);

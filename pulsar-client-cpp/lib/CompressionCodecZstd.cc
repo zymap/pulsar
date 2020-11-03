@@ -56,6 +56,7 @@ bool CompressionCodecZstd::decode(const SharedBuffer& encoded, uint32_t uncompre
 
 #else  // No ZSTD
 
+<<<<<<< HEAD
 namespace pulsar {
 
 SharedBuffer CompressionCodecZstd::encode(const SharedBuffer& raw) { throw "ZStd compression not supported"; }
@@ -63,6 +64,19 @@ SharedBuffer CompressionCodecZstd::encode(const SharedBuffer& raw) { throw "ZStd
 bool CompressionCodecZstd::decode(const SharedBuffer& encoded, uint32_t uncompressedSize,
                                   SharedBuffer& decoded) {
     throw "ZStd compression not supported";
+=======
+#include <stdexcept>
+
+namespace pulsar {
+
+SharedBuffer CompressionCodecZstd::encode(const SharedBuffer& raw) {
+    throw std::runtime_error("ZStd compression not supported");
+}
+
+bool CompressionCodecZstd::decode(const SharedBuffer& encoded, uint32_t uncompressedSize,
+                                  SharedBuffer& decoded) {
+    throw std::runtime_error("ZStd compression not supported");
+>>>>>>> f773c602c... Test pr 10 (#27)
 }
 }  // namespace pulsar
 

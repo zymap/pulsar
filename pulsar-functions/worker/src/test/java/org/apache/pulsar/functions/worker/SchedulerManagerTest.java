@@ -18,6 +18,23 @@
  */
 package org.apache.pulsar.functions.worker;
 
+<<<<<<< HEAD
+=======
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import com.google.common.collect.Sets;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -30,11 +47,21 @@ import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.TypedMessageBuilder;
 import org.apache.pulsar.common.functions.WorkerInfo;
+<<<<<<< HEAD
 import org.apache.pulsar.functions.proto.Function;
 import org.apache.pulsar.functions.proto.Function.Assignment;
 import org.apache.pulsar.functions.runtime.ThreadRuntimeFactory;
 import org.apache.pulsar.functions.secretsprovider.ClearTextSecretsProvider;
 import org.apache.pulsar.functions.utils.Utils;
+=======
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+import org.apache.pulsar.functions.proto.Function;
+import org.apache.pulsar.functions.proto.Function.Assignment;
+import org.apache.pulsar.functions.runtime.thread.ThreadRuntimeFactory;
+import org.apache.pulsar.functions.runtime.thread.ThreadRuntimeFactoryConfig;
+import org.apache.pulsar.functions.secretsprovider.ClearTextSecretsProvider;
+import org.apache.pulsar.functions.utils.FunctionCommon;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.worker.scheduler.RoundRobinScheduler;
 import org.mockito.Mockito;
 import org.mockito.invocation.Invocation;
@@ -57,6 +84,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
@@ -70,6 +98,8 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Slf4j
 public class SchedulerManagerTest {
 
@@ -81,12 +111,24 @@ public class SchedulerManagerTest {
     private Producer producer;
     private TypedMessageBuilder<byte[]> message;
     private ScheduledExecutorService executor;
+<<<<<<< HEAD
+=======
+    private LeaderService leaderService;
+    private ErrorNotifier errorNotifier;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @BeforeMethod
     public void setup() {
         WorkerConfig workerConfig = new WorkerConfig();
         workerConfig.setWorkerId("worker-1");
+<<<<<<< HEAD
         workerConfig.setThreadContainerFactory(new WorkerConfig.ThreadContainerFactory().setThreadGroupName("test"));
+=======
+        workerConfig.setFunctionRuntimeFactoryClassName(ThreadRuntimeFactory.class.getName());
+        workerConfig.setFunctionRuntimeFactoryConfigs(
+                ObjectMapperFactory.getThreadLocal().convertValue(
+                        new ThreadRuntimeFactoryConfig().setThreadGroupName("test"), Map.class));
+>>>>>>> f773c602c... Test pr 10 (#27)
         workerConfig.setPulsarServiceUrl("pulsar://localhost:6650");
         workerConfig.setStateStorageServiceUrl("foo");
         workerConfig.setFunctionAssignmentTopicName("assignments");
@@ -105,6 +147,10 @@ public class SchedulerManagerTest {
 
         ProducerBuilder<byte[]> builder = mock(ProducerBuilder.class);
         when(builder.topic(anyString())).thenReturn(builder);
+<<<<<<< HEAD
+=======
+        when(builder.producerName(anyString())).thenReturn(builder);
+>>>>>>> f773c602c... Test pr 10 (#27)
         when(builder.enableBatching(anyBoolean())).thenReturn(builder);
         when(builder.blockIfQueueFull(anyBoolean())).thenReturn(builder);
         when(builder.compressionType(any(CompressionType.class))).thenReturn(builder);
@@ -117,6 +163,7 @@ public class SchedulerManagerTest {
 
         this.executor = Executors
                 .newSingleThreadScheduledExecutor(new DefaultThreadFactory("worker-test"));
+<<<<<<< HEAD
         schedulerManager = spy(new SchedulerManager(workerConfig, pulsarClient, null, executor));
         functionRuntimeManager = mock(FunctionRuntimeManager.class);
         functionMetaDataManager = mock(FunctionMetaDataManager.class);
@@ -124,6 +171,19 @@ public class SchedulerManagerTest {
         schedulerManager.setFunctionMetaDataManager(functionMetaDataManager);
         schedulerManager.setFunctionRuntimeManager(functionRuntimeManager);
         schedulerManager.setMembershipManager(membershipManager);
+=======
+        errorNotifier = spy(ErrorNotifier.getDefaultImpl());
+        schedulerManager = spy(new SchedulerManager(workerConfig, pulsarClient,
+          null, mock(WorkerStatsManager.class), errorNotifier));
+        functionRuntimeManager = mock(FunctionRuntimeManager.class);
+        functionMetaDataManager = mock(FunctionMetaDataManager.class);
+        membershipManager = mock(MembershipManager.class);
+        leaderService = mock(LeaderService.class);
+        schedulerManager.setFunctionMetaDataManager(functionMetaDataManager);
+        schedulerManager.setFunctionRuntimeManager(functionRuntimeManager);
+        schedulerManager.setMembershipManager(membershipManager);
+        schedulerManager.setLeaderService(leaderService);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @AfterMethod
@@ -143,7 +203,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function1);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -155,7 +219,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
 
@@ -165,16 +233,29 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am not leader
+<<<<<<< HEAD
         doReturn(false).when(membershipManager).isLeader();
+=======
+        doReturn(false).when(leaderService).isLeader();
+>>>>>>> f773c602c... Test pr 10 (#27)
         callSchedule();
         verify(producer, times(0)).sendAsync(any());
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
         callSchedule();
         List<Invocation> invocations = getMethodInvocationDetails(schedulerManager,
                 SchedulerManager.class.getMethod("invokeScheduler"));
         Assert.assertEquals(invocations.size(), 1);
+=======
+        doReturn(true).when(leaderService).isLeader();
+        callSchedule();
+        List<Invocation> invocations = getMethodInvocationDetails(schedulerManager,
+                SchedulerManager.class.getDeclaredMethod("invokeScheduler"));
+        Assert.assertEquals(invocations.size(), 1);
+        verify(errorNotifier, times(0)).triggerError(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -189,7 +270,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function1);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -201,7 +286,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
 
@@ -211,12 +300,22 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
 
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
         Assert.assertEquals(invocations.size(), 0);
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+        Assert.assertEquals(invocations.size(), 0);
+        verify(errorNotifier, times(0)).triggerError(any());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -236,7 +335,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function2);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -248,7 +351,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
 
@@ -258,11 +365,19 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
 
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 1);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -277,6 +392,11 @@ public class SchedulerManagerTest {
                 .build();
         Assert.assertEquals(assignment2, assignments);
 
+<<<<<<< HEAD
+=======
+        // make sure we also directly added the assignment to in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -296,7 +416,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function1);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -315,9 +439,15 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
         //TODO: delete this assignment
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+        //TODO: delete this assignment
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
@@ -328,20 +458,37 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
 
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 1);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
         byte[] send = (byte[]) invocations.get(0).getRawArguments()[0];
+<<<<<<< HEAD
         Assignment assignments = Assignment.parseFrom(send);
 
         log.info("assignments: {}", assignments);
 
         Assert.assertEquals(0, send.length);
+=======
+
+        // delete assignment message should only have key = full qualified instance id and value = null;
+        Assert.assertEquals(0, send.length);
+
+        // make sure we also directly deleted the assignment from the in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(1)).deleteAssignment(eq(FunctionCommon.getFullyQualifiedInstanceId(assignment2.getInstance())));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -362,7 +509,11 @@ public class SchedulerManagerTest {
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider
+<<<<<<< HEAD
                 (), new CollectorRegistry());
+=======
+                (), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -374,7 +525,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
@@ -385,11 +540,19 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
 
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 1);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -406,7 +569,11 @@ public class SchedulerManagerTest {
         Assert.assertEquals(assignments, assignment2);
 
         // updating assignments
+<<<<<<< HEAD
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+=======
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // scale up
 
@@ -437,7 +604,11 @@ public class SchedulerManagerTest {
 
         callSchedule();
 
+<<<<<<< HEAD
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 4);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -473,7 +644,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function2);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -485,7 +660,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
@@ -496,6 +675,7 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
@@ -508,6 +688,28 @@ public class SchedulerManagerTest {
         Assignment assignments = Assignment.parseFrom(send);
 
         log.info("assignments: {}", assignments);
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+        Assert.assertEquals(invocations.size(), 3);
+        invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
+                Object.class));
+
+        for (int i = 0; i < invocations.size(); i++) {
+            Invocation invocation = invocations.get(i);
+            byte[] send = (byte[]) invocation.getRawArguments()[0];
+            Assignment assignment = Assignment.parseFrom(send);
+            Assignment expectedAssignment = Function.Assignment.newBuilder()
+                    .setWorkerId("worker-1")
+                    .setInstance(Function.Instance.newBuilder()
+                            .setFunctionMetaData(function2).setInstanceId(i).build())
+                    .build();
+            Assert.assertEquals(assignment, expectedAssignment);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Set<Assignment> allAssignments = Sets.newHashSet();
         invocations.forEach(invocation -> {
@@ -538,10 +740,23 @@ public class SchedulerManagerTest {
         assertTrue(allAssignments.contains(assignment2_2));
         assertTrue(allAssignments.contains(assignment2_3));
 
+<<<<<<< HEAD
         // updating assignments
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_1.getInstance()), assignment2_1);
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_2.getInstance()), assignment2_2);
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_3.getInstance()), assignment2_3);
+=======
+        // make sure we also directly add the assignment to the in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(3)).processAssignment(any());
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_1));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_2));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_3));
+
+        // updating assignments
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_1.getInstance()), assignment2_1);
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_2.getInstance()), assignment2_2);
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_3.getInstance()), assignment2_3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // scale down
 
@@ -562,7 +777,11 @@ public class SchedulerManagerTest {
 
         callSchedule();
 
+<<<<<<< HEAD
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 6);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -577,6 +796,17 @@ public class SchedulerManagerTest {
         });
 
         assertTrue(allAssignments2.contains(assignment2Scaled));
+<<<<<<< HEAD
+=======
+
+        // make sure we also directly removed the assignment from the in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(2)).deleteAssignment(anyString());
+        verify(functionRuntimeManager, times(1)).deleteAssignment(eq(FunctionCommon.getFullyQualifiedInstanceId(assignment2_2.getInstance())));
+        verify(functionRuntimeManager, times(1)).deleteAssignment(eq(FunctionCommon.getFullyQualifiedInstanceId(assignment2_2.getInstance())));
+
+        verify(functionRuntimeManager, times(4)).processAssignment(any());
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2Scaled));
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test
@@ -600,7 +830,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function2);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
@@ -615,11 +849,19 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
 
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 2);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -654,7 +896,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function2);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -666,7 +912,11 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         currentAssignments.put("worker-1", assignmentEntry1);
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
@@ -677,7 +927,11 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
+=======
+        doReturn(true).when(leaderService).isLeader();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         callSchedule();
 
@@ -697,7 +951,11 @@ public class SchedulerManagerTest {
                         .setFunctionMetaData(function2).setInstanceId(2).build())
                 .build();
 
+<<<<<<< HEAD
         List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 3);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -716,10 +974,23 @@ public class SchedulerManagerTest {
         assertTrue(allAssignments.contains(assignment2_2));
         assertTrue(allAssignments.contains(assignment2_3));
 
+<<<<<<< HEAD
         // updating assignments
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_1.getInstance()), assignment2_1);
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_2.getInstance()), assignment2_2);
         currentAssignments.get("worker-1").put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment2_3.getInstance()), assignment2_3);
+=======
+        // make sure we also directly add the assignment to the in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(3)).processAssignment(any());
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_1));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_2));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2_3));
+
+        // updating assignments
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_1.getInstance()), assignment2_1);
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_2.getInstance()), assignment2_2);
+        currentAssignments.get("worker-1").put(FunctionCommon.getFullyQualifiedInstanceId(assignment2_3.getInstance()), assignment2_3);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         // update field
 
@@ -751,7 +1022,11 @@ public class SchedulerManagerTest {
 
         callSchedule();
 
+<<<<<<< HEAD
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("sendAsync"));
+=======
+        invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+>>>>>>> f773c602c... Test pr 10 (#27)
         Assert.assertEquals(invocations.size(), 6);
         invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("value",
                 Object.class));
@@ -768,10 +1043,23 @@ public class SchedulerManagerTest {
         assertTrue(allAssignments2.contains(assignment2Updated1));
         assertTrue(allAssignments2.contains(assignment2Updated2));
         assertTrue(allAssignments2.contains(assignment2Updated3));
+<<<<<<< HEAD
     }
 
     @Test
     public void testAssignmentWorkerDoesNotExist() throws InterruptedException, NoSuchMethodException, TimeoutException, ExecutionException, InvalidProtocolBufferException {
+=======
+
+        // make sure we also directly updated the assignment to the in memory assignment cache in function runtime manager
+        verify(functionRuntimeManager, times(6)).processAssignment(any());
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2Updated1));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2Updated2));
+        verify(functionRuntimeManager, times(1)).processAssignment(eq(assignment2Updated3));
+    }
+
+    @Test
+    public void testAssignmentWorkerDoesNotExist() throws InterruptedException, NoSuchMethodException, TimeoutException, ExecutionException {
+>>>>>>> f773c602c... Test pr 10 (#27)
         List<Function.FunctionMetaData> functionMetaDataList = new LinkedList<>();
         long version = 5;
         Function.FunctionMetaData function1 = Function.FunctionMetaData.newBuilder()
@@ -787,7 +1075,11 @@ public class SchedulerManagerTest {
         functionMetaDataList.add(function2);
         doReturn(functionMetaDataList).when(functionMetaDataManager).getAllFunctionMetaData();
 
+<<<<<<< HEAD
         ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry());
+=======
+        ThreadRuntimeFactory factory = new ThreadRuntimeFactory("dummy", null, "dummy", new ClearTextSecretsProvider(), new CollectorRegistry(), null, null);
+>>>>>>> f773c602c... Test pr 10 (#27)
         doReturn(factory).when(functionRuntimeManager).getRuntimeFactory();
 
         // set assignments
@@ -806,11 +1098,19 @@ public class SchedulerManagerTest {
 
         Map<String, Map<String, Function.Assignment>> currentAssignments = new HashMap<>();
         Map<String, Function.Assignment> assignmentEntry1 = new HashMap<>();
+<<<<<<< HEAD
         assignmentEntry1.put(org.apache.pulsar.functions.utils.Utils.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
         currentAssignments.put("worker-1", assignmentEntry1);
 
         Map<String, Function.Assignment> assignmentEntry2 = new HashMap<>();
         assignmentEntry2.put(Utils.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+=======
+        assignmentEntry1.put(FunctionCommon.getFullyQualifiedInstanceId(assignment1.getInstance()), assignment1);
+        currentAssignments.put("worker-1", assignmentEntry1);
+
+        Map<String, Function.Assignment> assignmentEntry2 = new HashMap<>();
+        assignmentEntry2.put(FunctionCommon.getFullyQualifiedInstanceId(assignment2.getInstance()), assignment2);
+>>>>>>> f773c602c... Test pr 10 (#27)
         currentAssignments.put("worker-2", assignmentEntry2);
 
         doReturn(currentAssignments).when(functionRuntimeManager).getCurrentAssignments();
@@ -821,6 +1121,7 @@ public class SchedulerManagerTest {
         doReturn(workerInfoList).when(membershipManager).getCurrentMembership();
 
         // i am leader
+<<<<<<< HEAD
         doReturn(true).when(membershipManager).isLeader();
 
         callSchedule();
@@ -831,6 +1132,20 @@ public class SchedulerManagerTest {
 
     private void callSchedule() throws NoSuchMethodException, InterruptedException,
             TimeoutException, ExecutionException {
+=======
+        doReturn(true).when(leaderService).isLeader();
+
+        callSchedule();
+
+        List<Invocation> invocations = getMethodInvocationDetails(message, TypedMessageBuilder.class.getMethod("send"));
+        Assert.assertEquals(invocations.size(), 0);
+    }
+
+    private void callSchedule() throws InterruptedException,
+            TimeoutException, ExecutionException {
+
+        schedulerManager.initialize();
+>>>>>>> f773c602c... Test pr 10 (#27)
         Future<?> complete = schedulerManager.schedule();
 
         complete.get(30, TimeUnit.SECONDS);

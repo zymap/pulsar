@@ -129,6 +129,19 @@ public class TopicMessageImpl<T> implements Message<T> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public boolean hasOrderingKey() {
+        return msg.hasOrderingKey();
+    }
+
+    @Override
+    public byte[] getOrderingKey() {
+        return msg.getOrderingKey();
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public T getValue() {
         return msg.getValue();
     }
@@ -143,6 +156,24 @@ public class TopicMessageImpl<T> implements Message<T> {
         return msg.getRedeliveryCount();
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public byte[] getSchemaVersion() {
+        return msg.getSchemaVersion();
+    }
+
+    @Override
+    public boolean isReplicated() {
+        return msg.isReplicated();
+    }
+
+    @Override
+    public String getReplicatedFrom() {
+        return msg.getReplicatedFrom();
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Message<T> getMessage() {
         return msg;
     }

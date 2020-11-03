@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.broker.loadbalance.impl;
 
+<<<<<<< HEAD
+=======
+import com.google.common.base.Charsets;
+import com.sun.management.OperatingSystemMXBean;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
@@ -27,14 +33,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.ScheduledExecutorService;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+<<<<<<< HEAD
+=======
+import lombok.extern.slf4j.Slf4j;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.loadbalance.BrokerHostUsage;
 import org.apache.pulsar.policies.data.loadbalancer.ResourceUsage;
 import org.apache.pulsar.policies.data.loadbalancer.SystemResourceUsage;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +68,25 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
     private double lastTotalNicUsageTx;
     private double lastTotalNicUsageRx;
     private CpuStat lastCpuStat;
+=======
+
+
+/**
+ * Class that will return the broker host usage.
+ */
+@Slf4j
+public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
+    private long lastCollection;
+    private double lastTotalNicUsageTx;
+    private double lastTotalNicUsageRx;
+    private double lastCpuUsage;
+    private double lastCpuTotalTime;
+>>>>>>> f773c602c... Test pr 10 (#27)
     private OperatingSystemMXBean systemBean;
     private SystemResourceUsage usage;
 
     private final Optional<Double> overrideBrokerNicSpeedGbps;
+<<<<<<< HEAD
 
     private static final Logger LOG = LoggerFactory.getLogger(LinuxBrokerHostUsageImpl.class);
 
@@ -67,6 +98,41 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
         this.overrideBrokerNicSpeedGbps = pulsar.getConfiguration().getLoadBalancerOverrideBrokerNicSpeedGbps();
         pulsar.getLoadManagerExecutor().scheduleAtFixedRate(this::calculateBrokerHostUsage, 0,
                 hostUsageCheckIntervalMin, TimeUnit.MINUTES);
+=======
+    private final boolean isCGroupsEnabled;
+
+    private static final String CGROUPS_CPU_USAGE_PATH = "/sys/fs/cgroup/cpu/cpuacct.usage";
+    private static final String CGROUPS_CPU_LIMIT_QUOTA_PATH = "/sys/fs/cgroup/cpu/cpu.cfs_quota_us";
+    private static final String CGROUPS_CPU_LIMIT_PERIOD_PATH = "/sys/fs/cgroup/cpu/cpu.cfs_period_us";
+
+    public LinuxBrokerHostUsageImpl(PulsarService pulsar) {
+        this(
+            pulsar.getConfiguration().getLoadBalancerHostUsageCheckIntervalMinutes(),
+            pulsar.getConfiguration().getLoadBalancerOverrideBrokerNicSpeedGbps(),
+            pulsar.getLoadManagerExecutor()
+        );
+    }
+
+    public LinuxBrokerHostUsageImpl(int hostUsageCheckIntervalMin,
+                                    Optional<Double> overrideBrokerNicSpeedGbps,
+                                    ScheduledExecutorService executorService) {
+        this.systemBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        this.lastCollection = 0L;
+        this.usage = new SystemResourceUsage();
+        this.overrideBrokerNicSpeedGbps = overrideBrokerNicSpeedGbps;
+        executorService.scheduleAtFixedRate(this::calculateBrokerHostUsage, 0,
+                hostUsageCheckIntervalMin, TimeUnit.MINUTES);
+
+        boolean isCGroupsEnabled = false;
+        try {
+             isCGroupsEnabled = Files.exists(Paths.get(CGROUPS_CPU_USAGE_PATH));
+        } catch (Exception e) {
+            log.warn("Failed to check cgroup CPU usage file: {}", e.getMessage());
+        }
+
+        this.isCGroupsEnabled = isCGroupsEnabled;
+        calculateBrokerHostUsage();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -74,21 +140,35 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
         return usage;
     }
 
+<<<<<<< HEAD
     private void calculateBrokerHostUsage() {
+=======
+    @Override
+    public void calculateBrokerHostUsage() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         List<String> nics = getNics();
         double totalNicLimit = getTotalNicLimitKbps(nics);
         double totalNicUsageTx = getTotalNicUsageTxKb(nics);
         double totalNicUsageRx = getTotalNicUsageRxKb(nics);
         double totalCpuLimit = getTotalCpuLimit();
+<<<<<<< HEAD
         CpuStat cpuStat = getTotalCpuUsage();
 
         SystemResourceUsage usage = new SystemResourceUsage();
         long now = System.currentTimeMillis();
+=======
+
+        SystemResourceUsage usage = new SystemResourceUsage();
+        long now = System.currentTimeMillis();
+        double elapsedSeconds = (now - lastCollection) / 1000d;
+        double cpuUsage = getTotalCpuUsage(elapsedSeconds);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         if (lastCollection == 0L) {
             usage.setMemory(getMemUsage());
             usage.setBandwidthIn(new ResourceUsage(0d, totalNicLimit));
             usage.setBandwidthOut(new ResourceUsage(0d, totalNicLimit));
+<<<<<<< HEAD
             usage.setCpu(new ResourceUsage(0d, totalCpuLimit));
         } else {
             double elapsedSeconds = (now - lastCollection) / 1000d;
@@ -103,6 +183,12 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
                 usage.setCpu(new ResourceUsage(cpuUsage, totalCpuLimit));
             }
 
+=======
+        } else {
+            double nicUsageTx = (totalNicUsageTx - lastTotalNicUsageTx) / elapsedSeconds;
+            double nicUsageRx = (totalNicUsageRx - lastTotalNicUsageRx) / elapsedSeconds;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
             usage.setMemory(getMemUsage());
             usage.setBandwidthIn(new ResourceUsage(nicUsageRx, totalNicLimit));
             usage.setBandwidthOut(new ResourceUsage(nicUsageTx, totalNicLimit));
@@ -110,6 +196,7 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
 
         lastTotalNicUsageTx = totalNicUsageTx;
         lastTotalNicUsageRx = totalNicUsageRx;
+<<<<<<< HEAD
         lastCpuStat = cpuStat;
         lastCollection = System.currentTimeMillis();
         this.usage = usage;
@@ -117,6 +204,37 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
 
     private double getTotalCpuLimit() {
         return (double) (100 * Runtime.getRuntime().availableProcessors());
+=======
+        lastCollection = System.currentTimeMillis();
+        this.usage = usage;
+        usage.setCpu(new ResourceUsage(cpuUsage, totalCpuLimit));
+    }
+
+    private double getTotalCpuLimit() {
+        if (isCGroupsEnabled) {
+            try {
+                long quota = readLongFromFile(CGROUPS_CPU_LIMIT_QUOTA_PATH);
+                long period = readLongFromFile(CGROUPS_CPU_LIMIT_PERIOD_PATH);
+                if (quota > 0) {
+                    return 100.0 * quota / period;
+                }
+            } catch (IOException e) {
+                log.warn("Failed to read CPU quotas from cgroups", e);
+                // Fallback to availableProcessors
+            }
+        }
+
+        // Fallback to JVM reported CPU quota
+        return 100 * Runtime.getRuntime().availableProcessors();
+    }
+
+    private double getTotalCpuUsage(double elapsedTimeSeconds) {
+        if (isCGroupsEnabled) {
+            return getTotalCpuUsageForCGroup(elapsedTimeSeconds);
+        } else {
+            return getTotalCpuUsageForEntireHost();
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     /**
@@ -130,11 +248,16 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
      * Line is split in "words", filtering the first. The sum of all numbers give the amount of cpu cycles used this
      * far. Real CPU usage should equal the sum substracting the idle cycles, this would include iowait, irq and steal.
      */
+<<<<<<< HEAD
     private CpuStat getTotalCpuUsage() {
+=======
+    private double getTotalCpuUsageForEntireHost() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         try (Stream<String> stream = Files.lines(Paths.get("/proc/stat"))) {
             String[] words = stream.findFirst().get().split("\\s+");
 
             long total = Arrays.stream(words).filter(s -> !s.contains("cpu")).mapToLong(Long::parseLong).sum();
+<<<<<<< HEAD
 
             long idle = Long.parseLong(words[4]);
 
@@ -142,6 +265,33 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
         } catch (IOException e) {
             LOG.error("Failed to read CPU usage from /proc/stat", e);
             return null;
+=======
+            long idle = Long.parseLong(words[4]);
+            long usage = total - idle;
+
+            double currentUsage = (usage - lastCpuUsage)  / (total - lastCpuTotalTime) * getTotalCpuLimit();
+
+            lastCpuUsage = usage;
+            lastCpuTotalTime = total;
+
+            return currentUsage;
+        } catch (IOException e) {
+            log.error("Failed to read CPU usage from /proc/stat", e);
+            return -1;
+        }
+    }
+
+    private double getTotalCpuUsageForCGroup(double elapsedTimeSeconds) {
+        try {
+            long usage = readLongFromFile(CGROUPS_CPU_USAGE_PATH);
+            double currentUsage = usage - lastCpuUsage;
+            lastCpuUsage = usage;
+
+            return 100 * currentUsage / elapsedTimeSeconds / TimeUnit.SECONDS.toNanos(1);
+        } catch (IOException e) {
+            log.error("Failed to read CPU usage from {}", CGROUPS_CPU_USAGE_PATH, e);
+            return -1;
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
     }
 
@@ -156,7 +306,11 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
             return stream.filter(this::isPhysicalNic).map(path -> path.getFileName().toString())
                     .collect(Collectors.toList());
         } catch (IOException e) {
+<<<<<<< HEAD
             LOG.error("Failed to find NICs", e);
+=======
+            log.error("Failed to find NICs", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
             return Collections.emptyList();
         }
     }
@@ -179,6 +333,7 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
     }
 
     private double getTotalNicLimitKbps(List<String> nics) {
+<<<<<<< HEAD
         if (overrideBrokerNicSpeedGbps.isPresent()) {
             // Use the override value as configured. Return the total max speed across all available NICs, converted
             // from Gbps into Kbps
@@ -194,6 +349,20 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
                 return 0d;
             }
         }).sum() * 1024;
+=======
+        // Use the override value as configured. Return the total max speed across all available NICs, converted
+        // from Gbps into Kbps
+        return overrideBrokerNicSpeedGbps.map(aDouble -> aDouble * nics.size() * 1024 * 1024)
+                .orElseGet(() -> nics.stream().mapToDouble(s -> {
+                    // Nic speed is in Mbits/s, return kbits/s
+                    try {
+                        return Double.parseDouble(new String(Files.readAllBytes(getNicSpeedPath(s))));
+                    } catch (IOException e) {
+                        log.error("Failed to read speed for nic " + s, e);
+                        return 0d;
+                    }
+                }).sum() * 1024);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     private Path getNicTxPath(String nic) {
@@ -209,7 +378,11 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
             try {
                 return Double.parseDouble(new String(Files.readAllBytes(getNicRxPath(s))));
             } catch (IOException e) {
+<<<<<<< HEAD
                 LOG.error("Failed to read rx_bytes for NIC " + s, e);
+=======
+                log.error("Failed to read rx_bytes for NIC " + s, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 return 0d;
             }
         }).sum() * 8 / 1024;
@@ -220,12 +393,17 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
             try {
                 return Double.parseDouble(new String(Files.readAllBytes(getNicTxPath(s))));
             } catch (IOException e) {
+<<<<<<< HEAD
                 LOG.error("Failed to read tx_bytes for NIC " + s, e);
+=======
+                log.error("Failed to read tx_bytes for NIC " + s, e);
+>>>>>>> f773c602c... Test pr 10 (#27)
                 return 0d;
             }
         }).sum() * 8 / 1024;
     }
 
+<<<<<<< HEAD
     private class CpuStat {
         private long totalTime;
         private long usage;
@@ -242,5 +420,9 @@ public class LinuxBrokerHostUsageImpl implements BrokerHostUsage {
         long getUsage() {
             return usage;
         }
+=======
+    private static long readLongFromFile(String path) throws IOException {
+        return Long.parseLong(new String(Files.readAllBytes(Paths.get(path)), Charsets.UTF_8).trim());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

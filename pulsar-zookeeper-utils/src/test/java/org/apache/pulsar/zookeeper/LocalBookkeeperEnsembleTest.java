@@ -20,18 +20,30 @@ package org.apache.pulsar.zookeeper;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+<<<<<<< HEAD
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 
 import org.apache.bookkeeper.test.PortManager;
+=======
+import static org.testng.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+<<<<<<< HEAD
 @Test
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class LocalBookkeeperEnsembleTest {
 
     @BeforeMethod
@@ -43,6 +55,7 @@ public class LocalBookkeeperEnsembleTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testAdvertisedAddress() throws Exception {
         final int numBk = 1;
         final int zkPort = PortManager.nextFreePort();
@@ -53,11 +66,25 @@ public class LocalBookkeeperEnsembleTest {
         ensemble.startStandalone();
 
         assertNotNull(ensemble.getZkClient().exists("/ledgers/available/127.0.0.2:" + bkPort, false));
+=======
+    public void testAdvertisedAddress() throws Exception {
+        final int numBk = 1;
+
+        LocalBookkeeperEnsemble ensemble = new LocalBookkeeperEnsemble(
+            numBk, 0, 0, null, null, true, "127.0.0.2");
+        ensemble.startStandalone();
+
+        List<String> bookies = ensemble.getZkClient().getChildren("/ledgers/available", false);
+        Collections.sort(bookies);
+        assertEquals(bookies.size(), 2);
+        assertTrue(bookies.get(0).startsWith("127.0.0.2:"));
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         ensemble.stop();
     }
 
     @Test
+<<<<<<< HEAD
     void testStartStop() throws Exception {
 
         final int numBk = 1;
@@ -68,6 +95,17 @@ public class LocalBookkeeperEnsembleTest {
         ensemble.start();
         assertTrue(ensemble.getZkServer().isRunning());
         assertEquals(ensemble.getZkServer().getClientPort(), zkPort);
+=======
+    public void testStartStop() throws Exception {
+
+        final int numBk = 1;
+
+        // Start local Bookies/ZooKeepers and confirm that they are running at specified ports
+        LocalBookkeeperEnsemble ensemble = new LocalBookkeeperEnsemble(numBk, 0, () -> 0);
+        ensemble.start();
+        assertTrue(ensemble.getZkServer().isRunning());
+        assertEquals(ensemble.getZkServer().getClientPort(), ensemble.getZookeeperPort());
+>>>>>>> f773c602c... Test pr 10 (#27)
         assertTrue(ensemble.getZkClient().getState().isConnected());
         assertTrue(ensemble.getBookies()[0].isRunning());
 
@@ -77,6 +115,7 @@ public class LocalBookkeeperEnsembleTest {
         assertFalse(ensemble.getZkClient().getState().isConnected());
         assertFalse(ensemble.getBookies()[0].isRunning());
     }
+<<<<<<< HEAD
 
     @Test
     void testDataDirectoryCreatingAndRemoving() throws Exception {
@@ -123,4 +162,6 @@ public class LocalBookkeeperEnsembleTest {
         FileUtils.deleteDirectory(zkDir);
         FileUtils.deleteDirectory(bkDir);
     }
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

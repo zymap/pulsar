@@ -3,6 +3,7 @@ id: functions-state
 title: Pulsar Functions State Storage (Developer Preview)
 sidebar_label: State Storage
 ---
+<<<<<<< HEAD
 
 Since Pulsar 2.1.0 release, Pulsar integrates with Apache BookKeeper [table service](https://docs.google.com/document/d/155xAwWv5IdOitHh1NVMEwCMGgB28M3FyMiQSxEpjE-Y/edit#heading=h.56rbh52koe3f)
 for storing the `State` for functions. For example, A `WordCount` function can store its `counters` state into BookKeeper's table service via Pulsar Functions [State API](#api).
@@ -116,3 +117,5 @@ The logic of this `WordCount` function is pretty simple and straightforward:
 
 State currently is not supported at [Python SDK](functions-api.md#python-sdk-functions).
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

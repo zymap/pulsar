@@ -27,6 +27,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+<<<<<<< HEAD
+=======
+import com.beust.jcommander.ParameterException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.TimeAverageBrokerData;
 import org.apache.pulsar.broker.loadbalance.impl.ModularLoadManagerImpl;
 import org.apache.pulsar.policies.data.loadbalancer.LoadReport;
@@ -147,7 +151,11 @@ public class BrokerMonitor {
                 double maxUsage;
                 if (data instanceof LoadReport) {
                     final LoadReport loadReport = (LoadReport) data;
+<<<<<<< HEAD
                     numBundles = (int) loadReport.getNumBundles();
+=======
+                    numBundles = loadReport.getNumBundles();
+>>>>>>> f773c602c... Test pr 10 (#27)
                     messageRate = loadReport.getMsgRateIn() + loadReport.getMsgRateOut();
                     longTermMessageRate = loadReport.getAllocatedMsgRateIn() + loadReport.getAllocatedMsgRateOut();
                     messageThroughput = (loadReport.getAllocatedBandwidthIn() + loadReport.getAllocatedBandwidthOut())
@@ -428,6 +436,12 @@ public class BrokerMonitor {
 
     // JCommander arguments class.
     private static class Arguments {
+<<<<<<< HEAD
+=======
+        @Parameter(names = { "-h", "--help" }, description = "Help message", help = true)
+        boolean help;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Parameter(names = { "--connect-string" }, description = "Zookeeper connect string", required = true)
         public String connectString = null;
     }
@@ -465,6 +479,7 @@ public class BrokerMonitor {
      * @param args
      *            Arguments for the monitor.
      */
+<<<<<<< HEAD
     public static void main(String[] args) {
         try {
             final Arguments arguments = new Arguments();
@@ -476,5 +491,22 @@ public class BrokerMonitor {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+=======
+    public static void main(String[] args) throws Exception {
+        final Arguments arguments = new Arguments();
+        final JCommander jc = new JCommander(arguments);
+        jc.setProgramName("pulsar-perf monitor-brokers");
+
+        try {
+            jc.parse(args);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());
+            jc.usage();
+            System.exit(-1);
+        }
+        final ZooKeeper zkClient = new ZooKeeper(arguments.connectString, ZOOKEEPER_TIMEOUT_MILLIS, null);
+        final BrokerMonitor monitor = new BrokerMonitor(zkClient);
+        monitor.start();
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

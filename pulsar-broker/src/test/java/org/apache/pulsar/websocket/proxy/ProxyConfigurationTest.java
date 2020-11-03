@@ -22,7 +22,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 
+<<<<<<< HEAD
 import org.apache.bookkeeper.test.PortManager;
+=======
+import java.util.Optional;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.ProducerConsumerBase;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.pulsar.websocket.WebSocketService;
@@ -41,7 +46,11 @@ public class ProxyConfigurationTest extends ProducerConsumerBase {
         super.producerBaseSetup();
 
         config = new WebSocketProxyConfiguration();
+<<<<<<< HEAD
         config.setWebServicePort(PortManager.nextFreePort());
+=======
+        config.setWebServicePort(Optional.of(0));
+>>>>>>> f773c602c... Test pr 10 (#27)
         config.setClusterName("test");
         config.setConfigurationStoreServers("dummy-zk-servers");
     }

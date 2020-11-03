@@ -3,6 +3,7 @@ id: functions-guarantees
 title: Processing guarantees
 sidebar_label: Processing guarantees
 ---
+<<<<<<< HEAD
 
 Pulsar Functions provides three different messaging semantics that you can apply to any function:
 
@@ -39,3 +40,5 @@ $ bin/pulsar-admin functions update \
   --processing-guarantees ATMOST_ONCE \
   # Other function configs
 ```
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)

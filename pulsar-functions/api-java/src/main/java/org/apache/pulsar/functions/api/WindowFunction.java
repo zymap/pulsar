@@ -28,6 +28,10 @@ import java.util.Collection;
 public interface WindowFunction<I, O> {
     /**
      * Process the input.
+<<<<<<< HEAD
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return the output
      */
     O process(Collection<Record<I>> input, WindowContext context) throws Exception;

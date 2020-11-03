@@ -101,8 +101,12 @@ public class ProducerConfiguration implements Serializable {
      *            the time unit of the {@code sendTimeout}
      */
     public ProducerConfiguration setSendTimeout(int sendTimeout, TimeUnit unit) {
+<<<<<<< HEAD
         checkArgument(sendTimeout >= 0);
         conf.setSendTimeoutMs(unit.toMillis(sendTimeout));
+=======
+        conf.setSendTimeoutMs(sendTimeout, unit);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -123,7 +127,10 @@ public class ProducerConfiguration implements Serializable {
      * @return
      */
     public ProducerConfiguration setMaxPendingMessages(int maxPendingMessages) {
+<<<<<<< HEAD
         checkArgument(maxPendingMessages > 0);
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setMaxPendingMessages(maxPendingMessages);
         return this;
     }
@@ -154,7 +161,10 @@ public class ProducerConfiguration implements Serializable {
      * @param maxPendingMessagesAcrossPartitions
      */
     public void setMaxPendingMessagesAcrossPartitions(int maxPendingMessagesAcrossPartitions) {
+<<<<<<< HEAD
         checkArgument(maxPendingMessagesAcrossPartitions >= conf.getMaxPendingMessages());
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setMaxPendingMessagesAcrossPartitions(maxPendingMessagesAcrossPartitions);
     }
 
@@ -399,9 +409,13 @@ public class ProducerConfiguration implements Serializable {
      * @return
      */
     public ProducerConfiguration setBatchingMaxPublishDelay(long batchDelay, TimeUnit timeUnit) {
+<<<<<<< HEAD
         long delayInMs = timeUnit.toMillis(batchDelay);
         checkArgument(delayInMs >= 1, "configured value for batch delay must be at least 1ms");
         conf.setBatchingMaxPublishDelayMicros(timeUnit.toMicros(batchDelay));
+=======
+        conf.setBatchingMaxPublishDelayMicros(batchDelay, timeUnit);
+>>>>>>> f773c602c... Test pr 10 (#27)
         return this;
     }
 
@@ -425,7 +439,10 @@ public class ProducerConfiguration implements Serializable {
      * @return
      */
     public ProducerConfiguration setBatchingMaxMessages(int batchMessagesMaxMessagesPerBatch) {
+<<<<<<< HEAD
         checkArgument(batchMessagesMaxMessagesPerBatch > 0);
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
         conf.setBatchingMaxMessages(batchMessagesMaxMessagesPerBatch);
         return this;
     }

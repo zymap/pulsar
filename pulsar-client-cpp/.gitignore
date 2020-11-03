@@ -59,9 +59,14 @@ lib*.so*
 # doxygen files
 apidocs/
 
+<<<<<<< HEAD
 # Protobuf generated files
 *.pb.cc
 *.pb.h
+=======
+# generated files
+generated/
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # CMAKE
 Makefile
@@ -72,4 +77,8 @@ CMakeCache.txt
 pulsar-dist
 install_manifest.txt
 merged-library
+<<<<<<< HEAD
 python/venv
+=======
+python/venv
+>>>>>>> f773c602c... Test pr 10 (#27)

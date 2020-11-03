@@ -20,6 +20,10 @@ package org.apache.pulsar.common.util.collections;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+<<<<<<< HEAD
+=======
+import static org.testng.Assert.assertNotEquals;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -234,7 +238,11 @@ public class GrowablePriorityLongPairQueueTest {
 
         queue.add(0l, 0l);
 
+<<<<<<< HEAD
         assertTrue(queue.items().iterator().next().equals(new LongPair(0l, 0l)));
+=======
+        assertEquals(new LongPair(0l, 0l), queue.items().iterator().next());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         queue.remove(0l, 0l);
 
@@ -334,8 +342,13 @@ public class GrowablePriorityLongPairQueueTest {
         long t2 = 2;
         long t1_b = 1;
         assertEquals(t1, t1_b);
+<<<<<<< HEAD
         assertFalse(t1 == t2);
         assertFalse(t1_b == t2);
+=======
+        assertNotEquals(t2, t1);
+        assertNotEquals(t2, t1_b);
+>>>>>>> f773c602c... Test pr 10 (#27)
         queue.add(t1, t1);
         assertTrue(queue.remove(t1_b, t1_b));
     }
@@ -382,5 +395,10 @@ public class GrowablePriorityLongPairQueueTest {
         assertFalse(queue.exists(7, 1));
 
     }
+<<<<<<< HEAD
     
 }
+=======
+
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

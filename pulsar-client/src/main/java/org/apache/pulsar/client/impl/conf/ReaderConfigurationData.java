@@ -18,11 +18,21 @@
  */
 package org.apache.pulsar.client.impl.conf;
 
+<<<<<<< HEAD
 import java.io.Serializable;
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.List;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 import org.apache.pulsar.client.api.ConsumerCryptoFailureAction;
 import org.apache.pulsar.client.api.CryptoKeyReader;
 import org.apache.pulsar.client.api.MessageId;
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.client.api.Range;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.client.api.ReaderListener;
 
 import lombok.Data;
@@ -31,8 +41,18 @@ import lombok.Data;
 public class ReaderConfigurationData<T> implements Serializable, Cloneable {
 
     private String topicName;
+<<<<<<< HEAD
     private MessageId startMessageId;
 
+=======
+
+    @JsonIgnore
+    private MessageId startMessageId;
+
+    @JsonIgnore
+    private long startMessageFromRollbackDurationInSec;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private int receiverQueueSize = 1000;
 
     private ReaderListener<T> readerListener;
@@ -44,6 +64,12 @@ public class ReaderConfigurationData<T> implements Serializable, Cloneable {
     private ConsumerCryptoFailureAction cryptoFailureAction = ConsumerCryptoFailureAction.FAIL;
 
     private boolean readCompacted = false;
+<<<<<<< HEAD
+=======
+    private boolean resetIncludeHead = false;
+
+    private List<Range> keyHashRanges;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @SuppressWarnings("unchecked")
     public ReaderConfigurationData<T> clone() {

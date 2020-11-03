@@ -1,7 +1,11 @@
 ---
 id: version-2.1.0-incubating-admin-api-permissions
 title: Managing permissions
+<<<<<<< HEAD
 sidebar_label: Persmissions
+=======
+sidebar_label: Permissions
+>>>>>>> f773c602c... Test pr 10 (#27)
 original_id: admin-api-permissions
 ---
 

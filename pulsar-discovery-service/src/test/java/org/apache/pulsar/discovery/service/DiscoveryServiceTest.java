@@ -34,7 +34,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.bookkeeper.util.ZkUtils;
+<<<<<<< HEAD
 import org.apache.pulsar.common.api.Commands;
+=======
+import org.apache.pulsar.common.protocol.Commands;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.proto.PulsarApi.BaseCommand;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.partition.PartitionedTopicMetadata;
@@ -48,6 +52,10 @@ import org.apache.pulsar.zookeeper.ZookeeperClientFactoryImpl;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.KeeperException.SessionExpiredException;
+<<<<<<< HEAD
+=======
+import org.apache.zookeeper.MockZooKeeper;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.zookeeper.ZooDefs;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -66,6 +74,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +82,10 @@ public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
 
     private static final Logger log = LoggerFactory.getLogger(DiscoveryServiceTest.class);
 
+=======
+public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private final static String TLS_CLIENT_CERT_FILE_PATH = "./src/test/resources/certificate/client.crt";
     private final static String TLS_CLIENT_KEY_FILE_PATH = "./src/test/resources/certificate/client.key";
 
@@ -88,7 +101,11 @@ public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
 
     /**
      * Verifies: Discovery-service returns broker is round-robin manner
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws Exception
      */
     @Test
@@ -111,7 +128,14 @@ public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
         assertEquals(m.partitions, 0);
 
         // Simulate ZK error
+<<<<<<< HEAD
         mockZookKeeper.failNow(Code.SESSIONEXPIRED);
+=======
+        mockZooKeeper.failConditional(Code.SESSIONEXPIRED, (op, path) -> {
+                return op == MockZooKeeper.Op.GET
+                    && path.equals("/admin/partitioned-topics/test/local/ns/persistent/my-topic-2");
+            });
+>>>>>>> f773c602c... Test pr 10 (#27)
         TopicName topic2 = TopicName.get("persistent://test/local/ns/my-topic-2");
         CompletableFuture<PartitionedTopicMetadata> future = service.getDiscoveryProvider()
                 .getPartitionedTopicMetadata(service, topic2, "role", null);
@@ -152,7 +176,12 @@ public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
      * creates ClientHandler channel to connect and communicate with server
      *
      * @param serviceUrl
+<<<<<<< HEAD
      * @param latch
+=======
+     * @param promise
+     * @param tls
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return
      * @throws URISyntaxException
      */
@@ -240,7 +269,11 @@ public class DiscoveryServiceTest extends BaseDiscoveryTestSetup {
         for (int i = 0; i < number; i++) {
             LoadReport report = new LoadReport(null, null, "pulsar://broker-:15000" + i, null);
             String reportData = ObjectMapperFactory.getThreadLocal().writeValueAsString(report);
+<<<<<<< HEAD
             ZkUtils.createFullPathOptimistic(mockZookKeeper, LOADBALANCE_BROKERS_ROOT + "/" + "broker-" + i,
+=======
+            ZkUtils.createFullPathOptimistic(mockZooKeeper, LOADBALANCE_BROKERS_ROOT + "/" + "broker-" + i,
+>>>>>>> f773c602c... Test pr 10 (#27)
                     reportData.getBytes(ZookeeperClientFactoryImpl.ENCODING_SCHEME), ZooDefs.Ids.OPEN_ACL_UNSAFE,
                     CreateMode.PERSISTENT);
         }

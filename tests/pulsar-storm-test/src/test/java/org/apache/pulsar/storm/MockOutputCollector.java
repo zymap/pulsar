@@ -93,4 +93,12 @@ public class MockOutputCollector implements IOutputCollector {
         numTuplesAcked = 0;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void flush() {
+        // Nothing to flush from buffer
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

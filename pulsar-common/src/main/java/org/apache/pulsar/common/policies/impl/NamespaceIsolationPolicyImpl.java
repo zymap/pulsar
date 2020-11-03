@@ -18,26 +18,43 @@
  */
 package org.apache.pulsar.common.policies.impl;
 
+<<<<<<< HEAD
+=======
+import com.google.common.base.Objects;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.AutoFailoverPolicy;
 import org.apache.pulsar.common.policies.NamespaceIsolationPolicy;
 import org.apache.pulsar.common.policies.data.BrokerStatus;
 import org.apache.pulsar.common.policies.data.NamespaceIsolationData;
 
+<<<<<<< HEAD
 import com.google.common.base.Objects;
 
+=======
+/**
+ * Implementation of the namespace isolation policy.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class NamespaceIsolationPolicyImpl implements NamespaceIsolationPolicy {
 
     private List<String> namespaces;
     private List<String> primary;
     private List<String> secondary;
+<<<<<<< HEAD
     private AutoFailoverPolicy auto_failover_policy;
+=======
+    private AutoFailoverPolicy autoFailoverPolicy;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     private boolean matchNamespaces(String fqnn) {
         for (String nsRegex : namespaces) {
@@ -62,7 +79,11 @@ public class NamespaceIsolationPolicyImpl implements NamespaceIsolationPolicy {
         this.namespaces = policyData.namespaces;
         this.primary = policyData.primary;
         this.secondary = policyData.secondary;
+<<<<<<< HEAD
         this.auto_failover_policy = AutoFailoverPolicyFactory.create(policyData.auto_failover_policy);
+=======
+        this.autoFailoverPolicy = AutoFailoverPolicyFactory.create(policyData.auto_failover_policy);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
@@ -119,12 +140,25 @@ public class NamespaceIsolationPolicyImpl implements NamespaceIsolationPolicy {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public int hashCode() {
+        return Objects.hashCode(namespaces, primary, secondary,
+            autoFailoverPolicy);
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public boolean equals(Object obj) {
         if (obj instanceof NamespaceIsolationPolicyImpl) {
             NamespaceIsolationPolicyImpl other = (NamespaceIsolationPolicyImpl) obj;
             return Objects.equal(this.namespaces, other.namespaces) && Objects.equal(this.primary, other.primary)
                     && Objects.equal(this.secondary, other.secondary)
+<<<<<<< HEAD
                     && Objects.equal(this.auto_failover_policy, other.auto_failover_policy);
+=======
+                    && Objects.equal(this.autoFailoverPolicy, other.autoFailoverPolicy);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         return false;
@@ -134,7 +168,11 @@ public class NamespaceIsolationPolicyImpl implements NamespaceIsolationPolicy {
     public SortedSet<BrokerStatus> getAvailablePrimaryBrokers(SortedSet<BrokerStatus> primaryCandidates) {
         SortedSet<BrokerStatus> availablePrimaries = new TreeSet<BrokerStatus>();
         for (BrokerStatus status : primaryCandidates) {
+<<<<<<< HEAD
             if (this.auto_failover_policy.isBrokerAvailable(status)) {
+=======
+            if (this.autoFailoverPolicy.isBrokerAvailable(status)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
                 availablePrimaries.add(status);
             }
         }
@@ -143,22 +181,38 @@ public class NamespaceIsolationPolicyImpl implements NamespaceIsolationPolicy {
 
     @Override
     public boolean shouldFailover(SortedSet<BrokerStatus> brokerStatus) {
+<<<<<<< HEAD
         return this.auto_failover_policy.shouldFailoverToSecondary(brokerStatus);
     }
 
     public boolean shouldFailover(int totalPrimaryResourceUnits) {
         return this.auto_failover_policy.shouldFailoverToSecondary(totalPrimaryResourceUnits);
+=======
+        return this.autoFailoverPolicy.shouldFailoverToSecondary(brokerStatus);
+    }
+
+    public boolean shouldFailover(int totalPrimaryResourceUnits) {
+        return this.autoFailoverPolicy.shouldFailoverToSecondary(totalPrimaryResourceUnits);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public boolean isPrimaryBrokerAvailable(BrokerStatus brkStatus) {
         return this.isPrimaryBroker(brkStatus.getBrokerAddress())
+<<<<<<< HEAD
                 && this.auto_failover_policy.isBrokerAvailable(brkStatus);
+=======
+                && this.autoFailoverPolicy.isBrokerAvailable(brkStatus);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public String toString() {
         return String.format("namespaces=%s primary=%s secondary=%s auto_failover_policy=%s", namespaces, primary,
+<<<<<<< HEAD
                 secondary, auto_failover_policy);
+=======
+                secondary, autoFailoverPolicy);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 }

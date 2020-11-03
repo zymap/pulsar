@@ -106,7 +106,11 @@ public class RoundRobinPartitionMessageRouterImplTest {
 
         int idx = router.choosePartition(msg, new TopicMetadataImpl(5));
         assertTrue(idx >= 0);
+<<<<<<< HEAD
         assertTrue(idx < 5);;
+=======
+        assertTrue(idx < 5);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test

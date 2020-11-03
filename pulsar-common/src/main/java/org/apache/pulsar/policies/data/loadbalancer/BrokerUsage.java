@@ -22,8 +22,12 @@ import java.util.Map;
 
 /**
  * {@link BrokerUsage} object encapsulates the resources that are only used by broker, for now, it's connections both to
+<<<<<<< HEAD
  * outside JVM and to the local VM
  *
+=======
+ * outside JVM and to the local.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class BrokerUsage {
     private long connectionCount;
@@ -45,12 +49,21 @@ public class BrokerUsage {
         this.replicationConnectionCount = replicationConnectionCount;
     }
 
+<<<<<<< HEAD
     /*
      * factory method that returns an instance of this class populated from metrics we expect the keys that we are
      * looking there's no explicit type checked object which guarantees that we have a specific type of metrics
      *
      * @param metrics metrics object containing the metrics collected per minute from mbeans
      * 
+=======
+    /**
+     * Factory method that returns an instance of this class populated from metrics we expect the keys that we are
+     * looking there's no explicit type checked object which guarantees that we have a specific type of metrics.
+     *
+     * @param metrics metrics object containing the metrics collected per minute from mbeans
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @return new instance of the class populated from metrics
      */
     public static BrokerUsage populateFrom(Map<String, Object> metrics) {
@@ -60,8 +73,14 @@ public class BrokerUsage {
             brokerUsage.connectionCount = ((Long) metrics.get("brk_conn_cnt")).longValue();
         }
         if (metrics.containsKey("brk_repl_conn_cnt")) {
+<<<<<<< HEAD
             if (brokerUsage == null)
                 brokerUsage = new BrokerUsage();
+=======
+            if (brokerUsage == null) {
+                brokerUsage = new BrokerUsage();
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
             brokerUsage.replicationConnectionCount = ((Long) metrics.get("brk_repl_conn_cnt")).longValue();
         }
         return brokerUsage;

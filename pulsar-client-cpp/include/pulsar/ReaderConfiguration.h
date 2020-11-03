@@ -21,11 +21,18 @@
 
 #include <functional>
 #include <memory>
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 #include <pulsar/Message.h>
 #include <pulsar/Schema.h>
 
+<<<<<<< HEAD
 #pragma GCC visibility push(default)
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 namespace pulsar {
 
 class Reader;
@@ -37,12 +44,20 @@ typedef std::function<void(Result result)> ResultCallback;
 /// Callback definition for MessageListener
 typedef std::function<void(Reader reader, const Message& msg)> ReaderListener;
 
+<<<<<<< HEAD
 class ReaderConfigurationImpl;
+=======
+struct ReaderConfigurationImpl;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 /**
  * Class specifying the configuration of a consumer.
  */
+<<<<<<< HEAD
 class ReaderConfiguration {
+=======
+class PULSAR_PUBLIC ReaderConfiguration {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     ReaderConfiguration();
     ~ReaderConfiguration();
@@ -109,5 +124,8 @@ class ReaderConfiguration {
     std::shared_ptr<ReaderConfigurationImpl> impl_;
 };
 }  // namespace pulsar
+<<<<<<< HEAD
 #pragma GCC visibility pop
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif /* PULSAR_READER_CONFIGURATION_H_ */

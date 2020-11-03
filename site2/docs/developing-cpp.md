@@ -34,7 +34,11 @@ First, install all of the necessary dependencies:
 
 ```shell
 $ apt-get install cmake libssl-dev libcurl4-openssl-dev liblog4cxx-dev \
+<<<<<<< HEAD
   libprotobuf-dev libboost-all-dev google-mock libgtest-dev libjsoncpp-dev
+=======
+  libprotobuf-dev protobuf-compiler libboost-all-dev google-mock libgtest-dev libjsoncpp-dev
+>>>>>>> f773c602c... Test pr 10 (#27)
 ```
 
 Then compile and install [Google Test](https://github.com/google/googletest):

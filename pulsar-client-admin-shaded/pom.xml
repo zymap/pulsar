@@ -26,7 +26,11 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
     <artifactId>pulsar</artifactId>
+<<<<<<< HEAD
     <version>2.3.0</version>
+=======
+    <version>2.7.0-SNAPSHOT</version>
+>>>>>>> f773c602c... Test pr 10 (#27)
     <relativePath>..</relativePath>
   </parent>
 
@@ -63,8 +67,11 @@
                   <include>commons-codec:commons-codec</include>
                   <include>commons-collections:commons-collections</include>
                   <include>org.asynchttpclient:*</include>
+<<<<<<< HEAD
                   <include>io.netty:netty-codec-http</include>
                   <include>io.netty:netty-transport-native-epoll</include>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
                   <include>org.reactivestreams:reactive-streams</include>
                   <include>com.typesafe.netty:netty-reactive-streams</include>
                   <include>org.javassist:javassist</include>
@@ -72,29 +79,50 @@
                   <include>com.google.guava:guava</include>
                   <include>com.google.code.gson:gson</include>
                   <include>com.fasterxml.jackson.core</include>
+<<<<<<< HEAD
                   <include>io.netty:netty</include>
                   <include>io.netty:netty-all</include>
+=======
+                  <include>io.netty:*</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
                   <include>org.apache.pulsar:pulsar-common</include>
                   <include>org.apache.bookkeeper:circe-checksum</include>
                   <include>com.yahoo.datasketches:sketches-core</include>
                   <include>org.glassfish.jersey*:*</include>
                   <include>javax.ws.rs:*</include>
+<<<<<<< HEAD
                   <include>javax.annotation:*</include>
+=======
+                  <include>jakarta.annotation:*</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
                   <include>org.glassfish.hk2*:*</include>
                   <include>com.fasterxml.jackson.*:*</include>
                   <include>io.grpc:*</include>
                   <include>com.yahoo.datasketches:*</include>
+<<<<<<< HEAD
                   <include>io.netty:*</include>
                   <include>com.squareup.*:*</include>
                   <include>com.google.*:*</include>
                   <include>commons-*:*</include>
                   <include>org.apache.httpcomponents:*</include>
+=======
+                  <include>com.squareup.*:*</include>
+                  <include>com.google.*:*</include>
+                  <include>commons-*:*</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
                   <include>org.eclipse.jetty:*</include>
                   <include>com.google.auth:*</include>
                   <include>org.jvnet.mimepull:*</include>
                   <include>io.opencensus:*</include>
                   <include>org.objenesis:*</include>
                   <include>org.yaml:snakeyaml</include>
+<<<<<<< HEAD
+=======
+                  <include>io.swagger:*</include>
+                  <include>org.apache.bookkeeper:bookkeeper-common-allocator</include>
+                  <!-- bouncycastle Provider dependencies-->
+                  <include>org.bouncycastle:*</include>
+>>>>>>> f773c602c... Test pr 10 (#27)
                 </includes>
               </artifactSet>
               <filters>
@@ -104,6 +132,15 @@
                     <include>**</include>
                   </includes>
                 </filter>
+<<<<<<< HEAD
+=======
+                <filter>
+                  <artifact>org.apache.pulsar:pulsar-client-admin-original</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+>>>>>>> f773c602c... Test pr 10 (#27)
               </filters>
               <relocations>
                <relocation>
@@ -202,10 +239,13 @@
                       <shadedPattern>org.apache.pulsar.shade.org.eclipse.jetty</shadedPattern>
                   </relocation>
                   <relocation>
+<<<<<<< HEAD
                       <pattern>org.apache.http</pattern>
                       <shadedPattern>org.apache.pulsar.shade.org.apache.http</shadedPattern>
                   </relocation>
                   <relocation>
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
                       <pattern>org.objenesis</pattern>
                       <shadedPattern>org.apache.pulsar.shade.org.objenesis</shadedPattern>
                   </relocation>
@@ -213,6 +253,17 @@
                       <pattern>org.yaml</pattern>
                       <shadedPattern>org.apache.pulsar.shade.org.yaml</shadedPattern>
                   </relocation>
+<<<<<<< HEAD
+=======
+                  <relocation>
+                      <pattern>io.swagger</pattern>
+                      <shadedPattern>org.apache.pulsar.shade.io.swagger</shadedPattern>
+                  </relocation>
+                  <relocation>
+                    <pattern>org.apache.bookkeeper</pattern>
+                    <shadedPattern>org.apache.pulsar.shade.org.apache.bookkeeper</shadedPattern>
+                  </relocation>
+>>>>>>> f773c602c... Test pr 10 (#27)
               </relocations>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

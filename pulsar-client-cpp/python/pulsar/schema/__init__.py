@@ -17,8 +17,15 @@
 # under the License.
 #
 
+<<<<<<< HEAD
 
 from .definition import *
 from .schema import *
 
 
+=======
+from .definition import Record, Field, Null, Boolean, Integer, Long, \
+            Float, Double, Bytes, String, Array, Map
+
+from .schema import Schema, BytesSchema, StringSchema, JsonSchema, AvroSchema
+>>>>>>> f773c602c... Test pr 10 (#27)

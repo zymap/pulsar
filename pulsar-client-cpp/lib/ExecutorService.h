@@ -26,15 +26,23 @@
 #include <thread>
 #include <boost/noncopyable.hpp>
 #include <mutex>
+<<<<<<< HEAD
 
 #pragma GCC visibility push(default)
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 namespace pulsar {
 typedef std::shared_ptr<boost::asio::ip::tcp::socket> SocketPtr;
 typedef std::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket &> > TlsSocketPtr;
 typedef std::shared_ptr<boost::asio::ip::tcp::resolver> TcpResolverPtr;
 typedef std::shared_ptr<boost::asio::deadline_timer> DeadlineTimerPtr;
+<<<<<<< HEAD
 class ExecutorService : private boost::noncopyable {
+=======
+class PULSAR_PUBLIC ExecutorService : private boost::noncopyable {
+>>>>>>> f773c602c... Test pr 10 (#27)
     friend class ClientConnection;
 
    public:
@@ -52,12 +60,20 @@ class ExecutorService : private boost::noncopyable {
     /*
      *  only called once and within lock so no need to worry about thread-safety
      */
+<<<<<<< HEAD
     void startWorker();
+=======
+    void startWorker(std::shared_ptr<boost::asio::io_service> io_service);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /*
      * io_service is our interface to os, io object schedule async ops on this object
      */
+<<<<<<< HEAD
     boost::asio::io_service io_service_;
+=======
+    std::shared_ptr<boost::asio::io_service> io_service_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /*
      * work will not let io_service.run() return even after it has finished work
@@ -71,12 +87,20 @@ class ExecutorService : private boost::noncopyable {
      * background invoking async handlers as they are finished and result is available from
      * io_service
      */
+<<<<<<< HEAD
     boost::asio::detail::thread worker_;
+=======
+    std::thread worker_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 
 typedef std::shared_ptr<ExecutorService> ExecutorServicePtr;
 
+<<<<<<< HEAD
 class ExecutorServiceProvider {
+=======
+class PULSAR_PUBLIC ExecutorServiceProvider {
+>>>>>>> f773c602c... Test pr 10 (#27)
    public:
     explicit ExecutorServiceProvider(int nthreads);
 
@@ -95,6 +119,9 @@ class ExecutorServiceProvider {
 typedef std::shared_ptr<ExecutorServiceProvider> ExecutorServiceProviderPtr;
 }  // namespace pulsar
 
+<<<<<<< HEAD
 #pragma GCC visibility pop
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 #endif  //_PULSAR_EXECUTOR_SERVICE_HEADER_

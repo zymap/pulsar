@@ -33,6 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response.Status;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.util.RestException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport;
 import org.apache.pulsar.zookeeper.ZooKeeperClientFactory;
 import org.apache.pulsar.zookeeper.ZookeeperClientFactoryImpl;
@@ -84,6 +88,18 @@ public class DiscoveryServiceServlet extends HttpServlet {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void destroy() {
+        try {
+            zkCache.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         redirect(req, resp);
     }
@@ -139,7 +155,11 @@ public class DiscoveryServiceServlet extends HttpServlet {
                 location.append('?').append(request.getQueryString());
             }
             if (log.isDebugEnabled()) {
+<<<<<<< HEAD
                 log.info("Redirecting to {}", location);
+=======
+                log.debug("Redirecting to {}", location);
+>>>>>>> f773c602c... Test pr 10 (#27)
             }
 
             response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);

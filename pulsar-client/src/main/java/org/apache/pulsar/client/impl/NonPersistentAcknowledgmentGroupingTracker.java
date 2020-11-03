@@ -18,8 +18,15 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
 import java.util.Map;
 import org.apache.pulsar.client.api.MessageId;
+=======
+import java.util.List;
+import java.util.Map;
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.impl.transaction.TransactionImpl;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 
 /**
@@ -40,8 +47,24 @@ public class NonPersistentAcknowledgmentGroupingTracker implements Acknowledgmen
         return false;
     }
 
+<<<<<<< HEAD
     @Override
     public void addAcknowledgment(MessageIdImpl msgId, AckType ackType, Map<String, Long> properties) {
+=======
+    public void addAcknowledgment(MessageIdImpl msgId, AckType ackType, Map<String,
+            Long> properties, TransactionImpl txnImpl) {
+        // no-op
+    }
+
+    @Override
+    public void addListAcknowledgment(List<MessageIdImpl> messageIds, AckType ackType, Map<String, Long> properties) {
+        // no-op
+    }
+
+    @Override
+    public void addBatchIndexAcknowledgment(BatchMessageIdImpl msgId, int batchIndex, int batchSize,
+                                            AckType ackType, Map<String, Long> properties, TransactionImpl transaction) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         // no-op
     }
 
@@ -54,4 +77,12 @@ public class NonPersistentAcknowledgmentGroupingTracker implements Acknowledgmen
     public void close() {
         // no-op
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void flushAndClean() {
+        // no-op
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

@@ -28,29 +28,47 @@ import org.testng.annotations.Test;
 /**
  */
 
+<<<<<<< HEAD
 @Test
 public class BatchMessageIdImplSerializationTest {
     @Test
     void testSerialization1() throws Exception {
+=======
+public class BatchMessageIdImplSerializationTest {
+    @Test
+    public void testSerialization1() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         BatchMessageIdImpl id = new BatchMessageIdImpl(1, 2, 3, 4);
         byte[] serializedId = id.toByteArray();
         assertEquals(BatchMessageIdImpl.fromByteArray(serializedId), id);
     }
 
     @Test
+<<<<<<< HEAD
     void testSerialization2() throws Exception {
+=======
+    public void testSerialization2() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         BatchMessageIdImpl id = new BatchMessageIdImpl(1, 2, -1, 3);
         byte[] serializedId = id.toByteArray();
         assertEquals(BatchMessageIdImpl.fromByteArray(serializedId), id);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
+<<<<<<< HEAD
     void testSerializationNull() throws Exception {
+=======
+    public void testSerializationNull() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         BatchMessageIdImpl.fromByteArray(null);
     }
 
     @Test(expectedExceptions = IOException.class)
+<<<<<<< HEAD
     void testSerializationEmpty() throws Exception {
+=======
+    public void testSerializationEmpty() throws Exception {
+>>>>>>> f773c602c... Test pr 10 (#27)
         BatchMessageIdImpl.fromByteArray(new byte[0]);
     }
 }

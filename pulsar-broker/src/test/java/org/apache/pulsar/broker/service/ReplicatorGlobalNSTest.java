@@ -18,43 +18,69 @@
  */
 package org.apache.pulsar.broker.service;
 
+<<<<<<< HEAD
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+=======
+import com.google.common.collect.Sets;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.auth.MockedPulsarServiceBaseTest;
 import org.apache.pulsar.client.api.MessageRoutingMode;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.impl.ConsumerImpl;
 import org.apache.pulsar.client.impl.ProducerImpl;
+<<<<<<< HEAD
 import org.apache.pulsar.common.naming.TopicDomain;
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+<<<<<<< HEAD
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Sets;
+=======
+import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 public class ReplicatorGlobalNSTest extends ReplicatorTestBase {
 
     protected String methodName;
 
     @BeforeMethod
+<<<<<<< HEAD
     public void beforeMethod(Method m) throws Exception {
+=======
+    public void beforeMethod(Method m) {
+>>>>>>> f773c602c... Test pr 10 (#27)
         methodName = m.getName();
     }
 
     @Override
+<<<<<<< HEAD
     @BeforeClass(timeOut = 30000)
+=======
+    @BeforeClass(timeOut = 300000)
+>>>>>>> f773c602c... Test pr 10 (#27)
     void setup() throws Exception {
         super.setup();
     }
 
     @Override
+<<<<<<< HEAD
     @AfterClass(timeOut = 30000)
+=======
+    @AfterClass(timeOut = 300000)
+>>>>>>> f773c602c... Test pr 10 (#27)
     void shutdown() throws Exception {
         super.shutdown();
     }
@@ -62,7 +88,11 @@ public class ReplicatorGlobalNSTest extends ReplicatorTestBase {
     /**
      * If local cluster is removed from the global namespace then all topics under that namespace should be deleted from
      * the cluster.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> f773c602c... Test pr 10 (#27)
      * @throws Exception
      */
     @Test
@@ -90,7 +120,11 @@ public class ReplicatorGlobalNSTest extends ReplicatorTestBase {
         admin1.namespaces().setNamespaceReplicationClusters(namespace, Sets.newHashSet("r2", "r3"));
 
         MockedPulsarServiceBaseTest
+<<<<<<< HEAD
                 .retryStrategically((test) -> !pulsar1.getBrokerService().getTopics().containsKey(topicName), 5, 150);
+=======
+                .retryStrategically((test) -> !pulsar1.getBrokerService().getTopics().containsKey(topicName), 50, 150);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Assert.assertFalse(pulsar1.getBrokerService().getTopics().containsKey(topicName));
         Assert.assertFalse(producer1.isConnected());
@@ -118,10 +152,17 @@ public class ReplicatorGlobalNSTest extends ReplicatorTestBase {
                 .enableBatching(false).messageRoutingMode(MessageRoutingMode.SinglePartition).create();
         producer1.close();
 
+<<<<<<< HEAD
         admin1.persistentTopics().delete(topicName, true);
 
         MockedPulsarServiceBaseTest
                 .retryStrategically((test) -> !pulsar1.getBrokerService().getTopics().containsKey(topicName), 5, 150);
+=======
+        admin1.topics().delete(topicName, true);
+
+        MockedPulsarServiceBaseTest
+                .retryStrategically((test) -> !pulsar1.getBrokerService().getTopics().containsKey(topicName), 50, 150);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         Assert.assertFalse(pulsar1.getBrokerService().getTopics().containsKey(topicName));
 

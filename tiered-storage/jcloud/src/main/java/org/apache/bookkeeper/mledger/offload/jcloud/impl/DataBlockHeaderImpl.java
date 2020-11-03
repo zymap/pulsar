@@ -30,9 +30,13 @@ import java.io.InputStream;
 import org.apache.bookkeeper.mledger.offload.jcloud.DataBlockHeader;
 
 /**
+<<<<<<< HEAD
  *
  * The data block header in code storage for each data block.
  *
+=======
+ * The data block header in code storage for each data block.
+>>>>>>> f773c602c... Test pr 10 (#27)
  */
 public class DataBlockHeaderImpl implements DataBlockHeader {
     // Magic Word for data block.
@@ -57,7 +61,12 @@ public class DataBlockHeaderImpl implements DataBlockHeader {
         DataInputStream dis = new DataInputStream(countingStream);
         int magic = dis.readInt();
         if (magic != MAGIC_WORD) {
+<<<<<<< HEAD
             throw new IOException("Data block header magic word not match. read: " + magic + " expected: " + MAGIC_WORD);
+=======
+            throw new IOException("Data block header magic word not match. read: " + magic
+                    + " expected: " + MAGIC_WORD);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
 
         long headerLen = dis.readLong();

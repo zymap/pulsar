@@ -19,8 +19,20 @@
 package org.apache.pulsar.broker.namespace;
 
 import static org.testng.Assert.assertEquals;
+<<<<<<< HEAD
 
 import org.apache.pulsar.broker.service.BrokerTestBase;
+=======
+import static org.testng.Assert.assertNotNull;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.pulsar.broker.service.BrokerTestBase;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.ProducerBuilder;
+import org.apache.pulsar.common.policies.data.BookieAffinityGroupData;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.policies.data.Policies;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -43,7 +55,11 @@ public class NamespaceCreateBundlesTest extends BrokerTestBase {
 
     @Test
     public void testCreateNamespaceWithDefaultBundles() throws Exception {
+<<<<<<< HEAD
         String namespaceName = "prop/default-bundles";
+=======
+        String namespaceName = "prop/" + UUID.randomUUID().toString();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
         admin.namespaces().createNamespace(namespaceName);
 
@@ -52,4 +68,27 @@ public class NamespaceCreateBundlesTest extends BrokerTestBase {
         assertEquals(policies.bundles.boundaries.size(), 17);
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void testSplitBundleUpdatesLocalPoliciesWithoutOverwriting() throws Exception {
+        String namespaceName = "prop/" + UUID.randomUUID().toString();
+        String topicName = "persistent://" + namespaceName + "/my-topic5";
+
+        admin.namespaces().createNamespace(namespaceName);
+
+        ProducerBuilder<byte[]> producerBuilder = pulsarClient.newProducer().topic(topicName).sendTimeout(1,
+                TimeUnit.SECONDS);
+
+        Producer<byte[]> producer = producerBuilder.create();
+
+        String bundle = admin.lookups().getBundleRange(topicName);
+        BookieAffinityGroupData bookieAffinityGroup = new BookieAffinityGroupData();
+        bookieAffinityGroup.bookkeeperAffinityGroupPrimary = "test";
+        admin.namespaces().setBookieAffinityGroup(namespaceName, bookieAffinityGroup);
+        admin.namespaces().splitNamespaceBundle(namespaceName, bundle, false, null);
+        assertNotNull(admin.namespaces().getBookieAffinityGroup(namespaceName));
+        producer.close();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

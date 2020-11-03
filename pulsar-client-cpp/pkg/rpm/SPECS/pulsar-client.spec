@@ -30,6 +30,10 @@ Version:        %{version}
 Release:        %{release}
 Source:         apache-pulsar-%{pom_version}-src.tar.gz
 Prefix:         /usr
+<<<<<<< HEAD
+=======
+AutoReq:        no
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 %package devel
 Summary:        Apache Pulsar client library
@@ -52,8 +56,13 @@ static library.
 
 %build
 cd pulsar-client-cpp
+<<<<<<< HEAD
 cmake . -DBUILD_TESTS=OFF -DLINK_STATIC=ON
 make pulsarShared pulsarStatic -j 3
+=======
+cmake . -DBUILD_TESTS=OFF -DLINK_STATIC=ON -DBUILD_PYTHON_WRAPPER=OFF
+make pulsarShared pulsarSharedNossl pulsarStatic pulsarStaticWithDeps -j 3
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 %install
 cd pulsar-client-cpp
@@ -65,7 +74,13 @@ mkdir -p $INCLUDE_DIR $LIB_DIR $DOC_DIR $DOC_DEVEL_DIR
 
 cp -ar include/pulsar $INCLUDE_DIR
 cp lib/libpulsar.a $LIB_DIR
+<<<<<<< HEAD
 cp lib/libpulsar.so.%{pom_version} $LIB_DIR
+=======
+cp lib/libpulsarwithdeps.a $LIB_DIR
+cp lib/libpulsar.so.%{pom_version} $LIB_DIR
+cp lib/libpulsarnossl.so.%{pom_version} $LIB_DIR
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Copy LICENSE files
 cp ../NOTICE $DOC_DIR
@@ -75,15 +90,28 @@ cp $DOC_DIR/* $DOC_DEVEL_DIR/
 
 cd  $LIB_DIR
 ln -s libpulsar.so.%{pom_version} libpulsar.so
+<<<<<<< HEAD
+=======
+ln -s libpulsarnossl.so.%{pom_version} libpulsarnossl.so
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 %files
 %defattr(-,root,root)
 /usr/lib/libpulsar.so
 /usr/lib/libpulsar.so.%{pom_version}
+<<<<<<< HEAD
+=======
+/usr/lib/libpulsarnossl.so
+/usr/lib/libpulsarnossl.so.%{pom_version}
+>>>>>>> f773c602c... Test pr 10 (#27)
 /usr/share/doc/pulsar-client-%{version}
 
 %files devel
 %defattr(-,root,root)
 /usr/lib/libpulsar.a
+<<<<<<< HEAD
+=======
+/usr/lib/libpulsarwithdeps.a
+>>>>>>> f773c602c... Test pr 10 (#27)
 /usr/include/pulsar
 /usr/share/doc/pulsar-client-devel-%{version}

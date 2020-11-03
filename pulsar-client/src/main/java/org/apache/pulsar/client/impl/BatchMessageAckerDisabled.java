@@ -18,12 +18,21 @@
  */
 package org.apache.pulsar.client.impl;
 
+<<<<<<< HEAD
+=======
+import java.util.BitSet;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 class BatchMessageAckerDisabled extends BatchMessageAcker {
 
     static final BatchMessageAckerDisabled INSTANCE = new BatchMessageAckerDisabled();
 
     private BatchMessageAckerDisabled() {
+<<<<<<< HEAD
         super(null, 0);
+=======
+        super(new BitSet(), 0);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override

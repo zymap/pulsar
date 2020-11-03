@@ -19,9 +19,16 @@
 package org.apache.pulsar.common.api.raw;
 
 import io.netty.buffer.ByteBuf;
+<<<<<<< HEAD
 import io.netty.util.Recycler;
 import io.netty.util.Recycler.Handle;
 
+=======
+import io.netty.buffer.Unpooled;
+import io.netty.util.Recycler;
+import io.netty.util.Recycler.Handle;
+import java.util.Base64;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -140,4 +147,39 @@ public class RawMessageImpl implements RawMessage {
             return Optional.empty();
         }
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public byte[] getSchemaVersion() {
+        if (msgMetadata != null && msgMetadata.get().hasSchemaVersion()) {
+            return msgMetadata.get().getSchemaVersion().toByteArray();
+        } else {
+            return null;
+        }
+    }
+
+    public Optional<ByteBuf> getKeyBytes() {
+        if (getKey().isPresent()) {
+            if (hasBase64EncodedKey()) {
+                return Optional.of(Unpooled.wrappedBuffer(Base64.getDecoder().decode(getKey().get())));
+            } else {
+                return Optional.of(Unpooled.wrappedBuffer(getKey().get().getBytes()));
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean hasBase64EncodedKey() {
+        if (singleMessageMetadata != null) {
+            return singleMessageMetadata.getPartitionKeyB64Encoded();
+        }
+        return msgMetadata.get().getPartitionKeyB64Encoded();
+    }
+
+    public int getBatchSize() {
+        return msgMetadata.get().getNumMessagesInBatch();
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

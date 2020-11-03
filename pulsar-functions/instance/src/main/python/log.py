@@ -88,7 +88,11 @@ def add_handler(stream_handler):
 def init_logger(level, logfile, logging_config_file):
   global Log
   # get log file location for function instance
+<<<<<<< HEAD
   os.environ['LOG_FILE'] = logfile;
+=======
+  os.environ['LOG_FILE'] = logfile
+>>>>>>> f773c602c... Test pr 10 (#27)
   logging.config.fileConfig(logging_config_file)
   Log = logging.getLogger()
   Log.setLevel(level)

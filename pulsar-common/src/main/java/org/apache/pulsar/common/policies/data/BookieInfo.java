@@ -22,6 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+<<<<<<< HEAD
+=======
+/**
+ * Bookie information.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

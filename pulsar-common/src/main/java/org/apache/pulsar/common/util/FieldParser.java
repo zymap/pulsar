@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.util;
 
+<<<<<<< HEAD
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
@@ -26,10 +27,26 @@ import com.fasterxml.jackson.databind.util.EnumResolver;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+=======
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.util.EnumResolver;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +59,17 @@ import io.netty.util.internal.StringUtil;
  * Generic value converter.
  * <p>
  * <h3>Use examples</h3>
+=======
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ * Generic value converter.
+ *
+ * <p><h3>Use examples</h3>
+>>>>>>> f773c602c... Test pr 10 (#27)
  *
  * <pre>
  * String o1 = String.valueOf(1);
@@ -57,6 +85,11 @@ public final class FieldParser {
     private static final Map<String, Method> CONVERTERS = new HashMap<>();
     private static final Map<Class<?>, Class<?>> WRAPPER_TYPES = new HashMap<>();
 
+<<<<<<< HEAD
+=======
+    private static final AnnotationIntrospector ANNOTATION_INTROSPECTOR = new JacksonAnnotationIntrospector();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     static {
         // Preload converters and wrapperTypes.
         initConverters();
@@ -97,7 +130,11 @@ public final class FieldParser {
 
         if (to.isEnum()) {
             // Converting string to enum
+<<<<<<< HEAD
             EnumResolver r = EnumResolver.constructUsingToString((Class<Enum<?>>) to, null);
+=======
+            EnumResolver r = EnumResolver.constructUsingToString((Class<Enum<?>>) to, ANNOTATION_INTROSPECTOR);
+>>>>>>> f773c602c... Test pr 10 (#27)
             T value = (T) r.findEnum((String) from);
             if (value == null) {
                 throw new RuntimeException("Invalid value '" + from + "' for enum " + to);
@@ -136,9 +173,17 @@ public final class FieldParser {
             if (properties.containsKey(f.getName())) {
                 try {
                     f.setAccessible(true);
+<<<<<<< HEAD
                     String v = (String) properties.get(f.getName());
                     if (!StringUtils.isBlank(v)) {
                         f.set(obj, value(v, f));
+=======
+                    String v = properties.get(f.getName());
+                    if (!StringUtils.isBlank(v)) {
+                        f.set(obj, value(v, f));
+                    } else {
+                        setEmptyValue(v, f, obj);
+>>>>>>> f773c602c... Test pr 10 (#27)
                     }
                 } catch (Exception e) {
                     throw new IllegalArgumentException(format("failed to initialize %s field while setting value %s",
@@ -160,6 +205,7 @@ public final class FieldParser {
     public static Object value(String strValue, Field field) {
         checkNotNull(field);
         // if field is not primitive type
+<<<<<<< HEAD
         if (field.getGenericType() instanceof ParameterizedType) {
             Class<?> clazz = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
             // convert to list
@@ -171,11 +217,70 @@ public final class FieldParser {
             else
                 throw new IllegalArgumentException(
                         format("unsupported field-type %s for %s", field.getType(), field.getName()));
+=======
+        Type fieldType = field.getGenericType();
+        if (fieldType instanceof ParameterizedType) {
+            Class<?> clazz = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+            if (field.getType().equals(List.class)) {
+                // convert to list
+                return stringToList(strValue, clazz);
+            } else if (field.getType().equals(Set.class)) {
+                // covert to set
+                return stringToSet(strValue, clazz);
+            } else if (field.getType().equals(Map.class)) {
+                Class<?> valueClass =
+                    (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1];
+                return stringToMap(strValue, clazz, valueClass);
+            } else if (field.getType().equals(Optional.class)) {
+                Type typeClazz = ((ParameterizedType) fieldType).getActualTypeArguments()[0];
+                if (typeClazz instanceof ParameterizedType) {
+                    throw new IllegalArgumentException(format("unsupported non-primitive Optional<%s> for %s",
+                            typeClazz.getClass(), field.getName()));
+                }
+                return Optional.ofNullable(convert(strValue, (Class) typeClazz));
+            } else {
+                throw new IllegalArgumentException(
+                        format("unsupported field-type %s for %s", field.getType(), field.getName()));
+            }
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             return convert(strValue, field.getType());
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Sets the empty/null value if field is allowed to be set empty.
+     *
+     * @param strValue
+     * @param field
+     * @param obj
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
+    public static <T> void setEmptyValue(String strValue, Field field, T obj)
+            throws IllegalArgumentException, IllegalAccessException {
+        checkNotNull(field);
+        // if field is not primitive type
+        Type fieldType = field.getGenericType();
+        if (fieldType instanceof ParameterizedType) {
+            if (field.getType().equals(List.class)) {
+                field.set(obj, Lists.newArrayList());
+            } else if (field.getType().equals(Set.class)) {
+                field.set(obj, Sets.newHashSet());
+            } else if (field.getType().equals(Optional.class)) {
+                field.set(obj, Optional.empty());
+            } else {
+                throw new IllegalArgumentException(
+                        format("unsupported field-type %s for %s", field.getType(), field.getName()));
+            }
+        } else if (Number.class.isAssignableFrom(field.getType()) || fieldType.getClass().equals(String.class)) {
+            field.set(obj, null);
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static Class<?> wrap(Class<?> type) {
         return WRAPPER_TYPES.containsKey(type) ? WRAPPER_TYPES.get(type) : type;
     }
@@ -205,13 +310,21 @@ public final class FieldParser {
     /**
      * Converts String to Integer.
      *
+<<<<<<< HEAD
      * @param value
+=======
+     * @param val
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            The String to be converted.
      * @return The converted Integer value.
      */
     public static Integer stringToInteger(String val) {
         String v = trim(val);
+<<<<<<< HEAD
         if (StringUtil.isNullOrEmpty(v)) {
+=======
+        if (io.netty.util.internal.StringUtil.isNullOrEmpty(v)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return null;
         } else {
             return Integer.valueOf(v);
@@ -221,7 +334,11 @@ public final class FieldParser {
     /**
      * Converts String to Long.
      *
+<<<<<<< HEAD
      * @param value
+=======
+     * @param val
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            The String to be converted.
      * @return The converted Long value.
      */
@@ -232,13 +349,21 @@ public final class FieldParser {
     /**
      * Converts String to Double.
      *
+<<<<<<< HEAD
      * @param value
+=======
+     * @param val
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            The String to be converted.
      * @return The converted Double value.
      */
     public static Double stringToDouble(String val) {
         String v = trim(val);
+<<<<<<< HEAD
         if (StringUtil.isNullOrEmpty(v)) {
+=======
+        if (io.netty.util.internal.StringUtil.isNullOrEmpty(v)) {
+>>>>>>> f773c602c... Test pr 10 (#27)
             return null;
         } else {
             return Double.valueOf(v);
@@ -248,7 +373,11 @@ public final class FieldParser {
     /**
      * Converts String to float.
      *
+<<<<<<< HEAD
      * @param value
+=======
+     * @param val
+>>>>>>> f773c602c... Test pr 10 (#27)
      *            The String to be converted.
      * @return The converted Double value.
      */
@@ -257,6 +386,7 @@ public final class FieldParser {
     }
 
     /**
+<<<<<<< HEAD
      * Converts comma separated string to List
      *
      * @param <T>
@@ -264,6 +394,15 @@ public final class FieldParser {
      * @param value
      *            comma separated values.
      * @return The converted list with type <T>.
+=======
+     * Converts comma separated string to List.
+     *
+     * @param <T>
+     *            type of list
+     * @param val
+     *            comma separated values.
+     * @return The converted list with type {@code <T>}.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public static <T> List<T> stringToList(String val, Class<T> type) {
         String[] tokens = trim(val).split(",");
@@ -273,6 +412,7 @@ public final class FieldParser {
     }
 
     /**
+<<<<<<< HEAD
      * Converts comma separated string to Set
      *
      * @param <T>
@@ -280,6 +420,15 @@ public final class FieldParser {
      * @param value
      *            comma separated values.
      * @return The converted set with type <T>.
+=======
+     * Converts comma separated string to Set.
+     *
+     * @param <T>
+     *            type of set
+     * @param val
+     *            comma separated values.
+     * @return The converted set with type {@code <T>}.
+>>>>>>> f773c602c... Test pr 10 (#27)
      */
     public static <T> Set<T> stringToSet(String val, Class<T> type) {
         String[] tokens = trim(val).split(",");
@@ -288,6 +437,21 @@ public final class FieldParser {
         }).collect(Collectors.toSet());
     }
 
+<<<<<<< HEAD
+=======
+    private static <K, V> Map<K, V> stringToMap(String strValue, Class<K> keyType, Class<V> valueType) {
+        String[] tokens = trim(strValue).split(",");
+        Map<K, V> map = new HashMap<>();
+        for (String token : tokens) {
+            String[] keyValue = trim(token).split("=");
+            checkArgument(keyValue.length == 2,
+                    strValue + " map-value is not in correct format key1=value,key2=value2");
+            map.put(convert(keyValue[0], keyType), convert(keyValue[1], valueType));
+        }
+        return map;
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     private static String trim(String val) {
         checkNotNull(val);
         return val.trim();

@@ -50,6 +50,7 @@ class Log4CxxLogger : public Logger {
    private:
     static log4cxx::LevelPtr getLevel(Level level) {
         switch (level) {
+<<<<<<< HEAD
             case DEBUG:
                 return log4cxx::Level::getDebug();
             case INFO:
@@ -57,6 +58,15 @@ class Log4CxxLogger : public Logger {
             case WARN:
                 return log4cxx::Level::getWarn();
             case ERROR:
+=======
+            case LEVEL_DEBUG:
+                return log4cxx::Level::getDebug();
+            case LEVEL_INFO:
+                return log4cxx::Level::getInfo();
+            case LEVEL_WARN:
+                return log4cxx::Level::getWarn();
+            case LEVEL_ERROR:
+>>>>>>> f773c602c... Test pr 10 (#27)
                 return log4cxx::Level::getError();
         }
     }

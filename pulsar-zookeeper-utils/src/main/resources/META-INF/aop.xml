@@ -28,8 +28,11 @@
   </weaver>
 
   <aspects>
+<<<<<<< HEAD
     <aspect
       name="org.apache.pulsar.zookeeper.SerializeUtilsAspect" />
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     <aspect name="org.apache.pulsar.broker.zookeeper.aspectj.ClientCnxnAspect" />
   </aspects>
 </aspectj>

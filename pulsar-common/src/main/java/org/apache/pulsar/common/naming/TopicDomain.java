@@ -18,6 +18,12 @@
  */
 package org.apache.pulsar.common.naming;
 
+<<<<<<< HEAD
+=======
+/**
+ * Enumeration showing if a topic is persistent.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public enum TopicDomain {
     persistent("persistent"), non_persistent("non-persistent");
 

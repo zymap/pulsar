@@ -20,6 +20,12 @@ package org.apache.pulsar.broker.service.schema;
 
 import org.apache.pulsar.common.schema.SchemaType;
 
+<<<<<<< HEAD
+=======
+/**
+ * The {@link SchemaCompatibilityCheck} implementation for {@link SchemaType#PROTOBUF}.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class ProtobufSchemaCompatibilityCheck extends AvroSchemaCompatibilityCheck {
 
     @Override

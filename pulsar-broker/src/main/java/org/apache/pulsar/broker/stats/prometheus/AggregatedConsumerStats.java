@@ -31,4 +31,11 @@ public class AggregatedConsumerStats {
     public double msgThroughputOut;
 
     public long availablePermits;
+<<<<<<< HEAD
+=======
+
+    long msgOutCounter;
+
+    long bytesOutCounter;
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

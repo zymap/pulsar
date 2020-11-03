@@ -22,16 +22,27 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+import org.apache.pulsar.common.io.ConfigFieldDefinition;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.common.io.ConnectorDefinition;
 import org.apache.pulsar.functions.utils.io.ConnectorUtils;
 import org.apache.pulsar.functions.utils.io.Connectors;
 
 public class ConnectorsManager {
 
+<<<<<<< HEAD
     private final Connectors connectors;
 
     public ConnectorsManager(WorkerConfig workerConfig) throws IOException {
         this.connectors = ConnectorUtils.searchForConnectors(workerConfig.getConnectorsDirectory());
+=======
+    private Connectors connectors;
+
+    public ConnectorsManager(WorkerConfig workerConfig) throws IOException {
+        this.connectors = ConnectorUtils.searchForConnectors(workerConfig.getConnectorsDirectory(), workerConfig.getNarExtractionDirectory());
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public List<ConnectorDefinition> getConnectors() {
@@ -42,7 +53,25 @@ public class ConnectorsManager {
         return connectors.getSources().get(sourceType);
     }
 
+<<<<<<< HEAD
     public Path getSinkArchive(String sinkType) {
         return connectors.getSinks().get(sinkType);
     }
+=======
+    public List<ConfigFieldDefinition> getSourceConfigDefinition(String sourceType) {
+        return connectors.getSourceConfigDefinitions().get(sourceType);
+    }
+
+    public List<ConfigFieldDefinition> getSinkConfigDefinition(String sinkType) {
+        return connectors.getSinkConfigDefinitions().get(sinkType);
+    }
+
+    public Path getSinkArchive(String sinkType) {
+        return connectors.getSinks().get(sinkType);
+    }
+
+    public void reloadConnectors(WorkerConfig workerConfig) throws IOException {
+        this.connectors = ConnectorUtils.searchForConnectors(workerConfig.getConnectorsDirectory(), workerConfig.getNarExtractionDirectory());
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

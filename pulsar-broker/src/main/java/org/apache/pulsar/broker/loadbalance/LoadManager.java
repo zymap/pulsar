@@ -47,7 +47,11 @@ public interface LoadManager {
 
     String LOADBALANCE_BROKERS_ROOT = "/loadbalance/brokers";
 
+<<<<<<< HEAD
     public void start() throws PulsarServerException;
+=======
+    void start() throws PulsarServerException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Is centralized decision making to assign a new bundle.
@@ -107,7 +111,11 @@ public interface LoadManager {
      *
      * @throws Exception
      */
+<<<<<<< HEAD
     public void disableBroker() throws Exception;
+=======
+    void disableBroker() throws Exception;
+>>>>>>> f773c602c... Test pr 10 (#27)
     
     /**
      * Get list of available brokers in cluster
@@ -117,7 +125,11 @@ public interface LoadManager {
      */
     Set<String> getAvailableBrokers() throws Exception;
 
+<<<<<<< HEAD
     public void stop() throws PulsarServerException;
+=======
+    void stop() throws PulsarServerException;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Initialize this LoadManager.
@@ -125,7 +137,11 @@ public interface LoadManager {
      * @param pulsar
      *            The service to initialize this with.
      */
+<<<<<<< HEAD
     public void initialize(PulsarService pulsar);
+=======
+    void initialize(PulsarService pulsar);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     static LoadManager create(final PulsarService pulsar) {
         try {
@@ -143,7 +159,11 @@ public interface LoadManager {
                 return casted;
             }
         } catch (Exception e) {
+<<<<<<< HEAD
             log.warn("Error when trying to create load manager: {}");
+=======
+            log.warn("Error when trying to create load manager: ", e);
+>>>>>>> f773c602c... Test pr 10 (#27)
         }
         // If we failed to create a load manager, default to SimpleLoadManagerImpl.
         return new SimpleLoadManagerImpl(pulsar);

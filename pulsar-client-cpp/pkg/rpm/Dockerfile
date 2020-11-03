@@ -23,7 +23,11 @@ FROM centos:7
 
 RUN yum update -y && \
     yum install -y gcc-c++ make cmake git rpm-build \
+<<<<<<< HEAD
                 python-devel createrepo
+=======
+                python-devel createrepo libstdc++-static.x86_64
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 # Download and compile boost
 RUN curl -O -L https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz && \
@@ -62,12 +66,36 @@ RUN curl -O -L https://github.com/madler/zlib/archive/v1.2.11.tar.gz && \
     cd zlib-1.2.11 && \
     CFLAGS="-fPIC -O3" ./configure && \
     make && make install && \
+<<<<<<< HEAD
     rm -rf /zlib-1.2.11.tar.gz /zlib-1.2.11
+=======
+    rm -rf /v1.2.11.tar.gz /zlib-1.2.11
+
+# Zstandard
+RUN curl -O -L https://github.com/facebook/zstd/releases/download/v1.3.7/zstd-1.3.7.tar.gz && \
+    tar xvfz zstd-1.3.7.tar.gz && \
+    cd zstd-1.3.7 && \
+    CFLAGS="-fPIC -O3" make -j8 && \
+    make install && \
+    rm -rf /zstd-1.3.7 /zstd-1.3.7.tar.gz
+
+# Snappy
+RUN curl -O -L https://github.com/google/snappy/releases/download/1.1.3/snappy-1.1.3.tar.gz && \
+    tar xvfz snappy-1.1.3.tar.gz && \
+    cd snappy-1.1.3 && \
+    CXXFLAGS="-fPIC -O3" ./configure && \
+    make && make install && \
+    rm -rf /snappy-1.1.3 /snappy-1.1.3.tar.gz
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 RUN curl -O -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_0j.tar.gz && \
     tar xvfz OpenSSL_1_1_0j.tar.gz && \
     cd openssl-OpenSSL_1_1_0j/ && \
+<<<<<<< HEAD
     ./Configure -fPIC --prefix=/usr/local/ssl/ no-shared linux-x86_64 && \
+=======
+    ./Configure -fPIC --prefix=/usr/local/ssl/ linux-x86_64 && \
+>>>>>>> f773c602c... Test pr 10 (#27)
     make && make install && \
     rm -rf /OpenSSL_1_1_0j.tar.gz /openssl-OpenSSL_1_1_0j
 
@@ -79,6 +107,7 @@ RUN curl -O -L  https://github.com/curl/curl/releases/download/curl-7_61_0/curl-
     make && make install && \
     rm -rf /curl-7.61.0.tar.gz /curl-7.61.0
 
+<<<<<<< HEAD
 # Zstandard
 RUN curl -O -L https://github.com/facebook/zstd/releases/download/v1.3.7/zstd-1.3.7.tar.gz && \
     tar xvfz zstd-1.3.7.tar.gz && \
@@ -87,4 +116,6 @@ RUN curl -O -L https://github.com/facebook/zstd/releases/download/v1.3.7/zstd-1.
     make install && \
     rm -rf /zstd-1.3.7 /zstd-1.3.7.tar.gz
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
 ENV OPENSSL_ROOT_DIR /usr/local/ssl/

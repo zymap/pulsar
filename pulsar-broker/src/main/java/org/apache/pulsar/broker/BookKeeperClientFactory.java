@@ -19,8 +19,17 @@
 package org.apache.pulsar.broker;
 
 import java.io.IOException;
+<<<<<<< HEAD
 
 import org.apache.bookkeeper.client.BookKeeper;
+=======
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.bookkeeper.client.BookKeeper;
+import org.apache.bookkeeper.client.EnsemblePlacementPolicy;
+import org.apache.bookkeeper.stats.StatsLogger;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -28,6 +37,17 @@ import org.apache.zookeeper.ZooKeeper;
  * Provider of a new BookKeeper client instance
  */
 public interface BookKeeperClientFactory {
+<<<<<<< HEAD
     BookKeeper create(ServiceConfiguration conf, ZooKeeper zkClient) throws IOException;
+=======
+    BookKeeper create(ServiceConfiguration conf, ZooKeeper zkClient,
+            Optional<Class<? extends EnsemblePlacementPolicy>> ensemblePlacementPolicyClass,
+            Map<String, Object> ensemblePlacementPolicyProperties) throws IOException;
+
+    BookKeeper create(ServiceConfiguration conf, ZooKeeper zkClient,
+                      Optional<Class<? extends EnsemblePlacementPolicy>> ensemblePlacementPolicyClass,
+                      Map<String, Object> ensemblePlacementPolicyProperties,
+                      StatsLogger statsLogger) throws IOException;
+>>>>>>> f773c602c... Test pr 10 (#27)
     void close();
 }

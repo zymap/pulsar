@@ -38,15 +38,23 @@ import org.apache.pulsar.common.configuration.FieldContext;
 import org.apache.pulsar.common.configuration.PropertiesContext;
 import org.apache.pulsar.common.configuration.PropertyContext;
 import org.apache.pulsar.common.configuration.PulsarConfiguration;
+<<<<<<< HEAD
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+import org.apache.pulsar.common.nar.NarClassLoader;
+import org.apache.pulsar.common.sasl.SaslConstants;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 @Getter
 @Setter
 public class ProxyConfiguration implements PulsarConfiguration {
+<<<<<<< HEAD
     private final static Logger log = LoggerFactory.getLogger(ProxyConfiguration.class);
 
+=======
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Category
     private static final String CATEGORY_SERVER = "Server";
     @Category
@@ -64,9 +72,21 @@ public class ProxyConfiguration implements PulsarConfiguration {
     @Category
     private static final String CATEGORY_TLS = "TLS";
     @Category
+<<<<<<< HEAD
     private static final String CATEGORY_TOKEN_AUTH = "Token Authentication Provider";
     @Category
     private static final String CATEGORY_HTTP = "HTTP";
+=======
+    private static final String CATEGORY_KEYSTORE_TLS = "KeyStoreTLS";
+    @Category
+    private static final String CATEGORY_TOKEN_AUTH = "Token Authentication Provider";
+    @Category
+    private static final String CATEGORY_HTTP = "HTTP";
+    @Category
+    private static final String CATEGORY_SASL_AUTH = "SASL Authentication Provider";
+    @Category
+    private static final String CATEGORY_PLUGIN = "proxy plugin";
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldContext(
         category = CATEGORY_BROKER_DISCOVERY,
@@ -90,6 +110,14 @@ public class ProxyConfiguration implements PulsarConfiguration {
         doc = "ZooKeeper session timeout (in milliseconds)"
     )
     private int zookeeperSessionTimeoutMs = 30_000;
+<<<<<<< HEAD
+=======
+    @FieldContext(
+            category = CATEGORY_BROKER_DISCOVERY,
+            doc = "ZooKeeper cache expiry time in seconds"
+        )
+    private int zooKeeperCacheExpirySeconds = 300;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldContext(
         category = CATEGORY_BROKER_DISCOVERY,
@@ -128,25 +156,70 @@ public class ProxyConfiguration implements PulsarConfiguration {
 
     @FieldContext(
         category = CATEGORY_SERVER,
+<<<<<<< HEAD
         doc = "The port for serving binary protobuf request"
     )
     private Integer servicePort = 6650;
+=======
+        doc = "Hostname or IP address the service binds on"
+    )
+    private String bindAddress = "0.0.0.0";
+
+    @FieldContext(
+        category = CATEGORY_SERVER,
+        doc = "Hostname or IP address the service advertises to the outside world."
+            + " If not set, the value of `InetAddress.getLocalHost().getCanonicalHostName()` is used."
+    )
+    private String advertisedAddress;
+    @FieldContext(
+        category = CATEGORY_SERVER,
+        doc = "The port for serving binary protobuf request"
+    )
+    private Optional<Integer> servicePort = Optional.ofNullable(6650);
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldContext(
         category = CATEGORY_SERVER,
         doc = "The port for serving tls secured binary protobuf request"
     )
+<<<<<<< HEAD
     private Integer servicePortTls;
+=======
+    private Optional<Integer> servicePortTls = Optional.empty();
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldContext(
         category = CATEGORY_SERVER,
         doc = "The port for serving http requests"
     )
+<<<<<<< HEAD
     private Integer webServicePort = 8080;
+=======
+    private Optional<Integer> webServicePort = Optional.ofNullable(8080);
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldContext(
         category = CATEGORY_SERVER,
         doc = "The port for serving https requests"
     )
+<<<<<<< HEAD
     private Integer webServicePortTls;
+=======
+    private Optional<Integer> webServicePortTls = Optional.empty();
+
+    @FieldContext(
+            category = CATEGORY_SERVER,
+            doc = "The directory where nar Extraction happens"
+    )
+    private String narExtractionDirectory = NarClassLoader.DEFAULT_NAR_EXTRACTION_DIR;
+
+    @FieldContext(
+            category = CATEGORY_SERVER,
+            doc = "Proxy log level, default is 0."
+                    + " 0: Do not log any tcp channel info"
+                    + " 1: Parse and log any tcp channel info and command info without message body"
+                    + " 2: Parse and log channel info, command info and message body"
+    )
+    private Optional<Integer> proxyLogLevel = Optional.ofNullable(0);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldContext(
         category = CATEGORY_SERVER,
@@ -190,6 +263,36 @@ public class ProxyConfiguration implements PulsarConfiguration {
             + "to take effect"
     )
     private boolean forwardAuthorizationCredentials = false;
+<<<<<<< HEAD
+=======
+    @FieldContext(
+        category = CATEGORY_AUTHENTICATION,
+        doc = "Whether the '/metrics' endpoint requires authentication. Defaults to true."
+            + "'authenticationEnabled' must also be set for this to take effect."
+    )
+    private boolean authenticateMetricsEndpoint = true;
+
+
+    @FieldContext(
+        category = CATEGORY_SASL_AUTH,
+        doc = "This is a regexp, which limits the range of possible ids which can connect to the Broker using SASL.\n"
+            + " Default value is: \".*pulsar.*\", so only clients whose id contains 'pulsar' are allowed to connect."
+    )
+    private String saslJaasClientAllowedIds = SaslConstants.JAAS_CLIENT_ALLOWED_IDS_DEFAULT;
+
+    @FieldContext(
+        category = CATEGORY_SASL_AUTH,
+        doc = "Service Principal, for login context name. Default value is \"PulsarProxy\"."
+    )
+    private String saslJaasServerSectionName = SaslConstants.JAAS_DEFAULT_PROXY_SECTION_NAME;
+
+    @FieldContext(
+        category = CATEGORY_SASL_AUTH,
+        doc = "kerberos kinit command."
+    )
+    private String kinitCommand = "/usr/bin/kinit";
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @FieldContext(
         category = CATEGORY_RATE_LIMITING,
@@ -225,11 +328,28 @@ public class ProxyConfiguration implements PulsarConfiguration {
     )
     private boolean tlsEnabledWithBroker = false;
 
+<<<<<<< HEAD
+=======
+    @FieldContext(
+            category = CATEGORY_AUTHORIZATION,
+            doc = "When this parameter is not empty, unauthenticated users perform as anonymousUserRole"
+    )
+    private String anonymousUserRole = null;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     /***** --- TLS --- ****/
 
     @Deprecated
     private boolean tlsEnabledInProxy = false;
+<<<<<<< HEAD
 
+=======
+    @FieldContext(
+        category = CATEGORY_TLS,
+        doc = "Tls cert refresh duration in seconds (set 0 to check on every new connection)"
+    )
+    private long tlsCertRefreshCheckDurationSec = 300; // 5 mins
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldContext(
         category = CATEGORY_TLS,
         doc = "Path for the TLS certificate file"
@@ -270,7 +390,11 @@ public class ProxyConfiguration implements PulsarConfiguration {
     private Set<String> tlsProtocols = Sets.newTreeSet();
     @FieldContext(
         category = CATEGORY_TLS,
+<<<<<<< HEAD
         doc = "Specify the tls cipher the broker will use to negotiate during TLS Handshake"
+=======
+        doc = "Specify the tls cipher the proxy will use to negotiate during TLS Handshake"
+>>>>>>> f773c602c... Test pr 10 (#27)
             + " (a comma-separated list of ciphers).\n\n"
             + "Examples:- [TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256]"
     )
@@ -282,6 +406,109 @@ public class ProxyConfiguration implements PulsarConfiguration {
     )
     private boolean tlsRequireTrustedClientCertOnConnect = false;
 
+<<<<<<< HEAD
+=======
+    /**** --- KeyStore TLS config variables --- ****/
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "Enable TLS with KeyStore type configuration for proxy"
+    )
+    private boolean tlsEnabledWithKeyStore = false;
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS Provider"
+    )
+    private String tlsProvider = null;
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS KeyStore type configuration for proxy: JKS, PKCS12"
+    )
+    private String tlsKeyStoreType = "JKS";
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS KeyStore path for proxy"
+    )
+    private String tlsKeyStore = null;
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS KeyStore password for proxy"
+    )
+    private String tlsKeyStorePassword = null;
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore type configuration for proxy: JKS, PKCS12"
+    )
+    private String tlsTrustStoreType = "JKS";
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore path for proxy"
+    )
+    private String tlsTrustStore = null;
+
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore password for proxy"
+    )
+    private String tlsTrustStorePassword = null;
+
+    /**** --- KeyStore TLS config variables used for proxy to auth with broker--- ****/
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "Whether the Pulsar proxy use KeyStore type to authenticate with Pulsar brokers"
+    )
+    private boolean brokerClientTlsEnabledWithKeyStore = false;
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "The TLS Provider used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private String brokerClientSslProvider = null;
+
+    // needed when client auth is required
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore type configuration for proxy: JKS, PKCS12 "
+                  + " used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private String brokerClientTlsTrustStoreType = "JKS";
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore path for proxy, "
+                  + " used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private String brokerClientTlsTrustStore = null;
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "TLS TrustStore password for proxy, "
+                  + " used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private String brokerClientTlsTrustStorePassword = null;
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "Specify the tls cipher the proxy will use to negotiate during TLS Handshake"
+                  + " (a comma-separated list of ciphers).\n\n"
+                  + "Examples:- [TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256].\n"
+                  + " used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private Set<String> brokerClientTlsCiphers = Sets.newTreeSet();
+    @FieldContext(
+            category = CATEGORY_KEYSTORE_TLS,
+            doc = "Specify the tls protocols the broker will use to negotiate during TLS handshake"
+                  + " (a comma-separated list of protocol names).\n\n"
+                  + "Examples:- [TLSv1.2, TLSv1.1, TLSv1] \n"
+                  + " used by the Pulsar proxy to authenticate with Pulsar brokers"
+    )
+    private Set<String> brokerClientTlsProtocols = Sets.newTreeSet();
+
+    /***** --- HTTP --- ****/
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     @FieldContext(
         category = CATEGORY_HTTP,
         doc = "Http directs to redirect to non-pulsar services"
@@ -306,7 +533,35 @@ public class ProxyConfiguration implements PulsarConfiguration {
            category = CATEGORY_HTTP,
            doc = "Number of threads to use for HTTP requests processing"
     )
+<<<<<<< HEAD
     private int httpNumThreads = 2 * Runtime.getRuntime().availableProcessors();
+=======
+    private int httpNumThreads = Math.max(8, 2 * Runtime.getRuntime().availableProcessors());
+
+    @FieldContext(
+            category = CATEGORY_PLUGIN,
+            doc = "The directory to locate proxy additional servlet"
+    )
+    private String proxyAdditionalServletDirectory = "./proxyAdditionalServlet";
+
+    @FieldContext(
+            category = CATEGORY_PLUGIN,
+            doc = "List of proxy additional servlet to load, which is a list of proxy additional servlet names"
+    )
+    private Set<String> proxyAdditionalServlets = Sets.newTreeSet();
+
+    @FieldContext(
+            category =  CATEGORY_HTTP,
+            doc = "Enable the enforcement of limits on the incoming HTTP requests"
+        )
+    private boolean httpRequestsLimitEnabled = false;
+
+    @FieldContext(
+            category =  CATEGORY_HTTP,
+            doc = "Max HTTP requests per seconds allowed. The excess of requests will be rejected with HTTP code 429 (Too many requests)"
+        )
+    private double httpRequestsMaxPerSecond = 100.0;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     @PropertiesContext(
         properties = {
@@ -317,7 +572,11 @@ public class ProxyConfiguration implements PulsarConfiguration {
                     doc = "Asymmetric public/private key pair.\n\n"
                         + "Configure the public key to be used to validate auth tokens"
                         + " The key can be specified like:\n\n"
+<<<<<<< HEAD
                         + "tokenPublicKey=data:base64,xxxxxxxxx\n"
+=======
+                        + "tokenPublicKey=data:;base64,xxxxxxxxx\n"
+>>>>>>> f773c602c... Test pr 10 (#27)
                         + "tokenPublicKey=file:///my/public.key")
             ),
             @PropertyContext(
@@ -327,7 +586,11 @@ public class ProxyConfiguration implements PulsarConfiguration {
                     doc = "Symmetric key.\n\n"
                         + "Configure the secret key to be used to validate auth tokens"
                         + "The key can be specified like:\n\n"
+<<<<<<< HEAD
                         + "tokenSecretKey=data:base64,xxxxxxxxx\n"
+=======
+                        + "tokenSecretKey=data:;base64,xxxxxxxxx\n"
+>>>>>>> f773c602c... Test pr 10 (#27)
                         + "tokenSecretKey=file:///my/secret.key")
             )
         }
@@ -339,6 +602,7 @@ public class ProxyConfiguration implements PulsarConfiguration {
     }
 
     public Optional<Integer> getServicePort() {
+<<<<<<< HEAD
         return Optional.ofNullable(servicePort);
     }
 
@@ -352,6 +616,21 @@ public class ProxyConfiguration implements PulsarConfiguration {
 
     public Optional<Integer> getWebServicePortTls() {
         return Optional.ofNullable(webServicePortTls);
+=======
+        return servicePort;
+    }
+
+    public Optional<Integer> getServicePortTls() {
+        return servicePortTls;
+    }
+
+    public Optional<Integer> getWebServicePort() {
+        return webServicePort;
+    }
+
+    public Optional<Integer> getWebServicePortTls() {
+        return webServicePortTls;
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     public void setProperties(Properties properties) {
@@ -409,4 +688,8 @@ public class ProxyConfiguration implements PulsarConfiguration {
             return String.format("HttpReverseProxyConfig(%s, path=%s, proxyTo=%s)", name, path, proxyTo);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f773c602c... Test pr 10 (#27)

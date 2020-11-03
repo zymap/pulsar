@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl.schema;
 
+<<<<<<< HEAD
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -29,10 +30,40 @@ import org.apache.pulsar.common.schema.SchemaInfo;
 /**
  * Auto detect schema.
  */
+=======
+import static com.google.common.base.Preconditions.checkState;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.SchemaSerializationException;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.api.schema.GenericSchema;
+import org.apache.pulsar.client.api.schema.SchemaInfoProvider;
+import org.apache.pulsar.client.impl.schema.generic.GenericAvroSchema;
+import org.apache.pulsar.client.impl.schema.generic.GenericJsonSchema;
+import org.apache.pulsar.common.schema.KeyValue;
+import org.apache.pulsar.common.schema.SchemaInfo;
+
+import java.util.concurrent.ExecutionException;
+
+/**
+ * Auto detect schema.
+ */
+@Slf4j
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class AutoConsumeSchema implements Schema<GenericRecord> {
 
     private Schema<GenericRecord> schema;
 
+<<<<<<< HEAD
+=======
+    private String topicName;
+
+    private String componentName;
+
+    private SchemaInfoProvider schemaInfoProvider;
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public void setSchema(Schema<GenericRecord> schema) {
         this.schema = schema;
     }
@@ -49,6 +80,14 @@ public class AutoConsumeSchema implements Schema<GenericRecord> {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public boolean supportSchemaVersioning() {
+        return true;
+    }
+
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public byte[] encode(GenericRecord message) {
         ensureSchemaInitialized();
 
@@ -56,19 +95,107 @@ public class AutoConsumeSchema implements Schema<GenericRecord> {
     }
 
     @Override
+<<<<<<< HEAD
     public GenericRecord decode(byte[] bytes) {
         ensureSchemaInitialized();
 
         return schema.decode(bytes);
+=======
+    public GenericRecord decode(byte[] bytes, byte[] schemaVersion) {
+        if (schema == null) {
+            SchemaInfo schemaInfo = null;
+            try {
+                schemaInfo = schemaInfoProvider.getLatestSchema().get();
+            } catch (InterruptedException | ExecutionException e ) {
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
+                log.error("Con't get last schema for topic {} use AutoConsumeSchema", topicName);
+                throw new SchemaSerializationException(e.getCause());
+            }
+            schema = generateSchema(schemaInfo);
+            schema.setSchemaInfoProvider(schemaInfoProvider);
+            log.info("Configure {} schema for topic {} : {}",
+                    componentName, topicName, schemaInfo.getSchemaDefinition());
+        }
+        ensureSchemaInitialized();
+        return schema.decode(bytes, schemaVersion);
+    }
+
+    @Override
+    public void setSchemaInfoProvider(SchemaInfoProvider schemaInfoProvider) {
+        if (schema == null) {
+            this.schemaInfoProvider = schemaInfoProvider;
+        } else {
+            schema.setSchemaInfoProvider(schemaInfoProvider);
+        }
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Override
     public SchemaInfo getSchemaInfo() {
+<<<<<<< HEAD
         ensureSchemaInitialized();
 
         return schema.getSchemaInfo();
     }
 
+=======
+        if (schema == null) {
+            return null;
+        }
+        return schema.getSchemaInfo();
+    }
+
+    @Override
+    public boolean requireFetchingSchemaInfo() {
+        return true;
+    }
+
+    @Override
+    public void configureSchemaInfo(String topicName,
+                                    String componentName,
+                                    SchemaInfo schemaInfo) {
+        this.topicName = topicName;
+        this.componentName = componentName;
+        if (schemaInfo != null) {
+            GenericSchema genericSchema = generateSchema(schemaInfo);
+            setSchema(genericSchema);
+            log.info("Configure {} schema for topic {} : {}",
+                    componentName, topicName, schemaInfo.getSchemaDefinition());
+        }
+    }
+
+    @Override
+    public Schema<GenericRecord> clone() {
+        Schema<GenericRecord> schema = Schema.AUTO_CONSUME();
+        if (this.schema != null) {
+            schema.configureSchemaInfo(topicName, componentName, this.schema.getSchemaInfo());
+        } else {
+            schema.configureSchemaInfo(topicName, componentName, null);
+        }
+        if (schemaInfoProvider != null) {
+            schema.setSchemaInfoProvider(schemaInfoProvider);
+        }
+        return schema;
+    }
+
+    private GenericSchema generateSchema(SchemaInfo schemaInfo) {
+        // when using `AutoConsumeSchema`, we use the schema associated with the messages as schema reader
+        // to decode the messages.
+        final boolean useProvidedSchemaAsReaderSchema = false;
+        switch (schemaInfo.getType()) {
+            case JSON:
+                return GenericJsonSchema.of(schemaInfo,useProvidedSchemaAsReaderSchema);
+            case AVRO:
+                return GenericAvroSchema.of(schemaInfo,useProvidedSchemaAsReaderSchema);
+            default:
+                throw new IllegalArgumentException("Currently auto consume works for type '"
+                        + schemaInfo.getType() + "' is not supported yet");
+        }
+    }
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     public static Schema<?> getSchema(SchemaInfo schemaInfo) {
         switch (schemaInfo.getType()) {
             case INT8:
@@ -85,11 +212,42 @@ public class AutoConsumeSchema implements Schema<GenericRecord> {
                 return FloatSchema.of();
             case DOUBLE:
                 return DoubleSchema.of();
+<<<<<<< HEAD
             case BYTES:
                 return BytesSchema.of();
             case JSON:
             case AVRO:
                 return GenericSchema.of(schemaInfo);
+=======
+            case BOOLEAN:
+                return BooleanSchema.of();
+            case BYTES:
+                return BytesSchema.of();
+            case DATE:
+                return DateSchema.of();
+            case TIME:
+                return TimeSchema.of();
+            case TIMESTAMP:
+                return TimestampSchema.of();
+            case INSTANT:
+                return InstantSchema.of();
+            case LOCAL_DATE:
+                return LocalDateSchema.of();
+            case LOCAL_TIME:
+                return LocalTimeSchema.of();
+            case LOCAL_DATE_TIME:
+                return LocalDateTimeSchema.of();
+            case JSON:
+                return GenericJsonSchema.of(schemaInfo);
+            case AVRO:
+                return GenericAvroSchema.of(schemaInfo);
+            case KEY_VALUE:
+                KeyValue<SchemaInfo, SchemaInfo> kvSchemaInfo =
+                    KeyValueSchemaInfo.decodeKeyValueSchemaInfo(schemaInfo);
+                Schema<?> keySchema = getSchema(kvSchemaInfo.getKey());
+                Schema<?> valueSchema = getSchema(kvSchemaInfo.getValue());
+                return KeyValueSchema.of(keySchema, valueSchema);
+>>>>>>> f773c602c... Test pr 10 (#27)
             default:
                 throw new IllegalArgumentException("Retrieve schema instance from schema info for type '"
                     + schemaInfo.getType() + "' is not supported yet");

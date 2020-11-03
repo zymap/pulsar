@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.sql.presto;
 
+<<<<<<< HEAD
 import com.facebook.presto.spi.Plugin;
 import com.facebook.presto.spi.connector.ConnectorFactory;
 import com.google.common.collect.ImmutableList;
@@ -26,6 +27,18 @@ public class PulsarPlugin implements Plugin {
     @Override
     public Iterable<ConnectorFactory> getConnectorFactories()
     {
+=======
+import com.google.common.collect.ImmutableList;
+import io.prestosql.spi.Plugin;
+import io.prestosql.spi.connector.ConnectorFactory;
+
+/**
+ * Implementation of the Pulsar plugin for Pesto.
+ */
+public class PulsarPlugin implements Plugin {
+    @Override
+    public Iterable<ConnectorFactory> getConnectorFactories() {
+>>>>>>> f773c602c... Test pr 10 (#27)
         return ImmutableList.of(new PulsarConnectorFactory());
     }
 }

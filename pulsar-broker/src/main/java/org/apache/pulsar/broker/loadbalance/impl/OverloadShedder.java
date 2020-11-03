@@ -60,6 +60,10 @@ public class OverloadShedder implements LoadSheddingStrategy {
      *            The service configuration.
      * @return A map from bundles to unload to the brokers on which they are loaded.
      */
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> f773c602c... Test pr 10 (#27)
     public Multimap<String, String> findBundlesForUnloading(final LoadData loadData, final ServiceConfiguration conf) {
         selectedBundlesCache.clear();
         final double overloadThreshold = conf.getLoadBalancerBrokerOverloadedThresholdPercentage() / 100.0;
@@ -72,7 +76,12 @@ public class OverloadShedder implements LoadSheddingStrategy {
             final double currentUsage = localData.getMaxResourceUsage();
             if (currentUsage < overloadThreshold) {
                 if (log.isDebugEnabled()) {
+<<<<<<< HEAD
                     log.debug("[{}] Broker is not overloaded, ignoring at this point", broker);
+=======
+                    log.debug("[{}] Broker is not overloaded, ignoring at this point ({})", broker,
+                            localData.printResourceUsage());
+>>>>>>> f773c602c... Test pr 10 (#27)
                 }
                 return;
             }
@@ -85,8 +94,14 @@ public class OverloadShedder implements LoadSheddingStrategy {
             double minimumThroughputToOffload = brokerCurrentThroughput * percentOfTrafficToOffload;
 
             log.info(
+<<<<<<< HEAD
                     "Attempting to shed load on {}, which has max resource usage above threshold {}% > {}% -- Offloading at least {} MByte/s of traffic",
                     broker, currentUsage, overloadThreshold, minimumThroughputToOffload / 1024 / 1024);
+=======
+                    "Attempting to shed load on {}, which has resource usage {}% above threshold {}% -- Offloading at least {} MByte/s of traffic ({})",
+                    broker, 100 * currentUsage, 100 * overloadThreshold, minimumThroughputToOffload / 1024 / 1024,
+                    localData.printResourceUsage());
+>>>>>>> f773c602c... Test pr 10 (#27)
 
             MutableDouble trafficMarkedToOffload = new MutableDouble(0);
             MutableBoolean atLeastOneBundleSelected = new MutableBoolean(false);
@@ -94,7 +109,13 @@ public class OverloadShedder implements LoadSheddingStrategy {
             if (localData.getBundles().size() > 1) {
                 // Sort bundles by throughput, then pick the biggest N which combined make up for at least the minimum throughput to offload
 
+<<<<<<< HEAD
                 loadData.getBundleData().entrySet().stream().map((e) -> {
+=======
+                loadData.getBundleData().entrySet().stream()
+                .filter(e -> localData.getBundles().contains(e.getKey()))
+                .map((e) -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
                     // Map to throughput value
                     // Consider short-term byte rate to address system resource burden
                     String bundle = e.getKey();
@@ -105,7 +126,13 @@ public class OverloadShedder implements LoadSheddingStrategy {
                 }).filter(e -> {
                     // Only consider bundles that were not already unloaded recently
                     return !recentlyUnloadedBundles.containsKey(e.getLeft());
+<<<<<<< HEAD
                 }).sorted((e1, e2) -> {
+=======
+                }).filter(e ->
+                        localData.getBundles().contains(e.getLeft())
+                ).sorted((e1, e2) -> {
+>>>>>>> f773c602c... Test pr 10 (#27)
                     // Sort by throughput in reverse order
                     return Double.compare(e2.getRight(), e1.getRight());
                 }).forEach(e -> {

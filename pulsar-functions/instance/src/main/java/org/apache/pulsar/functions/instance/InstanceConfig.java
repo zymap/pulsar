@@ -19,14 +19,19 @@
 package org.apache.pulsar.functions.instance;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+=======
+import org.apache.pulsar.functions.proto.Function;
+>>>>>>> f773c602c... Test pr 10 (#27)
 import org.apache.pulsar.functions.proto.Function.FunctionDetails;
 
 /**
  * This is the config passed to the Java Instance. Contains all the information
+<<<<<<< HEAD
  * passed to run functions
  */
 @Data
@@ -34,14 +39,28 @@ import org.apache.pulsar.functions.proto.Function.FunctionDetails;
 @Setter
 @EqualsAndHashCode
 @ToString
+=======
+ * passed to run functions.
+ */
+@Data
+>>>>>>> f773c602c... Test pr 10 (#27)
 public class InstanceConfig {
     private int instanceId;
     private String functionId;
     private String functionVersion;
     private FunctionDetails functionDetails;
     private int maxBufferedTuples;
+<<<<<<< HEAD
     private int port;
     private String clusterName;
+=======
+    private Function.FunctionAuthenticationSpec functionAuthenticationSpec;
+    private int port;
+    private String clusterName;
+    // Max pending async requests per instance to avoid large number of concurrent requests.
+    // Only used in AsyncFunction. Default: 1000
+    private int maxPendingAsyncRequests = 1000;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     /**
      * Get the string representation of {@link #getInstanceId()}.
@@ -51,4 +70,11 @@ public class InstanceConfig {
     public String getInstanceName() {
         return "" + instanceId;
     }
+<<<<<<< HEAD
+=======
+
+    public FunctionDetails getFunctionDetails() {
+        return functionDetails;
+    }
+>>>>>>> f773c602c... Test pr 10 (#27)
 }

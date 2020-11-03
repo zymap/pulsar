@@ -19,16 +19,28 @@
 #ifndef _PULSAR_CLIENT_CONNECTION_HEADER_
 #define _PULSAR_CLIENT_CONNECTION_HEADER_
 
+<<<<<<< HEAD
+=======
+#include <pulsar/defines.h>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <pulsar/Result.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
+<<<<<<< HEAD
+=======
+#include <boost/asio/strand.hpp>
+>>>>>>> f773c602c... Test pr 10 (#27)
 #include <boost/any.hpp>
 #include <mutex>
 #include <functional>
 #include <string>
 #include <vector>
 #include <deque>
+<<<<<<< HEAD
+=======
+#include <atomic>
+>>>>>>> f773c602c... Test pr 10 (#27)
 
 #include "ExecutorService.h"
 #include "Future.h"
@@ -76,7 +88,11 @@ struct ResponseData {
 
 typedef std::shared_ptr<std::vector<std::string>> NamespaceTopicsPtr;
 
+<<<<<<< HEAD
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
+=======
+class PULSAR_PUBLIC ClientConnection : public std::enable_shared_from_this<ClientConnection> {
+>>>>>>> f773c602c... Test pr 10 (#27)
     enum State
     {
         Pending,
@@ -124,7 +140,13 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
                                       LookupDataResultPromisePtr promise);
 
     void sendCommand(const SharedBuffer& cmd);
+<<<<<<< HEAD
     void sendMessage(const OpSendMsg& opSend);
+=======
+    void sendCommandInternal(const SharedBuffer& cmd);
+    void sendMessage(const OpSendMsg& opSend);
+    void sendMessageInternal(const OpSendMsg& opSend);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void registerProducer(int producerId, ProducerImplPtr producer);
     void registerConsumer(int consumerId, ConsumerImplPtr consumer);
@@ -144,6 +166,11 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 
     int getServerProtocolVersion() const;
 
+<<<<<<< HEAD
+=======
+    static int32_t getMaxMessageSize();
+
+>>>>>>> f773c602c... Test pr 10 (#27)
     Commands::ChecksumType getChecksumType() const;
 
     Future<Result, BrokerConsumerStatsImpl> newConsumerStats(uint64_t consumerId, uint64_t requestId);
@@ -175,6 +202,10 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
     void handleHandshake(const boost::system::error_code& err);
 
     void handleSentPulsarConnect(const boost::system::error_code& err, const SharedBuffer& buffer);
+<<<<<<< HEAD
+=======
+    void handleSentAuthResponse(const boost::system::error_code& err, const SharedBuffer& buffer);
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     void readNextCommand();
 
@@ -217,7 +248,15 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
     template <typename ConstBufferSequence, typename WriteHandler>
     inline void asyncWrite(const ConstBufferSequence& buffers, WriteHandler handler) {
         if (tlsSocket_) {
+<<<<<<< HEAD
             boost::asio::async_write(*tlsSocket_, buffers, handler);
+=======
+#if BOOST_VERSION >= 106600
+            boost::asio::async_write(*tlsSocket_, buffers, boost::asio::bind_executor(strand_, handler));
+#else
+            boost::asio::async_write(*tlsSocket_, buffers, strand_.wrap(handler));
+#endif
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             boost::asio::async_write(*socket_, buffers, handler);
         }
@@ -226,7 +265,15 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
     template <typename MutableBufferSequence, typename ReadHandler>
     inline void asyncReceive(const MutableBufferSequence& buffers, ReadHandler handler) {
         if (tlsSocket_) {
+<<<<<<< HEAD
             tlsSocket_->async_read_some(buffers, handler);
+=======
+#if BOOST_VERSION >= 106600
+            tlsSocket_->async_read_some(buffers, boost::asio::bind_executor(strand_, handler));
+#else
+            tlsSocket_->async_read_some(buffers, strand_.wrap(handler));
+#endif
+>>>>>>> f773c602c... Test pr 10 (#27)
         } else {
             socket_->async_receive(buffers, handler);
         }
@@ -236,6 +283,10 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
     TimeDuration operationsTimeout_;
     AuthenticationPtr authentication_;
     int serverProtocolVersion_;
+<<<<<<< HEAD
+=======
+    static std::atomic<int32_t> maxMessageSize_;
+>>>>>>> f773c602c... Test pr 10 (#27)
 
     ExecutorServicePtr executor_;
 
@@ -315,6 +366,15 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
     friend class PulsarFriend;
 
     bool isTlsAllowInsecureConnection_;
+<<<<<<< HEAD
+=======
+
+#if BOOST_VERSION >= 106600
+    boost::asio::strand<boost::asio::io_service::executor_type> strand_;
+#else
+    boost::asio::io_service::strand strand_;
+#endif
+>>>>>>> f773c602c... Test pr 10 (#27)
 };
 }  // namespace pulsar
 

@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.common.policies.data;
 
+<<<<<<< HEAD
 import lombok.Data;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 
@@ -25,6 +26,17 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+=======
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import lombok.Data;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
+
+/**
+ * Status of Pulsar Sink.
+ */
+>>>>>>> f773c602c... Test pr 10 (#27)
 @Data
 public class SinkStatus {
     // The total number of sink instances that ought to be running
@@ -33,11 +45,23 @@ public class SinkStatus {
     public int numRunning;
     public List<SinkInstanceStatus> instances = new LinkedList<>();
 
+<<<<<<< HEAD
+=======
+    /**
+     * Status of a Sink instance.
+     */
+>>>>>>> f773c602c... Test pr 10 (#27)
     @Data
     public static class SinkInstanceStatus {
         public int instanceId;
         public SinkInstanceStatusData status;
 
+<<<<<<< HEAD
+=======
+        /**
+         * Status data of a Sink instance.
+         */
+>>>>>>> f773c602c... Test pr 10 (#27)
         @Data
         public static class SinkInstanceStatusData {
             // Is this instance running?

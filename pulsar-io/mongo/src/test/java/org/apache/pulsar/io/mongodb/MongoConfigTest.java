@@ -50,7 +50,11 @@ public class MongoConfigTest {
         final Map<String, Object> map = TestHelper.createMap(false);
         final MongoConfig cfg = MongoConfig.load(map);
 
+<<<<<<< HEAD
         cfg.validate();
+=======
+        cfg.validate(true, true);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -60,7 +64,11 @@ public class MongoConfigTest {
         map.put("batchSize", 0);
         final MongoConfig cfg = MongoConfig.load(map);
 
+<<<<<<< HEAD
         cfg.validate();
+=======
+        cfg.validate(true, true);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -70,7 +78,11 @@ public class MongoConfigTest {
         map.put("batchTimeMs", 0);
         final MongoConfig cfg = MongoConfig.load(map);
 
+<<<<<<< HEAD
         cfg.validate();
+=======
+        cfg.validate(true, true);
+>>>>>>> f773c602c... Test pr 10 (#27)
     }
 
     @Test

@@ -142,6 +142,18 @@ void Consumer::acknowledgeCumulativeAsync(const MessageId& messageId, ResultCall
     impl_->acknowledgeCumulativeAsync(messageId, callback);
 }
 
+<<<<<<< HEAD
+=======
+void Consumer::negativeAcknowledge(const Message& message) { negativeAcknowledge(message.getMessageId()); }
+
+void Consumer::negativeAcknowledge(const MessageId& messageId) {
+    if (impl_) {
+        impl_->negativeAcknowledge(messageId);
+        ;
+    }
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 Result Consumer::close() {
     Promise<bool, Result> promise;
     closeAsync(WaitForCallback(promise));
@@ -207,6 +219,17 @@ void Consumer::seekAsync(const MessageId& msgId, ResultCallback callback) {
     impl_->seekAsync(msgId, callback);
 }
 
+<<<<<<< HEAD
+=======
+void Consumer::seekAsync(uint64_t timestamp, ResultCallback callback) {
+    if (!impl_) {
+        callback(ResultConsumerNotInitialized);
+        return;
+    }
+    impl_->seekAsync(timestamp, callback);
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 Result Consumer::seek(const MessageId& msgId) {
     if (!impl_) {
         return ResultConsumerNotInitialized;
@@ -219,4 +242,19 @@ Result Consumer::seek(const MessageId& msgId) {
     return result;
 }
 
+<<<<<<< HEAD
+=======
+Result Consumer::seek(uint64_t timestamp) {
+    if (!impl_) {
+        return ResultConsumerNotInitialized;
+    }
+
+    Promise<bool, Result> promise;
+    impl_->seekAsync(timestamp, WaitForCallback(promise));
+    Result result;
+    promise.getFuture().get(result);
+    return result;
+}
+
+>>>>>>> f773c602c... Test pr 10 (#27)
 }  // namespace pulsar
