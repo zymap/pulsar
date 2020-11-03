@@ -58,7 +58,7 @@ jobs:
 
       - name: Cherry-pick
         if: always()
-        uses: zymap/pulsar-test-infra/cherry-pick@cherry-pick-bot
+        uses: ./zymap/.github/cherry-pick
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
