@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConfigurationStoreStarter extends ZooKeeperStarter {
+
     public static void main(String[] args) throws Exception {
         start(args, "8001");
     }
