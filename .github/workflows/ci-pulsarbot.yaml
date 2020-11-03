@@ -37,9 +37,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 25
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Execute pulsarbot command
         id:   pulsarbot
@@ -50,7 +47,7 @@ jobs:
 
       - name: Cherry-pick prompt
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-        uses: zymap/pulsar-test-infra/cherry-pick@cherry-pick-bot
+        uses: ./zymap/.github/cherry-pick
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
