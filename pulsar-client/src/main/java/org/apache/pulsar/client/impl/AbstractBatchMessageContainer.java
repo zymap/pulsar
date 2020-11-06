@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.client.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.pulsar.common.compression.CompressionCodec;
 import org.apache.pulsar.common.compression.CompressionCodecProvider;
@@ -28,6 +29,7 @@ import java.util.List;
 /**
  * Batch message container framework.
  */
+@Slf4j
 public abstract class AbstractBatchMessageContainer implements BatchMessageContainerBase {
 
     protected PulsarApi.CompressionType compressionType;
@@ -37,11 +39,14 @@ public abstract class AbstractBatchMessageContainer implements BatchMessageConta
     protected ProducerImpl producer;
 
     protected int maxNumMessagesInBatch;
+    protected int maxBytesInBatch;
     protected int numMessagesInBatch = 0;
     protected long currentBatchSizeBytes = 0;
 
+    protected long currentTxnidMostBits = -1L;
+    protected long currentTxnidLeastBits = -1L;
+
     protected static final int INITIAL_BATCH_BUFFER_SIZE = 1024;
-    protected static final int MAX_MESSAGE_BATCH_SIZE_BYTES = 128 * 1024;
 
     // This will be the largest size for a batch sent from this particular producer. This is used as a baseline to
     // allocate a new buffer that can hold the entire batch without needing costly reallocations
@@ -50,8 +55,16 @@ public abstract class AbstractBatchMessageContainer implements BatchMessageConta
     @Override
     public boolean haveEnoughSpace(MessageImpl<?> msg) {
         int messageSize = msg.getDataBuffer().readableBytes();
-        return ((messageSize + currentBatchSizeBytes) <= MAX_MESSAGE_BATCH_SIZE_BYTES
-                && numMessagesInBatch < maxNumMessagesInBatch);
+        return (
+            (maxBytesInBatch <= 0 && (messageSize + currentBatchSizeBytes) <= ClientCnx.getMaxMessageSize())
+            || (maxBytesInBatch > 0 && (messageSize + currentBatchSizeBytes) <= maxBytesInBatch)
+        ) && (maxNumMessagesInBatch <= 0 || numMessagesInBatch < maxNumMessagesInBatch);
+    }
+
+    protected boolean isBatchFull() {
+        return (maxBytesInBatch > 0 && currentBatchSizeBytes >= maxBytesInBatch)
+            || (maxBytesInBatch <= 0 && currentBatchSizeBytes >= ClientCnx.getMaxMessageSize())
+            || (maxNumMessagesInBatch > 0 && numMessagesInBatch >= maxNumMessagesInBatch);
     }
 
     @Override
@@ -83,5 +96,20 @@ public abstract class AbstractBatchMessageContainer implements BatchMessageConta
                 .convertToWireProtocol(producer.getConfiguration().getCompressionType());
         this.compressor = CompressionCodecProvider.getCompressionCodec(compressionType);
         this.maxNumMessagesInBatch = producer.getConfiguration().getBatchingMaxMessages();
+        this.maxBytesInBatch = producer.getConfiguration().getBatchingMaxBytes();
+    }
+
+    @Override
+    public boolean hasSameTxn(MessageImpl<?> msg) {
+        if (!msg.getMessageBuilder().hasTxnidMostBits() || !msg.getMessageBuilder().hasTxnidLeastBits()) {
+            return true;
+        }
+        if (currentTxnidMostBits == -1 || currentTxnidLeastBits == -1) {
+            currentTxnidMostBits = msg.getMessageBuilder().getTxnidMostBits();
+            currentTxnidLeastBits = msg.getMessageBuilder().getTxnidLeastBits();
+            return true;
+        }
+        return currentTxnidMostBits == msg.getMessageBuilder().getTxnidMostBits()
+                && currentTxnidLeastBits == msg.getMessageBuilder().getTxnidLeastBits();
     }
 }

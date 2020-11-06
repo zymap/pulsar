@@ -293,6 +293,33 @@ public interface ProducerBuilder<T> extends Cloneable {
     ProducerBuilder<T> enableBatching(boolean enableBatching);
 
     /**
+     * If message size is higher than allowed max publish-payload size by broker then enableChunking helps producer to
+     * split message into multiple chunks and publish them to broker separately and in order. So, it allows client to
+     * successfully publish large size of messages in pulsar.
+     *
+     * <p>This feature allows publisher to publish large size of message by splitting it to multiple chunks and let
+     * consumer stitch them together to form a original large published message. Therefore, it's necessary to configure
+     * recommended configuration at pulsar producer and consumer. Recommendation to use this feature:
+     *
+     * <pre>
+     * 1. This feature is right now only supported by non-shared subscription and persistent-topic.
+     * 2. Disable batching to use chunking feature
+     * 3. Pulsar-client keeps published messages into buffer until it receives ack from broker.
+     * So, it's better to reduce "maxPendingMessages" size to avoid producer occupying large amount
+     *  of memory by buffered messages.
+     * 4. Set message-ttl on the namespace to cleanup incomplete chunked messages.
+     * (sometime due to broker-restart or publish time, producer might fail to publish entire large message
+     * so, consumer will not be able to consume and ack those messages. So, those messages can
+     * be only discared by msg ttl) Or configure
+     * {@link ConsumerBuilder#expireTimeOfIncompleteChunkedMessage()}
+     * 5. Consumer configuration: consumer should also configure receiverQueueSize and maxPendingChuckedMessage
+     * </pre>
+     * @param enableChunking
+     * @return
+     */
+    ProducerBuilder<T> enableChunking(boolean enableChunking);
+
+    /**
      * Sets a {@link CryptoKeyReader}.
      *
      * <p>Configure the key reader to be used to encrypt the message payloads.
@@ -344,8 +371,24 @@ public interface ProducerBuilder<T> extends Cloneable {
      * @param timeUnit
      *            the time unit of the {@code batchDelay}
      * @return the producer builder instance
+     * @see #batchingMaxMessages(int)
+     * @see #batchingMaxBytes(int)
      */
     ProducerBuilder<T> batchingMaxPublishDelay(long batchDelay, TimeUnit timeUnit);
+
+    /**
+     * Set the partition switch frequency while batching of messages is enabled and
+     * using round-robin routing mode for non-keyed message <i>default: 10</i>.
+     *
+     * <p>The time period of partition switch is frequency * batchingMaxPublishDelay. During this period,
+     * all messages arrives will be route to the same partition.
+     *
+     * @param frequency the frequency of partition switch
+     * @return the producer builder instance
+     * @see #messageRoutingMode(MessageRoutingMode)
+     * @see #batchingMaxPublishDelay(long, TimeUnit)
+     */
+    ProducerBuilder<T> roundRobinRouterBatchingPartitionSwitchFrequency(int frequency);
 
     /**
      * Set the maximum number of messages permitted in a batch. <i>default: 1000</i> If set to a value greater than 1,
@@ -354,12 +397,28 @@ public interface ProducerBuilder<T> extends Cloneable {
      * <p>All messages in batch will be published as a single batch message. The consumer will be delivered individual
      * messages in the batch in the same order they were enqueued.
      *
-     * @see #batchingMaxPublishDelay(long, TimeUnit)
      * @param batchMessagesMaxMessagesPerBatch
      *            maximum number of messages in a batch
      * @return the producer builder instance
+     * @see #batchingMaxPublishDelay(long, TimeUnit)
+     * @see #batchingMaxBytes(int)
      */
     ProducerBuilder<T> batchingMaxMessages(int batchMessagesMaxMessagesPerBatch);
+
+    /**
+     * Set the maximum number of bytes permitted in a batch. <i>default: 128KB</i>
+     * If set to a value greater than 0, messages will be queued until this threshold is reached
+     * or other batching conditions are met.
+     *
+     * <p>All messages in a batch will be published as a single batched message. The consumer will be delivered
+     * individual messages in the batch in the same order they were enqueued.
+     *
+     * @param batchingMaxBytes maximum number of bytes in a batch
+     * @return the producer builder instance
+     * @see #batchingMaxPublishDelay(long, TimeUnit)
+     * @see #batchingMaxMessages(int)
+     */
+    ProducerBuilder<T> batchingMaxBytes(int batchingMaxBytes);
 
     /**
      * Set the batcher builder {@link BatcherBuilder} of the producer. Producer will use the batcher builder to
@@ -443,6 +502,18 @@ public interface ProducerBuilder<T> extends Cloneable {
      * @return the producer builder instance
      */
     ProducerBuilder<T> autoUpdatePartitions(boolean autoUpdate);
+
+    /**
+     * Set the interval of updating partitions <i>(default: 1 minute)</i>. This only works if autoUpdatePartitions is
+     * enabled.
+     *
+     * @param interval
+     *            the interval of updating partitions
+     * @param unit
+     *            the time unit of the interval.
+     * @return the producer builder instance
+     */
+    ProducerBuilder<T> autoUpdatePartitionsInterval(int interval, TimeUnit unit);
 
     /**
      * Control whether enable the multiple schema mode for producer.

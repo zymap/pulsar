@@ -91,7 +91,7 @@ class DLOutputStream {
      * @param data the data we need to write
      * @return
      */
-    private CompletableFuture<DLOutputStream> writeAsync(ByteBuf data) {
+    CompletableFuture<DLOutputStream> writeAsync(ByteBuf data) {
         offset += data.readableBytes();
         LogRecord record = new LogRecord(offset, data);
         return writer.write(record).thenApply(ignore -> this);

@@ -18,6 +18,8 @@
  */
 package org.apache.pulsar.utils.auth.tokens;
 
+import com.beust.jcommander.DefaultUsageFormatter;
+import com.beust.jcommander.IUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -280,6 +282,7 @@ public class TokensCliUtils {
     public static void main(String[] args) throws Exception {
         Arguments arguments = new Arguments();
         JCommander jcommander = new JCommander(arguments);
+        IUsageFormatter usageFormatter = new DefaultUsageFormatter(jcommander);
 
         CommandCreateSecretKey commandCreateSecretKey = new CommandCreateSecretKey();
         jcommander.addCommand("create-secret-key", commandCreateSecretKey);
@@ -304,8 +307,9 @@ public class TokensCliUtils {
                 System.exit(1);
             }
         } catch (Exception e) {
-            jcommander.usage();
             System.err.println(e);
+            String chosenCommand = jcommander.getParsedCommand();
+            usageFormatter.usage(chosenCommand);
             System.exit(1);
         }
 

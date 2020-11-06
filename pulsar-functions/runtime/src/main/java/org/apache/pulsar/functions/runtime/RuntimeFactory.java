@@ -24,7 +24,7 @@ import org.apache.pulsar.functions.instance.AuthenticationConfig;
 import org.apache.pulsar.functions.instance.InstanceConfig;
 import org.apache.pulsar.functions.proto.Function;
 import org.apache.pulsar.functions.secretsproviderconfigurator.SecretsProviderConfigurator;
-import org.apache.pulsar.functions.utils.Reflections;
+import org.apache.pulsar.common.util.Reflections;
 import org.apache.pulsar.functions.worker.WorkerConfig;
 
 import java.util.Optional;
@@ -37,7 +37,8 @@ public interface RuntimeFactory extends AutoCloseable {
     void initialize(WorkerConfig workerConfig,
                     AuthenticationConfig authenticationConfig,
                     SecretsProviderConfigurator secretsProviderConfigurator,
-                    Optional<FunctionAuthProvider> functionAuthProvider) throws Exception;
+                    Optional<FunctionAuthProvider> authProvider,
+                    Optional<RuntimeCustomizer> runtimeCustomizer) throws Exception;
 
     /**
      * Create a function container to execute a java instance.
@@ -55,7 +56,11 @@ public interface RuntimeFactory extends AutoCloseable {
 
     default void doAdmissionChecks(Function.FunctionDetails functionDetails) { }
 
-    default Optional<FunctionAuthProvider> getAuthProvider() {
+    default Optional<? extends FunctionAuthProvider> getAuthProvider() {
+        return Optional.empty();
+    }
+
+    default Optional<? extends RuntimeCustomizer> getRuntimeCustomizer() {
         return Optional.empty();
     }
 
@@ -67,4 +72,4 @@ public interface RuntimeFactory extends AutoCloseable {
     }
 
 }
- 
+

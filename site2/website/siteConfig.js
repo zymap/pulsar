@@ -28,7 +28,7 @@ const createVariableInjectionPlugin = variables => {
       } else if (keyparts[0] == 'source') {
           return renderUrl(initializedPlugin, sourceApiUrl + "#", keyparts);
       } else if (keyparts[0] == 'sink') {
-          return renderUrl(initializedPlugin, sinkApiUrl + "#", keyparts);
+        return renderUrl(initializedPlugin, sinkApiUrl + "#", keyparts);
       } else {
         keyparts = key.split("|");
         // endpoint api: endpoint|<op>
@@ -105,6 +105,7 @@ const siteConfig = {
     {page: 'download', label: 'Download'},
     {doc: 'client-libraries', label: 'Clients'},
     {href: '#restapis', label: 'REST APIs'},
+    {href: '#cli', label: 'Cli'},
     {blog: true, label: 'Blog'},
     {href: '#community', label: 'Community'},
     {href: '#apache', label: 'Apache'},
@@ -178,8 +179,8 @@ const siteConfig = {
   githubUrl: githubUrl,
 
   projectDescription: `
-    Apache Pulsar is an open-source distributed pub-sub messaging system originally
-    created at Yahoo and now part of the Apache Software Foundation
+    Apache Pulsar is a cloud-native, distributed messaging and streaming platform originally
+    created at Yahoo! and now a top-level Apache Software Foundation project
   `,
 
   markdownPlugins: [

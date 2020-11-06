@@ -17,7 +17,7 @@
  * under the License.
  */
 #include "ClientImpl.h"
-
+#include "ClientConfigurationImpl.h"
 #include "LogUtils.h"
 #include "ConsumerImpl.h"
 #include "ProducerImpl.h"
@@ -94,25 +94,24 @@ ClientImpl::ClientImpl(const std::string& serviceUrl, const ClientConfiguration&
       pool_(clientConfiguration_, ioExecutorProvider_, clientConfiguration_.getAuthPtr(), poolConnections),
       producerIdGenerator_(0),
       consumerIdGenerator_(0),
-      requestIdGenerator_(0) {
-    if (clientConfiguration_.getLogger()) {
-        // A logger factory was explicitely configured. Let's just use that
-        LogUtils::setLoggerFactory(clientConfiguration_.getLogger());
-    } else {
+      requestIdGenerator_(0),
+      closingError(ResultOk) {
+    std::unique_ptr<LoggerFactory> loggerFactory = clientConfiguration_.impl_->takeLogger();
+    if (!loggerFactory) {
 #ifdef USE_LOG4CXX
         if (!clientConfiguration_.getLogConfFilePath().empty()) {
             // A log4cxx log file was passed through deprecated parameter. Use that to configure Log4CXX
-            LogUtils::setLoggerFactory(
-                Log4CxxLoggerFactory::create(clientConfiguration_.getLogConfFilePath()));
+            loggerFactory = Log4CxxLoggerFactory::create(clientConfiguration_.getLogConfFilePath());
         } else {
             // Use default simple console logger
-            LogUtils::setLoggerFactory(SimpleLoggerFactory::create());
+            loggerFactory = SimpleLoggerFactory::create();
         }
 #else
         // Use default simple console logger
-        LogUtils::setLoggerFactory(SimpleLoggerFactory::create());
+        loggerFactory = SimpleLoggerFactory::create();
 #endif
     }
+    LogUtils::setLoggerFactory(std::move(loggerFactory));
 
     if (serviceUrl_.compare(0, 4, "http") == 0) {
         LOG_DEBUG("Using HTTP Lookup");
@@ -369,8 +368,10 @@ void ClientImpl::handleSubscribe(const Result result, const LookupDataResultPtr 
             consumer = std::make_shared<PartitionedConsumerImpl>(shared_from_this(), consumerName, topicName,
                                                                  partitionMetadata->getPartitions(), conf);
         } else {
-            consumer =
+            auto consumerImpl =
                 std::make_shared<ConsumerImpl>(shared_from_this(), topicName->toString(), consumerName, conf);
+            consumerImpl->setPartitionIndex(topicName->getPartitionIndex());
+            consumer = consumerImpl;
         }
         consumer->getConsumerCreatedFuture().addListener(
             std::bind(&ClientImpl::handleConsumerCreated, shared_from_this(), std::placeholders::_1,
@@ -510,12 +511,12 @@ void ClientImpl::closeAsync(CloseCallback callback) {
 }
 
 void ClientImpl::handleClose(Result result, SharedInt numberOfOpenHandlers, ResultCallback callback) {
-    static bool errorClosing = false;
-    static Result failResult = ResultOk;
-    if (result != ResultOk) {
-        errorClosing = true;
-        failResult = result;
+    Result expected = ResultOk;
+    if (!closingError.compare_exchange_strong(expected, result)) {
+        LOG_DEBUG("Tried to updated closingError, but already set to "
+                  << expected << ". This means multiple errors have occurred while closing the client");
     }
+
     if (*numberOfOpenHandlers > 0) {
         --(*numberOfOpenHandlers);
     }
@@ -523,17 +524,14 @@ void ClientImpl::handleClose(Result result, SharedInt numberOfOpenHandlers, Resu
         Lock lock(mutex_);
         state_ = Closed;
         lock.unlock();
-        if (errorClosing) {
-            LOG_DEBUG("Problem in closing client, could not close one or more consumers or producers");
-            if (callback) {
-                callback(failResult);
-            }
-        }
 
         LOG_DEBUG("Shutting down producers and consumers for client");
         shutdown();
         if (callback) {
-            callback(ResultOk);
+            if (closingError != ResultOk) {
+                LOG_DEBUG("Problem in closing client, could not close one or more consumers or producers");
+            }
+            callback(closingError);
         }
     }
 }

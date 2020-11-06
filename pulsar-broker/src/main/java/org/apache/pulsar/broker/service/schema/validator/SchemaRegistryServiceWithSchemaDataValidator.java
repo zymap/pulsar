@@ -73,8 +73,15 @@ public class SchemaRegistryServiceWithSchemaDataValidator implements SchemaRegis
     }
 
     @Override
-    public CompletableFuture<Void> checkConsumerCompatibility(String schemaId, SchemaData schemaData, SchemaCompatibilityStrategy strategy) {
+    public CompletableFuture<Void> checkConsumerCompatibility(String schemaId, SchemaData schemaData,
+                                                              SchemaCompatibilityStrategy strategy) {
         return this.service.checkConsumerCompatibility(schemaId, schemaData, strategy);
+    }
+
+    @Override
+    public CompletableFuture<SchemaVersion> getSchemaVersionBySchemaData(List<SchemaAndMetadata> schemaAndMetadataList,
+                                                                         SchemaData schemaData) {
+        return this.service.getSchemaVersionBySchemaData(schemaAndMetadataList, schemaData);
     }
 
     @Override
@@ -92,6 +99,11 @@ public class SchemaRegistryServiceWithSchemaDataValidator implements SchemaRegis
     @Override
     public CompletableFuture<SchemaVersion> deleteSchema(String schemaId, String user) {
         return service.deleteSchema(schemaId, user);
+    }
+
+    @Override
+    public CompletableFuture<SchemaVersion> deleteSchemaStorage(String schemaId) {
+        return service.deleteSchemaStorage(schemaId);
     }
 
     @Override

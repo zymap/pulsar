@@ -31,8 +31,9 @@ public interface BatchMessageContainerBase extends BatchMessageContainer {
      *
      * @param msg message will add to the batch message container
      * @param callback message send callback
+     * @return true if the batch is full, otherwise false
      */
-    void add(MessageImpl<?> msg, SendCallback callback);
+    boolean add(MessageImpl<?> msg, SendCallback callback);
 
     /**
      * Check the batch message container have enough space for the message want to add.
@@ -74,4 +75,12 @@ public interface BatchMessageContainerBase extends BatchMessageContainer {
      * @throws IOException
      */
     OpSendMsg createOpSendMsg() throws IOException;
+
+    /**
+     * Check whether the added message belong to the same txn with batch message container.
+     *
+     * @param msg added message
+     * @return belong to the same txn or not
+     */
+    boolean hasSameTxn(MessageImpl<?> msg);
 }

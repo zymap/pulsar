@@ -37,7 +37,11 @@ public interface Subscription {
 
     void addConsumer(Consumer consumer) throws BrokerServiceException;
 
-    void removeConsumer(Consumer consumer) throws BrokerServiceException;
+    default void removeConsumer(Consumer consumer) throws BrokerServiceException {
+        removeConsumer(consumer, false);
+    }
+
+    void removeConsumer(Consumer consumer, boolean isResetCursor) throws BrokerServiceException;
 
     void consumerFlow(Consumer consumer, int additionalNumberOfMessages);
 
@@ -49,7 +53,7 @@ public interface Subscription {
 
     Dispatcher getDispatcher();
 
-    long getNumberOfEntriesInBacklog();
+    long getNumberOfEntriesInBacklog(boolean getPreciseBacklog);
 
     default long getNumberOfEntriesDelayed() {
         return 0;
@@ -60,6 +64,8 @@ public interface Subscription {
     CompletableFuture<Void> close();
 
     CompletableFuture<Void> delete();
+
+    CompletableFuture<Void> deleteForcefully();
 
     CompletableFuture<Void> disconnect();
 
@@ -94,6 +100,8 @@ public interface Subscription {
     default void processReplicatedSubscriptionSnapshot(ReplicatedSubscriptionsSnapshot snapshot) {
         // Default is no-op
     }
+
+    CompletableFuture<Void> endTxn(long txnidMostBits, long txnidLeastBits, int txnAction);
 
     // Subscription utils
     static boolean isCumulativeAckMode(SubType subType) {

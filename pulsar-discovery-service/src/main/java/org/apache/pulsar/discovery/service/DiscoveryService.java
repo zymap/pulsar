@@ -82,7 +82,7 @@ public class DiscoveryService implements Closeable {
     }
 
     /**
-     * Starts discovery service by initializing zookkeeper and server
+     * Starts discovery service by initializing ZooKeeper and server
      *
      * @throws Exception
      */
@@ -155,8 +155,7 @@ public class DiscoveryService implements Closeable {
     /**
      * Derive the host
      *
-     * @param isBindOnLocalhost
-     * @return
+     * @return String containing the hostname
      */
     public String host() {
         try {

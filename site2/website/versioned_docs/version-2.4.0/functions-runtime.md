@@ -1,7 +1,7 @@
 ---
 id: version-2.4.0-functions-runtime
 title: Configure Functions runtime
-sidebar_label: Admin: Configure Functions runtime
+sidebar_label: "Admin: Configure Functions runtime"
 original_id: functions-runtime
 ---
 This guide is used for administrator. 
@@ -11,6 +11,9 @@ Pulsar Functions support the following methods to run functions.
 - *Thread*: Invoke functions in threads in Functions Worker.
 - *Process*: Invoke functions in processes forked by Functions Worker.
 - *Kubernetes*: Submit functions as Kubernetes StatefulSets by Functions Worker.
+
+#### Note
+> Pulsar supports adding labels to the Kubernetes StatefulSets and services while launching functions, which facilitates selecting the target Kubernetes objects.
 
 ## Configure thread runtime
 It is easy to configure *Thread* runtime. In most cases, you do not need to configure anything. You can customize the thread group name with the following settings:

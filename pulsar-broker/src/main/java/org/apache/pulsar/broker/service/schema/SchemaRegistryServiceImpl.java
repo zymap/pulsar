@@ -44,11 +44,15 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bookkeeper.common.concurrent.FutureUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.pulsar.broker.service.schema.exceptions.IncompatibleSchemaException;
 import org.apache.pulsar.broker.service.schema.proto.SchemaRegistryFormat;
 import org.apache.pulsar.common.policies.data.SchemaCompatibilityStrategy;
 import org.apache.pulsar.common.protocol.schema.SchemaData;
 import org.apache.pulsar.common.protocol.schema.SchemaHash;
+import org.apache.pulsar.common.schema.LongSchemaVersion;
+import org.apache.pulsar.common.protocol.schema.SchemaStorage;
+import org.apache.pulsar.common.protocol.schema.StoredSchema;
 import org.apache.pulsar.common.schema.SchemaType;
 import org.apache.pulsar.common.protocol.schema.SchemaVersion;
 import org.apache.pulsar.common.util.FutureUtil;
@@ -86,15 +90,34 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
     @Override
     @NotNull
     public CompletableFuture<SchemaAndMetadata> getSchema(String schemaId, SchemaVersion version) {
-        return schemaStorage.get(schemaId, version).thenCompose(stored -> {
-                if (isNull(stored)) {
-                    return completedFuture(null);
-                } else {
-                    return Functions.bytesToSchemaInfo(stored.data)
-                        .thenApply(Functions::schemaInfoToSchema)
-                        .thenApply(schema -> new SchemaAndMetadata(schemaId, schema, stored.version));
+        CompletableFuture<StoredSchema> completableFuture;
+        if (version == SchemaVersion.Latest) {
+            completableFuture = schemaStorage.get(schemaId, version);
+        } else {
+            long longVersion = ((LongSchemaVersion) version).getVersion();
+            //If the schema has been deleted, it cannot be obtained
+            completableFuture = trimDeletedSchemaAndGetList(schemaId)
+                .thenApply(metadataList -> metadataList.stream().filter(schemaAndMetadata ->
+                        ((LongSchemaVersion) schemaAndMetadata.version).getVersion() == longVersion)
+                        .collect(Collectors.toList())
+                ).thenCompose(metadataList -> {
+                        if (CollectionUtils.isNotEmpty(metadataList)) {
+                            return schemaStorage.get(schemaId, version);
+                        }
+                        return completedFuture(null);
+                    }
+                );
+        }
+
+        return completableFuture.thenCompose(stored -> {
+                    if (isNull(stored)) {
+                        return completedFuture(null);
+                    } else {
+                        return Functions.bytesToSchemaInfo(stored.data)
+                                .thenApply(Functions::schemaInfoToSchema)
+                                .thenApply(schema -> new SchemaAndMetadata(schemaId, schema, stored.version));
+                    }
                 }
-            }
         );
     }
 
@@ -112,16 +135,10 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
     @NotNull
     public CompletableFuture<SchemaVersion> putSchemaIfAbsent(String schemaId, SchemaData schema,
                                                               SchemaCompatibilityStrategy strategy) {
-        return trimDeletedSchemaAndGetList(schemaId).thenCompose(schemaAndMetadataList -> {
-            final CompletableFuture<SchemaVersion> completableFuture = new CompletableFuture<>();
-            SchemaVersion schemaVersion;
-            for (SchemaAndMetadata schemaAndMetadata : schemaAndMetadataList) {
-                if (Arrays.equals(hashFunction.hashBytes(schemaAndMetadata.schema.getData()).asBytes(),
-                        hashFunction.hashBytes(schema.getData()).asBytes())) {
-                    schemaVersion = schemaAndMetadata.version;
-                    completableFuture.complete(schemaVersion);
-                    return completableFuture;
-                }
+        return trimDeletedSchemaAndGetList(schemaId).thenCompose(schemaAndMetadataList ->
+                getSchemaVersionBySchemaData(schemaAndMetadataList, schema).thenCompose(schemaVersion -> {
+            if (schemaVersion != null) {
+                return CompletableFuture.completedFuture(schemaVersion);
             }
             CompletableFuture<Void> checkCompatibilityFurture = new CompletableFuture<>();
             if (schemaAndMetadataList.size() != 0) {
@@ -148,7 +165,7 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
 
             });
 
-        });
+        }));
     }
 
     @Override
@@ -156,6 +173,11 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
     public CompletableFuture<SchemaVersion> deleteSchema(String schemaId, String user) {
         byte[] deletedEntry = deleted(schemaId, user).toByteArray();
         return schemaStorage.put(schemaId, deletedEntry, new byte[]{});
+    }
+
+    @Override
+    public CompletableFuture<SchemaVersion> deleteSchemaStorage(String schemaId) {
+        return schemaStorage.delete(schemaId);
     }
 
     @Override
@@ -256,6 +278,24 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
         });
     }
 
+    @Override
+    public CompletableFuture<SchemaVersion> getSchemaVersionBySchemaData(
+            List<SchemaAndMetadata> schemaAndMetadataList,
+            SchemaData schemaData) {
+        final CompletableFuture<SchemaVersion> completableFuture = new CompletableFuture<>();
+        SchemaVersion schemaVersion;
+        for (SchemaAndMetadata schemaAndMetadata : schemaAndMetadataList) {
+            if (Arrays.equals(hashFunction.hashBytes(schemaAndMetadata.schema.getData()).asBytes(),
+                    hashFunction.hashBytes(schemaData.getData()).asBytes())) {
+                schemaVersion = schemaAndMetadata.version;
+                completableFuture.complete(schemaVersion);
+                return completableFuture;
+            }
+        }
+        completableFuture.complete(null);
+        return completableFuture;
+    }
+
     private CompletableFuture<Void> checkCompatibilityWithLatest(String schemaId, SchemaData schema,
                                                                     SchemaCompatibilityStrategy strategy) {
         return getSchema(schemaId).thenCompose(existingSchema -> {
@@ -308,7 +348,7 @@ public class SchemaRegistryServiceImpl implements SchemaRegistryService {
             for (int i = lastIndex; i >= 0; i--) {
                 if (list.get(i).schema.isDeleted()) {
                     if (i == lastIndex) { // if the latest schema is a delete, there's no schemas to compare
-                        return Collections.<SchemaAndMetadata>emptyList();
+                        return Collections.emptyList();
                     } else {
                         return list.subList(i + 1, list.size());
                     }

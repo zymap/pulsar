@@ -29,10 +29,10 @@ import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 import org.apache.bookkeeper.client.LedgerHandle;
 import org.apache.bookkeeper.conf.ServerConfiguration;
+import org.apache.bookkeeper.discover.BookieServiceInfo;
 import org.apache.bookkeeper.net.BookieSocketAddress;
 import org.apache.bookkeeper.proto.BookieServer;
 import org.apache.bookkeeper.stats.NullStatsLogger;
-import org.apache.bookkeeper.test.PortManager;
 import org.apache.pulsar.common.policies.data.BookieInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class RackAwareTest extends BrokerBkEnsemblesTests {
+public class RackAwareTest extends BkEnsemblesTestBase {
 
     private static final int NUM_BOOKIES = 6;
     private final List<BookieServer> bookies = new ArrayList<>();
@@ -59,9 +59,8 @@ public class RackAwareTest extends BrokerBkEnsemblesTests {
             File bkDataDir = Files.createTempDirectory("bk" + Integer.toString(i) + "test").toFile();
             ServerConfiguration conf = new ServerConfiguration();
 
-            int bookiePort = PortManager.nextFreePort();
-            conf.setBookiePort(bookiePort);
-            conf.setZkServers("127.0.0.1:" + this.bkEnsemble.getZkServer().getClientPort());
+            conf.setBookiePort(0);
+            conf.setZkServers("127.0.0.1:" + bkEnsemble.getZookeeperPort());
             conf.setJournalDirName(bkDataDir.getPath());
             conf.setLedgerDirNames(new String[] { bkDataDir.getPath() });
             conf.setAllowLoopback(true);
@@ -72,11 +71,10 @@ public class RackAwareTest extends BrokerBkEnsemblesTests {
             String addr = String.format("10.0.0.%d", i + 1);
             conf.setAdvertisedAddress(addr);
 
-            BookieServer bs = new BookieServer(conf, NullStatsLogger.INSTANCE);
+            BookieServer bs = new BookieServer(conf, NullStatsLogger.INSTANCE, BookieServiceInfo.NO_INFO);
 
             bs.start();
             bookies.add(bs);
-            log.info("Local BK[{}] started (port: {}, adddress: {})", i, bookiePort, addr);
         }
 
     }
@@ -134,6 +132,6 @@ public class RackAwareTest extends BrokerBkEnsemblesTests {
     public void testTopicWithWildCardChar() throws Exception {
         // Ignore test
     }
-    
+
     private static final Logger log = LoggerFactory.getLogger(RackAwareTest.class);
 }

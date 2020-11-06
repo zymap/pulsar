@@ -356,7 +356,7 @@ In order to better describe their differences, assuming you have a topic named "
 ```java
 Producer<String> producer = client.newProducer(Schema.STRING)
         .topic("my-topic")
-        .enableBatch(false)
+        .enableBatching(false)
         .create();
 // 3 messages with "key-1", 3 messages with "key-2", 2 messages with "key-3" and 2 messages with "key-4"
 producer.newMessage().key("key-1").value("message-1-1").send();
@@ -479,7 +479,7 @@ consumer 2 will receive:
 
 `Shared` subscription is different from `Exclusive` and `Failover` subscription modes. `Shared` subscription has better flexibility, but cannot provide order guarantee.
 
-#### Key_shared
+#### Key_Shared
 
 This is a new subscription mode since 2.4.0 release, create new consumers and subscribe with `Key_Shared` subscription mode:
 
@@ -526,12 +526,11 @@ consumer 2 will receive:
 
 ## Reader interface
 
-With the [reader interface](concepts-clients.md#reader-interface), Pulsar clients can "manually position" themselves within a topic, reading all messages from a specified message onward. The Pulsar API for Java enables you to create  {@inject: javadoc:Reader:/client/org/apache/pulsar/client/api/Reader} objects by specifying a topic, a {@inject: javadoc:MessageId:/client/org/apache/pulsar/client/api/MessageId}, and {@inject: javadoc:ReaderConfiguration:/client/org/apache/pulsar/client/api/ReaderConfiguration}.
+With the [reader interface](concepts-clients.md#reader-interface), Pulsar clients can "manually position" themselves within a topic, reading all messages from a specified message onward. The Pulsar API for Java enables you to create  {@inject: javadoc:Reader:/client/org/apache/pulsar/client/api/Reader} objects by specifying a topic and a {@inject: javadoc:MessageId:/client/org/apache/pulsar/client/api/MessageId}.
 
 Here's an example:
 
 ```java
-ReaderConfiguration conf = new ReaderConfiguration();
 byte[] msgIdBytes = // Some message ID byte array
 MessageId id = MessageId.fromByteArray(msgIdBytes);
 Reader reader = pulsarClient.newReader()

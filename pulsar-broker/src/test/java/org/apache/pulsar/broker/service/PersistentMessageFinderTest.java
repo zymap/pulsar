@@ -162,7 +162,7 @@ public class PersistentMessageFinderTest extends MockedBookKeeperTestCase {
         future = findMessage(result, c1, beginTimestamp);
         future.get();
         assertNull(result.exception);
-        assertEquals(result.position, c1.getFirstPosition());
+        assertNull(result.position);
 
         result.reset();
         future = findMessage(result, c1, endTimestamp);
@@ -187,7 +187,7 @@ public class PersistentMessageFinderTest extends MockedBookKeeperTestCase {
                 });
         assertTrue(ex.get());
 
-        PersistentMessageExpiryMonitor monitor = new PersistentMessageExpiryMonitor("topicname", c1.getName(), c1);
+        PersistentMessageExpiryMonitor monitor = new PersistentMessageExpiryMonitor("topicname", c1.getName(), c1, null);
         monitor.findEntryFailed(new ManagedLedgerException.ConcurrentFindCursorPositionException("failed"),
                 Optional.empty(), null);
         Field field = monitor.getClass().getDeclaredField("expirationCheckInProgress");
@@ -237,7 +237,7 @@ public class PersistentMessageFinderTest extends MockedBookKeeperTestCase {
         bkc.deleteLedger(ledgers.get(1).getLedgerId());
         bkc.deleteLedger(ledgers.get(2).getLedgerId());
 
-        PersistentMessageExpiryMonitor monitor = new PersistentMessageExpiryMonitor("topicname", c1.getName(), c1);
+        PersistentMessageExpiryMonitor monitor = new PersistentMessageExpiryMonitor("topicname", c1.getName(), c1, null);
         Position previousMarkDelete = null;
         for (int i = 0; i < totalEntries; i++) {
             monitor.expireMessages(1);

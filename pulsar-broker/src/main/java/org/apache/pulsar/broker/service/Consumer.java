@@ -34,17 +34,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
-import org.apache.bookkeeper.mledger.util.Rate;
 import org.apache.bookkeeper.util.collections.ConcurrentLongLongPairHashMap;
 import org.apache.bookkeeper.util.collections.ConcurrentLongLongPairHashMap.LongPair;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.pulsar.broker.authentication.AuthenticationDataSource;
+import org.apache.pulsar.broker.service.persistent.PersistentSubscription;
+import org.apache.pulsar.client.api.transaction.TxnID;
+import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.InitialPosition;
@@ -54,7 +58,11 @@ import org.apache.pulsar.common.api.proto.PulsarApi.ProtocolVersion;
 import org.apache.pulsar.common.naming.TopicName;
 import org.apache.pulsar.common.policies.data.ConsumerStats;
 import org.apache.pulsar.common.protocol.Commands;
+import org.apache.pulsar.common.stats.Rate;
 import org.apache.pulsar.common.util.DateFormatter;
+import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.common.util.SafeCollectionUtils;
+import org.apache.pulsar.transaction.common.exception.TransactionConflictException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +85,12 @@ public class Consumer {
     private final String consumerName;
     private final Rate msgOut;
     private final Rate msgRedeliver;
+    private final LongAdder msgOutCounter;
+    private final LongAdder bytesOutCounter;
+
+    private long lastConsumedTimestamp;
+    private long lastAckedTimestamp;
+    private Rate chuckedMessageRate;
 
     // Represents how many messages we can safely send to the consumer without
     // overflowing its receiving queue. The consumer will use Flow commands to
@@ -103,10 +117,26 @@ public class Consumer {
 
     private final Map<String, String> metadata;
 
+    private final PulsarApi.KeySharedMeta keySharedMeta;
+
+    /**
+     * It starts keep tracking the average messages per entry.
+     * The initial value is 1000, when new value comes, it will update with
+     * avgMessagesPerEntry = avgMessagePerEntry * avgPercent + (1 - avgPercent) * new Value.
+     */
+    private static final AtomicIntegerFieldUpdater<Consumer> AVG_MESSAGES_PER_ENTRY =
+            AtomicIntegerFieldUpdater.newUpdater(Consumer.class, "avgMessagesPerEntry");
+    private volatile int avgMessagesPerEntry = 1000;
+
+    private static final double avgPercent = 0.9;
+    private boolean preciseDispatcherFlowControl;
+    private PositionImpl readPositionWhenJoining;
+
     public Consumer(Subscription subscription, SubType subType, String topicName, long consumerId,
                     int priorityLevel, String consumerName,
                     int maxUnackedMessages, ServerCnx cnx, String appId,
-                    Map<String, String> metadata, boolean readCompacted, InitialPosition subscriptionInitialPosition) throws BrokerServiceException {
+                    Map<String, String> metadata, boolean readCompacted, InitialPosition subscriptionInitialPosition,
+                    PulsarApi.KeySharedMeta keySharedMeta) throws BrokerServiceException {
 
         this.subscription = subscription;
         this.subType = subType;
@@ -118,14 +148,21 @@ public class Consumer {
         this.consumerName = consumerName;
         this.maxUnackedMessages = maxUnackedMessages;
         this.subscriptionInitialPosition = subscriptionInitialPosition;
+        this.keySharedMeta = keySharedMeta;
         this.cnx = cnx;
         this.msgOut = new Rate();
+        this.chuckedMessageRate = new Rate();
         this.msgRedeliver = new Rate();
+        this.bytesOutCounter = new LongAdder();
+        this.msgOutCounter = new LongAdder();
         this.appId = appId;
-        this.authenticationData = cnx.authenticationData;
+        this.authenticationData = cnx.getAuthenticationData();
+        this.preciseDispatcherFlowControl = cnx.isPreciseDispatcherFlowControl();
+
         PERMITS_RECEIVED_WHILE_CONSUMER_BLOCKED_UPDATER.set(this, 0);
         MESSAGE_PERMITS_UPDATER.set(this, 0);
         UNACKED_MESSAGES_UPDATER.set(this, 0);
+        AVG_MESSAGES_PER_ENTRY.set(this, 1000);
 
         this.metadata = metadata != null ? metadata : Collections.emptyMap();
 
@@ -181,8 +218,10 @@ public class Consumer {
      *
      * @return a SendMessageInfo object that contains the detail of what was sent to consumer
      */
-    public ChannelPromise sendMessages(final List<Entry> entries, EntryBatchSizes batchSizes, int totalMessages,
-            long totalBytes, RedeliveryTracker redeliveryTracker) {
+
+    public ChannelPromise sendMessages(final List<Entry> entries, EntryBatchSizes batchSizes, EntryBatchIndexesAcks batchIndexesAcks,
+               int totalMessages, long totalBytes, long totalChunkedMessages, RedeliveryTracker redeliveryTracker) {
+        this.lastConsumedTimestamp = System.currentTimeMillis();
         final ChannelHandlerContext ctx = cnx.ctx();
         final ChannelPromise writePromise = ctx.newPromise();
 
@@ -193,6 +232,9 @@ public class Consumer {
             }
             writePromise.setSuccess();
             batchSizes.recyle();
+            if (batchIndexesAcks != null) {
+                batchIndexesAcks.recycle();
+            }
             return writePromise;
         }
 
@@ -209,10 +251,20 @@ public class Consumer {
             }
         }
 
+        // calculate avg message per entry
+        int tmpAvgMessagesPerEntry = AVG_MESSAGES_PER_ENTRY.get(this);
+        tmpAvgMessagesPerEntry = (int) Math.round(tmpAvgMessagesPerEntry * avgPercent +
+                    (1 - avgPercent) * totalMessages / entries.size());
+        AVG_MESSAGES_PER_ENTRY.set(this, tmpAvgMessagesPerEntry);
+
         // reduce permit and increment unackedMsg count with total number of messages in batch-msgs
-        MESSAGE_PERMITS_UPDATER.addAndGet(this, -totalMessages);
+        int ackedCount = batchIndexesAcks == null ? 0 : batchIndexesAcks.getTotalAckedIndexCount();
+        MESSAGE_PERMITS_UPDATER.addAndGet(this, ackedCount - totalMessages);
         incrementUnackedMessages(totalMessages);
         msgOut.recordMultipleEvents(totalMessages, totalBytes);
+        msgOutCounter.add(totalMessages);
+        bytesOutCounter.add(totalBytes);
+        chuckedMessageRate.recordMultipleEvents(totalChunkedMessages, 0);
 
         ctx.channel().eventLoop().execute(() -> {
             for (int i = 0; i < entries.size(); i++) {
@@ -253,9 +305,13 @@ public class Consumer {
                             consumerId, entry.getLedgerId(), entry.getEntryId());
                 }
 
-                int redeliveryCount = redeliveryTracker
-                        .getRedeliveryCount(PositionImpl.get(messageId.getLedgerId(), messageId.getEntryId()));
-                ctx.write(Commands.newMessage(consumerId, messageId, redeliveryCount, metadataAndPayload), ctx.voidPromise());
+                int redeliveryCount = 0;
+                PositionImpl position = PositionImpl.get(messageId.getLedgerId(), messageId.getEntryId());
+                if (redeliveryTracker.contains(position)) {
+                    redeliveryCount = redeliveryTracker.incrementAndGetRedeliveryCount(position);
+                }
+                ctx.write(cnx.newMessageAndIntercept(consumerId, messageId, redeliveryCount, metadataAndPayload,
+                    batchIndexesAcks == null ? null : batchIndexesAcks.getAckSet(i), topicName), ctx.voidPromise());
                 messageId.recycle();
                 messageIdBuilder.recycle();
                 entry.release();
@@ -264,13 +320,18 @@ public class Consumer {
             // Use an empty write here so that we can just tie the flush with the write promise for last entry
             ctx.writeAndFlush(Unpooled.EMPTY_BUFFER, writePromise);
             batchSizes.recyle();
+            if (batchIndexesAcks != null) {
+                batchIndexesAcks.recycle();
+            }
         });
 
         return writePromise;
     }
 
     private void incrementUnackedMessages(int ackedMessages) {
-        if (shouldBlockConsumerOnUnackMsgs() && addAndGetUnAckedMsgs(this, ackedMessages) >= maxUnackedMessages) {
+        if (Subscription.isIndividualAckMode(subType)
+                && addAndGetUnAckedMsgs(this, ackedMessages) >= maxUnackedMessages
+                && maxUnackedMessages > 0) {
             blockedConsumerOnUnackedMsgs = true;
         }
     }
@@ -288,15 +349,23 @@ public class Consumer {
      * pending message acks
      */
     public void close() throws BrokerServiceException {
-        subscription.removeConsumer(this);
+        close(false);
+    }
+
+    public void close(boolean isResetCursor) throws BrokerServiceException {
+        subscription.removeConsumer(this, isResetCursor);
         cnx.removedConsumer(this);
     }
 
     public void disconnect() {
+        disconnect(false);
+    }
+
+    public void disconnect(boolean isResetCursor) {
         log.info("Disconnecting consumer: {}", this);
         cnx.closeConsumer(this);
         try {
-            close();
+            close(isResetCursor);
         } catch (BrokerServiceException e) {
             log.warn("Consumer {} was already closed: {}", this, e.getMessage(), e);
         }
@@ -318,37 +387,52 @@ public class Consumer {
         });
     }
 
-    void messageAcked(CommandAck ack) {
+    CompletableFuture<Void> messageAcked(CommandAck ack) {
+        this.lastAckedTimestamp = System.currentTimeMillis();
         Map<String,Long> properties = Collections.emptyMap();
         if (ack.getPropertiesCount() > 0) {
             properties = ack.getPropertiesList().stream()
-                .collect(Collectors.toMap((e) -> e.getKey(),
-                                          (e) -> e.getValue()));
+                .collect(Collectors.toMap(PulsarApi.KeyLongValue::getKey,
+                        PulsarApi.KeyLongValue::getValue));
         }
 
         if (ack.getAckType() == AckType.Cumulative) {
             if (ack.getMessageIdCount() != 1) {
                 log.warn("[{}] [{}] Received multi-message ack", subscription, consumerId);
-                return;
             }
 
             if (Subscription.isIndividualAckMode(subType)) {
                 log.warn("[{}] [{}] Received cumulative ack on shared subscription, ignoring", subscription, consumerId);
-                return;
             }
-
-            MessageIdData msgId = ack.getMessageId(0);
-            PositionImpl position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId());
-            subscription.acknowledgeMessage(Collections.singletonList(position), AckType.Cumulative, properties);
+            PositionImpl position = PositionImpl.earliest;
+            if (ack.getMessageIdCount() == 1) {
+                MessageIdData msgId = ack.getMessageId(0);
+                if (msgId.getAckSetCount() > 0) {
+                    position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId(), SafeCollectionUtils.longListToArray(msgId.getAckSetList()));
+                } else {
+                    position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId());
+                }
+            }
+            List<Position> positionsAcked = Collections.singletonList(position);
+            if (ack.hasTxnidMostBits() && ack.hasTxnidLeastBits()) {
+                return transactionAcknowledge(ack.getTxnidMostBits(), ack.getTxnidLeastBits(), positionsAcked, AckType.Cumulative);
+            } else {
+                subscription.acknowledgeMessage(positionsAcked, AckType.Cumulative, properties);
+            }
         } else {
             // Individual ack
             List<Position> positionsAcked = new ArrayList<>();
             for (int i = 0; i < ack.getMessageIdCount(); i++) {
                 MessageIdData msgId = ack.getMessageId(i);
-                PositionImpl position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId());
+                PositionImpl position;
+                if (msgId.getAckSetCount() > 0) {
+                    position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId(), SafeCollectionUtils.longListToArray(msgId.getAckSetList()));
+                } else {
+                    position = PositionImpl.get(msgId.getLedgerId(), msgId.getEntryId());
+                }
                 positionsAcked.add(position);
 
-                if (Subscription.isIndividualAckMode(subType)) {
+                if (Subscription.isIndividualAckMode(subType) && msgId.getAckSetCount() == 0) {
                     removePendingAcks(position);
                 }
 
@@ -357,7 +441,25 @@ public class Consumer {
                             consumerId, position, ack.getValidationError());
                 }
             }
-            subscription.acknowledgeMessage(positionsAcked, AckType.Individual, properties);
+            if (ack.hasTxnidMostBits() && ack.hasTxnidLeastBits()) {
+                return transactionAcknowledge(ack.getTxnidMostBits(), ack.getTxnidLeastBits(), positionsAcked, AckType.Individual);
+            } else {
+                subscription.acknowledgeMessage(positionsAcked, AckType.Individual, properties);
+            }
+        }
+
+        return CompletableFuture.completedFuture(null);
+    }
+
+    private CompletableFuture<Void> transactionAcknowledge(long txnidMostBits, long txnidLeastBits,
+                                        List<Position> positionList, AckType ackType) {
+        if (subscription instanceof PersistentSubscription) {
+            TxnID txnID = new TxnID(txnidMostBits, txnidLeastBits);
+            return ((PersistentSubscription) subscription).acknowledgeMessage(txnID, positionList, ackType);
+        } else {
+            String error = "Transaction acknowledge only support the `PersistentSubscription`.";
+            log.error(error);
+            return FutureUtil.failedFuture(new TransactionConflictException(error));
         }
     }
 
@@ -402,6 +504,10 @@ public class Consumer {
         return MESSAGE_PERMITS_UPDATER.get(this);
     }
 
+    public int getAvgMessagesPerEntry() {
+        return AVG_MESSAGES_PER_ENTRY.get(this);
+    }
+
     public boolean isBlocked() {
         return blockedConsumerOnUnackedMsgs;
     }
@@ -427,21 +533,35 @@ public class Consumer {
 
     public void updateRates() {
         msgOut.calculateRate();
+        chuckedMessageRate.calculateRate();
         msgRedeliver.calculateRate();
         stats.msgRateOut = msgOut.getRate();
         stats.msgThroughputOut = msgOut.getValueRate();
         stats.msgRateRedeliver = msgRedeliver.getRate();
+        stats.chuckedMessageRate = chuckedMessageRate.getRate();
     }
 
     public ConsumerStats getStats() {
+        stats.msgOutCounter = msgOutCounter.longValue();
+        stats.bytesOutCounter = bytesOutCounter.longValue();
+        stats.lastAckedTimestamp = lastAckedTimestamp;
+        stats.lastConsumedTimestamp = lastConsumedTimestamp;
         stats.availablePermits = getAvailablePermits();
         stats.unackedMessages = unackedMessages;
         stats.blockedConsumerOnUnackedMsgs = blockedConsumerOnUnackedMsgs;
+        stats.avgMessagesPerEntry = getAvgMessagesPerEntry();
+        if (readPositionWhenJoining != null) {
+            stats.readPositionWhenJoining = readPositionWhenJoining.toString();
+        }
         return stats;
     }
 
     public int getUnackedMessages() {
         return unackedMessages;
+    }
+
+    public PulsarApi.KeySharedMeta getKeySharedMeta() {
+        return keySharedMeta;
     }
 
     @Override
@@ -613,6 +733,14 @@ public class Consumer {
     private void clearUnAckedMsgs() {
         int unaAckedMsgs = UNACKED_MESSAGES_UPDATER.getAndSet(this, 0);
         subscription.addUnAckedMessages(-unaAckedMsgs);
+    }
+
+    public boolean isPreciseDispatcherFlowControl() {
+        return preciseDispatcherFlowControl;
+    }
+
+    public void setReadPositionWhenJoining(PositionImpl readPositionWhenJoining) {
+        this.readPositionWhenJoining = readPositionWhenJoining;
     }
 
     private static final Logger log = LoggerFactory.getLogger(Consumer.class);
