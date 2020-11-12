@@ -595,8 +595,11 @@ public class PulsarService implements AutoCloseable {
 
             acquireSLANamespace();
 
+            // start package manager service
+            LOG.info("setup package manager service");
             this.packageStorageProvider = PackageStorageProvider.newProvider(config.getPackageStorageProvider());
             this.packageService = new PackageImpl(packageStorageProvider.getStorage(config));
+            LOG.info("package manager service is ready");
 
             // start function worker service if necessary
             this.startWorkerService(brokerService.getAuthenticationService(), brokerService.getAuthorizationService());
@@ -854,6 +857,10 @@ public class PulsarService implements AutoCloseable {
      */
     public NamespaceService getNamespaceService() {
         return this.nsService;
+    }
+
+    public PackageImpl getPackageManagerService() {
+        return this.packageService;
     }
 
     public WorkerService getWorkerService() {

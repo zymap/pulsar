@@ -37,16 +37,14 @@ import java.util.concurrent.ExecutionException;
 public class PackageManagerBase extends AdminResource {
     private static final Logger log = LoggerFactory.getLogger(PackageManagerBase.class);
 
-    private final PackageImpl packagesImpl;
-
-    protected PackageManagerBase() {
-        this.packagesImpl = pulsar().getPackageService();
+    protected PackageImpl getPackageManager() {
+        return pulsar().getPackageManagerService();
     }
 
     protected PackageMetadata internalGetMeta(String type, String tenant, String namespace, String pacakgeName, String version) {
         try {
             PackageName name = PackageName.get(type, tenant, namespace, pacakgeName, version);
-            return packagesImpl.getMeta(name).get();
+            return getPackageManager().getMeta(name).get();
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, illegalArgumentException.getMessage());
         } catch (InterruptedException e) {
@@ -56,10 +54,27 @@ public class PackageManagerBase extends AdminResource {
         }
     }
 
+    protected void internalUploadMeta(String type, String tenant, String namespace, String packageName, String version, PackageMetadata metadata) {
+        try {
+            PackageName name = PackageName.get(type, tenant, namespace, packageName, version);
+            System.out.println("pacakge name is " + name.toString());
+            getPackageManager().setMeta(name, metadata).get();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            illegalArgumentException.printStackTrace();
+            throw new RestException(Response.Status.PRECONDITION_FAILED, illegalArgumentException.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RestException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            throw new RestException(Response.Status.INTERNAL_SERVER_ERROR, e.getCause().getMessage());
+        }
+    }
+
     protected void internalUpdateMeta(String type, String tenant, String namespace, String packageName, String version, PackageMetadata metadata) {
         try {
             PackageName name = PackageName.get(type, tenant, namespace, packageName, version);
-            packagesImpl.updateMeta(name, metadata).get();
+            getPackageManager().updateMeta(name, metadata).get();
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, illegalArgumentException.getMessage());
         } catch (InterruptedException e) {
@@ -74,7 +89,7 @@ public class PackageManagerBase extends AdminResource {
             PackageName name = PackageName.get(type, tenant, namespace, packageName, version);
             return output -> {
                 try {
-                    packagesImpl.download(name, output).get();
+                    getPackageManager().download(name, output).get();
                 } catch (InterruptedException e) {
                     throw new RestException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
                 } catch (ExecutionException e) {
@@ -89,7 +104,7 @@ public class PackageManagerBase extends AdminResource {
     protected void internalUpload(String type, String tenant, String namespace, String pacakgeName, String version, PackageMetadata metadata, InputStream uploadedInputStream) {
         try {
             PackageName name = PackageName.get(type, tenant, namespace, pacakgeName, version);
-            packagesImpl.upload(name, metadata, uploadedInputStream).get();
+            getPackageManager().upload(name, metadata, uploadedInputStream).get();
         } catch (IllegalArgumentException iae) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, iae.getMessage());
         }catch (InterruptedException e) {
@@ -102,7 +117,7 @@ public class PackageManagerBase extends AdminResource {
     protected void internalDelete(String type, String tenant, String namespace, String pacakgeName, String version) {
         try {
             PackageName name = PackageName.get(type, tenant, namespace, pacakgeName, version);
-            packagesImpl.delete(name).get();
+            getPackageManager().delete(name).get();
         } catch (IllegalArgumentException iae) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, iae.getMessage());
         }catch (InterruptedException e) {
@@ -114,7 +129,7 @@ public class PackageManagerBase extends AdminResource {
     protected List<PackageName> internalList(String type, String tenant, String namespace, String pacakgeName, String version) {
         try {
             PackageName name = PackageName.get(type, tenant, namespace, pacakgeName, version);
-            return packagesImpl.list(name).get();
+            return getPackageManager().list(name).get();
         } catch (IllegalArgumentException iae) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, iae.getMessage());
         }catch (InterruptedException e) {
@@ -128,7 +143,7 @@ public class PackageManagerBase extends AdminResource {
         try {
             PackageType packageType = PackageType.getEnum(type);
             NamespaceName namespaceName = NamespaceName.get(tenant, namespace);
-            return packagesImpl.list(packageType, namespaceName).get();
+            return getPackageManager().list(packageType, namespaceName).get();
         } catch (IllegalArgumentException iae) {
             throw new RestException(Response.Status.PRECONDITION_FAILED, iae.getMessage());
         }catch (InterruptedException e) {
