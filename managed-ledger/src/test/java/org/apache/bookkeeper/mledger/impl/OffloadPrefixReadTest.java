@@ -52,6 +52,7 @@ import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.LedgerOffloader;
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedgerConfig;
+import org.apache.bookkeeper.net.BookieId;
 import org.apache.bookkeeper.net.BookieSocketAddress;
 import org.apache.bookkeeper.test.MockedBookKeeperTestCase;
 import org.apache.pulsar.common.policies.data.OffloadPolicies;
@@ -254,6 +255,7 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
         private final State state;
         private final byte[] password;
         private final Map<String, byte[]> customMetadata;
+        private final long ledgerId;
 
         MockMetadata(LedgerMetadata toCopy) {
             ensembleSize = toCopy.getEnsembleSize();
@@ -268,6 +270,7 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
             state = toCopy.getState();
             password = Arrays.copyOf(toCopy.getPassword(), toCopy.getPassword().length);
             customMetadata = ImmutableMap.copyOf(toCopy.getCustomMetadata());
+            ledgerId = toCopy.getLedgerId();
         }
 
         @Override
@@ -282,6 +285,11 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
         @Override
         public long getCToken() {
             return 0;
+        }
+
+        @Override
+        public long getLedgerId() {
+            return ledgerId;
         }
 
         @Override
@@ -315,12 +323,12 @@ public class OffloadPrefixReadTest extends MockedBookKeeperTestCase {
         public Map<String, byte[]> getCustomMetadata() { return customMetadata; }
 
         @Override
-        public List<BookieSocketAddress> getEnsembleAt(long entryId) {
+        public List<BookieId> getEnsembleAt(long entryId) {
             throw new UnsupportedOperationException("Pulsar shouldn't look at this");
         }
 
         @Override
-        public NavigableMap<Long, ? extends List<BookieSocketAddress>> getAllEnsembles() {
+        public NavigableMap<Long, ? extends List<BookieId>> getAllEnsembles() {
             throw new UnsupportedOperationException("Pulsar shouldn't look at this");
         }
 
