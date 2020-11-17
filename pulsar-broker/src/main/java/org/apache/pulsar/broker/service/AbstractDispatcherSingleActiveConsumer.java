@@ -41,6 +41,8 @@ public abstract class AbstractDispatcherSingleActiveConsumer extends AbstractBas
             AtomicReferenceFieldUpdater.newUpdater(AbstractDispatcherSingleActiveConsumer.class, Consumer.class, "activeConsumer");
     private volatile Consumer activeConsumer = null;
     protected final CopyOnWriteArrayList<Consumer> consumers;
+    protected StickyKeyConsumerSelector stickyKeyConsumerSelector;
+    protected boolean isKeyHashRangeFiltered = false;
     protected CompletableFuture<Void> closeFuture = null;
     protected final int partitionIndex;
 
@@ -68,8 +70,6 @@ public abstract class AbstractDispatcherSingleActiveConsumer extends AbstractBas
     protected abstract void readMoreEntries(Consumer consumer);
 
     protected abstract void cancelPendingRead();
-
-    protected abstract boolean isConsumersExceededOnTopic();
 
     protected abstract boolean isConsumersExceededOnSubscription();
 
@@ -143,14 +143,20 @@ public abstract class AbstractDispatcherSingleActiveConsumer extends AbstractBas
             throw new ConsumerBusyException("Exclusive consumer is already connected");
         }
 
-        if (isConsumersExceededOnTopic()) {
-            log.warn("[{}] Attempting to add consumer to topic which reached max consumers limit", this.topicName);
-            throw new ConsumerBusyException("Topic reached max consumers limit");
-        }
-
         if (subscriptionType == SubType.Failover && isConsumersExceededOnSubscription()) {
             log.warn("[{}] Attempting to add consumer to subscription which reached max consumers limit", this.topicName);
             throw new ConsumerBusyException("Subscription reached max consumers limit");
+        }
+
+        if (subscriptionType == SubType.Exclusive
+                && consumer.getKeySharedMeta() != null
+                && consumer.getKeySharedMeta().getHashRangesList() != null
+                && consumer.getKeySharedMeta().getHashRangesList().size() > 0) {
+            stickyKeyConsumerSelector = new HashRangeExclusiveStickyKeyConsumerSelector();
+            stickyKeyConsumerSelector.addConsumer(consumer);
+            isKeyHashRangeFiltered = true;
+        } else {
+            isKeyHashRangeFiltered = false;
         }
 
         consumers.add(consumer);
@@ -219,16 +225,25 @@ public abstract class AbstractDispatcherSingleActiveConsumer extends AbstractBas
      *
      * @return
      */
-    public synchronized CompletableFuture<Void> disconnectAllConsumers() {
+    public synchronized CompletableFuture<Void> disconnectAllConsumers(boolean isResetCursor) {
         closeFuture = new CompletableFuture<>();
 
         if (!consumers.isEmpty()) {
-            consumers.forEach(Consumer::disconnect);
+            consumers.forEach(consumer -> consumer.disconnect(isResetCursor));
             cancelPendingRead();
         } else {
             // no consumer connected, complete disconnect immediately
             closeFuture.complete(null);
         }
+        return closeFuture;
+    }
+
+    public synchronized CompletableFuture<Void> disconnectActiveConsumers(boolean isResetCursor) {
+        closeFuture = new CompletableFuture<>();
+        if (activeConsumer != null) {
+            activeConsumer.disconnect(isResetCursor);
+        }
+        closeFuture.complete(null);
         return closeFuture;
     }
 

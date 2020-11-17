@@ -28,14 +28,20 @@ import com.google.common.base.MoreObjects;
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.mledger.impl.PositionImpl;
+import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.service.BrokerServiceException;
 import org.apache.pulsar.broker.service.BrokerServiceException.ServerMetadataException;
 import org.apache.pulsar.broker.service.BrokerServiceException.SubscriptionBusyException;
 import org.apache.pulsar.broker.service.BrokerServiceException.SubscriptionFencedException;
 import org.apache.pulsar.broker.service.Consumer;
 import org.apache.pulsar.broker.service.Dispatcher;
+import org.apache.pulsar.broker.service.HashRangeAutoSplitStickyKeyConsumerSelector;
+import org.apache.pulsar.broker.service.ConsistentHashingStickyKeyConsumerSelector;
+import org.apache.pulsar.broker.service.HashRangeExclusiveStickyKeyConsumerSelector;
+import org.apache.pulsar.broker.service.StickyKeyConsumerSelector;
 import org.apache.pulsar.broker.service.Subscription;
 import org.apache.pulsar.broker.service.Topic;
+import org.apache.pulsar.common.api.proto.PulsarApi.KeySharedMeta;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 import org.apache.pulsar.common.api.proto.PulsarApi.CommandSubscribe.SubType;
 import org.apache.pulsar.common.naming.TopicName;
@@ -58,12 +64,16 @@ public class NonPersistentSubscription implements Subscription {
     @SuppressWarnings("unused")
     private volatile int isFenced = FALSE;
 
+    // Timestamp of when this subscription was last seen active
+    private volatile long lastActive;
+
     public NonPersistentSubscription(NonPersistentTopic topic, String subscriptionName) {
         this.topic = topic;
         this.topicName = topic.getName();
         this.subName = subscriptionName;
         this.fullName = MoreObjects.toStringHelper(this).add("topic", topicName).add("name", subName).toString();
         IS_FENCED_UPDATER.set(this, FALSE);
+        this.lastActive = System.currentTimeMillis();
     }
 
     @Override
@@ -83,6 +93,7 @@ public class NonPersistentSubscription implements Subscription {
 
     @Override
     public synchronized void addConsumer(Consumer consumer) throws BrokerServiceException {
+        updateLastActive();
         if (IS_FENCED_UPDATER.get(this) == TRUE) {
             log.warn("Attempting to add consumer {} on a fenced subscription", consumer);
             throw new SubscriptionFencedException("Subscription is fenced");
@@ -120,7 +131,28 @@ public class NonPersistentSubscription implements Subscription {
             case Key_Shared:
                 if (dispatcher == null || dispatcher.getType() != SubType.Key_Shared) {
                     previousDispatcher = dispatcher;
-                    dispatcher = new NonPersistentStickyKeyDispatcherMultipleConsumers(topic, this);
+                    KeySharedMeta ksm = consumer.getKeySharedMeta() != null ? consumer.getKeySharedMeta() : KeySharedMeta.getDefaultInstance();
+
+                    switch (ksm.getKeySharedMode()) {
+                        case STICKY:
+                            dispatcher = new NonPersistentStickyKeyDispatcherMultipleConsumers(topic, this,
+                                    new HashRangeExclusiveStickyKeyConsumerSelector());
+                            break;
+
+                        case AUTO_SPLIT:
+                        default:
+                            StickyKeyConsumerSelector selector;
+                            ServiceConfiguration conf = topic.getBrokerService().getPulsar().getConfiguration();
+                            if (conf.isSubscriptionKeySharedUseConsistentHashing()) {
+                                selector = new ConsistentHashingStickyKeyConsumerSelector(
+                                        conf.getSubscriptionKeySharedConsistentHashingReplicaPoints());
+                            } else {
+                                selector = new HashRangeAutoSplitStickyKeyConsumerSelector();
+                            }
+
+                            dispatcher = new NonPersistentStickyKeyDispatcherMultipleConsumers(topic, this, selector);
+                            break;
+                    }
                 }
                 break;
             default:
@@ -145,7 +177,8 @@ public class NonPersistentSubscription implements Subscription {
     }
 
     @Override
-    public synchronized void removeConsumer(Consumer consumer) throws BrokerServiceException {
+    public synchronized void removeConsumer(Consumer consumer, boolean isResetCursor) throws BrokerServiceException {
+        updateLastActive();
         if (dispatcher != null) {
             dispatcher.removeConsumer(consumer);
         }
@@ -230,7 +263,7 @@ public class NonPersistentSubscription implements Subscription {
     }
 
     @Override
-    public long getNumberOfEntriesInBacklog() {
+    public long getNumberOfEntriesInBacklog(boolean getPreciseBacklog) {
         // No-op
         return 0;
     }
@@ -284,12 +317,53 @@ public class NonPersistentSubscription implements Subscription {
      */
     @Override
     public CompletableFuture<Void> delete() {
+        return delete(false);
+    }
+
+    /**
+     * Forcefully close all consumers and deletes the subscription.
+     * @return
+     */
+    @Override
+    public CompletableFuture<Void> deleteForcefully() {
+        return delete(true);
+    }
+
+    /**
+     * Delete the subscription by closing and deleting its managed cursor. Handle unsubscribe call from admin layer.
+     *
+     * @param closeIfConsumersConnected
+     *            Flag indicate whether explicitly close connected consumers before trying to delete subscription. If
+     *            any consumer is connected to it and if this flag is disable then this operation fails.
+     * @return CompletableFuture indicating the completion of delete operation
+     */
+    private CompletableFuture<Void> delete(boolean closeIfConsumersConnected) {
         CompletableFuture<Void> deleteFuture = new CompletableFuture<>();
 
         log.info("[{}][{}] Unsubscribing", topicName, subName);
 
+        CompletableFuture<Void> closeSubscriptionFuture = new CompletableFuture<>();
+
+        if (closeIfConsumersConnected) {
+            this.disconnect().thenRun(() -> {
+                closeSubscriptionFuture.complete(null);
+            }).exceptionally(ex -> {
+                log.error("[{}][{}] Error disconnecting and closing subscription", topicName, subName, ex);
+                closeSubscriptionFuture.completeExceptionally(ex);
+                return null;
+            });
+        } else {
+            this.close().thenRun(() -> {
+                closeSubscriptionFuture.complete(null);
+            }).exceptionally(exception -> {
+                log.error("[{}][{}] Error closing subscription", topicName, subName, exception);
+                closeSubscriptionFuture.completeExceptionally(exception);
+                return null;
+            });
+        }
+
         // cursor close handles pending delete (ack) operations
-        this.close().thenCompose(v -> topic.unsubscribe(subName)).thenAccept(v -> {
+        closeSubscriptionFuture.thenCompose(v -> topic.unsubscribe(subName)).thenAccept(v -> {
             synchronized (this) {
                 (dispatcher != null ? dispatcher.close() : CompletableFuture.completedFuture(null)).thenRun(() -> {
                     log.info("[{}][{}] Successfully deleted subscription", topicName, subName);
@@ -364,6 +438,8 @@ public class NonPersistentSubscription implements Subscription {
                 subStats.consumers.add(consumerStats);
                 subStats.msgRateOut += consumerStats.msgRateOut;
                 subStats.msgThroughputOut += consumerStats.msgThroughputOut;
+                subStats.bytesOutCounter += consumerStats.bytesOutCounter;
+                subStats.msgOutCounter += consumerStats.msgOutCounter;
                 subStats.msgRateRedeliver += consumerStats.msgRateRedeliver;
             });
         }
@@ -404,6 +480,20 @@ public class NonPersistentSubscription implements Subscription {
         return CompletableFuture.completedFuture(null);
     }
 
+    @Override
+    public CompletableFuture<Void> endTxn(long txnidMostBits, long txnidLeastBits, int txnAction) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        completableFuture.completeExceptionally(new Exception("Unsupported operation end txn for NonPersistentSubscription"));
+        return completableFuture;
+    }
+
     private static final Logger log = LoggerFactory.getLogger(NonPersistentSubscription.class);
 
+    public long getLastActive() {
+        return lastActive;
+    }
+
+    public void updateLastActive() {
+        this.lastActive = System.currentTimeMillis();
+    }
 }

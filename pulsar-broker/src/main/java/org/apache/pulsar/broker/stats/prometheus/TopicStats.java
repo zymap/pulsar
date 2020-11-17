@@ -34,6 +34,10 @@ class TopicStats {
     double rateOut;
     double throughputIn;
     double throughputOut;
+    long msgInCounter;
+    long bytesInCounter;
+    long msgOutCounter;
+    long bytesOutCounter;
 
     long storageSize;
     public long msgBacklog;
@@ -44,6 +48,7 @@ class TopicStats {
     long backlogQuotaLimit;
 
     StatsBuckets storageWriteLatencyBuckets = new StatsBuckets(ManagedLedgerMBeanImpl.ENTRY_LATENCY_BUCKETS_USEC);
+    StatsBuckets storageLedgerWriteLatencyBuckets = new StatsBuckets(ManagedLedgerMBeanImpl.ENTRY_LATENCY_BUCKETS_USEC);
     StatsBuckets entrySizeBuckets = new StatsBuckets(ManagedLedgerMBeanImpl.ENTRY_SIZE_BUCKETS_BYTES);
     double storageWriteRate;
     double storageReadRate;
@@ -63,6 +68,10 @@ class TopicStats {
         rateOut = 0;
         throughputIn = 0;
         throughputOut = 0;
+        bytesInCounter = 0;
+        msgInCounter = 0;
+        bytesOutCounter = 0;
+        msgOutCounter = 0;
 
         storageSize = 0;
         msgBacklog = 0;
@@ -75,6 +84,7 @@ class TopicStats {
         replicationStats.clear();
         subscriptionStats.clear();
         storageWriteLatencyBuckets.reset();
+        storageLedgerWriteLatencyBuckets.reset();
         entrySizeBuckets.reset();
     }
 
@@ -115,6 +125,22 @@ class TopicStats {
         metric(stream, cluster, namespace, topic, "pulsar_storage_write_latency_sum",
                 stats.storageWriteLatencyBuckets.getSum());
 
+        long[] ledgerWritelatencyBuckets = stats.storageLedgerWriteLatencyBuckets.getBuckets();
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_0_5", ledgerWritelatencyBuckets[0]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_1", ledgerWritelatencyBuckets[1]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_5", ledgerWritelatencyBuckets[2]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_10", ledgerWritelatencyBuckets[3]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_20", ledgerWritelatencyBuckets[4]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_50", ledgerWritelatencyBuckets[5]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_100", ledgerWritelatencyBuckets[6]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_200", ledgerWritelatencyBuckets[7]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_le_1000", ledgerWritelatencyBuckets[8]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_overflow", ledgerWritelatencyBuckets[9]);
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_count",
+                stats.storageLedgerWriteLatencyBuckets.getCount());
+        metric(stream, cluster, namespace, topic, "pulsar_storage_ledger_write_latency_sum",
+                stats.storageLedgerWriteLatencyBuckets.getSum());
+
         long[] entrySizeBuckets = stats.entrySizeBuckets.getBuckets();
         metric(stream, cluster, namespace, topic, "pulsar_entry_size_le_128", entrySizeBuckets[0]);
         metric(stream, cluster, namespace, topic, "pulsar_entry_size_le_512", entrySizeBuckets[1]);
@@ -130,12 +156,15 @@ class TopicStats {
 
         stats.subscriptionStats.forEach((n, subsStats) -> {
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_back_log", subsStats.msgBacklog);
+            metric(stream, cluster, namespace, topic, n, "pulsar_subscription_back_log_no_delayed", subsStats.msgBacklogNoDelayed);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_delayed", subsStats.msgDelayed);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_msg_rate_redeliver", subsStats.msgRateRedeliver);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_unacked_messages", subsStats.unackedMessages);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_blocked_on_unacked_messages", subsStats.blockedSubscriptionOnUnackedMsgs ? 1 : 0);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_msg_rate_out", subsStats.msgRateOut);
             metric(stream, cluster, namespace, topic, n, "pulsar_subscription_msg_throughput_out", subsStats.msgThroughputOut);
+            metric(stream, cluster, namespace, topic, n, "pulsar_out_bytes_total", subsStats.bytesOutCounter);
+            metric(stream, cluster, namespace, topic, n, "pulsar_out_messages_total", subsStats.msgOutCounter);
             subsStats.consumerStat.forEach((c, consumerStats) -> {
                 metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_consumer_msg_rate_redeliver", consumerStats.msgRateRedeliver);
                 metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_consumer_unacked_messages", consumerStats.unackedMessages);
@@ -143,6 +172,8 @@ class TopicStats {
                 metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_consumer_msg_rate_out", consumerStats.msgRateOut);
                 metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_consumer_msg_throughput_out", consumerStats.msgThroughputOut);
                 metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_consumer_available_permits", consumerStats.availablePermits);
+                metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_out_bytes_total", consumerStats.bytesOutCounter);
+                metric(stream, cluster, namespace, topic, n, c.consumerName(), c.consumerId(), "pulsar_out_messages_total", consumerStats.msgOutCounter);
             });
         });
 
@@ -162,6 +193,9 @@ class TopicStats {
                         replStats.replicationBacklog);
             });
         }
+
+        metric(stream, cluster, namespace, topic, "pulsar_in_bytes_total", stats.bytesInCounter);
+        metric(stream, cluster, namespace, topic, "pulsar_in_messages_total", stats.msgInCounter);
     }
 
     static void metricType(SimpleTextOutputStream stream, String name) {

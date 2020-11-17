@@ -19,7 +19,6 @@
 
 package org.apache.pulsar.packages.manager.storage.bk;
 
-import java.util.concurrent.CompletableFuture;
 import org.apache.pulsar.packages.manager.PackageStorage;
 import org.apache.pulsar.packages.manager.PackageStorageConfig;
 import org.apache.pulsar.packages.manager.PackageStorageProvider;
@@ -29,7 +28,7 @@ import org.apache.pulsar.packages.manager.PackageStorageProvider;
  */
 public class BKPackageStorageProvider implements PackageStorageProvider {
     @Override
-    public CompletableFuture<PackageStorage> getStorage(PackageStorageConfig config) {
-        return CompletableFuture.completedFuture(new BKPackageStorage(config));
+    public PackageStorage getStorage(PackageStorageConfig config) {
+        return new BKPackageStorage(config);
     }
 }

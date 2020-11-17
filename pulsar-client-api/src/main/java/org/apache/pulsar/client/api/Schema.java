@@ -21,6 +21,10 @@ package org.apache.pulsar.client.api;
 import java.nio.ByteBuffer;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import org.apache.pulsar.client.api.schema.GenericRecord;
 import org.apache.pulsar.client.api.schema.GenericSchema;
@@ -35,7 +39,7 @@ import org.apache.pulsar.common.schema.SchemaType;
 /**
  * Message schema definition.
  */
-public interface Schema<T> {
+public interface Schema<T> extends Cloneable{
 
     /**
      * Check if the message is a valid object for this schema.
@@ -137,6 +141,13 @@ public interface Schema<T> {
     }
 
     /**
+     * Duplicates the schema.
+     *
+     * @return The duplicated schema.
+     */
+    Schema<T> clone();
+
+    /**
      * Schema that doesn't perform any encoding on the message payloads. Accepts a byte array and it passes it through.
      */
     Schema<byte[]> BYTES = DefaultImplementation.newBytesSchema();
@@ -200,6 +211,23 @@ public interface Schema<T> {
      * Timestamp Schema.
      */
     Schema<Timestamp> TIMESTAMP = DefaultImplementation.newTimestampSchema();
+
+    /**
+     * Instant Schema.
+     */
+    Schema<Instant> INSTANT = DefaultImplementation.newInstantSchema();
+    /**
+     * LocalDate Schema.
+     */
+    Schema<LocalDate> LOCAL_DATE = DefaultImplementation.newLocalDateSchema();
+    /**
+     * LocalTime Schema.
+     */
+    Schema<LocalTime> LOCAL_TIME = DefaultImplementation.newLocalTimeSchema();
+    /**
+     * LocalDateTime Schema.
+     */
+    Schema<LocalDateTime> LOCAL_DATE_TIME = DefaultImplementation.newLocalDateTimeSchema();
 
     // CHECKSTYLE.OFF: MethodName
 

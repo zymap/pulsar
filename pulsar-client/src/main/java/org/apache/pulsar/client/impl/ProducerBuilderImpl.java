@@ -28,6 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.BatcherBuilder;
 import org.apache.pulsar.client.api.CompressionType;
@@ -50,6 +52,7 @@ import lombok.NonNull;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+@Getter(AccessLevel.PUBLIC)
 public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
 
     private final PulsarClientImpl client;
@@ -93,6 +96,9 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
 
     @Override
     public CompletableFuture<Producer<T>> createAsync() {
+        // config validation
+        checkArgument(!(conf.isBatchingEnabled() && conf.isChunkingEnabled()),
+                "Batching and chunking of messages can't be enabled together");
         if (conf.getTopicName() == null) {
             return FutureUtil
                     .failedFuture(new IllegalArgumentException("Topic name must be set on the producer builder"));
@@ -184,6 +190,12 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     }
 
     @Override
+    public ProducerBuilder<T> enableChunking(boolean chunkingEnabled) {
+        conf.setChunkingEnabled(chunkingEnabled);
+        return this;
+    }
+
+    @Override
     public ProducerBuilder<T> cryptoKeyReader(@NonNull CryptoKeyReader cryptoKeyReader) {
         conf.setCryptoKeyReader(cryptoKeyReader);
         return this;
@@ -209,8 +221,20 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     }
 
     @Override
+    public ProducerBuilder<T> roundRobinRouterBatchingPartitionSwitchFrequency(int frequency) {
+        conf.setBatchingPartitionSwitchFrequencyByPublishDelay(frequency);
+        return this;
+    }
+
+    @Override
     public ProducerBuilder<T> batchingMaxMessages(int batchMessagesMaxMessagesPerBatch) {
         conf.setBatchingMaxMessages(batchMessagesMaxMessagesPerBatch);
+        return this;
+    }
+
+    @Override
+    public ProducerBuilder<T> batchingMaxBytes(int batchingMaxBytes) {
+        conf.setBatchingMaxBytes(batchingMaxBytes);
         return this;
     }
 
@@ -267,6 +291,12 @@ public class ProducerBuilderImpl<T> implements ProducerBuilder<T> {
     @Override
     public ProducerBuilder<T> autoUpdatePartitions(boolean autoUpdate) {
         conf.setAutoUpdatePartitions(autoUpdate);
+        return this;
+    }
+
+    @Override
+    public ProducerBuilder<T> autoUpdatePartitionsInterval(int interval, TimeUnit unit) {
+        conf.setAutoUpdatePartitionsIntervalSeconds(interval, unit);
         return this;
     }
 

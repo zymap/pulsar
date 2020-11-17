@@ -38,10 +38,22 @@ module.exports = {
       roles: 'Committer'
     },
     {
+      name: 'Hang Chen',
+      apacheId: 'chenhang',
+      org: 'BIGO Technology',
+      roles: 'Committer'
+    },
+    {
       name: 'Hiroyuki Sakai',
       apacheId: 'hrsakai',
       org: 'Yahoo Japan Corporation',
       roles: 'Committer, PMC'
+    },
+    {
+      name: 'Huanli Meng',
+      apacheId: 'huanlimeng',
+      org: 'StreamNative',
+      roles: 'Committer'
     },
     {
       name: 'Ivan Brendan Kelly',
@@ -159,6 +171,12 @@ module.exports = {
       apacheId: 'rxl',
       org: 'StreamNative',
       roles: 'Committer'
+    },
+    {
+        name: 'Yu Liu',
+        apacheId: 'liuyu',
+        org: 'StreamNative',
+        roles: 'Committer'
     },
     {
       name: 'Yuki Shiga',

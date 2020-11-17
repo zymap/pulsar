@@ -104,6 +104,12 @@ class PULSAR_PUBLIC Message {
     const MessageId& getMessageId() const;
 
     /**
+     * Set the unique message ID.
+     *
+     */
+    void setMessageId(const MessageId& messageID) const;
+
+    /**
      * Get the partition key for this message
      * @return key string that is hashed to determine message's topic partition
      */
@@ -141,6 +147,21 @@ class PULSAR_PUBLIC Message {
      */
     const std::string& getTopicName() const;
 
+    /**
+     * Get the redelivery count for this message
+     */
+    const int getRedeliveryCount() const;
+
+    /**
+     * Check if schema version exists
+     */
+    bool hasSchemaVersion() const;
+
+    /**
+     * Get the schema version
+     */
+    const std::string& getSchemaVersion() const;
+
     bool operator==(const Message& msg) const;
 
    private:
@@ -160,10 +181,11 @@ class PULSAR_PUBLIC Message {
     friend class ConsumerImpl;
     friend class ProducerImpl;
     friend class Commands;
-    friend class BatchMessageContainer;
+    friend class BatchMessageContainerBase;
     friend class BatchAcknowledgementTracker;
     friend class PulsarWrapper;
     friend class MessageBatch;
+    friend struct OpSendMsg;
 
     friend PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const StringMap& map);
     friend PULSAR_PUBLIC std::ostream& operator<<(std::ostream& s, const Message& msg);
