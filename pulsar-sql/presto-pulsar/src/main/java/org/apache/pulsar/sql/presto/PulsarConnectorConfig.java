@@ -70,6 +70,8 @@ public class PulsarConnectorConfig implements AutoCloseable {
     private PulsarAdmin pulsarAdmin;
 
     // --- Bookkeeper
+    private boolean useV2Protocol = true;
+    private int explicitInterval = 0;
     private int bookkeeperThrottleValue = 0;
     private int bookkeeperNumIOThreads = 2 * Runtime.getRuntime().availableProcessors();
     private int bookkeeperNumWorkerThreads = Runtime.getRuntime().availableProcessors();
@@ -304,6 +306,26 @@ public class PulsarConnectorConfig implements AutoCloseable {
     }
 
     // --- Bookkeeper Config ---
+
+    public boolean getUseV2Protocol() {
+        return useV2Protocol;
+    }
+
+    @Config("pulsar.bookkeeper-useV2Protocol")
+    public PulsarConnectorConfig setUseV2Protocol(boolean useV2Protocol) {
+        this.useV2Protocol = useV2Protocol;
+        return this;
+    }
+
+    public int getExplicitInterval() {
+        return explicitInterval;
+    }
+
+    @Config("pulsar.bookkeeper-explicitInterval")
+    public PulsarConnectorConfig setExplicitInterval(int explicitInterval) {
+        this.explicitInterval = explicitInterval;
+        return this;
+    }
 
     public int getBookkeeperThrottleValue() {
         return bookkeeperThrottleValue;

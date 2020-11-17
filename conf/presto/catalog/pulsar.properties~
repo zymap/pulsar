@@ -75,8 +75,8 @@ pulsar.rewrite-namespace-delimiter=/
 
 ####### BOOKKEEPER CONFIGS #######
 
-pulsar.bookkeeper-useV2Protocol = false
-pulsar.bookkeeper-explicitInterval = 10
+pulsar.bookkeeper-useV2Protocol = true
+pulsar.bookkeeper-explicitInterval = 0
 
 # Entries read count throttling-limit per seconds, 0 is represents disable the throttle, default is 0.
 pulsar.bookkeeper-throttle-value = 0

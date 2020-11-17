@@ -513,8 +513,8 @@ bookkeeperDiskWeightBasedPlacementEnabled=false
 
 # Set the interval to check the need for sending an explicit LAC
 # A value of '0' disables sending any explicit LACs. Default is 0.
-bookkeeperExplicitLacIntervalInMills=10
-bookkeeperUseV2WireProtocol=false
+bookkeeperExplicitLacIntervalInMills=0
+bookkeeperUseV2WireProtocol=true
 
 # Expose bookkeeper client managed ledger stats to prometheus. default is false
 # bookkeeperClientExposeStatsToPrometheus=false
