@@ -298,5 +298,10 @@ public class AuthenticationProviderToken implements AuthenticationProvider {
         public boolean isExpired() {
             return expiration < System.currentTimeMillis();
         }
+
+        @Override
+        public AuthData refreshAuthentication() throws AuthenticationException {
+            return AuthData.of("refresh".getBytes(UTF_8));
+        }
     }
 }

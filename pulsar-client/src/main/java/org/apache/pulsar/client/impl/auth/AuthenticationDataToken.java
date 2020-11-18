@@ -19,12 +19,16 @@
 
 package org.apache.pulsar.client.impl.auth;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import org.apache.pulsar.client.api.AuthenticationDataProvider;
+import org.apache.pulsar.common.api.AuthData;
+
+import javax.naming.AuthenticationException;
 
 public class AuthenticationDataToken implements AuthenticationDataProvider {
     public final static String HTTP_HEADER_NAME = "Authorization";
@@ -61,5 +65,15 @@ public class AuthenticationDataToken implements AuthenticationDataProvider {
         } catch (Throwable t) {
             throw new RuntimeException("failed to get client token", t);
         }
+    }
+
+    @Override
+    public AuthData authenticate(AuthData data) throws AuthenticationException {
+        if (AuthData.of(AuthData.INIT_AUTH_DATA).equals(data)) {
+            return AuthData.of(getToken().getBytes(StandardCharsets.UTF_8));
+        } else if (AuthData.of("refresh".getBytes(StandardCharsets.UTF_8)).equals(data)) {
+            return AuthData.of(getToken().getBytes(StandardCharsets.UTF_8));
+        }
+        return AuthData.of("INVALID_REFRESH_TOKEN".getBytes(StandardCharsets.UTF_8));
     }
 }

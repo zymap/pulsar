@@ -615,9 +615,6 @@ public class ServerCnx extends PulsarHandler {
         } else if (getState() != State.Connected || !isActive) {
             // Connection is either still being established or already closed.
             return;
-        } else if (authState != null && !authState.isExpired()) {
-            // Credentials are still valid. Nothing to do at this point
-            return;
         } else if (originalPrincipal != null && originalAuthState == null) {
             log.info(
                     "[{}] Cannot revalidate user credential when using proxy and not forwarding the credentials. Closing connection",

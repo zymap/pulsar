@@ -39,7 +39,7 @@ authPlugin=org.apache.pulsar.client.impl.auth.AuthenticationToken
 # Keys depend on the configured authPlugin.
 # e.g. for TLS
 # authParams=tlsCertFile:/path/to/client-cert.pem,tlsKeyFile:/path/to/client-key.pem
-authParams=token:eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjbGllbnQifQ.CmgQAkhL46u8G6OzT1iXrEOrVotL9z63gZdnLF8_JALPN7kP2G8kGkdm3Ho8DeeKPjYd_aaWB9Fo2Lgv7HCIRN6VVB6go6kWI25OHz_M2xWBtzHjYWOqjY6g56K5PItXwKNA4ft5AFf5iZxX2YikxuKwq1MytqFqN53aev1MPkSvQyZtThh6OlS3oZwEVRxT8-akks1DcUjWTu5KAu87gHG8CGYvITOLd8R9BOW2J1ZUEOpJUKQaY7oZBx0-egLFYGJJb4NLoSzDFfKXg9lascTW7owbV9pJ6xi3MyOkkDdTlzaQzAVlU1MnOek7yBwTbfqcBkMVb-QKdgjDgXaHdA
+authParams=file:///Users/zhangyong/github.com/streamnative/streamnative-tests/config/pulsar/auth/token/super-user.token
 
 # Allow TLS connections to servers whose certificate cannot be
 # be verified to have been signed by a trusted certificate
