@@ -85,19 +85,6 @@ public class PerformanceClient {
         @Parameter(names = { "-s", "--size" }, description = "Message size in byte")
         public int msgSize = 1024;
 
-        @Parameter(names = { "-t", "--num-topic" }, description = "Number of topics")
-        public int numTopics = 1;
-
-        @Parameter(names = { "--auth_plugin" }, description = "Authentication plugin class name")
-        public String authPluginClassName;
-
-        @Parameter(
-            names = { "--auth-params" },
-            description = "Authentication parameters, whose format is determined by the implementation " +
-                "of method `configure` in authentication plugin class, for example \"key1:val1,key2:val2\" " +
-                "or \"{\"key1\":\"val1\",\"key2\":\"val2\"}.")
-        public String authParams;
-
         @Parameter(names = { "-m",
                 "--num-messages" }, description = "Number of messages to publish in total. If 0, it will keep publishing")
         public long numMessages = 0;
