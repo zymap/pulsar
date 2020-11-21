@@ -82,11 +82,6 @@ public class PerformanceClient {
         @Parameter(names = { "-s", "--size" }, description = "Message size in byte")
         public int msgSize = 1024;
 
-        @Parameter(names = { "-t", "--num-topic" }, description = "Number of topics")
-        public int numTopics = 1;
-
-        @Parameter(names = { "--auth_plugin" }, description = "Authentication plugin class name")
-        public String authPluginClassName;
 
         @Parameter(
             names = { "--auth-params" },
