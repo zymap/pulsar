@@ -79,9 +79,6 @@ public class PerformanceClient {
         @Parameter(description = "persistent://tenant/ns/my-topic", required = true)
         public List<String> topics;
 
-        @Parameter(names = { "-r", "--rate" }, description = "Publish rate msg/s across topics")
-        public int msgRate = 100;
-
         @Parameter(names = { "-s", "--size" }, description = "Message size in byte")
         public int msgSize = 1024;
 
