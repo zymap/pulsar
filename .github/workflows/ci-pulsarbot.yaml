@@ -57,9 +57,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULSARBOT_TOKEN }}
         with:
           type: prompt-comment
-          github_user: codelipenghui
-          github_email: 'penghui@apache.org'
-          github_repos: 'apache/pulsar'
+          github_user: zymap
+          github_email: 'zhangyong1025.zy@gmail.com'
+          github_repos: 'zymap/pulsar'
 
       - name: Cherry-pick
         if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/pulsarbot cherry-pick')
@@ -67,6 +67,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PULSARBOT_TOKEN }}
         with:
-          github_user: codelipenghui
-          github_email: 'penghui@apache.org'
-          github_repos: 'apache/pulsar'
+          github_user: zymap
+          github_email: 'zhangyong1025.zy@gmail.com'
+          github_repos: 'zymap/pulsar'
