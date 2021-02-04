@@ -117,4 +117,10 @@ public interface ManagedLedgerMXBean {
     long[] getLedgerAddEntryLatencyBuckets();
 
     StatsBuckets getInternalLedgerAddEntryLatencyBuckets();
+
+    // Read entry latency statistics
+
+    double getReadEntryLatency();
+
+    long[] getREntryLatencyBuckets();
 }
