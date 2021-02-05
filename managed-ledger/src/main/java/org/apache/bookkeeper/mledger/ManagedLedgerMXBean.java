@@ -122,5 +122,5 @@ public interface ManagedLedgerMXBean {
 
     double getReadEntryLatency();
 
-    long[] getREntryLatencyBuckets();
+    long[] getReadEntryLatencyBuckets();
 }

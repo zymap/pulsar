@@ -113,6 +113,10 @@ public class ManagedLedgerMetrics extends AbstractMetrics {
                         ManagedLedgerFactoryImpl.StatsPeriodSeconds);
                 populateAggregationMapWithSum(tempAggregatedMetricsMap, "brk_ml_MarkDeleteRate",
                         lStats.getMarkDeleteRate());
+
+                populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_ReadEntryLatencyBuckets",
+                    ENTRY_LATENCY_BUCKETS_MS, lStats.getReadEntryLatencyBuckets(),
+                    ManagedLedgerFactoryImpl.StatsPeriodSeconds);
             }
 
             // SUM up collections of each metrics
