@@ -103,11 +103,18 @@ public class ManagedLedgerMetrics extends AbstractMetrics {
                 populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_LedgerAddEntryLatencyBuckets",
                         ENTRY_LATENCY_BUCKETS_MS, lStats.getLedgerAddEntryLatencyBuckets(), ManagedLedgerFactoryImpl.StatsPeriodSeconds);
                 populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_LedgerSwitchLatencyBuckets",
-                        ENTRY_LATENCY_BUCKETS_MS, lStats.getLedgerSwitchLatencyBuckets(), ManagedLedgerFactoryImpl.StatsPeriodSeconds);
+                        ENTRY_LATENCY_BUCKETS_MS, lStats.getLedgerSwitchLatencyBuckets(),
+                        ManagedLedgerFactoryImpl.StatsPeriodSeconds);
 
-                populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_EntrySizeBuckets", ENTRY_SIZE_BUCKETS_BYTES,
-                        lStats.getEntrySizeBuckets(), ManagedLedgerFactoryImpl.StatsPeriodSeconds);
-                populateAggregationMapWithSum(tempAggregatedMetricsMap, "brk_ml_MarkDeleteRate", lStats.getMarkDeleteRate());
+                populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_EntrySizeBuckets",
+                        ENTRY_SIZE_BUCKETS_BYTES, lStats.getEntrySizeBuckets(),
+                        ManagedLedgerFactoryImpl.StatsPeriodSeconds);
+                populateAggregationMapWithSum(tempAggregatedMetricsMap, "brk_ml_MarkDeleteRate",
+                        lStats.getMarkDeleteRate());
+
+                populateBucketEntries(tempAggregatedMetricsMap, "brk_ml_ReadEntryLatencyBuckets",
+                    ENTRY_LATENCY_BUCKETS_MS, lStats.getReadEntryLatencyBuckets(),
+                    ManagedLedgerFactoryImpl.StatsPeriodSeconds);
             }
 
             // SUM up collections of each metrics

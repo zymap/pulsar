@@ -279,7 +279,7 @@ public class ManagedLedgerMBeanImpl implements ManagedLedgerMXBean {
     }
 
     @Override
-    public long[] getREntryLatencyBuckets() {
+    public long[] getReadEntryLatencyBuckets() {
         return readEntryLatencyStatsUses.getBuckets();
     }
 
