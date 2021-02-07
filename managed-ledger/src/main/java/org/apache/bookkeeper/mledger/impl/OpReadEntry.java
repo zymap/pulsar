@@ -143,6 +143,7 @@ class OpReadEntry implements ReadEntriesCallback {
 
             // Schedule next read in a different thread
             cursor.ledger.getExecutor().execute(safeRun(() -> {
+                updateLatency();
                 readPosition = cursor.ledger.startReadOperationOnLedger(nextReadPosition, OpReadEntry.this);
                 cursor.ledger.asyncReadEntries(OpReadEntry.this);
             }));
