@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -18,48 +19,54 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.pulsar</groupId>
-    <artifactId>distribution</artifactId>
-    <version>2.7.0.6-offload-rc-2</version>
+    <artifactId>pulsar</artifactId>
+    <version>offload-perf-2</version>
     <relativePath>..</relativePath>
   </parent>
 
-  <artifactId>pulsar-offloader-distribution</artifactId>
-  <packaging>pom</packaging>
-  <name>Pulsar :: Distribution :: Offloader</name>
+  <artifactId>protobuf-shaded</artifactId>
+  <name>Apache Pulsar :: Protobuf shaded</name>
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>managed-ledger</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf2.version}</version>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <id>distro-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <attach>true</attach>
-              <tarLongFileMode>posix</tarLongFileMode>
-              <finalName>apache-pulsar-offloaders-${project.version}</finalName>
-              <descriptors>
-                <descriptor>src/assemble/offloaders.xml</descriptor>
-              </descriptors>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+
+              <artifactSet>
+                <includes>
+                  <include>com.google.protobuf:protobuf-java</include>
+                </includes>
+              </artifactSet>
+
+              <relocations>
+                <relocation>
+                  <pattern>com.google.protobuf</pattern>
+                  <shadedPattern>org.apache.pulsar.shaded.com.google.protobuf.v241</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
