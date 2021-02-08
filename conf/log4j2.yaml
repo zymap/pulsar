@@ -152,13 +152,26 @@ Configuration:
           - ref: Console
 
     # Logger to inject filter script
-#     - name: org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl
-#       level: debug
-#       additivity: false
-#       AppenderRef:
-#         ref: "${sys:pulsar.log.appender}"
-#         ScriptFilter:
-#           onMatch: ACCEPT
-#           onMisMatch: DENY
-#           ScriptRef:
-#             ref: filter.js
+      - name: org.apache.bookkeeper.mledger.impl.OpReadEntry
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: Console
+
+      - name: org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: Console
+
+      - name: org.apache.bookkeeper.mledger.impl.EntryCacheImpl
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: Console
+
+      - name: org.apache.bookkeeper.mledger.impl.ManagedCursorImpl
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: Console
