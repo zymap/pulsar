@@ -203,6 +203,9 @@ public class EntryCacheImpl implements EntryCache {
         }
         EntryImpl entry = entries.get(position);
         if (entry != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Reading entry hit cache");
+            }
             EntryImpl cachedEntry = EntryImpl.create(entry);
             entry.release();
             manager.mlFactoryMBean.recordCacheHit(cachedEntry.getLength());
@@ -219,6 +222,9 @@ public class EntryCacheImpl implements EntryCache {
                         try {
                             Iterator<LedgerEntry> iterator = ledgerEntries.iterator();
                             if (iterator.hasNext()) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Reading entry from the ledger handler");
+                                }
                                 LedgerEntry ledgerEntry = iterator.next();
                                 EntryImpl returnEntry = EntryImpl.create(ledgerEntry);
 

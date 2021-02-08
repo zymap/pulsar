@@ -1610,16 +1610,21 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
 
     public void asyncReadEntry(PositionImpl position, ReadEntryCallback callback, Object ctx) {
         LedgerHandle currentLedger = this.currentLedger;
-        if (log.isDebugEnabled()) {
-            log.debug("[{}] Reading entry ledger {}: {}", name, position.getLedgerId(), position.getEntryId());
-        }
         if (position.getLedgerId() == currentLedger.getId()) {
+            if (log.isDebugEnabled()) {
+                log.debug("[{}] Reading entry from currently ledger {}: {}", name, position.getLedgerId(), position.getEntryId());
+            }
             asyncReadEntry(currentLedger, position, callback, ctx);
         } else {
-            getLedgerHandle(position.getLedgerId()).thenAccept(ledger -> asyncReadEntry(ledger, position, callback, ctx)).exceptionally(ex -> {
-                log.error("[{}] Error opening ledger for reading at position {} - {}", name, position, ex.getMessage());
-                callback.readEntryFailed(ManagedLedgerException.getManagedLedgerException(ex.getCause()), ctx);
-                return null;
+            if (log.isDebugEnabled()) {
+                log.debug("[{}] Reading entry from ledger handler ledger {}: {}", name, position.getLedgerId(), position.getEntryId());
+            }
+            getLedgerHandle(position.getLedgerId())
+                .thenAccept(ledger -> asyncReadEntry(ledger, position, callback, ctx))
+                .exceptionally(ex -> {
+                    log.error("[{}] Error opening ledger for reading at position {} - {}", name, position, ex.getMessage());
+                    callback.readEntryFailed(ManagedLedgerException.getManagedLedgerException(ex.getCause()), ctx);
+                    return null;
             });
         }
 
@@ -1781,6 +1786,9 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
 
         @Override
         public void readEntriesComplete(List<Entry> returnedEntries, Object ctx) {
+            if (log.isDebugEnabled()) {
+                log.debug("Read {} entries complete, current time is {}", returnedEntries.size(), System.currentTimeMillis());
+            }
             long reOpCount = reOpCount(ctx);
             ReadEntriesCallback callback = this.readEntriesCallback;
             Object cbCtx = this.cntx;

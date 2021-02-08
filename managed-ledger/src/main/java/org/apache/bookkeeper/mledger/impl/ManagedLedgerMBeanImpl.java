@@ -20,6 +20,8 @@ package org.apache.bookkeeper.mledger.impl;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
+
+import lombok.Getter;
 import org.apache.bookkeeper.mledger.ManagedCursor;
 import org.apache.bookkeeper.mledger.ManagedLedgerMXBean;
 import org.apache.bookkeeper.mledger.proto.PendingBookieOpsStats;
@@ -57,6 +59,7 @@ public class ManagedLedgerMBeanImpl implements ManagedLedgerMXBean {
     private final StatsBuckets entryStats = new StatsBuckets(ENTRY_SIZE_BUCKETS_BYTES);
 
     // readEntryLatencyStatsUses measure total latency from sending read request to the request complete
+    @Getter
     private final StatsBuckets readEntryLatencyStatsUses = new StatsBuckets(ENTRY_LATENCY_BUCKETS_USEC);
 
     public ManagedLedgerMBeanImpl(ManagedLedgerImpl managedLedger) {
@@ -75,6 +78,7 @@ public class ManagedLedgerMBeanImpl implements ManagedLedgerMXBean {
         ledgerAddEntryLatencyStatsUsec.refresh();
         ledgerSwitchLatencyStatsUsec.refresh();
         entryStats.refresh();
+        readEntryLatencyStatsUses.refresh();
     }
 
     public void addAddEntrySample(long size) {

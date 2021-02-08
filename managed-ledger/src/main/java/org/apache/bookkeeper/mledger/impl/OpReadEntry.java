@@ -59,6 +59,9 @@ class OpReadEntry implements ReadEntriesCallback {
         op.ctx = ctx;
         op.nextReadPosition = PositionImpl.get(op.readPosition);
         op.startTime = System.nanoTime();
+        if (log.isDebugEnabled()) {
+            log.debug("Creating send operation request, current time is: {}", op.startTime);
+        }
         return op;
     }
 
@@ -89,11 +92,11 @@ class OpReadEntry implements ReadEntriesCallback {
 
     @Override
     public void readEntriesFailed(ManagedLedgerException exception, Object ctx) {
-        updateLatency();
         cursor.readOperationCompleted();
 
         if (!entries.isEmpty()) {
             // There were already some entries that were read before, we can return them
+            updateLatency();
             cursor.ledger.getExecutor().execute(safeRun(() -> {
                 callback.readEntriesComplete(entries, ctx);
                 recycle();
@@ -105,6 +108,7 @@ class OpReadEntry implements ReadEntriesCallback {
             final Position nexReadPosition = cursor.getNextLedgerPosition(readPosition.getLedgerId());
             // fail callback if it couldn't find next valid ledger
             if (nexReadPosition == null) {
+                updateLatency();
                 callback.readEntriesFailed(exception, ctx);
                 cursor.ledger.mbean.recordReadEntriesError();
                 recycle();
@@ -122,7 +126,7 @@ class OpReadEntry implements ReadEntriesCallback {
                             cursor.getName(), readPosition);
                 }
             }
-
+            updateLatency();
             callback.readEntriesFailed(exception, ctx);
             cursor.ledger.mbean.recordReadEntriesError();
             recycle();
@@ -143,13 +147,15 @@ class OpReadEntry implements ReadEntriesCallback {
 
             // Schedule next read in a different thread
             cursor.ledger.getExecutor().execute(safeRun(() -> {
-                updateLatency();
                 readPosition = cursor.ledger.startReadOperationOnLedger(nextReadPosition, OpReadEntry.this);
                 cursor.ledger.asyncReadEntries(OpReadEntry.this);
             }));
         } else {
             // The reading was already completed, release resources and trigger callback
             try {
+                if (log.isDebugEnabled()) {
+                    log.debug("read has been completed, read {} entries", entries.size());
+                }
                 updateLatency();
                 cursor.readOperationCompleted();
 
@@ -196,6 +202,10 @@ class OpReadEntry implements ReadEntriesCallback {
     private static final Logger log = LoggerFactory.getLogger(OpReadEntry.class);
 
     private void updateLatency() {
-        cursor.ledger.mbean.addReadEntryLatencySample(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        cursor.ledger.getMBean().addReadEntryLatencySample(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        if (log.isDebugEnabled()) {
+            log.debug("update read entry latency, start time is {}, current time is {}, latency sample is {}",
+                startTime, System.nanoTime(), cursor.ledger.getMBean().getReadEntryLatency());
+        }
     }
 }
