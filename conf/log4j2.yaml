@@ -156,22 +156,22 @@ Configuration:
         level: debug
         additivity: false
         AppenderRef:
-          ref: Console
+          ref: "${sys:pulsar.log.appender}"
 
       - name: org.apache.bookkeeper.mledger.impl.ManagedLedgerImpl
         level: debug
         additivity: false
         AppenderRef:
-          ref: Console
+          ref: "${sys:pulsar.log.appender}"
 
       - name: org.apache.bookkeeper.mledger.impl.EntryCacheImpl
         level: debug
         additivity: false
         AppenderRef:
-          ref: Console
+          ref: "${sys:pulsar.log.appender}"
 
       - name: org.apache.bookkeeper.mledger.impl.ManagedCursorImpl
         level: debug
         additivity: false
         AppenderRef:
-          ref: Console
+          ref: "${sys:pulsar.log.appender}"
