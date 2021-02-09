@@ -102,6 +102,7 @@ public class ManagedLedgerMBeanImpl implements ManagedLedgerMXBean {
         ledgerSwitchLatencyStatsUsec.refresh();
         entryStats.refresh();
         readEntryLatencyStatsUses.refresh();
+        Summary.rotateLatencyCollection();
     }
 
     public void addAddEntrySample(long size) {
