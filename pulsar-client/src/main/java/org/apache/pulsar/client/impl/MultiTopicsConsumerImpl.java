@@ -59,7 +59,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -108,31 +107,33 @@ public class MultiTopicsConsumerImpl<T> extends ConsumerBase<T> {
     private final long startMessageRollbackDurationInSec;
 
     MultiTopicsConsumerImpl(PulsarClientImpl client, ConsumerConfigurationData<T> conf,
-            ExecutorService listenerExecutor, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
+            ExecutorProvider executorProvider, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
             ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist) {
-        this(client, DUMMY_TOPIC_NAME_PREFIX + ConsumerName.generateRandomName(), conf, listenerExecutor,
+        this(client, DUMMY_TOPIC_NAME_PREFIX + ConsumerName.generateRandomName(), conf, executorProvider,
                 subscribeFuture, schema, interceptors, createTopicIfDoesNotExist);
     }
 
     MultiTopicsConsumerImpl(PulsarClientImpl client, ConsumerConfigurationData<T> conf,
-                            ExecutorService listenerExecutor, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
-                            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist, MessageId startMessageId,
-                            long startMessageRollbackDurationInSec) {
-        this(client, DUMMY_TOPIC_NAME_PREFIX + ConsumerName.generateRandomName(), conf, listenerExecutor,
-                subscribeFuture, schema, interceptors, createTopicIfDoesNotExist, startMessageId, startMessageRollbackDurationInSec);
+            ExecutorProvider executorProvider, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
+            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist, MessageId startMessageId,
+            long startMessageRollbackDurationInSec) {
+        this(client, DUMMY_TOPIC_NAME_PREFIX + ConsumerName.generateRandomName(), conf, executorProvider,
+                subscribeFuture, schema, interceptors, createTopicIfDoesNotExist, startMessageId,
+                startMessageRollbackDurationInSec);
     }
 
     MultiTopicsConsumerImpl(PulsarClientImpl client, String singleTopic, ConsumerConfigurationData<T> conf,
-                            ExecutorService listenerExecutor, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
-                            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist) {
-        this(client, singleTopic, conf, listenerExecutor, subscribeFuture, schema, interceptors, createTopicIfDoesNotExist, null, 0);
+            ExecutorProvider executorProvider, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
+            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist) {
+        this(client, singleTopic, conf, executorProvider, subscribeFuture, schema, interceptors,
+                createTopicIfDoesNotExist, null, 0);
     }
 
     MultiTopicsConsumerImpl(PulsarClientImpl client, String singleTopic, ConsumerConfigurationData<T> conf,
-                            ExecutorService listenerExecutor, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
-                            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist, MessageId startMessageId,
-                            long startMessageRollbackDurationInSec) {
-        super(client, singleTopic, conf, Math.max(2, conf.getReceiverQueueSize()), listenerExecutor, subscribeFuture,
+            ExecutorProvider executorProvider, CompletableFuture<Consumer<T>> subscribeFuture, Schema<T> schema,
+            ConsumerInterceptors<T> interceptors, boolean createTopicIfDoesNotExist, MessageId startMessageId,
+            long startMessageRollbackDurationInSec) {
+        super(client, singleTopic, conf, Math.max(2, conf.getReceiverQueueSize()), executorProvider, subscribeFuture,
                 schema, interceptors);
 
         checkArgument(conf.getReceiverQueueSize() > 0,
@@ -282,34 +283,7 @@ public class MultiTopicsConsumerImpl<T> extends ConsumerBase<T> {
         }
 
         if (listener != null) {
-            // Trigger the notification on the message listener in a separate thread to avoid blocking the networking
-            // thread while the message processing happens
-            listenerExecutor.execute(() -> {
-                Message<T> msg;
-                try {
-                    msg = internalReceive(0, TimeUnit.MILLISECONDS);
-                    if (msg == null) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("[{}] [{}] Message has been cleared from the queue", topic, subscription);
-                        }
-                        return;
-                    }
-                } catch (PulsarClientException e) {
-                    log.warn("[{}] [{}] Failed to dequeue the message for listener", topic, subscription, e);
-                    return;
-                }
-
-                try {
-                    if (log.isDebugEnabled()) {
-                        log.debug("[{}][{}] Calling message listener for message {}",
-                            topic, subscription, message.getMessageId());
-                    }
-                    listener.received(MultiTopicsConsumerImpl.this, msg);
-                } catch (Throwable t) {
-                    log.error("[{}][{}] Message listener error in processing message: {}",
-                        topic, subscription, message, t);
-                }
-            });
+            triggerListener();
         }
     }
 
@@ -597,7 +571,7 @@ public class MultiTopicsConsumerImpl<T> extends ConsumerBase<T> {
     }
 
     private void failPendingReceive() {
-        if (listenerExecutor != null && !listenerExecutor.isShutdown()) {
+        if (pinnedExecutor != null && !pinnedExecutor.isShutdown()) {
             failPendingReceives(pendingReceives);
             failPendingBatchReceives(pendingBatchReceives);
         }
@@ -856,7 +830,7 @@ public class MultiTopicsConsumerImpl<T> extends ConsumerBase<T> {
     // first create a consumer with no topic, then do subscription for already know partitionedTopic.
     public static <T> MultiTopicsConsumerImpl<T> createPartitionedConsumer(PulsarClientImpl client,
                                                                            ConsumerConfigurationData<T> conf,
-                                                                           ExecutorService listenerExecutor,
+                                                                           ExecutorProvider executorProvider,
                                                                            CompletableFuture<Consumer<T>> subscribeFuture,
                                                                            int numPartitions,
                                                                            Schema<T> schema, ConsumerInterceptors<T> interceptors) {
@@ -868,7 +842,7 @@ public class MultiTopicsConsumerImpl<T> extends ConsumerBase<T> {
         cloneConf.getTopicNames().remove(topicName);
 
         CompletableFuture<Consumer> future = new CompletableFuture<>();
-        MultiTopicsConsumerImpl consumer = new MultiTopicsConsumerImpl(client, topicName, cloneConf, listenerExecutor,
+        MultiTopicsConsumerImpl consumer = new MultiTopicsConsumerImpl(client, topicName, cloneConf, executorProvider,
                 future, schema, interceptors, true /* createTopicIfDoesNotExist */);
 
         future.thenCompose(c -> ((MultiTopicsConsumerImpl)c).subscribeAsync(topicName, numPartitions))

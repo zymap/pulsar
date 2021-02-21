@@ -25,7 +25,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -152,7 +151,7 @@ public class ZeroQueueConsumerImpl<T> extends ConsumerImpl<T> {
         checkNotNull(listener, "listener can't be null");
         checkNotNull(message, "unqueued message can't be null");
 
-        listenerExecutor.execute(() -> {
+        pinnedExecutor.execute(() -> {
             stats.updateNumMsgsReceived(message);
             try {
                 if (log.isDebugEnabled()) {
@@ -172,7 +171,7 @@ public class ZeroQueueConsumerImpl<T> extends ConsumerImpl<T> {
     }
 
     @Override
-    protected void triggerListener(int numMessages) {
+    protected void triggerListener() {
         // Ignore since it was already triggered in the triggerZeroQueueSizeListener() call
     }
 

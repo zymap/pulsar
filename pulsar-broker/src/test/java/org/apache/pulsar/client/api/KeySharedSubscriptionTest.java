@@ -27,6 +27,7 @@ import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ import org.apache.pulsar.broker.service.persistent.PersistentStickyKeyDispatcher
 import org.apache.pulsar.broker.service.persistent.PersistentSubscription;
 import org.apache.pulsar.common.schema.KeyValue;
 import org.apache.pulsar.common.util.Murmur3_32Hash;
+import org.awaitility.Awaitility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -61,6 +63,14 @@ public class KeySharedSubscriptionTest extends ProducerConsumerBase {
 
     @DataProvider(name = "batch")
     public Object[][] batchProvider() {
+        return new Object[][] {
+                { false },
+                { true }
+        };
+    }
+
+    @DataProvider(name = "partitioned")
+    public Object[][] partitionedProvider() {
         return new Object[][] {
                 { false },
                 { true }
