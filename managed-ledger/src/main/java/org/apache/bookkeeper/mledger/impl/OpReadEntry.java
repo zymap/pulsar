@@ -23,6 +23,8 @@ import com.google.common.collect.Lists;
 import io.netty.util.Recycler;
 import io.netty.util.Recycler.Handle;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.bookkeeper.mledger.AsyncCallbacks.ReadEntriesCallback;
 import org.apache.bookkeeper.mledger.Entry;
 import org.apache.bookkeeper.mledger.ManagedLedgerException;
@@ -44,6 +46,8 @@ class OpReadEntry implements ReadEntriesCallback {
     private List<Entry> entries;
     private PositionImpl nextReadPosition;
 
+    private long startTime;
+
     public static OpReadEntry create(ManagedCursorImpl cursor, PositionImpl readPositionRef, int count,
             ReadEntriesCallback callback, Object ctx) {
         OpReadEntry op = RECYCLER.get();
@@ -54,6 +58,10 @@ class OpReadEntry implements ReadEntriesCallback {
         op.entries = Lists.newArrayList();
         op.ctx = ctx;
         op.nextReadPosition = PositionImpl.get(op.readPosition);
+        op.startTime = System.currentTimeMillis();
+        if (log.isDebugEnabled()) {
+            log.debug("Creating send operation request, current time is: {}", op.startTime);
+        }
         return op;
     }
 
@@ -88,6 +96,7 @@ class OpReadEntry implements ReadEntriesCallback {
 
         if (!entries.isEmpty()) {
             // There were already some entries that were read before, we can return them
+            updateLatency();
             cursor.ledger.getExecutor().execute(safeRun(() -> {
                 callback.readEntriesComplete(entries, ctx);
                 recycle();
@@ -99,6 +108,7 @@ class OpReadEntry implements ReadEntriesCallback {
             final Position nexReadPosition = cursor.getNextLedgerPosition(readPosition.getLedgerId());
             // fail callback if it couldn't find next valid ledger
             if (nexReadPosition == null) {
+                updateLatency();
                 callback.readEntriesFailed(exception, ctx);
                 cursor.ledger.mbean.recordReadEntriesError();
                 recycle();
@@ -116,7 +126,7 @@ class OpReadEntry implements ReadEntriesCallback {
                             cursor.getName(), readPosition);
                 }
             }
-
+            updateLatency();
             callback.readEntriesFailed(exception, ctx);
             cursor.ledger.mbean.recordReadEntriesError();
             recycle();
@@ -143,6 +153,10 @@ class OpReadEntry implements ReadEntriesCallback {
         } else {
             // The reading was already completed, release resources and trigger callback
             try {
+                if (log.isDebugEnabled()) {
+                    log.debug("read has been completed, read {} entries", entries.size());
+                }
+                updateLatency();
                 cursor.readOperationCompleted();
 
             } finally {
@@ -186,4 +200,12 @@ class OpReadEntry implements ReadEntriesCallback {
     }
 
     private static final Logger log = LoggerFactory.getLogger(OpReadEntry.class);
+
+    private void updateLatency() {
+        cursor.ledger.getMBean().addReadEntryLatencySample(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
+        if (log.isDebugEnabled()) {
+            log.debug("update read entry latency, start time is {}, current time is {}, latency sample is {}",
+                startTime, System.currentTimeMillis(), cursor.ledger.getMBean().getReadEntryLatency());
+        }
+    }
 }
