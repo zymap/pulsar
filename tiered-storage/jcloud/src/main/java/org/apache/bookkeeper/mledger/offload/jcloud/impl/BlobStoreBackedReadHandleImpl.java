@@ -105,11 +105,17 @@ public class BlobStoreBackedReadHandleImpl implements ReadHandle {
                 try {
                     while (entriesToRead > 0) {
                         int length = dataStream.readInt();
+                        if (log.isDebugEnabled()) {
+                            log.debug("read int from the data stream: {}", length);
+                        }
                         if (length < 0) { // hit padding or new block
                             inputStream.seek(index.getIndexEntryForEntry(nextExpectedId).getDataOffset());
                             continue;
                         }
                         long entryId = dataStream.readLong();
+                        if (log.isDebugEnabled()) {
+                            log.debug("readed entry id is: {}", entryId);
+                        }
 
                         if (entryId == nextExpectedId) {
                             ByteBuf buf = PulsarByteBufAllocator.DEFAULT.buffer(length, length);
