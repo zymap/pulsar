@@ -77,6 +77,8 @@ import org.apache.bookkeeper.zookeeper.ZooKeeperClient;
 import org.apache.pulsar.common.policies.data.EnsemblePlacementPolicyConfig;
 import org.apache.pulsar.common.util.DateFormatter;
 import org.apache.pulsar.metadata.api.MetadataStore;
+import org.apache.pulsar.metadata.api.MetadataStoreConfig;
+import org.apache.pulsar.metadata.api.MetadataStoreFactory;
 import org.apache.pulsar.metadata.api.Stat;
 import org.apache.pulsar.metadata.impl.ZKMetadataStore;
 import org.apache.zookeeper.ZooKeeper;
@@ -192,7 +194,11 @@ public class ManagedLedgerFactoryImpl implements ManagedLedgerFactory {
         this.bookkeeperFactory = bookKeeperGroupFactory;
         this.isBookkeeperManaged = isBookkeeperManaged;
         this.zookeeper = isBookkeeperManaged ? zooKeeper : null;
-        this.metadataStore = new ZKMetadataStore(zooKeeper);
+        if (config.getMetadataUrl() != null) {
+            this.metadataStore = MetadataStoreFactory.create(config.getMetadataUrl(), MetadataStoreConfig.builder().build());
+        } else {
+            this.metadataStore = new ZKMetadataStore(zooKeeper);
+        }
         this.store = new MetaStoreImpl(metadataStore, orderedExecutor);
         this.config = config;
         this.mbean = new ManagedLedgerFactoryMBeanImpl(this);

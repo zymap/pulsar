@@ -66,6 +66,7 @@ public class ManagedLedgerClientFactory implements ManagedLedgerStorage {
                 conf.getManagedLedgerPrometheusStatsLatencyRolloverSeconds());
         managedLedgerFactoryConfig.setTraceTaskExecution(conf.isManagedLedgerTraceTaskExecution());
         managedLedgerFactoryConfig.setCursorPositionFlushSeconds(conf.getManagedLedgerCursorPositionFlushSeconds());
+        managedLedgerFactoryConfig.setMetadataUrl(conf.getBookkeeperMetadataServiceUri());
 
         Configuration configuration = new ClientConfiguration();
         if (conf.isBookkeeperClientExposeStatsToPrometheus()) {

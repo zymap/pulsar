@@ -75,4 +75,6 @@ public class ManagedLedgerFactoryConfig {
      * cluster name for prometheus stats
      */
     private String clusterName;
+
+    private String metadataUrl;
 }
