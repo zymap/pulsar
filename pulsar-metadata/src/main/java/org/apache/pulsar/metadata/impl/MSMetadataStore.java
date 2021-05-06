@@ -119,7 +119,7 @@ public class MSMetadataStore extends AbstractMetadataStore {
 
     @Override
     protected CompletableFuture<Boolean> existsFromStore(String path) {
-        return kvStore.get(path).thenApply(value -> value == null);
+        return kvStore.get(path).thenApply(value -> value != null);
     }
 
     @Override
@@ -135,17 +135,15 @@ public class MSMetadataStore extends AbstractMetadataStore {
 
         long now = System.currentTimeMillis();
 
-        if (hasVersion && expectedVersion == -1) {
             Value newValue = new Value(0, data, now, now, options.contains(CreateOption.Ephemeral));
-            kvStore.put(path, BytesUtil.writeUtf8(newValue.toString()))
-                .whenComplete((success, throwable) -> {
-                    if (!success || throwable != null) {
-                        future.completeExceptionally(new MetadataStoreException("save value for path " + path + " failed", throwable));
-                    } else {
-                        future.complete(new Stat(path, 0, now, now, newValue.isEphemeral(), true));
-                    }
-                });
-        }
+        kvStore.put(path, BytesUtil.writeUtf8(newValue.toString()))
+            .whenComplete((success, throwable) -> {
+                if (!success || throwable != null) {
+                    future.completeExceptionally(new MetadataStoreException("save value for path " + path + " failed", throwable));
+                } else {
+                    future.complete(new Stat(path, 0, now, now, newValue.isEphemeral(), true));
+                }
+            });
         return future;
     }
 
