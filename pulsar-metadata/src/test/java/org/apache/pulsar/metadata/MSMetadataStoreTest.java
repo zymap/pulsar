@@ -18,15 +18,40 @@
  */
 package org.apache.pulsar.metadata;
 
+import com.alipay.remoting.config.Configs;
 import com.alipay.sofa.jraft.rhea.client.DefaultRheaKVStore;
 import com.alipay.sofa.jraft.rhea.client.RheaKVStore;
+import com.alipay.sofa.jraft.rhea.options.PlacementDriverOptions;
+import com.alipay.sofa.jraft.rhea.options.RegionRouteTableOptions;
+import com.alipay.sofa.jraft.rhea.options.RheaKVStoreOptions;
+import com.alipay.sofa.jraft.rhea.options.configured.MultiRegionRouteTableOptionsConfigured;
+import com.alipay.sofa.jraft.rhea.options.configured.PlacementDriverOptionsConfigured;
+import com.alipay.sofa.jraft.rhea.options.configured.RheaKVStoreOptionsConfigured;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MSMetadataStoreTest {
 
     @Test
-    public void testKV() {
+    public void testKV() throws ExecutionException, InterruptedException {
         RheaKVStore kvStore = new DefaultRheaKVStore();
-        kvStore.
+        final List<RegionRouteTableOptions> regionRouteTableOptionsList = MultiRegionRouteTableOptionsConfigured
+            .newConfigured() //
+            .withInitialServerList(-1L /* default id */, "127.0.0.1:8181,127.0.0.1:8182,127.0.0.1:8183") //
+            .config();
+        final PlacementDriverOptions pdOpts = PlacementDriverOptionsConfigured.newConfigured() //
+            .withFake(true) //
+            .withRegionRouteTableOptionsList(regionRouteTableOptionsList) //
+            .config();
+        final RheaKVStoreOptions opts = RheaKVStoreOptionsConfigured.newConfigured() //
+            .withClusterName("rhea_example") //
+            .withPlacementDriverOptions(pdOpts) //
+            .config();
+        System.out.println(opts);
+        kvStore.init(opts);
+        byte[] value = kvStore.get("unknown").get();
+        System.out.println(value == null);
     }
 }
