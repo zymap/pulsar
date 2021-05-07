@@ -916,11 +916,11 @@ public class PulsarService implements AutoCloseable {
         LOG.info("starting configuration cache service");
 
         this.localZkCache = new LocalZooKeeperCache(getZkClient(), config.getZooKeeperOperationTimeoutSeconds(),
-                getOrderedExecutor());
+                getOrderedExecutor(), localMetadataStore);
         this.globalZkCache = new GlobalZooKeeperCache(getZooKeeperClientFactory(),
                 (int) config.getZooKeeperSessionTimeoutMillis(),
                 config.getZooKeeperOperationTimeoutSeconds(), config.getConfigurationStoreServers(),
-                getOrderedExecutor(), this.cacheExecutor, config.getZooKeeperCacheExpirySeconds());
+                getOrderedExecutor(), this.cacheExecutor, config.getZooKeeperCacheExpirySeconds(), localMetadataStore);
         try {
             this.globalZkCache.start();
         } catch (IOException e) {
