@@ -26,10 +26,13 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.apache.bookkeeper.common.concurrent.FutureUtils;
 import org.apache.pulsar.metadata.api.MetadataStoreException;
+import org.apache.pulsar.metadata.api.Stat;
 import org.apache.pulsar.metadata.api.coordination.CoordinationService;
 import org.apache.pulsar.metadata.api.coordination.LeaderElection;
 import org.apache.pulsar.metadata.api.coordination.LeaderElectionState;
@@ -79,11 +82,7 @@ public class CoordinationServiceImpl implements CoordinationService {
         return store
                 .put(counterBasePath, new byte[0], Optional.of(-1L),
                         EnumSet.of(CreateOption.Ephemeral, CreateOption.Sequential))
-                .thenApply(stat -> {
-                    String[] parts = stat.getPath().split("/");
-                    String seq = parts[parts.length - 1].replace('-', ' ').trim();
-                    return Long.parseLong(seq);
-                });
+                .thenApply(Stat::getVersion);
     }
 
     @Override

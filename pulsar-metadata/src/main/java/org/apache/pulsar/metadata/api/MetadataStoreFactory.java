@@ -20,9 +20,11 @@ package org.apache.pulsar.metadata.api;
 
 import java.io.IOException;
 
+import java.net.URI;
 import lombok.experimental.UtilityClass;
 
 import org.apache.pulsar.metadata.impl.LocalMemoryMetadataStore;
+import org.apache.pulsar.metadata.impl.RaftMetadataStore;
 import org.apache.pulsar.metadata.impl.ZKMetadataStore;
 
 /**
@@ -44,6 +46,9 @@ public class MetadataStoreFactory {
     public static MetadataStore create(String metadataURL, MetadataStoreConfig metadataStoreConfig) throws MetadataStoreException {
         if (metadataURL.startsWith("memory://")) {
             return new LocalMemoryMetadataStore(metadataURL, metadataStoreConfig);
+        } else if (metadataURL.startsWith("raft://")) {
+            URI uri = URI.create(metadataURL);
+            return new RaftMetadataStore(uri.getAuthority().replace(";", ","), new MetadataStoreConfig(10000, true));
         } else {
             return new ZKMetadataStore(metadataURL, metadataStoreConfig);
         }

@@ -27,6 +27,7 @@ import org.apache.bookkeeper.common.util.OrderedExecutor;
 import org.apache.bookkeeper.zookeeper.BoundExponentialBackoffRetryPolicy;
 import org.apache.bookkeeper.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.MockZooKeeper;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooKeeper.States;
 import org.slf4j.Logger;
@@ -48,20 +49,22 @@ public class ZookeeperBkClientFactoryImpl implements ZooKeeperClientFactory {
 
         executor.execute(safeRun(() -> {
             try {
-                ZooKeeper zk = ZooKeeperClient.newBuilder().connectString(serverList)
-                        .sessionTimeoutMs(zkSessionTimeoutMillis)
-                        .connectRetryPolicy(new BoundExponentialBackoffRetryPolicy(zkSessionTimeoutMillis,
-                                zkSessionTimeoutMillis, 0))
-                        .build();
+//                ZooKeeper zk = ZooKeeperClient.newBuilder().connectString(serverList)
+//                        .sessionTimeoutMs(zkSessionTimeoutMillis)
+//                        .connectRetryPolicy(new BoundExponentialBackoffRetryPolicy(zkSessionTimeoutMillis,
+//                                zkSessionTimeoutMillis, 0))
+//                        .build();
+//
+//                if (zk.getState() == States.CONNECTEDREADONLY && sessionType != SessionType.AllowReadOnly) {
+//                    zk.close();
+//                    future.completeExceptionally(new IllegalStateException("Cannot use a read-only session"));
+//                }
 
-                if (zk.getState() == States.CONNECTEDREADONLY && sessionType != SessionType.AllowReadOnly) {
-                    zk.close();
-                    future.completeExceptionally(new IllegalStateException("Cannot use a read-only session"));
-                }
-
-                log.info("ZooKeeper session established: {}", zk);
+//                log.info("ZooKeeper session established: {}", zk);
+                MockZooKeeper zk = MockZooKeeper.newInstance();
+                log.info("Created mock zk");
                 future.complete(zk);
-            } catch (IOException | KeeperException | InterruptedException exception) {
+            } catch (Exception exception) {
                 log.error("Failed to establish ZooKeeper session: {}", exception.getMessage());
                 future.completeExceptionally(exception);
             }

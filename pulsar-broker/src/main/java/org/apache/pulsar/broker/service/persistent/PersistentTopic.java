@@ -1217,77 +1217,78 @@ public class PersistentTopic extends AbstractTopic
 
     @Override
     public CompletableFuture<Void> checkReplication() {
-        TopicName name = TopicName.get(topic);
-        if (!name.isGlobal()) {
-            return CompletableFuture.completedFuture(null);
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("[{}] Checking replication status", name);
-        }
-
-        Policies policies = null;
-        try {
-            policies = brokerService.pulsar().getConfigurationCache().policiesCache()
-                    .get(AdminResource.path(POLICIES, name.getNamespace()))
-                    .orElseThrow(() -> new KeeperException.NoNodeException());
-        } catch (Exception e) {
-            CompletableFuture<Void> future = new CompletableFuture<>();
-            future.completeExceptionally(new ServerMetadataException(e));
-            return future;
-        }
-        //Ignore current broker's config for messageTTL for replication.
-        final int newMessageTTLinSeconds;
-        try {
-            newMessageTTLinSeconds = getMessageTTL();
-        } catch (Exception e) {
-            return FutureUtil.failedFuture(new ServerMetadataException(e));
-        }
-
-        Set<String> configuredClusters;
-        if (policies.replication_clusters != null) {
-            configuredClusters = Sets.newTreeSet(policies.replication_clusters);
-        } else {
-            configuredClusters = Collections.emptySet();
-        }
-
-        String localCluster = brokerService.pulsar().getConfiguration().getClusterName();
-
-        // if local cluster is removed from global namespace cluster-list : then delete topic forcefully because pulsar
-        // doesn't serve global topic without local repl-cluster configured.
-        if (TopicName.get(topic).isGlobal() && !configuredClusters.contains(localCluster)) {
-            log.info("Deleting topic [{}] because local cluster is not part of global namespace repl list {}",
-                    topic, configuredClusters);
-            return deleteForcefully();
-        }
-
-        List<CompletableFuture<Void>> futures = Lists.newArrayList();
-
-        // Check for missing replicators
-        for (String cluster : configuredClusters) {
-            if (cluster.equals(localCluster)) {
-                continue;
-            }
-
-            if (!replicators.containsKey(cluster)) {
-                futures.add(startReplicator(cluster));
-            }
-        }
-
-        // Check for replicators to be stopped
-        replicators.forEach((cluster, replicator) -> {
-            // Update message TTL
-            ((PersistentReplicator) replicator).updateMessageTTL(newMessageTTLinSeconds);
-
-            if (!cluster.equals(localCluster)) {
-                if (!configuredClusters.contains(cluster)) {
-                    futures.add(removeReplicator(cluster));
-                }
-            }
-
-        });
-
-        return FutureUtil.waitForAll(futures);
+        return CompletableFuture.completedFuture(null);
+//        TopicName name = TopicName.get(topic);
+//        if (!name.isGlobal()) {
+//            return CompletableFuture.completedFuture(null);
+//        }
+//
+//        if (log.isDebugEnabled()) {
+//            log.debug("[{}] Checking replication status", name);
+//        }
+//
+//        Policies policies = null;
+//        try {
+//            policies = brokerService.pulsar().getConfigurationCache().policiesCache()
+//                    .get(AdminResource.path(POLICIES, name.getNamespace()))
+//                    .orElseThrow(() -> new KeeperException.NoNodeException());
+//        } catch (Exception e) {
+//            CompletableFuture<Void> future = new CompletableFuture<>();
+//            future.completeExceptionally(new ServerMetadataException(e));
+//            return future;
+//        }
+//        //Ignore current broker's config for messageTTL for replication.
+//        final int newMessageTTLinSeconds;
+//        try {
+//            newMessageTTLinSeconds = getMessageTTL();
+//        } catch (Exception e) {
+//            return FutureUtil.failedFuture(new ServerMetadataException(e));
+//        }
+//
+//        Set<String> configuredClusters;
+//        if (policies.replication_clusters != null) {
+//            configuredClusters = Sets.newTreeSet(policies.replication_clusters);
+//        } else {
+//            configuredClusters = Collections.emptySet();
+//        }
+//
+//        String localCluster = brokerService.pulsar().getConfiguration().getClusterName();
+//
+//        // if local cluster is removed from global namespace cluster-list : then delete topic forcefully because pulsar
+//        // doesn't serve global topic without local repl-cluster configured.
+//        if (TopicName.get(topic).isGlobal() && !configuredClusters.contains(localCluster)) {
+//            log.info("Deleting topic [{}] because local cluster is not part of global namespace repl list {}",
+//                    topic, configuredClusters);
+//            return deleteForcefully();
+//        }
+//
+//        List<CompletableFuture<Void>> futures = Lists.newArrayList();
+//
+//        // Check for missing replicators
+//        for (String cluster : configuredClusters) {
+//            if (cluster.equals(localCluster)) {
+//                continue;
+//            }
+//
+//            if (!replicators.containsKey(cluster)) {
+//                futures.add(startReplicator(cluster));
+//            }
+//        }
+//
+//        // Check for replicators to be stopped
+//        replicators.forEach((cluster, replicator) -> {
+//            // Update message TTL
+//            ((PersistentReplicator) replicator).updateMessageTTL(newMessageTTLinSeconds);
+//
+//            if (!cluster.equals(localCluster)) {
+//                if (!configuredClusters.contains(cluster)) {
+//                    futures.add(removeReplicator(cluster));
+//                }
+//            }
+//
+//        });
+//
+//        return FutureUtil.waitForAll(futures);
     }
 
     @Override

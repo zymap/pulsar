@@ -705,49 +705,50 @@ public abstract class PulsarWebResource {
         if (!namespace.isGlobal()) {
             return CompletableFuture.completedFuture(null);
         }
-        final CompletableFuture<ClusterData> validationFuture = new CompletableFuture<>();
-        final String localCluster = pulsarService.getConfiguration().getClusterName();
-        final String path = AdminResource.path(POLICIES, namespace.toString());
-
-        pulsarService.getConfigurationCache().policiesCache().getAsync(path).thenAccept(policiesResult -> {
-            if (policiesResult.isPresent()) {
-                Policies policies = policiesResult.get();
-                if (policies.replication_clusters.isEmpty()) {
-                    String msg = String.format(
-                            "Namespace does not have any clusters configured : local_cluster=%s ns=%s",
-                            localCluster, namespace.toString());
-                    log.warn(msg);
-                    validationFuture.completeExceptionally(new RestException(Status.PRECONDITION_FAILED, msg));
-                } else if (!policies.replication_clusters.contains(localCluster)) {
-                    ClusterData ownerPeerCluster = getOwnerFromPeerClusterList(pulsarService,
-                            policies.replication_clusters);
-                    if (ownerPeerCluster != null) {
-                        // found a peer that own this namespace
-                        validationFuture.complete(ownerPeerCluster);
-                        return;
-                    }
-                    String msg = String.format(
-                            "Namespace missing local cluster name in clusters list: local_cluster=%s ns=%s clusters=%s",
-                            localCluster, namespace.toString(), policies.replication_clusters);
-
-                    log.warn(msg);
-                    validationFuture.completeExceptionally(new RestException(Status.PRECONDITION_FAILED, msg));
-                } else {
-                    validationFuture.complete(null);
-                }
-            } else {
-                String msg = String.format("Policies not found for %s namespace", namespace.toString());
-                log.warn(msg);
-                validationFuture.completeExceptionally(new RestException(Status.NOT_FOUND, msg));
-            }
-        }).exceptionally(ex -> {
-            String msg = String.format("Failed to validate global cluster configuration : cluster=%s ns=%s  emsg=%s",
-                    localCluster, namespace, ex.getMessage());
-            log.error(msg);
-            validationFuture.completeExceptionally(new RestException(ex));
-            return null;
-        });
-        return validationFuture;
+        return CompletableFuture.completedFuture(null);
+//        final CompletableFuture<ClusterData> validationFuture = new CompletableFuture<>();
+//        final String localCluster = pulsarService.getConfiguration().getClusterName();
+//        final String path = AdminResource.path(POLICIES, namespace.toString());
+//
+//        pulsarService.getConfigurationCache().policiesCache().getAsync(path).thenAccept(policiesResult -> {
+//            if (policiesResult.isPresent()) {
+//                Policies policies = policiesResult.get();
+//                if (policies.replication_clusters.isEmpty()) {
+//                    String msg = String.format(
+//                            "Namespace does not have any clusters configured : local_cluster=%s ns=%s",
+//                            localCluster, namespace.toString());
+//                    log.warn(msg);
+//                    validationFuture.completeExceptionally(new RestException(Status.PRECONDITION_FAILED, msg));
+//                } else if (!policies.replication_clusters.contains(localCluster)) {
+//                    ClusterData ownerPeerCluster = getOwnerFromPeerClusterList(pulsarService,
+//                            policies.replication_clusters);
+//                    if (ownerPeerCluster != null) {
+//                        // found a peer that own this namespace
+//                        validationFuture.complete(ownerPeerCluster);
+//                        return;
+//                    }
+//                    String msg = String.format(
+//                            "Namespace missing local cluster name in clusters list: local_cluster=%s ns=%s clusters=%s",
+//                            localCluster, namespace.toString(), policies.replication_clusters);
+//
+//                    log.warn(msg);
+//                    validationFuture.completeExceptionally(new RestException(Status.PRECONDITION_FAILED, msg));
+//                } else {
+//                    validationFuture.complete(null);
+//                }
+//            } else {
+//                String msg = String.format("Policies not found for %s namespace", namespace.toString());
+//                log.warn(msg);
+//                validationFuture.completeExceptionally(new RestException(Status.NOT_FOUND, msg));
+//            }
+//        }).exceptionally(ex -> {
+//            String msg = String.format("Failed to validate global cluster configuration : cluster=%s ns=%s  emsg=%s",
+//                    localCluster, namespace, ex.getMessage());
+//            log.error(msg);
+//            validationFuture.completeExceptionally(new RestException(ex));
+//            return null;
+//        });
+//        return validationFuture;
     }
 
     private static ClusterData getOwnerFromPeerClusterList(PulsarService pulsar, Set<String> replicationClusters) {
