@@ -150,4 +150,10 @@ public class MSMetadataStore extends AbstractMetadataStore {
     private Stat getFromValue(String path, Value value) {
         return new Stat(path, value.version, value.createdTimestamp, value.modifiedTimestamp, value.ephemeral, true);
     }
+
+    @Override
+    public void close() throws Exception {
+        kvStore.shutdown();
+        super.close();
+    }
 }
