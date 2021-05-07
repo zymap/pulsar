@@ -137,7 +137,7 @@ public class ZkBookieRackAffinityMapping extends AbstractDNSToSwitchMapping
                     ZooKeeper zkClient = ZooKeeperClient.newBuilder().connectString(zkServers + zkChangeRoot)
                             .sessionTimeoutMs(zkTimeout).build();
                     zkCache = new ZooKeeperCache("bookies-racks", zkClient,
-                            (int) TimeUnit.MILLISECONDS.toSeconds(zkTimeout)) {
+                            (int) TimeUnit.MILLISECONDS.toSeconds(zkTimeout), null) {
                     };
                     conf.addProperty(ZooKeeperCache.ZK_CACHE_INSTANCE, zkCache);
                 } catch (Exception e) {

@@ -69,7 +69,7 @@ class LockManagerImpl<T> implements LockManager<T> {
 
     @Override
     public CompletableFuture<Optional<T>> readLock(String path) {
-        return cache.get(path);
+        return cache.getAsync(path);
     }
 
     @Override

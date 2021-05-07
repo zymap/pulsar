@@ -165,7 +165,7 @@ class LeaderElectionImpl<T> implements LeaderElection<T> {
                     synchronized (LeaderElectionImpl.this) {
                         if (internalState == InternalState.ElectionInProgress) {
                             // Do a get() in order to force a notification later, if the z-node disappears
-                            cache.get(path)
+                            cache.getAsync(path)
                                     .thenRun(() -> {
                                         synchronized (LeaderElectionImpl.this) {
                                             log.info("Acquired leadership on {}", path);
@@ -260,7 +260,7 @@ class LeaderElectionImpl<T> implements LeaderElection<T> {
 
     @Override
     public CompletableFuture<Optional<T>> getLeaderValue() {
-        return cache.get(path);
+        return cache.getAsync(path);
     }
 
     @Override

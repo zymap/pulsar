@@ -67,8 +67,8 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         assertEquals(objCache.getIfCached("/non-existing-key"), Optional.empty());
         assertEquals(objCache.getIfCached("/non-existing-key/child"), Optional.empty());
 
-        assertEquals(objCache.get("/non-existing-key").join(), Optional.empty());
-        assertEquals(objCache.get("/non-existing-key/child").join(), Optional.empty());
+        assertEquals(objCache.getAsync("/non-existing-key").join(), Optional.empty());
+        assertEquals(objCache.getAsync("/non-existing-key/child").join(), Optional.empty());
 
         try {
             objCache.delete("/non-existing-key").join();
@@ -103,12 +103,12 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         objCache.create(key1, v).join();
 
         assertEquals(objCache.getIfCached(key1), Optional.of(v));
-        assertEquals(objCache.get(key1).join(), Optional.of(v));
+        assertEquals(objCache.getAsync(key1).join(), Optional.of(v));
 
         objCache.delete(key1).join();
 
         assertEquals(objCache.getIfCached(key1), Optional.empty());
-        assertEquals(objCache.get(key1).join(), Optional.empty());
+        assertEquals(objCache.getAsync(key1).join(), Optional.empty());
     }
 
     @Test(dataProvider = "impl")
@@ -134,16 +134,16 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         }
 
         assertEquals(objCache.getIfCached(key1), Optional.of(value1));
-        assertEquals(objCache.get(key1).join(), Optional.of(value1));
+        assertEquals(objCache.getAsync(key1).join(), Optional.of(value1));
 
         assertEquals(objCache.readModifyUpdateOrCreate(key1, __ -> value2).join(), value2);
         assertEquals(objCache.getIfCached(key1), Optional.of(value2));
-        assertEquals(objCache.get(key1).join(), Optional.of(value2));
+        assertEquals(objCache.getAsync(key1).join(), Optional.of(value2));
 
         objCache.delete(key1).join();
 
         assertEquals(objCache.getIfCached(key1), Optional.empty());
-        assertEquals(objCache.get(key1).join(), Optional.empty());
+        assertEquals(objCache.getAsync(key1).join(), Optional.empty());
     }
 
     @Test(dataProvider = "impl")
@@ -158,7 +158,7 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         store.put(key1, ObjectMapperFactory.getThreadLocal().writeValueAsBytes(value1), Optional.of(-1L)).join();
 
         assertEquals(objCache.getIfCached(key1), Optional.empty());
-        assertEquals(objCache.get(key1).join(), Optional.of(value1));
+        assertEquals(objCache.getAsync(key1).join(), Optional.of(value1));
     }
 
     @Test(dataProvider = "impl")
@@ -176,7 +176,7 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         store.put(key1, ObjectMapperFactory.getThreadLocal().writeValueAsBytes(v), Optional.of(-1L)).join();
 
         assertEquals(objCache.getIfCached(key1), Optional.empty());
-        assertEquals(objCache.get(key1).join(), Optional.of(v));
+        assertEquals(objCache.getAsync(key1).join(), Optional.of(v));
     }
 
     @Test(dataProvider = "impl")
@@ -191,7 +191,7 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         store.put(key1, "-------".getBytes(), Optional.of(-1L)).join();
 
         try {
-            objCache.get(key1).join();
+            objCache.getAsync(key1).join();
             fail("should have failed to deserialize");
         } catch (CompletionException e) {
             assertEquals(e.getCause().getClass(), ContentDeserializationException.class);
@@ -212,8 +212,8 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         policies.replication_clusters.add("1");
         objCache.create(path, policies).get();
 
-        Policies tempPolicies = objCache.get(path).get().get();
-        assertSame(tempPolicies, objCache.get(path).get().get());
+        Policies tempPolicies = objCache.getAsync(path).get().get();
+        assertSame(tempPolicies, objCache.getAsync(path).get().get());
         AtomicReference<Policies> reference = new AtomicReference<>(new Policies());
         AtomicReference<Policies> reference2 = new AtomicReference<>(new Policies());
 
@@ -249,8 +249,8 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         policies.max_unacked_messages_per_consumer = 100;
         objCache.create(path, policies).get();
 
-        Policies tempPolicies = objCache.get(path).get().get();
-        assertSame(tempPolicies, objCache.get(path).get().get());
+        Policies tempPolicies = objCache.getAsync(path).get().get();
+        assertSame(tempPolicies, objCache.getAsync(path).get().get());
         AtomicReference<Policies> reference = new AtomicReference<>(new Policies());
         AtomicReference<Policies> reference2 = new AtomicReference<>(new Policies());
 
@@ -291,7 +291,7 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
         assertEquals(objCache.readModifyUpdate(key1, v -> new MyClass(v.a, v.b + 1)).join(),
                 new MyClass("a", 2));
 
-        Optional<MyClass> newValue1 = objCache.get(key1).join();
+        Optional<MyClass> newValue1 = objCache.getAsync(key1).join();
         assertTrue(newValue1.isPresent());
         assertEquals(newValue1.get().a, "a");
         assertEquals(newValue1.get().b, 2);
@@ -326,7 +326,7 @@ public class MetadataCacheTest extends BaseMetadataStoreTest {
 
         MyClass value1 = new MyClass("a", 1);
         objCache1.create(key1, value1).join();
-        objCache1.get(key1).join();
+        objCache1.getAsync(key1).join();
 
         objCache2.readModifyUpdate(key1, v -> {
             return new MyClass(v.a, v.b + 1);

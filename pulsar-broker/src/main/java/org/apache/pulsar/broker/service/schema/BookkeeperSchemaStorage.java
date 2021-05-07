@@ -46,7 +46,6 @@ import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.client.LedgerEntry;
 import org.apache.bookkeeper.client.LedgerHandle;
 import org.apache.bookkeeper.mledger.impl.LedgerMetadataUtils;
-import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.broker.PulsarService;
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.service.schema.exceptions.SchemaException;
@@ -55,13 +54,11 @@ import org.apache.pulsar.common.protocol.schema.SchemaVersion;
 import org.apache.pulsar.common.protocol.schema.StoredSchema;
 import org.apache.pulsar.common.schema.LongSchemaVersion;
 import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +71,7 @@ public class BookkeeperSchemaStorage implements SchemaStorage {
     private static final byte[] LedgerPassword = "".getBytes();
 
     private final PulsarService pulsar;
-    private final ZooKeeper zooKeeper;
+    private final MetadataStore metadataStore;
     private final ZooKeeperCache localZkCache;
     private final ServiceConfiguration config;
     private BookKeeper bookKeeper;
@@ -86,19 +83,14 @@ public class BookkeeperSchemaStorage implements SchemaStorage {
     BookkeeperSchemaStorage(PulsarService pulsar) {
         this.pulsar = pulsar;
         this.localZkCache = pulsar.getLocalZkCache();
-        this.zooKeeper = localZkCache.getZooKeeper();
+        this.metadataStore = localZkCache.getMetadataStore();
         this.config = pulsar.getConfiguration();
     }
 
     @VisibleForTesting
     public void init() throws KeeperException, InterruptedException {
-        try {
-            if (zooKeeper.exists(SchemaPath, false) == null) {
-                zooKeeper.create(SchemaPath, new byte[]{}, Acl, CreateMode.PERSISTENT);
-            }
-        } catch (KeeperException.NodeExistsException error) {
-            // race on startup, ignore.
-        }
+        this.metadataStore.put(SchemaPath, new byte[]{}, Optional.empty());
+
     }
 
     @Override
@@ -411,15 +403,8 @@ public class BookkeeperSchemaStorage implements SchemaStorage {
                         });
                         FutureUtil.waitForAll(deleteFutures).whenComplete((v, e) -> {
                             final String path = getSchemaPath(schemaId);
-                            ZkUtils.asyncDeleteFullPathOptimistic(zooKeeper, path, -1, (rc, path1, ctx) -> {
-                                if (rc != Code.OK.intValue()) {
-                                    future.completeExceptionally(KeeperException.create(Code.get(rc)));
-                                } else {
-                                    clearLocatorCache(getSchemaPath(schemaId));
-                                    future.complete(version);
-                                }
-                            }, path);
-
+                            metadataStore.delete(path, Optional.empty());
+                            future.complete(null);
                         });
                     }
                 });
@@ -520,33 +505,16 @@ public class BookkeeperSchemaStorage implements SchemaStorage {
     private CompletableFuture<Void> updateSchemaLocator(String id,
                                                         SchemaStorageFormat.SchemaLocator schema, int version) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        zooKeeper.setData(id, schema.toByteArray(), version, (rc, path, ctx, stat) -> {
-            Code code = Code.get(rc);
-            if (code != Code.OK) {
-                future.completeExceptionally(KeeperException.create(code));
-            } else {
-                future.complete(null);
-            }
-        }, null);
-        return future;
+        metadataStore.put(id, schema.toByteArray(), Optional.empty());
+        return CompletableFuture.completedFuture(null);
     }
 
     @NotNull
     private CompletableFuture<LocatorEntry> createSchemaLocator(String id, SchemaStorageFormat.SchemaLocator locator) {
         CompletableFuture<LocatorEntry> future = new CompletableFuture<>();
+        metadataStore.put(id, locator.toByteArray(), Optional.empty());
 
-        ZkUtils.asyncCreateFullPathOptimistic(zooKeeper, id, locator.toByteArray(), Acl,
-                CreateMode.PERSISTENT, (rc, path, ctx, name) -> {
-                    Code code = Code.get(rc);
-                    if (code != Code.OK) {
-                        future.completeExceptionally(KeeperException.create(code));
-                    } else {
-                        // Newly created z-node will have version 0
-                        future.complete(new LocatorEntry(locator, 0));
-                    }
-                }, null);
-
-        return future;
+        return CompletableFuture.completedFuture(null);
     }
 
     @NotNull

@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import lombok.experimental.UtilityClass;
 
+import org.apache.pulsar.metadata.impl.JRaftMetadataStore;
 import org.apache.pulsar.metadata.impl.LocalMemoryMetadataStore;
 import org.apache.pulsar.metadata.impl.MSMetadataStore;
 import org.apache.pulsar.metadata.impl.ZKMetadataStore;
@@ -47,6 +48,8 @@ public class MetadataStoreFactory {
             return new MSMetadataStore(metadataURL, metadataStoreConfig);
         } else if (metadataURL.startsWith("memory://")) {
             return new LocalMemoryMetadataStore(metadataURL, metadataStoreConfig);
+        } else if (metadataURL.startsWith("jraft://")) {
+            return new JRaftMetadataStore(metadataURL, metadataStoreConfig);
         } else {
             return new ZKMetadataStore(metadataURL, metadataStoreConfig);
         }

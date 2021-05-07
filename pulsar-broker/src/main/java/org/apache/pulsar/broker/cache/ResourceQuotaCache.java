@@ -19,16 +19,13 @@
 package org.apache.pulsar.broker.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.bookkeeper.util.ZkUtils;
+import java.util.Optional;
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.common.naming.NamespaceBundle;
 import org.apache.pulsar.common.policies.data.ResourceQuota;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,13 +98,7 @@ public class ResourceQuotaCache {
 
     private void saveQuotaToZnode(String zpath, ResourceQuota quota) throws Exception {
         ZooKeeper zk = this.localZkCache.getZooKeeper();
-        if (zk.exists(zpath, false) == null) {
-            try {
-                ZkUtils.createFullPathOptimistic(zk, zpath, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            } catch (KeeperException.NodeExistsException e) {
-            }
-        }
-        zk.setData(zpath, this.jsonMapper.writeValueAsBytes(quota), -1);
+        this.localZkCache.getMetadataStore().put(zpath, this.jsonMapper.writeValueAsBytes(quota), Optional.empty());
     }
 
     /**

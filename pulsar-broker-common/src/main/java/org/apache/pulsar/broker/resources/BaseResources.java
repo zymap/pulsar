@@ -83,7 +83,7 @@ public class BaseResources<T> {
     }
 
     public CompletableFuture<Optional<T>> getAsync(String path) {
-        return cache.get(path);
+        return cache.getAsync(path);
     }
 
     public void set(String path, Function<T, T> modifyFunction) throws MetadataStoreException {

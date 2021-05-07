@@ -44,6 +44,7 @@ import org.apache.bookkeeper.util.SafeRunnable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.pulsar.stats.CacheMetricsCollector;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.Code;
@@ -94,22 +95,24 @@ public abstract class ZooKeeperCache implements Watcher {
     private final int zkOperationTimeoutSeconds;
     private static final int DEFAULT_CACHE_EXPIRY_SECONDS = 300; //5 minutes
     private final int cacheExpirySeconds;
+    private final MetadataStore metadataStore;
 
     protected AtomicReference<ZooKeeper> zkSession = new AtomicReference<ZooKeeper>(null);
 
-    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds, OrderedExecutor executor) {
-        this(cacheName, zkSession, zkOperationTimeoutSeconds, executor, DEFAULT_CACHE_EXPIRY_SECONDS);
+    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds,
+                          OrderedExecutor executor, MetadataStore metadataStore) {
+        this(cacheName, zkSession, zkOperationTimeoutSeconds, executor, DEFAULT_CACHE_EXPIRY_SECONDS, metadataStore);
     }
     
     public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds,
-            OrderedExecutor executor, int cacheExpirySeconds) {
+                          OrderedExecutor executor, int cacheExpirySeconds, MetadataStore metadataStore) {
         checkNotNull(executor);
         this.zkOperationTimeoutSeconds = zkOperationTimeoutSeconds;
         this.executor = executor;
         this.zkSession.set(zkSession);
         this.shouldShutdownExecutor = false;
         this.cacheExpirySeconds = cacheExpirySeconds;
-
+        this.metadataStore = metadataStore;
         this.dataCache = Caffeine.newBuilder()
                 .recordStats()
                 .buildAsync((key, executor1) -> null);
@@ -129,9 +132,10 @@ public abstract class ZooKeeperCache implements Watcher {
         CacheMetricsCollector.CAFFEINE.addCache(cacheName + "-exists", existsCache);
     }
 
-    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds) {
+    public ZooKeeperCache(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds,
+                          MetadataStore metadataStore) {
         this(cacheName, zkSession, zkOperationTimeoutSeconds,
-                OrderedExecutor.newBuilder().name("zk-cache-callback-executor").build());
+                OrderedExecutor.newBuilder().name("zk-cache-callback-executor").build(), metadataStore);
         this.shouldShutdownExecutor = true;
     }
 
@@ -139,39 +143,8 @@ public abstract class ZooKeeperCache implements Watcher {
         return this.zkSession.get();
     }
 
-    public <T> void process(WatchedEvent event, final CacheUpdater<T> updater) {
-        final String path = event.getPath();
-        if (path != null) {
-            dataCache.synchronous().invalidate(path);
-            childrenCache.synchronous().invalidate(path);
-            // sometimes zk triggers one watch per zk-session and if zkDataCache and ZkChildrenCache points to this
-            // ZookeeperCache instance then ZkChildrenCache may not invalidate for it's parent. Therefore, invalidate
-            // cache for parent if child is created/deleted
-            if (event.getType().equals(EventType.NodeCreated) || event.getType().equals(EventType.NodeDeleted)) {
-                childrenCache.synchronous().invalidate(ZkUtils.getParentForPath(path));
-            }
-            existsCache.synchronous().invalidate(path);
-            if (executor != null && updater != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Submitting reload cache task to the executor for path: {}, updater: {}", path, updater);
-                }
-                try {
-                    executor.executeOrdered(path, new SafeRunnable() {
-                        @Override
-                        public void safeRun() {
-                            updater.reloadCache(path);
-                        }
-                    });
-                } catch (RejectedExecutionException e) {
-                    // Ok, the service is shutting down
-                    LOG.error("Failed to updated zk-cache {} on zk-watch {}", path, e.getMessage());
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Cannot reload cache for path: {}, updater: {}", path, updater);
-                }
-            }
-        }
+    public MetadataStore getMetadataStore() {
+        return this.metadataStore;
     }
 
     public void invalidateAll() {
@@ -237,25 +210,7 @@ public abstract class ZooKeeperCache implements Watcher {
 
     @SuppressWarnings("deprecation")
     public CompletableFuture<Boolean> existsAsync(String path, Watcher watcher) {
-        return existsCache.get(path, (p, executor) -> {
-            ZooKeeper zk = zkSession.get();
-            if (zk == null) {
-                return FutureUtil.failedFuture(new IOException("ZK session not ready"));
-            }
-
-            CompletableFuture<Boolean> future = new CompletableFuture<>();
-            zk.exists(path, watcher, (rc, path1, ctx, stat) -> {
-                if (rc == Code.OK.intValue()) {
-                    future.complete(true);
-                } else if (rc == Code.NONODE.intValue()) {
-                    future.complete(false);
-                } else {
-                    future.completeExceptionally(KeeperException.create(rc));
-                }
-            }, null);
-
-            return future;
-        });
+        return this.metadataStore.exists(path);
     }
 
     /**
@@ -352,36 +307,26 @@ public abstract class ZooKeeperCache implements Watcher {
         // refresh zk-cache entry in background if it's already expired
         checkAndRefreshExpiredEntry(path, deserializer);
         CompletableFuture<Optional<Entry<T,Stat>>> future = new CompletableFuture<>();
-        dataCache.get(path, (p, executor) -> {
             // Return a future for the z-node to be fetched from ZK
             CompletableFuture<Pair<Entry<Object, Stat>, Long>> zkFuture = new CompletableFuture<>();
 
-            // Broker doesn't restart on global-zk session lost: so handling unexpected exception
-            try {
-                this.zkSession.get().getData(path, watcher, (rc, path1, ctx, content, stat) -> {
-                    if (rc == Code.OK.intValue()) {
-                        try {
-                            T obj = deserializer.deserialize(path, content);
-                            // avoid using the zk-client thread to process the result
-                            executor.execute(() -> zkFuture.complete(ImmutablePair
-                                    .of(new SimpleImmutableEntry<Object, Stat>(obj, stat), System.nanoTime())));
-                        } catch (Exception e) {
-                            executor.execute(() -> zkFuture.completeExceptionally(e));
-                        }
-                    } else if (rc == Code.NONODE.intValue()) {
-                        // Return null values for missing z-nodes, as this is not "exceptional" condition
-                        executor.execute(() -> zkFuture.complete(null));
-                    } else {
-                        executor.execute(() -> zkFuture.completeExceptionally(KeeperException.create(rc)));
+            this.metadataStore.get(path).thenCompose(getResult -> {
+                if (getResult.isPresent()) {
+                    try {
+                        T obj = deserializer.deserialize(path, getResult.get().getValue());
+                        // avoid using the zk-client thread to process the result
+                        executor.execute(() -> zkFuture.complete(ImmutablePair
+                                .of(new SimpleImmutableEntry<Object, Stat>(obj, null), System.nanoTime())));
+                    } catch (Exception e) {
+                        executor.execute(() -> zkFuture.completeExceptionally(e));
                     }
-                }, null);
-            } catch (Exception e) {
-                LOG.warn("Failed to access zkSession for {} {}", path, e.getMessage(), e);
-                zkFuture.completeExceptionally(e);
-            }
+                } else {
+                    // Return null values for missing z-nodes, as this is not "exceptional" condition
+                    executor.execute(() -> zkFuture.complete(null));
+                }
 
-            return zkFuture;
-        }).thenAccept(result -> {
+                return zkFuture;
+            }).thenAccept(result -> {
             if (result != null) {
                 future.complete(Optional.of((Entry<T, Stat>) result.getLeft()));
             } else {
@@ -401,19 +346,17 @@ public abstract class ZooKeeperCache implements Watcher {
             Pair<Entry<Object, Stat>, Long> entryPair = result.getNow(null);
             if (entryPair != null && entryPair.getRight() != null) {
                 if ((System.nanoTime() - entryPair.getRight()) > TimeUnit.SECONDS.toNanos(cacheExpirySeconds)) {
-                    this.zkSession.get().getData(path, this, (rc, path1, ctx, content, stat) -> {
-                        if (rc != Code.OK.intValue()) {
-                            log.warn("Failed to refresh zookeeper-cache for {} due to {}", path, rc);
-                            return;
+                    this.metadataStore.get(path).thenAccept(getResult -> {
+                        if (getResult.isPresent()) {
+                            try {
+                                T obj = deserializer.deserialize(path, getResult.get().getValue());
+                                dataCache.put(path, CompletableFuture.completedFuture(ImmutablePair
+                                        .of(new SimpleImmutableEntry<Object, Stat>(obj, null), System.nanoTime())));
+                            } catch (Exception e) {
+                                log.warn("Failed to refresh zookeeper-cache for {}", path, e);
+                            }
                         }
-                        try {
-                            T obj = deserializer.deserialize(path, content);
-                            dataCache.put(path, CompletableFuture.completedFuture(ImmutablePair
-                                    .of(new SimpleImmutableEntry<Object, Stat>(obj, stat), System.nanoTime())));
-                        } catch (Exception e) {
-                            log.warn("Failed to refresh zookeeper-cache for {}", path, e);
-                        }
-                    }, null);
+                    });
                 }
             }
         }
@@ -452,16 +395,9 @@ public abstract class ZooKeeperCache implements Watcher {
         return childrenCache.get(path, (p, executor) -> {
             CompletableFuture<Set<String>> future = new CompletableFuture<>();
             executor.execute(SafeRunnable.safeRun(() -> {
-                ZooKeeper zk = zkSession.get();
-                if (zk == null) {
-                    future.completeExceptionally(new IOException("ZK session not ready"));
-                    return;
-                }
 
-                zk.getChildren(path, watcher, (rc, path1, ctx, children) -> {
-                    if (rc == Code.OK.intValue()) {
-                        future.complete(Sets.newTreeSet(children));
-                    } else if (rc == Code.NONODE.intValue()) {
+                this.metadataStore.getChildren(path).thenAccept(childs -> {
+                    if (childs == null || childs.isEmpty()) {
                         // The node we want may not exist yet, so put a watcher on its existence
                         // before throwing up the exception. Its possible that the node could have
                         // been created after the call to getChildren, but before the call to exists().
@@ -483,9 +419,9 @@ public abstract class ZooKeeperCache implements Watcher {
                             return null;
                         });
                     } else {
-                        future.completeExceptionally(KeeperException.create(rc));
+                        future.complete(Sets.newTreeSet(childs));
                     }
-                }, null);
+                });
             }));
 
             return future;
@@ -503,6 +439,7 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     public Set<String> getChildrenIfPresent(String path) {
+
         CompletableFuture<Set<String>> future = childrenCache.getIfPresent(path);
         if (future != null && future.isDone() && !future.isCompletedExceptionally()) {
             return future.getNow(null);
@@ -513,8 +450,6 @@ public abstract class ZooKeeperCache implements Watcher {
 
     @Override
     public void process(WatchedEvent event) {
-        LOG.info("[{}] Received ZooKeeper watch event: {}", zkSession.get(), event);
-        this.process(event, null);
     }
 
     public void invalidateRoot(String root) {
@@ -534,46 +469,7 @@ public abstract class ZooKeeperCache implements Watcher {
     }
 
     public boolean checkRegNodeAndWaitExpired(String regPath) throws IOException {
-        final CountDownLatch prevNodeLatch = new CountDownLatch(1);
-        Watcher zkPrevRegNodewatcher = new Watcher() {
-            @Override
-            public void process(WatchedEvent event) {
-                // Check for prev znode deletion. Connection expiration is
-                // not handling, since bookie has logic to shutdown.
-                if (EventType.NodeDeleted == event.getType()) {
-                    prevNodeLatch.countDown();
-                }
-            }
-        };
-        try {
-            Stat stat = getZooKeeper().exists(regPath, zkPrevRegNodewatcher);
-            if (null != stat) {
-                // if the ephemeral owner isn't current zookeeper client
-                // wait for it to be expired.
-                if (stat.getEphemeralOwner() != getZooKeeper().getSessionId()) {
-                    log.info("Previous bookie registration znode: {} exists, so waiting zk sessiontimeout:"
-                        + " {} ms for znode deletion", regPath, getZooKeeper().getSessionTimeout());
-                    // waiting for the previous bookie reg znode deletion
-                    if (!prevNodeLatch.await(getZooKeeper().getSessionTimeout(), TimeUnit.MILLISECONDS)) {
-                        throw new NodeExistsException(regPath);
-                    } else {
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (KeeperException ke) {
-            log.error("ZK exception checking and wait ephemeral znode {} expired : ", regPath, ke);
-            throw new IOException("ZK exception checking and wait ephemeral znode "
-                + regPath + " expired", ke);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            log.error("Interrupted checking and wait ephemeral znode {} expired : ", regPath, ie);
-            throw new IOException("Interrupted checking and wait ephemeral znode "
-                + regPath + " expired", ie);
-        }
+        return true;
     }
 
     private static Logger log = LoggerFactory.getLogger(ZooKeeperCache.class);

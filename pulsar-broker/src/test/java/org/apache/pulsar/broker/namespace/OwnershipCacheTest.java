@@ -96,7 +96,7 @@ public class OwnershipCacheTest {
         zkc = new ZooKeeper(zookeeperServer.getHostPort(), 5000, null);
         otherZkc = new ZooKeeper(zookeeperServer.getHostPort(), 5000, null);
         mockZkc = MockZooKeeper.newInstance();
-        zkCache = new LocalZooKeeperCache(zkc, 30, executor);
+        zkCache = new LocalZooKeeperCache(zkc, 30, executor, null);
         localCache = spy(new LocalZooKeeperCacheService(zkCache, null));
         ZooKeeperDataCache<LocalPolicies> poilciesCache = mock(ZooKeeperDataCache.class);
         when(pulsar.getLocalZkCacheService()).thenReturn(localCache);
@@ -172,7 +172,7 @@ public class OwnershipCacheTest {
         // The only chance that we lost an already existing ephemeral node is when the broker dies or unload has
         // succeeded in both cases, the ownerInfoCache will be updated (i.e. invalidated the entry)
         localCache.ownerInfoCache().invalidate(ServiceUnitZkUtils.path(testFullBundle));
-        ServiceUnitZkUtils.acquireNameSpace(zkCache.getZooKeeper(), ServiceUnitZkUtils.path(testFullBundle),
+        ServiceUnitZkUtils.acquireNameSpace(null, ServiceUnitZkUtils.path(testFullBundle),
                 new NamespaceEphemeralData("pulsar://otherhost:8881", "pulsar://otherhost:8884",
                         "http://localhost:8080", "https://localhost:4443", false));
         data1 = cache.tryAcquiringOwnership(testFullBundle).get();
@@ -189,7 +189,7 @@ public class OwnershipCacheTest {
         // case 1: no one owns the namespace
         assertFalse(cache.getOwnerAsync(testBundle).get().isPresent());
         // case 2: someone owns the namespace
-        ServiceUnitZkUtils.acquireNameSpace(otherZkc, ServiceUnitZkUtils.path(testBundle),
+        ServiceUnitZkUtils.acquireNameSpace(null, ServiceUnitZkUtils.path(testBundle),
                 new NamespaceEphemeralData("pulsar://otherhost:8881", "pulsar://otherhost:8884",
                         "http://otherhost:8080", "https://otherhost:4443", false));
 
@@ -232,7 +232,7 @@ public class OwnershipCacheTest {
             // OK for not owned namespace
         }
         // case 2: someone else owns the namespace
-        ServiceUnitZkUtils.acquireNameSpace(otherZkc, ServiceUnitZkUtils.path(testBundle),
+        ServiceUnitZkUtils.acquireNameSpace(null, ServiceUnitZkUtils.path(testBundle),
                 new NamespaceEphemeralData("pulsar://otherhost:8881", "pulsar://otherhost:8884",
                         "http://otherhost:8080", "https://otherhost:4443", false));
         try {
@@ -277,7 +277,7 @@ public class OwnershipCacheTest {
         assertTrue(cache.getOwnedBundles().isEmpty());
 
         // case 2: someone else owns the namespace
-        ServiceUnitZkUtils.acquireNameSpace(otherZkc, ServiceUnitZkUtils.path(testBundle),
+        ServiceUnitZkUtils.acquireNameSpace(null, ServiceUnitZkUtils.path(testBundle),
                 new NamespaceEphemeralData("pulsar://otherhost:8881", "pulsar://otherhost:8884",
                         "http://otherhost:8080", "https://otherhost:4443", false));
         assertTrue(cache.getOwnedBundles().isEmpty());

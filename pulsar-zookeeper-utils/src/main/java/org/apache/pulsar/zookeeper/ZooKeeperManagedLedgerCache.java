@@ -61,11 +61,5 @@ public class ZooKeeperManagedLedgerCache implements Watcher {
 
     @Override
     public void process(WatchedEvent watchedEvent) {
-        LOG.info("[{}] Received ZooKeeper watch event: {}", cache.zkSession.get(), watchedEvent);
-        String watchedEventPath = watchedEvent.getPath();
-        if (watchedEventPath != null) {
-            LOG.info("invalidate called in zookeeperChildrenCache for path {}", watchedEventPath);
-            cache.invalidate(watchedEventPath);
-        }
     }
 }

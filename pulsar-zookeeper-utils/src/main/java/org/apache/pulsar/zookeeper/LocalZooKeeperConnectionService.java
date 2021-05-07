@@ -20,9 +20,11 @@ package org.apache.pulsar.zookeeper;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.pulsar.zookeeper.ZooKeeperClientFactory.SessionType;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -102,15 +104,15 @@ public class LocalZooKeeperConnectionService implements Closeable {
      * @throws InterruptedException
      *             zookeeper exception.
      */
-    public static void checkAndCreatePersistNode(ZooKeeper zkc, String path)
+    public static void checkAndCreatePersistNode(MetadataStore metadataStore, String path)
             throws KeeperException, InterruptedException {
 
         // check if the node exists
-        if (zkc.exists(path, false) == null) {
+        if (metadataStore.exists(path) == null) {
             //create znode
             try {
                 // do create the node
-                zkc.create(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                metadataStore.put(path, new byte[0], Optional.empty());
 
                 LOG.info("created znode, path={}", path);
             } catch (Exception e) {
@@ -119,37 +121,35 @@ public class LocalZooKeeperConnectionService implements Closeable {
         }
     }
 
-    public static String createIfAbsent(ZooKeeper zk, String path, String data, CreateMode createMode)
+    public static String createIfAbsent(MetadataStore metadataStore, String path, String data, CreateMode createMode)
             throws KeeperException, InterruptedException {
-        return createIfAbsent(zk, path, data, createMode, false);
+        return createIfAbsent(metadataStore, path, data, createMode, false);
     }
 
-    public static String createIfAbsent(ZooKeeper zk, String path, String data, CreateMode createMode, boolean gc)
+    public static String createIfAbsent(MetadataStore metadataStore, String path, String data,
+                                        CreateMode createMode, boolean gc)
             throws KeeperException, InterruptedException {
-        return createIfAbsent(zk, path, data.getBytes(Charsets.UTF_8), createMode, gc);
+        return createIfAbsent(metadataStore, path, data.getBytes(Charsets.UTF_8), createMode, gc);
     }
 
-    public static String createIfAbsent(ZooKeeper zk, String path, byte[] data, CreateMode createMode)
+    public static String createIfAbsent(MetadataStore metadataStore, String path, byte[] data, CreateMode createMode)
             throws KeeperException, InterruptedException {
-        return createIfAbsent(zk, path, data, createMode, false);
+        return createIfAbsent(metadataStore, path, data, createMode, false);
     }
 
-    public static String createIfAbsent(ZooKeeper zk, String path, byte[] data, CreateMode createMode, boolean gc)
+    public static String createIfAbsent(MetadataStore metadataStore, String path, byte[] data,
+                                        CreateMode createMode, boolean gc)
             throws KeeperException, InterruptedException {
         String pathCreated = null;
         try {
-            pathCreated = zk.create(path, data, Ids.OPEN_ACL_UNSAFE, createMode);
-        } catch (NodeExistsException e) {
+            pathCreated = metadataStore.put(path, data, Optional.empty()).get().getPath();
+        } catch (Exception e) {
             // OK
             LOG.debug("Create skipped for existing znode: path={}", path);
         }
         // reset if what exists is the ephemeral garbage.
         if (gc && (pathCreated == null) && CreateMode.EPHEMERAL.equals(createMode)) {
-            Stat stat = zk.exists(path, false);
-            if (stat != null && zk.getSessionId() != stat.getEphemeralOwner()) {
-                deleteIfExists(zk, path, -1);
-                pathCreated = zk.create(path, data, Ids.OPEN_ACL_UNSAFE, createMode);
-            }
+            metadataStore.put(path, data, Optional.empty());
         }
         return pathCreated;
     }

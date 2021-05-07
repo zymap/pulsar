@@ -40,7 +40,9 @@ public interface MetadataCache<T> {
      *            the path of the object in the metadata store
      * @return a future to track the completion of the operation
      */
-    CompletableFuture<Optional<T>> get(String path);
+    Optional<T> get(String path);
+
+    CompletableFuture<Optional<T>> getAsync(String path);
 
     /**
      * Check if an object is present in cache without triggering a load from the metadata store.

@@ -141,11 +141,11 @@ public class LockManagerTest extends BaseMetadataStoreTest {
 
         ResourceLock<String> lock = lockManager.acquireLock("/my/path/1", "lock-1").join();
         assertEquals(lock.getValue(), "lock-1");
-        assertEquals(cache.get("/my/path/1").join().get(), "lock-1");
+        assertEquals(cache.getAsync("/my/path/1").join().get(), "lock-1");
 
         lock.updateValue("value-2").join();
         assertEquals(lock.getValue(), "value-2");
-        assertEquals(cache.get("/my/path/1").join().get(), "value-2");
+        assertEquals(cache.getAsync("/my/path/1").join().get(), "value-2");
     }
 
     @Test(dataProvider = "impl")

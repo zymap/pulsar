@@ -25,20 +25,16 @@ import com.google.common.collect.Maps;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import org.apache.bookkeeper.util.ZkUtils;
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.broker.namespace.NamespaceEphemeralData;
 import org.apache.pulsar.common.policies.data.LocalPolicies;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperChildrenCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
 import org.apache.pulsar.zookeeper.ZooKeeperManagedLedgerCache;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,17 +125,12 @@ public class LocalZooKeeperCacheService {
         String[] paths = new String[] { MANAGED_LEDGER_ROOT, OWNER_INFO_ROOT, LOCAL_POLICIES_ROOT };
         // initialize the zk client with values
         try {
-            ZooKeeper zk = cache.getZooKeeper();
+            MetadataStore metadataStore = cache.getMetadataStore();
             for (String path : paths) {
                 if (cache.exists(path)) {
                     continue;
                 }
-
-                try {
-                    ZkUtils.createFullPathOptimistic(zk, path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-                } catch (KeeperException.NodeExistsException e) {
-                    // Ok
-                }
+                metadataStore.put(path, new byte[0], Optional.empty());
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -215,18 +206,8 @@ public class LocalZooKeeperCacheService {
                 return;
             }
 
-            ZkUtils.asyncCreateFullPathOptimistic(cache.getZooKeeper(), path, content, Ids.OPEN_ACL_UNSAFE,
-                    CreateMode.PERSISTENT, (rc, path1, ctx, name) -> {
-                        if (rc == KeeperException.Code.OK.intValue()
-                                || rc == KeeperException.Code.NODEEXISTS.intValue()) {
-                            LOG.info("Successfully copyied bundles data to local zk at {}", path);
-                            future.complete(localPolicies);
-                        } else {
-                            LOG.error("Failed to create policies for {} in local zookeeper: {}", path,
-                                    KeeperException.Code.get(rc));
-                            future.completeExceptionally(new PulsarServerException(KeeperException.create(rc)));
-                        }
-                    }, null);
+            cache.getMetadataStore().put(path, content, Optional.empty());
+            future.complete(localPolicies);
         }).exceptionally(ex -> {
             future.completeExceptionally(ex);
             return null;

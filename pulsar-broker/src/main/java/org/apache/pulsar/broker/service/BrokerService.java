@@ -304,7 +304,7 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                 pulsar.getConfiguration(), pulsar.getConfigurationCache());
 
         if (pulsar.getConfigurationCache() != null) {
-            pulsar.getConfigurationCache().policiesCache().registerListener(this);
+//            pulsar.getConfigurationCache().policiesCache().registerListener(this);
         }
 
         this.inactivityMonitor = Executors
@@ -655,9 +655,9 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
         try {
             log.info("Shutting down Pulsar Broker service");
 
-            if (pulsar.getConfigurationCache() != null) {
-                pulsar.getConfigurationCache().policiesCache().unregisterListener(this);
-            }
+//            if (pulsar.getConfigurationCache() != null) {
+//                pulsar.getConfigurationCache().policiesCache().unregisterListener(this);
+//            }
 
             // unloads all namespaces gracefully without disrupting mutually
             unloadNamespaceBundlesGracefully();
@@ -2613,8 +2613,8 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
             if (maxTopicsPerNamespace > 0) {
                 String partitionedTopicPath = PulsarWebResource.joinPath(MANAGED_LEDGER_PATH_ZNODE,
                         topicName.getNamespace(), topicName.getDomain().value());
-                List<String> topics = pulsar().getLocalZkCache().getZooKeeper()
-                        .getChildren(partitionedTopicPath, false);
+                List<String> topics = pulsar().getLocalMetadataStore()
+                        .getChildren(partitionedTopicPath).get();
                 if (topics.size() + numPartitions > maxTopicsPerNamespace) {
                     log.error("Failed to create persistent topic {}, "
                             + "exceed maximum number of topics in namespace", topicName);
@@ -2623,8 +2623,6 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                     return false;
                 }
             }
-        } catch (KeeperException.NoNodeException e) {
-            // NoNode means there are no partitioned topics in this domain for this namespace
         } catch (Exception e) {
             log.error("Failed to create partitioned topic {}", topicName, e);
                 topicFuture.completeExceptionally(new RestException(e));

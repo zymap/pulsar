@@ -101,7 +101,7 @@ public class ZookeeperCacheTest {
     @Test(timeOut = 10000)
     public void testSimpleCache() throws Exception {
 
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         ZooKeeperDataCache<String> zkCache = new ZooKeeperDataCache<String>(zkCacheService) {
             @Override
             public String deserialize(String key, byte[] content) throws Exception {
@@ -145,7 +145,7 @@ public class ZookeeperCacheTest {
     public void testChildrenCache() throws Exception {
         zkClient.create("/test", new byte[0], null, null);
 
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         ZooKeeperChildrenCache cache = new ZooKeeperChildrenCache(zkCacheService, "/test");
 
         // Create callback counter
@@ -199,7 +199,7 @@ public class ZookeeperCacheTest {
     @Test(timeOut = 10000)
     public void testChildrenCacheZnodeCreatedAfterCache() throws Exception {
 
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         ZooKeeperChildrenCache cache = new ZooKeeperChildrenCache(zkCacheService, "/test");
 
         // Create callback counter
@@ -256,7 +256,7 @@ public class ZookeeperCacheTest {
         // Check existence after creation of the node
         zkClient.create("/test", new byte[0], null, null);
         Thread.sleep(20);
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         boolean exists = zkCacheService.exists("/test");
         Assert.assertTrue(exists, "/test should exists in the cache");
 
@@ -273,7 +273,7 @@ public class ZookeeperCacheTest {
         zkClient.create("/test/c1", new byte[0], null, null);
         zkClient.create("/test/c2", new byte[0], null, null);
         Thread.sleep(20);
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         boolean exists = zkCacheService.exists("/test");
         Assert.assertTrue(exists, "/test should exists in the cache");
 
@@ -312,7 +312,7 @@ public class ZookeeperCacheTest {
         };
 
         GlobalZooKeeperCache zkCacheService = new GlobalZooKeeperCache(zkClientfactory, -1, 30, "", executor,
-                scheduledExecutor, 300);
+                scheduledExecutor, 300, null);
         zkCacheService.start();
         zkClient = (MockZooKeeper) zkCacheService.getZooKeeper();
         ZooKeeperDataCache<String> zkCache = new ZooKeeperDataCache<String>(zkCacheService) {
@@ -421,7 +421,7 @@ public class ZookeeperCacheTest {
         // add readOpDelayMs so, main thread will not serve zkCacahe-returned future and let zkExecutor-thread handle
         // callback-result process
         MockZooKeeper zkClient = MockZooKeeper.newInstance(zkExecutor, 100);
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
         ZooKeeperDataCache<String> zkCache = new ZooKeeperDataCache<String>(zkCacheService) {
             @Override
             public String deserialize(String key, byte[] content) throws Exception {
@@ -467,7 +467,7 @@ public class ZookeeperCacheTest {
         // add readOpDelayMs so, main thread will not serve zkCacahe-returned future and let zkExecutor-thread handle
         // callback-result process
         MockZooKeeper zkClient = MockZooKeeper.newInstance(zkExecutor, 100);
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkClient, 30, executor, null);
 
         final AtomicInteger count = new AtomicInteger(0);
         ZooKeeperDataCache<String> zkCache = new ZooKeeperDataCache<String>(zkCacheService) {
@@ -541,7 +541,7 @@ public class ZookeeperCacheTest {
 
         // add readOpDelayMs so, main thread will not serve zkCacahe-returned future and let zkExecutor-thread handle
         // callback-result process
-        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkSession, 1, executor);
+        ZooKeeperCache zkCacheService = new LocalZooKeeperCache(zkSession, 1, executor, null);
         ZooKeeperDataCache<String> zkCache = new ZooKeeperDataCache<String>(zkCacheService) {
             @Override
             public String deserialize(String key, byte[] content) throws Exception {
@@ -614,7 +614,7 @@ public class ZookeeperCacheTest {
 
         public ZooKeeperCacheTest(String cacheName, ZooKeeper zkSession, int zkOperationTimeoutSeconds,
                 OrderedExecutor executor, int cacheExpirySeconds) {
-            super(cacheName, zkSession, zkOperationTimeoutSeconds, executor, cacheExpirySeconds);
+            super(cacheName, zkSession, zkOperationTimeoutSeconds, executor, cacheExpirySeconds, null);
         }
 
     }

@@ -869,21 +869,21 @@ public class PersistentTopicTest extends MockedBookKeeperTestCase {
         testMaxConsumersShared();
     }
 
-    @Test
-    public void testMaxConsumersSharedForNamespace() throws Exception {
-        ServiceConfiguration svcConfig = spy(new ServiceConfiguration());
-        doReturn(svcConfig).when(pulsar).getConfiguration();
-
-        // set max clients
-        Policies policies = new Policies();
-        policies.max_consumers_per_subscription = 2;
-        policies.max_consumers_per_topic = 3;
-        when(pulsar.getConfigurationCache().policiesCache()
-                .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(successTopicName).getNamespace())))
-                .thenReturn(policies);
-
-        testMaxConsumersShared();
-    }
+//    @Test
+//    public void testMaxConsumersSharedForNamespace() throws Exception {
+//        ServiceConfiguration svcConfig = spy(new ServiceConfiguration());
+//        doReturn(svcConfig).when(pulsar).getConfiguration();
+//
+//        // set max clients
+//        Policies policies = new Policies();
+//        policies.max_consumers_per_subscription = 2;
+//        policies.max_consumers_per_topic = 3;
+//        when(pulsar.getConfigurationCache().policiesCache()
+//                .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(successTopicName).getNamespace())))
+//                .thenReturn(policies);
+//
+//        testMaxConsumersShared();
+//    }
 
     private void testMaxConsumersFailover() throws Exception {
 
@@ -964,21 +964,21 @@ public class PersistentTopicTest extends MockedBookKeeperTestCase {
         testMaxConsumersFailover();
     }
 
-    @Test
-    public void testMaxConsumersFailoverForNamespace() throws Exception {
-        ServiceConfiguration svcConfig = spy(new ServiceConfiguration());
-        doReturn(svcConfig).when(pulsar).getConfiguration();
-
-        // set max clients
-        Policies policies = new Policies();
-        policies.max_consumers_per_subscription = 2;
-        policies.max_consumers_per_topic = 3;
-
-        when(pulsar.getConfigurationCache().policiesCache()
-                .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(successTopicName).getNamespace())))
-                .thenReturn(policies);
-        testMaxConsumersFailover();
-    }
+//    @Test
+//    public void testMaxConsumersFailoverForNamespace() throws Exception {
+//        ServiceConfiguration svcConfig = spy(new ServiceConfiguration());
+//        doReturn(svcConfig).when(pulsar).getConfiguration();
+//
+//        // set max clients
+//        Policies policies = new Policies();
+//        policies.max_consumers_per_subscription = 2;
+//        policies.max_consumers_per_topic = 3;
+//
+//        when(pulsar.getConfigurationCache().policiesCache()
+//                .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(successTopicName).getNamespace())))
+//                .thenReturn(policies);
+//        testMaxConsumersFailover();
+//    }
 
     private Consumer getMockedConsumerWithSpecificAddress(Topic topic, Subscription sub, long consumerId,
             InetAddress address) throws Exception {

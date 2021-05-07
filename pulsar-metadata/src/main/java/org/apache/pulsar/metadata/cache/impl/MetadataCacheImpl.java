@@ -104,7 +104,14 @@ public class MetadataCacheImpl<T> implements MetadataCache<T>, Consumer<Notifica
     }
 
     @Override
-    public CompletableFuture<Optional<T>> get(String path) {
+    public Optional<T> get(String path) {
+        return objCache.get(path)
+                .thenApply(optRes -> optRes.map(Entry::getKey))
+                .join();
+    }
+
+    @Override
+    public CompletableFuture<Optional<T>> getAsync(String path) {
         return objCache.get(path)
                 .thenApply(optRes -> optRes.map(Entry::getKey));
     }
