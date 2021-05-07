@@ -184,7 +184,7 @@ public class NamespaceService implements AutoCloseable {
     }
 
     public void initialize() {
-        ServiceUnitZkUtils.initZK(pulsar.getLocalZkCache().getZooKeeper(), pulsar.getSafeBrokerServiceUrl());
+        ServiceUnitZkUtils.initZK(pulsar.getLocalMetadataStore(), pulsar.getSafeBrokerServiceUrl());
         if (!getOwnershipCache().refreshSelfOwnerInfo()) {
             throw new RuntimeException("Failed to refresh self owner info.");
         }

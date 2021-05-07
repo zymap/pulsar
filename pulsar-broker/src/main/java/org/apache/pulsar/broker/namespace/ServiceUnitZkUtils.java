@@ -28,7 +28,7 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import java.io.IOException;
 import java.util.List;
-import org.apache.bookkeeper.util.ZkUtils;
+import java.util.Optional;
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.broker.cache.LocalZooKeeperCacheService;
 import org.apache.pulsar.common.naming.NamespaceBundle;
@@ -36,12 +36,11 @@ import org.apache.pulsar.common.naming.NamespaceBundleFactory;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.BundlesData;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.pulsar.zookeeper.LocalZooKeeperConnectionService;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +85,8 @@ public final class ServiceUnitZkUtils {
 
     private static Range<Long> getHashRange(String rangePathPart) {
         String[] endPoints = rangePathPart.split("_");
-        checkArgument(endPoints.length == 2, "Malformed bundle hash range path part:" + rangePathPart);
+        checkArgument(endPoints.length == 2, "Malformed "
+                + "bundle hash range path part:" + rangePathPart);
         Long startLong = Long.decode(endPoints[0]);
         Long endLong = Long.decode(endPoints[1]);
         BoundType endType = (endPoints[1].equals(LAST_BOUNDARY)) ? BoundType.CLOSED : BoundType.OPEN;
@@ -100,13 +100,13 @@ public final class ServiceUnitZkUtils {
      *
      * @throws PulsarServerException
      */
-    public static void initZK(ZooKeeper zkc, String selfBrokerUrl) {
+    public static void initZK(MetadataStore metadataStore, String selfBrokerUrl) {
         // initialize the zk client with values
         try {
             // check and create /namespace path
-            LocalZooKeeperConnectionService.checkAndCreatePersistNode(zkc, OWNER_INFO_ROOT);
+            LocalZooKeeperConnectionService.checkAndCreatePersistNode(metadataStore, OWNER_INFO_ROOT);
             // make sure to cleanup all remaining ephemeral nodes that shows ownership of this broker
-            cleanupNamespaceNodes(zkc, OWNER_INFO_ROOT, selfBrokerUrl);
+            cleanupNamespaceNodes(metadataStore, OWNER_INFO_ROOT, selfBrokerUrl);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -118,19 +118,20 @@ public final class ServiceUnitZkUtils {
      *
      * @throws Exception
      */
-    private static void cleanupNamespaceNodes(ZooKeeper zkc, String root, String selfBrokerUrl) throws Exception {
+    private static void cleanupNamespaceNodes(MetadataStore metadataStore, String root,
+                                              String selfBrokerUrl) throws Exception {
         // we don't need a watch here since we are only cleaning up the stale ephemeral nodes from previous session
         try {
-            for (String node : zkc.getChildren(root, false)) {
+            for (String node : metadataStore.getChildren(root).get()) {
                 String currentPath = root + "/" + node;
                 // retrieve the content and try to decode with ServiceLookupData
-                List<String> children = zkc.getChildren(currentPath, false);
+                List<String> children = metadataStore.getChildren(currentPath).get();
                 if (children.size() == 0) {
                     // clean up a single namespace node
-                    cleanupSingleNamespaceNode(zkc, currentPath, selfBrokerUrl);
+                    cleanupSingleNamespaceNode(metadataStore, currentPath, selfBrokerUrl);
                 } else {
                     // this is an intermediate node, which means this is v2 namespace path
-                    cleanupNamespaceNodes(zkc, currentPath, selfBrokerUrl);
+                    cleanupNamespaceNodes(metadataStore, currentPath, selfBrokerUrl);
                 }
             }
         } catch (NoNodeException nne) {
@@ -144,36 +145,29 @@ public final class ServiceUnitZkUtils {
      *
      * @throws Exception
      */
-    private static void cleanupSingleNamespaceNode(ZooKeeper zkc, String path, String selfBrokerUrl)
+    private static void cleanupSingleNamespaceNode(MetadataStore metadataStore, String path, String selfBrokerUrl)
             throws Exception {
         String brokerUrl = null;
-        try {
-            byte[] data = zkc.getData(path, false, null);
-            if (data == null || data.length == 0) {
-                // skip, ephemeral node will not have zero byte
-                return;
-            }
+        byte[] data = metadataStore.get(path).get().get().getValue();
+        if (data == null || data.length == 0) {
+            // skip, ephemeral node will not have zero byte
+            return;
+        }
 
-            NamespaceEphemeralData zdata = jsonMapper.readValue(data, NamespaceEphemeralData.class);
-            brokerUrl = zdata.getNativeUrl();
+        NamespaceEphemeralData zdata = jsonMapper.readValue(data, NamespaceEphemeralData.class);
+        brokerUrl = zdata.getNativeUrl();
 
-            if (selfBrokerUrl.equals(brokerUrl)) {
-                // The znode indicate that the owner is this instance while this instance was just started before
-                // acquiring any namespaces yet
-                // Hence, the znode must have been created previously by this instance and needs to be cleaned up
-                zkc.delete(path, -1);
-            }
-        } catch (NoNodeException nne) {
-            // The node may expired before this instance tries to get or delete it from ZK. It is OK and considered as
-            // NOOP.
+        if (selfBrokerUrl.equals(brokerUrl)) {
+            // The znode indicate that the owner is this instance while this instance was just started before
+            // acquiring any namespaces yet
+            // Hence, the znode must have been created previously by this instance and needs to be cleaned up
+            metadataStore.delete(path, Optional.empty());
         }
     }
 
     /**
      * Create name space Ephemeral node.
      *
-     * @param zkc
-     *            the <code>ZooKeeper</code> connected session object
      * @param path
      *            the namespace path
      * @param value
@@ -185,50 +179,43 @@ public final class ServiceUnitZkUtils {
      * @throws JsonMappingException
      * @throws JsonGenerationException
      */
-    public static NamespaceEphemeralData acquireNameSpace(ZooKeeper zkc, String path,
+    public static NamespaceEphemeralData acquireNameSpace(MetadataStore metadataStore, String path,
                                                           NamespaceEphemeralData value)
             throws KeeperException, InterruptedException, JsonGenerationException, JsonMappingException, IOException {
 
         // the znode data to be written
         String data = jsonMapper.writeValueAsString(value);
 
-        createZnodeOptimistic(zkc, path, data, CreateMode.EPHEMERAL);
+        createZnodeOptimistic(metadataStore, path, data, CreateMode.EPHEMERAL);
 
         return value;
     }
 
-    public static BundlesData createBundlesIfAbsent(ZooKeeper zkc, String path, BundlesData initialBundles)
+    public static BundlesData createBundlesIfAbsent(MetadataStore metadataStore,
+                                                    String path, BundlesData initialBundles)
             throws JsonGenerationException, JsonMappingException, IOException, KeeperException, InterruptedException {
         String data = jsonMapper.writeValueAsString(initialBundles);
 
-        createZnodeOptimistic(zkc, path, data, CreateMode.PERSISTENT);
+        createZnodeOptimistic(metadataStore, path, data, CreateMode.PERSISTENT);
 
         return initialBundles;
     }
 
-    private static void createZnodeOptimistic(ZooKeeper zkc, String path, String data, CreateMode mode)
+    private static void createZnodeOptimistic(MetadataStore metadataStore, String path, String data, CreateMode mode)
             throws KeeperException, InterruptedException {
         try {
             // create node optimistically
-            checkNotNull(LocalZooKeeperConnectionService.createIfAbsent(zkc, path, data, mode));
+            checkNotNull(LocalZooKeeperConnectionService.createIfAbsent(metadataStore, path, data, mode));
         } catch (NoNodeException e) {
             // if path contains multiple levels after the root, create the intermediate nodes first
             String[] parts = path.split("/");
             if (parts.length > 3) {
                 String intPath = path.substring(0, path.lastIndexOf("/"));
-                if (zkc.exists(intPath, false) == null) {
+                if (metadataStore.exists(intPath) == null) {
                     // create the intermediate nodes
-                    try {
-                        ZkUtils.createFullPathOptimistic(zkc, intPath, new byte[0], Ids.OPEN_ACL_UNSAFE,
-                                CreateMode.PERSISTENT);
-                    } catch (KeeperException.NodeExistsException nee) {
-                        LOG.debug(
-                                "Other broker preempted the full intermediate path [{}] already."
-                                        + " Continue for acquiring the leaf ephemeral node.",
-                                intPath);
-                    }
+                    metadataStore.put(intPath, new byte[0], Optional.empty());
                 }
-                checkNotNull(LocalZooKeeperConnectionService.createIfAbsent(zkc, path, data, mode));
+                checkNotNull(LocalZooKeeperConnectionService.createIfAbsent(metadataStore, path, data, mode));
             } else {
                 // If failed to create immediate child of root node, throw exception
                 throw e;
