@@ -624,15 +624,15 @@ public class PulsarService implements AutoCloseable {
             // needs load management service and before start broker service,
             this.startNamespaceService();
 
-            schemaStorage = createAndStartSchemaStorage();
-            schemaRegistryService = SchemaRegistryService.create(
-                    schemaStorage, config.getSchemaRegistryCompatibilityCheckers());
+//            schemaStorage = createAndStartSchemaStorage();
+//            schemaRegistryService = SchemaRegistryService.create(
+//                    schemaStorage, config.getSchemaRegistryCompatibilityCheckers());
 
-            this.defaultOffloader = createManagedLedgerOffloader(
-                    OffloadPolicies.create(this.getConfiguration().getProperties()));
-            this.brokerInterceptor = BrokerInterceptors.load(config);
-            brokerService.setInterceptor(getBrokerInterceptor());
-            this.brokerInterceptor.initialize(this);
+//            this.defaultOffloader = createManagedLedgerOffloader(
+//                    OffloadPolicies.create(this.getConfiguration().getProperties()));
+//            this.brokerInterceptor = BrokerInterceptors.load(config);
+//            brokerService.setInterceptor(getBrokerInterceptor());
+//            this.brokerInterceptor.initialize(this);
             brokerService.start();
 
             this.webService = new WebService(this);
@@ -671,37 +671,37 @@ public class PulsarService implements AutoCloseable {
             this.webService.addServlet("/metrics",
                     new ServletHolder(metricsServlet),
                     false, attributeMap);
-
-            if (config.isWebSocketServiceEnabled()) {
-                // Use local broker address to avoid different IP address when using a VIP for service discovery
-                this.webSocketService = new WebSocketService(null, config);
-                this.webSocketService.start();
-
-                final WebSocketServlet producerWebSocketServlet = new WebSocketProducerServlet(webSocketService);
-                this.webService.addServlet(WebSocketProducerServlet.SERVLET_PATH,
-                        new ServletHolder(producerWebSocketServlet), true, attributeMap);
-                this.webService.addServlet(WebSocketProducerServlet.SERVLET_PATH_V2,
-                        new ServletHolder(producerWebSocketServlet), true, attributeMap);
-
-                final WebSocketServlet consumerWebSocketServlet = new WebSocketConsumerServlet(webSocketService);
-                this.webService.addServlet(WebSocketConsumerServlet.SERVLET_PATH,
-                        new ServletHolder(consumerWebSocketServlet), true, attributeMap);
-                this.webService.addServlet(WebSocketConsumerServlet.SERVLET_PATH_V2,
-                        new ServletHolder(consumerWebSocketServlet), true, attributeMap);
-
-                final WebSocketServlet readerWebSocketServlet = new WebSocketReaderServlet(webSocketService);
-                this.webService.addServlet(WebSocketReaderServlet.SERVLET_PATH,
-                        new ServletHolder(readerWebSocketServlet), true, attributeMap);
-                this.webService.addServlet(WebSocketReaderServlet.SERVLET_PATH_V2,
-                        new ServletHolder(readerWebSocketServlet), true, attributeMap);
-
-                final WebSocketServlet pingPongWebSocketServlet = new WebSocketPingPongServlet(webSocketService);
-                this.webService.addServlet(WebSocketPingPongServlet.SERVLET_PATH,
-                        new ServletHolder(pingPongWebSocketServlet), true, attributeMap);
-                this.webService.addServlet(WebSocketPingPongServlet.SERVLET_PATH_V2,
-                        new ServletHolder(pingPongWebSocketServlet), true, attributeMap);
-            }
-
+//
+//            if (config.isWebSocketServiceEnabled()) {
+//                // Use local broker address to avoid different IP address when using a VIP for service discovery
+//                this.webSocketService = new WebSocketService(null, config);
+//                this.webSocketService.start();
+//
+//                final WebSocketServlet producerWebSocketServlet = new WebSocketProducerServlet(webSocketService);
+//                this.webService.addServlet(WebSocketProducerServlet.SERVLET_PATH,
+//                        new ServletHolder(producerWebSocketServlet), true, attributeMap);
+//                this.webService.addServlet(WebSocketProducerServlet.SERVLET_PATH_V2,
+//                        new ServletHolder(producerWebSocketServlet), true, attributeMap);
+//
+//                final WebSocketServlet consumerWebSocketServlet = new WebSocketConsumerServlet(webSocketService);
+//                this.webService.addServlet(WebSocketConsumerServlet.SERVLET_PATH,
+//                        new ServletHolder(consumerWebSocketServlet), true, attributeMap);
+//                this.webService.addServlet(WebSocketConsumerServlet.SERVLET_PATH_V2,
+//                        new ServletHolder(consumerWebSocketServlet), true, attributeMap);
+//
+//                final WebSocketServlet readerWebSocketServlet = new WebSocketReaderServlet(webSocketService);
+//                this.webService.addServlet(WebSocketReaderServlet.SERVLET_PATH,
+//                        new ServletHolder(readerWebSocketServlet), true, attributeMap);
+//                this.webService.addServlet(WebSocketReaderServlet.SERVLET_PATH_V2,
+//                        new ServletHolder(readerWebSocketServlet), true, attributeMap);
+//
+//                final WebSocketServlet pingPongWebSocketServlet = new WebSocketPingPongServlet(webSocketService);
+//                this.webService.addServlet(WebSocketPingPongServlet.SERVLET_PATH,
+//                        new ServletHolder(pingPongWebSocketServlet), true, attributeMap);
+//                this.webService.addServlet(WebSocketPingPongServlet.SERVLET_PATH_V2,
+//                        new ServletHolder(pingPongWebSocketServlet), true, attributeMap);
+//            }
+//
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Attempting to add static directory");
             }
@@ -725,69 +725,69 @@ public class PulsarService implements AutoCloseable {
             this.nsService.initialize();
 
             // Start topic level policies service
-            if (config.isTopicLevelPoliciesEnabled() && config.isSystemTopicEnabled()) {
-                this.topicPoliciesService = new SystemTopicBasedTopicPoliciesService(this);
-            }
-
-            this.topicPoliciesService.start();
-
-            // Start the leader election service
-            startLeaderElectionService();
-
-            // Register heartbeat and bootstrap namespaces.
-            this.nsService.registerBootstrapNamespaces();
-
-            // Register pulsar system namespaces and start transaction meta store service
-            if (config.isTransactionCoordinatorEnabled()) {
-                this.transactionExecutor = Executors.newScheduledThreadPool(
-                        config.getNumTransactionExecutorThreadPoolSize(),
-                        new DefaultThreadFactory("pulsar-transaction"));
-                this.transactionBufferSnapshotService = new SystemTopicBaseTxnBufferSnapshotService(getClient());
-                this.transactionTimer =
-                        new HashedWheelTimer(new DefaultThreadFactory("pulsar-transaction-timer"));
-                transactionBufferClient = TransactionBufferClientImpl.create(getClient(), transactionTimer);
-
-                transactionMetadataStoreService = new TransactionMetadataStoreService(TransactionMetadataStoreProvider
-                        .newProvider(config.getTransactionMetadataStoreProviderClassName()), this,
-                        transactionBufferClient, transactionTimer);
-                transactionMetadataStoreService.start();
-
-                transactionBufferProvider = TransactionBufferProvider
-                        .newProvider(config.getTransactionBufferProviderClassName());
-            }
-
-            this.metricsGenerator = new MetricsGenerator(this);
+//            if (config.isTopicLevelPoliciesEnabled() && config.isSystemTopicEnabled()) {
+//                this.topicPoliciesService = new SystemTopicBasedTopicPoliciesService(this);
+//            }
+//
+//            this.topicPoliciesService.start();
+//
+//            // Start the leader election service
+//            startLeaderElectionService();
+//
+//            // Register heartbeat and bootstrap namespaces.
+//            this.nsService.registerBootstrapNamespaces();
+//
+//            // Register pulsar system namespaces and start transaction meta store service
+//            if (config.isTransactionCoordinatorEnabled()) {
+//                this.transactionExecutor = Executors.newScheduledThreadPool(
+//                        config.getNumTransactionExecutorThreadPoolSize(),
+//                        new DefaultThreadFactory("pulsar-transaction"));
+//                this.transactionBufferSnapshotService = new SystemTopicBaseTxnBufferSnapshotService(getClient());
+//                this.transactionTimer =
+//                        new HashedWheelTimer(new DefaultThreadFactory("pulsar-transaction-timer"));
+//                transactionBufferClient = TransactionBufferClientImpl.create(getClient(), transactionTimer);
+//
+//                transactionMetadataStoreService = new TransactionMetadataStoreService(TransactionMetadataStoreProvider
+//                        .newProvider(config.getTransactionMetadataStoreProviderClassName()), this,
+//                        transactionBufferClient, transactionTimer);
+//                transactionMetadataStoreService.start();
+//
+//                transactionBufferProvider = TransactionBufferProvider
+//                        .newProvider(config.getTransactionBufferProviderClassName());
+//            }
+//
+//            this.metricsGenerator = new MetricsGenerator(this);
 
             // By starting the Load manager service, the broker will also become visible
             // to the rest of the broker by creating the registration z-node. This needs
             // to be done only when the broker is fully operative.
-            this.startLoadManagementService();
+//            this.startLoadManagementService();
 
             // Initialize the message protocol handlers.
             // start the protocol handlers only after the broker is ready,
             // so that the protocol handlers can access broker service properly.
-            this.protocolHandlers.start(brokerService);
-            Map<String, Map<InetSocketAddress, ChannelInitializer<SocketChannel>>> protocolHandlerChannelInitializers =
-                this.protocolHandlers.newChannelInitializers();
-            this.brokerService.startProtocolHandlers(protocolHandlerChannelInitializers);
-
-            acquireSLANamespace();
-
-            // start function worker service if necessary
-            this.startWorkerService(brokerService.getAuthenticationService(), brokerService.getAuthorizationService());
-
-            // start packages management service if necessary
-            if (config.isEnablePackagesManagement()) {
-                this.startPackagesManagementService();
-            }
-
-            // Start the task to publish resource usage, if necessary
-            if (isNotBlank(config.getResourceUsageTransportClassName())) {
-                Class<?> clazz = Class.forName(config.getResourceUsageTransportClassName());
-                Constructor<?> ctor = clazz.getConstructor(PulsarService.class);
-                Object object = ctor.newInstance(new Object[]{this});
-                this.resourceUsageTransportManager = (ResourceUsageTransportManager) object;
-            }
+//            this.protocolHandlers.start(brokerService);
+//            Map<String, Map<InetSocketAddress, ChannelInitializer<SocketChannel>>> protocolHandlerChannelInitializers =
+//                this.protocolHandlers.newChannelInitializers();
+//            this.brokerService.startProtocolHandlers(protocolHandlerChannelInitializers);
+//
+//            acquireSLANamespace();
+//
+//            // start function worker service if necessary
+//            this.startWorkerService(brokerService.getAuthenticationService(), brokerService.getAuthorizationService());
+//
+//            // start packages management service if necessary
+//            if (config.isEnablePackagesManagement()) {
+//                this.startPackagesManagementService();
+//            }
+//
+//            // Start the task to publish resource usage, if necessary
+//            if (isNotBlank(config.getResourceUsageTransportClassName())) {
+//                Class<?> clazz = Class.forName(config.getResourceUsageTransportClassName());
+//                Constructor<?> ctor = clazz.getConstructor(PulsarService.class);
+//                Object object = ctor.newInstance(new Object[]{this});
+//                this.resourceUsageTransportManager = (ResourceUsageTransportManager) object;
+//            }
 
             final String bootstrapMessage = "bootstrap service "
                     + (config.getWebServicePort().isPresent() ? "port = " + config.getWebServicePort().get() : "")
