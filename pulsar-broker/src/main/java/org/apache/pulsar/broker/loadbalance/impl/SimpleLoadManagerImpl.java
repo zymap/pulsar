@@ -309,7 +309,7 @@ public class SimpleLoadManagerImpl implements LoadManager, Consumer<Notification
 
     private String getDynamicConfigurationFromStore(String path, String settingName, String defaultValue) {
         try {
-            return dynamicConfigurationCache.get(path).join().map(c -> c.get(settingName)).orElse(defaultValue);
+            return dynamicConfigurationCache.getAsync(path).join().map(c -> c.get(settingName)).orElse(defaultValue);
         } catch (Exception e) {
             log.warn("Got exception when reading path from metadata store [{}]:", path, e);
             return defaultValue;

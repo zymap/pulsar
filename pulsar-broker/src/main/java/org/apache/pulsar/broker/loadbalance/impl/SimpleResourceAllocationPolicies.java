@@ -29,13 +29,14 @@ import org.apache.pulsar.broker.loadbalance.ServiceUnit;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.NamespaceIsolationPolicy;
 import org.apache.pulsar.common.policies.impl.NamespaceIsolationPolicies;
+import org.apache.pulsar.metadata.api.MetadataCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SimpleResourceAllocationPolicies {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleResourceAllocationPolicies.class);
-    private final ZooKeeperDataCache<NamespaceIsolationPolicies> namespaceIsolationPolicies;
+    private final MetadataCache<NamespaceIsolationPolicies> namespaceIsolationPolicies;
     private final PulsarService pulsar;
 
     public SimpleResourceAllocationPolicies(PulsarService pulsar) {

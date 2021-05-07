@@ -263,10 +263,10 @@ public class ModularLoadManagerImpl implements ModularLoadManager, Consumer<Noti
 
         refreshBrokerToFailureDomainMap();
         // register listeners for domain changes
-        pulsar.getConfigurationCache().failureDomainListCache()
-                .registerListener((path, data, stat) -> scheduler.execute(() -> refreshBrokerToFailureDomainMap()));
-        pulsar.getConfigurationCache().failureDomainCache()
-                .registerListener((path, data, stat) -> scheduler.execute(() -> refreshBrokerToFailureDomainMap()));
+//        pulsar.getConfigurationCache().failureDomainListCache()
+//                .registerListener((path, data, stat) -> scheduler.execute(() -> refreshBrokerToFailureDomainMap()));
+//        pulsar.getConfigurationCache().failureDomainCache()
+//                .registerListener((path, data, stat) -> scheduler.execute(() -> refreshBrokerToFailureDomainMap()));
 
         loadSheddingPipeline.add(createLoadSheddingStrategy());
     }
@@ -354,13 +354,13 @@ public class ModularLoadManagerImpl implements ModularLoadManager, Consumer<Noti
     private BundleData getBundleDataOrDefault(final String bundle) {
         BundleData bundleData = null;
         try {
-            Optional<BundleData> optBundleData = bundlesCache.get(getBundleDataPath(bundle)).join();
+            Optional<BundleData> optBundleData = bundlesCache.getAsync(getBundleDataPath(bundle)).join();
             if (optBundleData.isPresent()) {
                 return optBundleData.get();
             }
 
             Optional<ResourceQuota> optQuota = resourceQuotaCache
-                    .get(String.format("%s/%s", RESOURCE_QUOTA_ZPATH, bundle)).join();
+                    .getAsync(String.format("%s/%s", RESOURCE_QUOTA_ZPATH, bundle)).join();
             if (optQuota.isPresent()) {
                 ResourceQuota quota = optQuota.get();
                 bundleData = new BundleData(NUM_SHORT_SAMPLES, NUM_LONG_SAMPLES);
