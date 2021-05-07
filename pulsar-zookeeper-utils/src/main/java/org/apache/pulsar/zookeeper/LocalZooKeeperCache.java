@@ -19,6 +19,7 @@
 package org.apache.pulsar.zookeeper;
 
 import org.apache.bookkeeper.common.util.OrderedExecutor;
+import org.apache.pulsar.metadata.api.MetadataStore;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
@@ -34,28 +35,8 @@ public class LocalZooKeeperCache extends ZooKeeperCache {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalZooKeeperCache.class);
 
-    public LocalZooKeeperCache(final ZooKeeper zk, int zkOperationTimeoutSeconds, final OrderedExecutor executor) {
-        super("local-zk", zk, zkOperationTimeoutSeconds, executor);
-    }
-
-    @Override
-    public <T> void process(WatchedEvent event, final CacheUpdater<T> updater) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Got Local ZooKeeper WatchedEvent: EventType: {}, KeeperState: {}, Path: {}", event.getType(),
-                    event.getState(), event.getPath());
-        }
-        if (event.getType() == Event.EventType.None) {
-            switch (event.getState()) {
-            case Expired:
-                // in case of expired, the zkSession is no longer good
-                LOG.warn("Lost connection from local ZK. Invalidating the whole cache.");
-                dataCache.synchronous().invalidateAll();
-                childrenCache.synchronous().invalidateAll();
-                return;
-            default:
-                break;
-            }
-        }
-        super.process(event, updater);
+    public LocalZooKeeperCache(final ZooKeeper zk, int zkOperationTimeoutSeconds, final OrderedExecutor executor,
+                               MetadataStore metadataStore) {
+        super("local-zk", zk, zkOperationTimeoutSeconds, executor, metadataStore);
     }
 }

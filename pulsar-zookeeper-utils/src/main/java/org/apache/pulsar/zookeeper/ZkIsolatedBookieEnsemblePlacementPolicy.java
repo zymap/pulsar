@@ -134,7 +134,7 @@ public class ZkIsolatedBookieEnsemblePlacementPolicy extends RackawareEnsemblePl
                     ZooKeeper zkClient = ZooKeeperClient.newBuilder().connectString(zkServers)
                             .sessionTimeoutMs(zkTimeout).build();
                     zkCache = new ZooKeeperCache("bookies-isolation", zkClient,
-                            (int) TimeUnit.MILLISECONDS.toSeconds(zkTimeout)) {
+                            (int) TimeUnit.MILLISECONDS.toSeconds(zkTimeout), null) {
                     };
                     conf.addProperty(ZooKeeperCache.ZK_CACHE_INSTANCE, zkCache);
                 } catch (Exception e) {
