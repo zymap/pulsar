@@ -143,6 +143,10 @@ public abstract class ZooKeeperCache implements Watcher {
         return this.zkSession.get();
     }
 
+    public MetadataStore getMetadataStore() {
+        return this.metadataStore;
+    }
+
     public void invalidateAll() {
         invalidateAllData();
         invalidateAllChildren();

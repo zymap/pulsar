@@ -19,21 +19,16 @@
 package org.apache.pulsar.broker.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.bookkeeper.util.ZkUtils;
+import java.util.Optional;
 import org.apache.pulsar.broker.PulsarServerException;
 import org.apache.pulsar.common.naming.NamespaceBundle;
 import org.apache.pulsar.common.policies.data.ResourceQuota;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 /**
  * Cache service and ZooKeeper read/write access for resource quota.

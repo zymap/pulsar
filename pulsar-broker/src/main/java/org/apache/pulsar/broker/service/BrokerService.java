@@ -2624,8 +2624,6 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                 }
             }
         } catch (Exception e) {
-            // NoNode means there are no partitioned topics in this domain for this namespace
-        } catch (Exception e) {
             log.error("Failed to create partitioned topic {}", topicName, e);
                 topicFuture.completeExceptionally(new RestException(e));
                 return false;
