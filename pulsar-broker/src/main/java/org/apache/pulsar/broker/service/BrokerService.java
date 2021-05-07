@@ -1875,7 +1875,7 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
         });
 
         // (2) update ServiceConfiguration value by reading zk-configuration-map
-        updateDynamicServiceConfiguration();
+//        updateDynamicServiceConfiguration();
 
         // (3) Listener Registration
         // add listener on "maxConcurrentLookupRequest" value change

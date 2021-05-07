@@ -44,8 +44,8 @@ public class MetadataStoreFactory {
      *             if the metadata store initialization fails
      */
     public static MetadataStore create(String metadataURL, MetadataStoreConfig metadataStoreConfig) throws MetadataStoreException {
-        if (metadataURL.startsWith("ms-zk://")) {
-            return new MSMetadataStore(metadataURL, metadataStoreConfig);
+        if (metadataURL.startsWith("ms-raft://")) {
+            return new JRaftMetadataStore(metadataURL, metadataStoreConfig);
         } else if (metadataURL.startsWith("memory://")) {
             return new LocalMemoryMetadataStore(metadataURL, metadataStoreConfig);
         } else if (metadataURL.startsWith("jraft://")) {

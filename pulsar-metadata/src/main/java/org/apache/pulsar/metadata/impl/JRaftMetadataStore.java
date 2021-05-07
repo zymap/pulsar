@@ -60,17 +60,18 @@ public class JRaftMetadataStore extends AbstractMetadataStore implements Metadat
     public void init(String metadataUrl) {
         String serverList = metadataUrl.replace("jraft://", "");
         final List<RegionRouteTableOptions> regionRouteTableOptionsList = MultiRegionRouteTableOptionsConfigured
-                .newConfigured() //
-                .withInitialServerList(-1L /* default id */, serverList) //
-                .config();
+            .newConfigured() //
+            .withInitialServerList(-1L /* default id */,
+                "127.0.0.1:8181,127.0.0.1:8182,127.0.0.1:8183") //
+            .config();
         final PlacementDriverOptions pdOpts = PlacementDriverOptionsConfigured.newConfigured() //
-                .withFake(true) //
-                .withRegionRouteTableOptionsList(regionRouteTableOptionsList) //
-                .config();
+            .withFake(true) //
+            .withRegionRouteTableOptionsList(regionRouteTableOptionsList) //
+            .config();
         final RheaKVStoreOptions opts = RheaKVStoreOptionsConfigured.newConfigured() //
-                .withClusterName(Configs.CLUSTER_NAME) //
-                .withPlacementDriverOptions(pdOpts) //
-                .config();
+            .withClusterName("rhea_example") //
+            .withPlacementDriverOptions(pdOpts) //
+            .config();
         System.out.println(opts);
         rheaKVStore.init(opts);
     }

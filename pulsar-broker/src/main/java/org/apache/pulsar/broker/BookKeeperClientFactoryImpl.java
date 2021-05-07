@@ -40,6 +40,7 @@ import org.apache.bookkeeper.client.RegionAwareEnsemblePlacementPolicy;
 import org.apache.bookkeeper.conf.ClientConfiguration;
 import org.apache.bookkeeper.stats.NullStatsLogger;
 import org.apache.bookkeeper.stats.StatsLogger;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.common.allocator.PulsarByteBufAllocator;
 import org.apache.pulsar.common.protocol.Commands;
@@ -77,10 +78,11 @@ public class BookKeeperClientFactoryImpl implements BookKeeperClientFactory {
             setDefaultEnsemblePlacementPolicy(rackawarePolicyZkCache, clientIsolationZkCache, bkConf, conf, zkClient);
         }
         try {
-            return BookKeeper.forConfig(bkConf)
-                    .allocator(PulsarByteBufAllocator.DEFAULT)
-                    .statsLogger(statsLogger)
-                    .build();
+            return new BookKeeper(bkConf);
+//            return BookKeeper.forConfig(bkConf)
+//                    .allocator(PulsarByteBufAllocator.DEFAULT)
+//                    .statsLogger(statsLogger)
+//                    .build();
         } catch (InterruptedException | BKException e) {
             throw new IOException(e);
         }
