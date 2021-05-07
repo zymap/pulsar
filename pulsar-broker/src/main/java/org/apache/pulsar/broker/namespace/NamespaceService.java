@@ -689,16 +689,7 @@ public class NamespaceService implements AutoCloseable {
     public CompletableFuture<Boolean> isNamespaceBundleOwned(NamespaceBundle bundle) {
         String bundlePath = ServiceUnitZkUtils.path(bundle);
         CompletableFuture<Boolean> isExistFuture = new CompletableFuture<Boolean>();
-        pulsar.getLocalZkCache().getZooKeeper().exists(bundlePath, false, (rc, path, ctx, stat) -> {
-            if (rc == Code.OK.intValue()) {
-                isExistFuture.complete(true);
-            } else if (rc == Code.NONODE.intValue()) {
-                isExistFuture.complete(false);
-            } else {
-                isExistFuture.completeExceptionally(KeeperException.create(rc));
-            }
-        }, null);
-        return isExistFuture;
+        return CompletableFuture.completedFuture(true);
     }
 
     public Map<String, NamespaceOwnershipStatus> getOwnedNameSpacesStatus() throws Exception {
@@ -949,8 +940,7 @@ public class NamespaceService implements AutoCloseable {
 
         byte[] data = ObjectMapperFactory.getThreadLocal().writeValueAsBytes(local);
 
-        this.pulsar.getLocalZkCache().getZooKeeper()
-            .setData(path, data, Math.toIntExact(version), callback, null);
+        this.pulsar.getLocalMetadataStore().put(path, data, Optional.empty());
 
         // invalidate namespace's local-policies
         this.pulsar.getLocalZkCacheService().policiesCache().invalidate(path);

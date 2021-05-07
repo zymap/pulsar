@@ -2613,8 +2613,8 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
             if (maxTopicsPerNamespace > 0) {
                 String partitionedTopicPath = PulsarWebResource.joinPath(MANAGED_LEDGER_PATH_ZNODE,
                         topicName.getNamespace(), topicName.getDomain().value());
-                List<String> topics = pulsar().getLocalZkCache().getZooKeeper()
-                        .getChildren(partitionedTopicPath, false);
+                List<String> topics = pulsar().getLocalMetadataStore()
+                        .getChildren(partitionedTopicPath).get();
                 if (topics.size() + numPartitions > maxTopicsPerNamespace) {
                     log.error("Failed to create persistent topic {}, "
                             + "exceed maximum number of topics in namespace", topicName);
@@ -2623,7 +2623,7 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                     return false;
                 }
             }
-        } catch (KeeperException.NoNodeException e) {
+        } catch (Exception e) {
             // NoNode means there are no partitioned topics in this domain for this namespace
         } catch (Exception e) {
             log.error("Failed to create partitioned topic {}", topicName, e);

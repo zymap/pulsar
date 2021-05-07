@@ -33,6 +33,8 @@ import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * Cache service and ZooKeeper read/write access for resource quota.
  */
@@ -101,13 +103,7 @@ public class ResourceQuotaCache {
 
     private void saveQuotaToZnode(String zpath, ResourceQuota quota) throws Exception {
         ZooKeeper zk = this.localZkCache.getZooKeeper();
-        if (zk.exists(zpath, false) == null) {
-            try {
-                ZkUtils.createFullPathOptimistic(zk, zpath, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            } catch (KeeperException.NodeExistsException e) {
-            }
-        }
-        zk.setData(zpath, this.jsonMapper.writeValueAsBytes(quota), -1);
+        this.localZkCache.getMetadataStore().put(zpath, this.jsonMapper.writeValueAsBytes(quota), Optional.empty());
     }
 
     /**
