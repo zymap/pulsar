@@ -749,9 +749,9 @@ public class AdminTest extends MockedPulsarServiceBaseTest {
         assertEquals(persistentTopics.getPartitionedTopicMetadata(topicName, true, false).partitions, 5);
 
         CountDownLatch notificationLatch = new CountDownLatch(2);
-        configurationCache.policiesCache().registerListener((path, data, stat) -> {
-            notificationLatch.countDown();
-        });
+//        configurationCache.policiesCache().registerListener((path, data, stat) -> {
+//            notificationLatch.countDown();
+//        });
 
         // grant permission
         final Set<AuthAction> actions = Sets.newHashSet(AuthAction.produce);

@@ -597,7 +597,7 @@ public class NamespaceService implements AutoCloseable {
             String path = String.format("%s/%s:%s", LoadManager.LOADBALANCE_BROKERS_ROOT, uri.getHost(),
                     uri.getPort());
 
-            localBrokerDataCache.get(path).thenAccept(reportData -> {
+            localBrokerDataCache.getAsync(path).thenAccept(reportData -> {
                 if (reportData.isPresent()) {
                     LocalBrokerData lookupData = (LocalBrokerData) reportData.get();
                     if (StringUtils.isNotBlank(advertisedListenerName)) {

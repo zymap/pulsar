@@ -206,8 +206,10 @@ public abstract class AbstractTopic implements Topic {
             Policies policies;
             try {
                 // Use getDataIfPresent from zk cache to make the call non-blocking and prevent deadlocks
-                policies = brokerService.pulsar().getConfigurationCache().policiesCache()
-                        .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(topic).getNamespace()));
+                Optional<Policies> policiesOptional =
+                        brokerService.pulsar().getConfigurationCache().policiesCache()
+                                .get(AdminResource.path(POLICIES, TopicName.get(topic).getNamespace()));
+                policies = policiesOptional.orElse(null);
 
                 if (policies == null) {
                     policies = new Policies();

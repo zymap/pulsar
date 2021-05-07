@@ -59,18 +59,18 @@ public class LeaderElectionTest extends BaseMetadataStoreTest {
                     notifications.add(t);
                 });
 
-        assertEquals(cache.get("/my/leader-election").join(), Optional.empty());
+        assertEquals(cache.getAsync("/my/leader-election").join(), Optional.empty());
 
         LeaderElectionState les = leaderElection.elect("test-1").join();
         assertEquals(les, LeaderElectionState.Leading);
 
         assertEquals(notifications.poll(3, TimeUnit.SECONDS), LeaderElectionState.Leading);
 
-        assertEquals(cache.get("/my/leader-election").join(), Optional.of("test-1"));
+        assertEquals(cache.getAsync("/my/leader-election").join(), Optional.of("test-1"));
 
         leaderElection.close();
 
-        assertEquals(cache.get("/my/leader-election").join(), Optional.empty());
+        assertEquals(cache.getAsync("/my/leader-election").join(), Optional.empty());
     }
 
     @Test(dataProvider = "impl")
@@ -179,8 +179,8 @@ public class LeaderElectionTest extends BaseMetadataStoreTest {
 
         cs.close();
 
-        assertEquals(cache.get("/my/leader-election-1").join(), Optional.empty());
-        assertEquals(cache.get("/my/leader-election-2").join(), Optional.empty());
+        assertEquals(cache.getAsync("/my/leader-election-1").join(), Optional.empty());
+        assertEquals(cache.getAsync("/my/leader-election-2").join(), Optional.empty());
     }
 
 

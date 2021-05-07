@@ -304,7 +304,7 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                 pulsar.getConfiguration(), pulsar.getConfigurationCache());
 
         if (pulsar.getConfigurationCache() != null) {
-            pulsar.getConfigurationCache().policiesCache().registerListener(this);
+//            pulsar.getConfigurationCache().policiesCache().registerListener(this);
         }
 
         this.inactivityMonitor = Executors
@@ -655,9 +655,9 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
         try {
             log.info("Shutting down Pulsar Broker service");
 
-            if (pulsar.getConfigurationCache() != null) {
-                pulsar.getConfigurationCache().policiesCache().unregisterListener(this);
-            }
+//            if (pulsar.getConfigurationCache() != null) {
+//                pulsar.getConfigurationCache().policiesCache().unregisterListener(this);
+//            }
 
             // unloads all namespaces gracefully without disrupting mutually
             unloadNamespaceBundlesGracefully();

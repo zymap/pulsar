@@ -25,6 +25,7 @@ import org.apache.pulsar.common.policies.data.FailureDomain;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.TenantInfo;
 import org.apache.pulsar.common.policies.impl.NamespaceIsolationPolicies;
+import org.apache.pulsar.metadata.api.MetadataCache;
 import org.apache.pulsar.zookeeper.ZooKeeperCache;
 import org.apache.pulsar.zookeeper.ZooKeeperChildrenCache;
 import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
@@ -36,23 +37,23 @@ import org.apache.zookeeper.ZooKeeper;
 public class ConfigurationMetadataCacheService extends ConfigurationCacheService {
 
     public ConfigurationMetadataCacheService(PulsarResources pulsarResources, String configuredClusterName) throws PulsarServerException {
-        super(null, configuredClusterName, pulsarResources);
+        super(null, null, configuredClusterName, pulsarResources);
     }
     
-    @Override
-    public ZooKeeperCache cache() {
+//    @Override
+//    public ZooKeeperCache cache() {
+//        throw new UnsupportedOperationException();
+//    }
+
+    public MetadataCache<TenantInfo> propertiesCache() {
         throw new UnsupportedOperationException();
     }
 
-    public ZooKeeperDataCache<TenantInfo> propertiesCache() {
+    public MetadataCache<Policies> policiesCache() {
         throw new UnsupportedOperationException();
     }
 
-    public ZooKeeperDataCache<Policies> policiesCache() {
-        throw new UnsupportedOperationException();
-    }
-
-    public ZooKeeperDataCache<ClusterData> clustersCache() {
+    public MetadataCache<ClusterData> clustersCache() {
         throw new UnsupportedOperationException();
     }
 
@@ -68,11 +69,11 @@ public class ConfigurationMetadataCacheService extends ConfigurationCacheService
         throw new UnsupportedOperationException();
     }
 
-    public ZooKeeperDataCache<NamespaceIsolationPolicies> namespaceIsolationPoliciesCache() {
+    public MetadataCache<NamespaceIsolationPolicies> namespaceIsolationPoliciesCache() {
         throw new UnsupportedOperationException();
     }
 
-    public ZooKeeperDataCache<FailureDomain> failureDomainCache() {
+    public MetadataCache<FailureDomain> failureDomainCache() {
         throw new UnsupportedOperationException();
     }
 }

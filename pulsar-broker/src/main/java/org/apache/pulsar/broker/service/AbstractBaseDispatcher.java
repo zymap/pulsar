@@ -171,8 +171,9 @@ public abstract class AbstractBaseDispatcher implements Dispatcher {
                     .orElse(null);
             if (maxConsumersPerSubscription == null) {
                 // Use getDataIfPresent from zk cache to make the call non-blocking and prevent deadlocks in addConsumer
-                policies = brokerService.pulsar().getConfigurationCache().policiesCache()
-                        .getDataIfPresent(AdminResource.path(POLICIES, TopicName.get(topic).getNamespace()));
+                Optional<Policies> policiesOptional = brokerService.pulsar().getConfigurationCache().policiesCache()
+                        .get(AdminResource.path(POLICIES, TopicName.get(topic).getNamespace()));
+                policies = policiesOptional.orElse(null);
             }
         } catch (Exception e) {
             log.debug("Get topic or namespace policies fail", e);

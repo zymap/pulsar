@@ -927,8 +927,8 @@ public class PulsarService implements AutoCloseable {
             throw new PulsarServerException(e);
         }
 
-        this.configurationCacheService = new ConfigurationCacheService(globalZkCache, this.config.getClusterName(),
-                pulsarResources);
+        this.configurationCacheService = new ConfigurationCacheService(globalZkCache, configurationMetadataStore,
+                this.config.getClusterName(), pulsarResources);
         this.localZkCacheService = new LocalZooKeeperCacheService(getLocalZkCache(), this.configurationCacheService);
     }
 

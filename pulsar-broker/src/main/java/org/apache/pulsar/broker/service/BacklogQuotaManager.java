@@ -39,14 +39,14 @@ import org.apache.pulsar.common.policies.data.BacklogQuota.BacklogQuotaType;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.TopicPolicies;
 import org.apache.pulsar.common.util.FutureUtil;
-import org.apache.pulsar.zookeeper.ZooKeeperDataCache;
+import org.apache.pulsar.metadata.api.MetadataCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BacklogQuotaManager {
     private static final Logger log = LoggerFactory.getLogger(BacklogQuotaManager.class);
     private final BacklogQuota defaultQuota;
-    private final ZooKeeperDataCache<Policies> zkCache;
+    private final MetadataCache<Policies> metadataCache;
     private final PulsarService pulsar;
     private final boolean isTopicLevelPoliciesEnable;
 
@@ -57,7 +57,7 @@ public class BacklogQuotaManager {
                 pulsar.getConfiguration().getBacklogQuotaDefaultLimitGB() * 1024 * 1024 * 1024,
                 pulsar.getConfiguration().getBacklogQuotaDefaultLimitSecond(),
                 pulsar.getConfiguration().getBacklogQuotaDefaultRetentionPolicy());
-        this.zkCache = pulsar.getConfigurationCache().policiesCache();
+        this.metadataCache = pulsar.getConfigurationCache().policiesCache();
         this.pulsar = pulsar;
     }
 
@@ -67,7 +67,7 @@ public class BacklogQuotaManager {
 
     public BacklogQuota getBacklogQuota(String namespace, String policyPath) {
         try {
-            return zkCache.get(policyPath)
+            return metadataCache.get(policyPath)
                     .map(p -> p.backlog_quota_map.getOrDefault(BacklogQuotaType.destination_storage, defaultQuota))
                     .orElse(defaultQuota);
         } catch (Exception e) {
