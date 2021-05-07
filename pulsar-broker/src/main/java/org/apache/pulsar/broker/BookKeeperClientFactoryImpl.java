@@ -198,7 +198,7 @@ public class BookKeeperClientFactoryImpl implements BookKeeperClientFactory {
                     ""));
 
             ZooKeeperCache zkc = new ZooKeeperCache("bookies-racks", zkClient,
-                    conf.getZooKeeperOperationTimeoutSeconds()) {
+                    conf.getZooKeeperOperationTimeoutSeconds(), null) {
             };
             if (!rackawarePolicyZkCache.compareAndSet(null, zkc)) {
                 zkc.stop();
@@ -215,7 +215,7 @@ public class BookKeeperClientFactoryImpl implements BookKeeperClientFactory {
                     conf.getBookkeeperClientSecondaryIsolationGroups());
             if (bkConf.getProperty(ZooKeeperCache.ZK_CACHE_INSTANCE) == null) {
                 ZooKeeperCache zkc = new ZooKeeperCache("bookies-isolation", zkClient,
-                        conf.getZooKeeperOperationTimeoutSeconds()) {
+                        conf.getZooKeeperOperationTimeoutSeconds(), null) {
                 };
 
                 if (!clientIsolationZkCache.compareAndSet(null, zkc)) {
@@ -231,7 +231,7 @@ public class BookKeeperClientFactoryImpl implements BookKeeperClientFactory {
         bkConf.setEnsemblePlacementPolicy(policyClass);
         if (bkConf.getProperty(ZooKeeperCache.ZK_CACHE_INSTANCE) == null) {
             ZooKeeperCache zkc = new ZooKeeperCache("bookies-rackaware", zkClient,
-                    conf.getZooKeeperOperationTimeoutSeconds()) {
+                    conf.getZooKeeperOperationTimeoutSeconds(), null) {
             };
             if (!zkCache.compareAndSet(null, zkc)) {
                 zkc.stop();

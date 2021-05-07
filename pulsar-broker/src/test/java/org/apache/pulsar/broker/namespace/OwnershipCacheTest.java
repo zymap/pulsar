@@ -96,7 +96,7 @@ public class OwnershipCacheTest {
         zkc = new ZooKeeper(zookeeperServer.getHostPort(), 5000, null);
         otherZkc = new ZooKeeper(zookeeperServer.getHostPort(), 5000, null);
         mockZkc = MockZooKeeper.newInstance();
-        zkCache = new LocalZooKeeperCache(zkc, 30, executor);
+        zkCache = new LocalZooKeeperCache(zkc, 30, executor, null);
         localCache = spy(new LocalZooKeeperCacheService(zkCache, null));
         ZooKeeperDataCache<LocalPolicies> poilciesCache = mock(ZooKeeperDataCache.class);
         when(pulsar.getLocalZkCacheService()).thenReturn(localCache);
