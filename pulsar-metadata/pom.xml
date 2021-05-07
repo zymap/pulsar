@@ -67,6 +67,38 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.alipay.sofa</groupId>
+      <artifactId>jraft-core</artifactId>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>com.alipay.sofa</groupId>-->
+<!--      <artifactId>jraft-rheakv</artifactId>-->
+<!--    </dependency>-->
+
+    <dependency>
+      <groupId>com.alipay.sofa</groupId>
+      <artifactId>jraft-rheakv-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alipay.sofa</groupId>
+      <artifactId>jraft-rheakv-pd</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
   </dependencies>
 
   <build>
