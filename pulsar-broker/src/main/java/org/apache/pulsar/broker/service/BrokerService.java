@@ -1305,7 +1305,8 @@ public class BrokerService implements Closeable, ZooKeeperCacheListener<Policies
                         .getConfigurationCache().policiesCache().get(AdminResource.path(POLICIES,
                                 namespace.toString()));
                 String path = joinPath(LOCAL_POLICIES_ROOT, topicName.getNamespaceObject().toString());
-                localPolicies = pulsar().getLocalZkCacheService().policiesCache().get(path);
+                localPolicies = Optional.empty();
+//                localPolicies = pulsar().getLocalZkCacheService().policiesCache().get(path);
             } catch (Throwable t) {
                 // Ignoring since if we don't have policies, we fallback on the default
                 log.warn("Got exception when reading persistence policy for {}: {}", topicName, t.getMessage(), t);

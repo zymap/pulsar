@@ -222,7 +222,7 @@ public class PulsarClusterMetadataSetup {
         MetadataStore store = null;
         ZooKeeper localZk = null;
         ZooKeeper configStoreZk = null;
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             localZk = initZk(arguments.zookeeper, arguments.zkSessionTimeoutMillis);
             configStoreZk = initZk(arguments.configurationStore, arguments.zkSessionTimeoutMillis);
         } else {
@@ -237,7 +237,7 @@ public class PulsarClusterMetadataSetup {
         if (arguments.existingBkMetadataServiceUri == null && arguments.bookieMetadataServiceUri == null) {
             bkConf.setZkServers(arguments.zookeeper);
             bkConf.setZkTimeout(arguments.zkSessionTimeoutMillis);
-            if (!arguments.zookeeper.startsWith("ms-zk://")
+            if (!arguments.zookeeper.startsWith("ms-raft://")
                 && localZk.exists("/ledgers", false) == null // only format if /ledgers doesn't exist
                 && !BookKeeperAdmin.format(bkConf, false /* interactive */, false /* force */)) {
                 throw new IOException("Failed to initialize BookKeeper metadata");
@@ -254,7 +254,7 @@ public class PulsarClusterMetadataSetup {
         ServiceURI bkMetadataServiceUri = ServiceURI.create(uriStr);
 
         // initial distributed log metadata
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             initialDlogNamespaceMetadata(arguments.configurationStore, uriStr);
         }
 
@@ -264,13 +264,13 @@ public class PulsarClusterMetadataSetup {
             initializer.initializeCluster(bkMetadataServiceUri.getUri(), arguments.numStreamStorageContainers);
         }
 
-        if (!arguments.zookeeper.startsWith("ms-zk://")
+        if (!arguments.zookeeper.startsWith("ms-raft://")
             && localZk.exists(ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH, false) == null) {
             createZkNode(localZk, ZkBookieRackAffinityMapping.BOOKIE_INFO_ROOT_PATH,
                 "{}".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
 
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             createZkNode(localZk, "/managed-ledgers", new byte[0],
                 ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 
@@ -292,7 +292,7 @@ public class PulsarClusterMetadataSetup {
                 arguments.clusterBrokerServiceUrl, arguments.clusterBrokerServiceUrlTls);
         byte[] clusterDataJson = ObjectMapperFactory.getThreadLocal().writeValueAsBytes(clusterData);
 
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             createZkNode(configStoreZk, "/admin/clusters/" + arguments.cluster, clusterDataJson,
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.PERSISTENT);
@@ -305,7 +305,7 @@ public class PulsarClusterMetadataSetup {
         byte[] globalClusterDataJson = ObjectMapperFactory.getThreadLocal().writeValueAsBytes(globalClusterData);
 
 
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             createZkNode(configStoreZk, "/admin/clusters/global", globalClusterDataJson,
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.PERSISTENT);
@@ -337,7 +337,7 @@ public class PulsarClusterMetadataSetup {
                 arguments.numTransactionCoordinators);
         }
 
-        if (!arguments.zookeeper.startsWith("ms-zk://")) {
+        if (!arguments.zookeeper.startsWith("ms-raft://")) {
             localZk.close();
             configStoreZk.close();
         } else {

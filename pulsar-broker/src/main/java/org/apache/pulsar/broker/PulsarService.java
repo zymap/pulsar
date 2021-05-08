@@ -624,9 +624,9 @@ public class PulsarService implements AutoCloseable {
             // needs load management service and before start broker service,
             this.startNamespaceService();
 
-//            schemaStorage = createAndStartSchemaStorage();
-//            schemaRegistryService = SchemaRegistryService.create(
-//                    schemaStorage, config.getSchemaRegistryCompatibilityCheckers());
+            schemaStorage = createAndStartSchemaStorage();
+            schemaRegistryService = SchemaRegistryService.create(
+                    schemaStorage, config.getSchemaRegistryCompatibilityCheckers());
 
 //            this.defaultOffloader = createManagedLedgerOffloader(
 //                    OffloadPolicies.create(this.getConfiguration().getProperties()));
@@ -732,10 +732,10 @@ public class PulsarService implements AutoCloseable {
 //            this.topicPoliciesService.start();
 //
 //            // Start the leader election service
-//            startLeaderElectionService();
+            startLeaderElectionService();
 //
 //            // Register heartbeat and bootstrap namespaces.
-//            this.nsService.registerBootstrapNamespaces();
+            this.nsService.registerBootstrapNamespaces();
 //
 //            // Register pulsar system namespaces and start transaction meta store service
 //            if (config.isTransactionCoordinatorEnabled()) {
@@ -761,7 +761,7 @@ public class PulsarService implements AutoCloseable {
             // By starting the Load manager service, the broker will also become visible
             // to the rest of the broker by creating the registration z-node. This needs
             // to be done only when the broker is fully operative.
-//            this.startLoadManagementService();
+            this.startLoadManagementService();
 
             // Initialize the message protocol handlers.
             // start the protocol handlers only after the broker is ready,
