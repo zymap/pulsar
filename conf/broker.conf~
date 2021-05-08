@@ -20,7 +20,7 @@
 ### --- General broker settings --- ###
 
 # Zookeeper quorum connection string
-zookeeperServers=ms-raft://localhost:2181
+zookeeperServers=ms-raft://127.0.0.1:8181
 
 # Configuration Store connection string
 configurationStoreServers=
@@ -700,7 +700,7 @@ httpRequestsMaxPerSecond=100.0
 # For example: zk+hierarchical://localhost:2181/ledgers
 # The metadata service uri list can also be semicolon separated values like below:
 # zk+hierarchical://zk1:2181;zk2:2181;zk3:2181/ledgers
-bookkeeperMetadataServiceUri=ms-raft://localhost:2181
+bookkeeperMetadataServiceUri=ms-raft://127.0.0.1:8181;127.0.0.1:8182;127.0.0.1:8183/ledgers
 
 # Authentication plugin to use when connecting to bookies
 bookkeeperClientAuthenticationPlugin=
