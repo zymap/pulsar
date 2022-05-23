@@ -64,7 +64,6 @@ import org.jclouds.googlecloudstorage.GoogleCloudStorageProviderMetadata;
 import org.jclouds.providers.AnonymousProviderMetadata;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.s3.S3ApiMetadata;
-import org.jclouds.s3.reference.S3Constants;
 
 /**
  * Enumeration of the supported JCloud Blob Store Providers.
@@ -373,7 +372,6 @@ public enum JCloudBlobStoreProvider implements Serializable, ConfigValidation, B
         ContextBuilder contextBuilder = ContextBuilder.newBuilder(config.getProviderMetadata());
         Properties overrides = config.getOverrides();
         // For security reasons, OSS supports only virtual hosted style access.
-        overrides.setProperty(S3Constants.PROPERTY_S3_VIRTUAL_HOST_BUCKETS, "true");
         contextBuilder.overrides(overrides);
         contextBuilder.endpoint(config.getServiceEndpoint());
 
