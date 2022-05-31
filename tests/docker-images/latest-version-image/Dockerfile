@@ -94,11 +94,13 @@ COPY conf/presto/jvm.config /pulsar/conf/presto/
 # copy python test examples
 RUN mkdir -p /pulsar/instances/deps
 COPY python-examples/exclamation_lib.py /pulsar/instances/deps/
+RUN ls /pulsar/examples/python-examples
 COPY python-examples/exclamation_with_extra_deps.py /pulsar/examples/python-examples/
 COPY python-examples/exclamation.zip /pulsar/examples/python-examples/
 COPY python-examples/producer_schema.py /pulsar/examples/python-examples/
 COPY python-examples/consumer_schema.py /pulsar/examples/python-examples/
 COPY python-examples/exception_function.py /pulsar/examples/python-examples/
+COPY python-examples/wordcount_function.py /pulsar/examples/python-examples/
 
 # copy java test examples
 COPY target/java-test-functions.jar /pulsar/examples/
