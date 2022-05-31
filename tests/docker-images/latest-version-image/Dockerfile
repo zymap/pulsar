@@ -94,11 +94,13 @@ COPY conf/presto/jvm.config /pulsar/conf/presto/
 # copy python test examples
 RUN mkdir -p /pulsar/instances/deps
 COPY python-examples/exclamation_lib.py /pulsar/instances/deps/
+RUN ls /pulsar/examples/python-examples
 COPY python-examples/exclamation_with_extra_deps.py /pulsar/examples/python-examples/
 COPY python-examples/exclamation.zip /pulsar/examples/python-examples/
 COPY python-examples/producer_schema.py /pulsar/examples/python-examples/
 COPY python-examples/consumer_schema.py /pulsar/examples/python-examples/
 COPY python-examples/exception_function.py /pulsar/examples/python-examples/
+COPY python-examples/wordcount_function.py /pulsar/examples/python-examples/
 
 # copy java test examples
 COPY target/java-test-functions.jar /pulsar/examples/
@@ -134,5 +136,6 @@ RUN cd META-INF/bundled-dependencies && curl -sSLO https://search.maven.org/remo
 
 RUN jar uf connectors/pulsar-io-debezium-oracle-*.nar META-INF/bundled-dependencies/ojdbc8-19.3.0.0.jar META-INF/bundled-dependencies/ucp-19.3.0.0.jar META-INF/bundled-dependencies/oraclepki-19.3.0.0.jar META-INF/bundled-dependencies/osdt_cert-19.3.0.0.jar META-INF/bundled-dependencies/osdt_core-19.3.0.0.jar META-INF/bundled-dependencies/simplefan-19.3.0.0.jar META-INF/bundled-dependencies/orai18n-19.3.0.0.jar META-INF/bundled-dependencies/xdb-19.3.0.0.jar META-INF/bundled-dependencies/xmlparserv2-19.3.0.0.jar
 
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 CMD bash

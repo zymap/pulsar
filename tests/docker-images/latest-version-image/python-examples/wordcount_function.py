@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -19,13 +18,17 @@
 #
 
 
-# Make sure dependencies are installed
-pip3 install mock --user
-pip3 install protobuf --user
-pip3 install fastavro --user
+from pulsar import Function
 
-CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-PULSAR_HOME=$CUR_DIR/../../../../
+# The classic ExclamationFunction that appends an exclamation at the end
+# of the input
+class WordCountFunction(Function):
+    def __init__(self):
+        pass
 
-# run instance tests
-PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python PULSAR_HOME=${PULSAR_HOME} PYTHONPATH=${PULSAR_HOME}/pulsar-functions/instance/target/python-instance python3 -m unittest discover -v ${PULSAR_HOME}/pulsar-functions/instance/target/python-instance/tests
+    def process(self, input, context):
+        words = input.split()
+        for word in words:
+            context.incr_counter(word, 1)
+            context.get_logger().info("The value is " + str(context.get_counter(word)))
+        return input + "!"
