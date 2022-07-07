@@ -154,6 +154,7 @@ public class RawReaderImpl implements RawReader {
                     messageAndCnx.msg.close();
                     closeAsync();
                 }
+                lastDequeuedMessageId = messageAndCnx.msg.getMessageId();
 
                 ClientCnx currentCnx = cnx();
                 if (currentCnx == messageAndCnx.cnx) {
