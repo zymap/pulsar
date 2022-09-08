@@ -21,7 +21,7 @@ name: Pulsar CI
 on:
   pull_request:
     branches:
-      - master
+      - dev-master
   push:
     branches:
       - branch-*
