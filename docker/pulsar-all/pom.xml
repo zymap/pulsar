@@ -31,6 +31,20 @@
   <packaging>pom</packaging>
 
   <dependencies>
+    <!-- The pulsar-all image need to depend on the pulsar docker image  -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pulsar-docker-image</artifactId>
+      <version>${project.parent.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>pulsar-io-distribution</artifactId>
@@ -150,12 +164,6 @@
                           <PULSAR_IO_DIR>target/apache-pulsar-io-connectors-${project.version}-bin</PULSAR_IO_DIR>
                           <PULSAR_OFFLOADER_TARBALL>target/pulsar-offloader-distribution-${project.version}-bin.tar.gz</PULSAR_OFFLOADER_TARBALL>
                         </args>
-                        <buildx>
-                          <platforms>
-                            <platform>linux/arm64</platform>
-                            <platform>linux/amd64</platform>
-                          </platforms>
-                        </buildx>
                       </build>
                     </image>
                   </images>
@@ -183,6 +191,20 @@
                   <goal>tag</goal>
                   <goal>push</goal>
                 </goals>
+                <configuration>
+                  <images>
+                    <image>
+                      <build>
+                        <buildx>
+                          <platforms>
+                            <platform>linux/arm64</platform>
+                            <platform>linux/amd64</platform>
+                          </platforms>
+                        </buildx>
+                      </build>
+                    </image>
+                  </images>
+                </configuration>
               </execution>
             </executions>
           </plugin>
