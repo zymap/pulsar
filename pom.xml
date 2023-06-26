@@ -2515,10 +2515,10 @@ flexible messaging model and an intuitive client API.</description>
   </profiles>
 
   <repositories>
-      <repository>
+    <repository>
       <id>bk-staging</id>
       <name>bk-staging</name>
-      <url>https://repository.apache.org/content/repositories/orgapachebookkeeper-1085/</url>
+      <url>https://repository.apache.org/content/repositories/orgapachebookkeeper-1086/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
