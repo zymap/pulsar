@@ -444,7 +444,7 @@ The Apache Software License, Version 2.0
     - codahale-metrics-provider-4.16.2.jar
     - bookkeeper-slogger-api-4.16.2.jar
     - bookkeeper-slogger-slf4j-4.16.2.jar
-    - native-io-4.16.1.jar
+    - native-io-4.16.2.jar
   * Apache Commons
     - commons-cli-1.5.0.jar
     - commons-codec-1.15.jar
