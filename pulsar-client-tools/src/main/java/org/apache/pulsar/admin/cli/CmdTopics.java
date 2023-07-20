@@ -2293,11 +2293,36 @@ public class CmdTopics extends CmdBase {
                 }
             }
 
-            OffloadPolicies offloadPolicies = OffloadPoliciesImpl.create(driver, region, bucket, endpoint,
-                    s3Role, s3RoleSessionName,
-                    awsId, awsSecret,
-                    maxBlockSizeInBytes, readBufferSizeInBytes, offloadAfterThresholdInBytes,
-                    offloadThresholdInSeconds, offloadAfterElapsedInMillis, offloadedReadPriority);
+            OffloadPoliciesImpl.OffloadPoliciesImplBuilder builder = OffloadPoliciesImpl.builder()
+                .managedLedgerOffloadDriver(driver)
+                .managedLedgerOffloadRegion(region)
+                .managedLedgerOffloadBucket(bucket)
+                .managedLedgerOffloadServiceEndpoint(endpoint)
+                .managedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                .managedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes)
+                .managedLedgerOffloadedReadPriority(offloadedReadPriority)
+                .managedLedgerOffloadThresholdInBytes(offloadAfterThresholdInBytes)
+                .managedLedgerOffloadThresholdInSeconds(offloadThresholdInSeconds)
+                .managedLedgerOffloadDeletionLagInMillis(offloadAfterElapsedInMillis);
+
+            if (driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(0))
+                || driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(1))) {
+                builder.s3ManagedLedgerOffloadRole(s3Role)
+                    .s3ManagedLedgerOffloadRoleSessionName(s3RoleSessionName)
+                    .s3ManagedLedgerOffloadCredentialId(awsId)
+                    .s3ManagedLedgerOffloadCredentialSecret(awsSecret)
+                    .s3ManagedLedgerOffloadRegion(region)
+                    .s3ManagedLedgerOffloadBucket(bucket)
+                    .s3ManagedLedgerOffloadServiceEndpoint(endpoint)
+                    .s3ManagedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                    .s3ManagedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes);
+            } else if (driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(2))) {
+                builder.gcsManagedLedgerOffloadRegion(region)
+                    .gcsManagedLedgerOffloadBucket(bucket)
+                    .gcsManagedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                    .gcsManagedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes);
+            }
+            OffloadPoliciesImpl offloadPolicies = builder.build();
 
             getTopics().setOffloadPolicies(persistentTopic, offloadPolicies);
         }

@@ -440,7 +440,7 @@ public class OffloadPoliciesTest {
         properties.put("managedLedgerOffloadExtraConfigKey2", "value2");
         OffloadPoliciesImpl policies = OffloadPoliciesImpl.create(properties);
 
-        Map<String, String> extraConfigurations = policies.getManagedLedgerExtraConfigurations();
+        Map<String, String> extraConfigurations = policies.getManagedLedgerOffloadExtraConfigurations();
         Assert.assertEquals(extraConfigurations.size(), 2);
         Assert.assertEquals(extraConfigurations.get("Key1"), "value1");
         Assert.assertEquals(extraConfigurations.get("Key2"), "value2");
