@@ -24,6 +24,7 @@ import com.beust.jcommander.Parameters;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -1798,6 +1799,13 @@ public class CmdTopicPolicies extends CmdBase {
                 + "If set to true, the policy will be replicate to other clusters asynchronously")
         private boolean isGlobal = false;
 
+        @Parameter(
+            names = {"--offloadExtraConfigurations"},
+            description = "Extra configurations for offload driver, in the format of \"key1=value1,key2=value2\"",
+            converter = StringToMapConverter.class
+        )
+        private Map<String, String> offloadExtraConfigurations;
+
         @Override
         void run() throws PulsarAdminException {
             String persistentTopic = validatePersistentTopic(params);
@@ -1816,12 +1824,37 @@ public class CmdTopicPolicies extends CmdBase {
                 }
             }
 
-            OffloadPoliciesImpl offloadPolicies = OffloadPoliciesImpl.create(driver, region, bucket, endpoint,
-                    s3Role, s3RoleSessionName,
-                    awsId, awsSecret,
-                    maxBlockSizeInBytes,
-                    readBufferSizeInBytes, offloadThresholdInBytes, offloadThresholdInSeconds,
-                    offloadDeletionLagInMillis, offloadedReadPriority);
+            OffloadPoliciesImpl.OffloadPoliciesImplBuilder builder = OffloadPoliciesImpl.builder()
+                .managedLedgerOffloadDriver(driver)
+                .managedLedgerOffloadRegion(region)
+                .managedLedgerOffloadBucket(bucket)
+                .managedLedgerOffloadServiceEndpoint(endpoint)
+                .managedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                .managedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes)
+                .managedLedgerOffloadedReadPriority(offloadedReadPriority)
+                .managedLedgerOffloadThresholdInBytes(offloadThresholdInBytes)
+                .managedLedgerOffloadThresholdInSeconds(offloadThresholdInSeconds)
+                .managedLedgerOffloadDeletionLagInMillis(offloadDeletionLagInMillis)
+                .managedLedgerOffloadExtraConfigurations(offloadExtraConfigurations);
+
+            if (driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(0))
+                || driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(1))) {
+                builder.s3ManagedLedgerOffloadRole(s3Role)
+                    .s3ManagedLedgerOffloadRoleSessionName(s3RoleSessionName)
+                    .s3ManagedLedgerOffloadCredentialId(awsId)
+                    .s3ManagedLedgerOffloadCredentialSecret(awsSecret)
+                    .s3ManagedLedgerOffloadRegion(region)
+                    .s3ManagedLedgerOffloadBucket(bucket)
+                    .s3ManagedLedgerOffloadServiceEndpoint(endpoint)
+                    .s3ManagedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                    .s3ManagedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes);
+            } else if (driver.equalsIgnoreCase(OffloadPoliciesImpl.DRIVER_NAMES.get(2))) {
+                builder.gcsManagedLedgerOffloadRegion(region)
+                    .gcsManagedLedgerOffloadBucket(bucket)
+                    .gcsManagedLedgerOffloadMaxBlockSizeInBytes(maxBlockSizeInBytes)
+                    .gcsManagedLedgerOffloadReadBufferSizeInBytes(readBufferSizeInBytes);
+            }
+            OffloadPoliciesImpl offloadPolicies = builder.build();
 
             getTopicPolicies(isGlobal).setOffloadPolicies(persistentTopic, offloadPolicies);
         }

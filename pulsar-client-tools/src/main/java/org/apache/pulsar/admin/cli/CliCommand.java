@@ -18,6 +18,7 @@
  */
 package org.apache.pulsar.admin.cli;
 
+import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.impl.MessageIdImpl;
@@ -233,4 +235,17 @@ public abstract class CliCommand {
     private static final Set<Character> SIZE_UNIT = Sets.newHashSet('k', 'K', 'm', 'M', 'g', 'G', 't', 'T');
 
     abstract void run() throws Exception;
+
+    static class StringToMapConverter implements IStringConverter<Map<String, String>> {
+        @Override
+        public Map<String, String> convert(String value) {
+            try {
+                return Arrays.stream(value.split(","))
+                    .map(s -> s.split("=", 2))
+                    .collect(Collectors.toMap(kv -> kv[0].trim(), kv -> kv[1].trim()));
+            } catch (Exception e) {
+                throw new ParameterException("Error parsing map", e);
+            }
+        }
+    }
 }

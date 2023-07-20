@@ -121,7 +121,7 @@ public class OffloadPoliciesImpl implements Serializable, OffloadPolicies {
     private OffloadedReadPriority managedLedgerOffloadedReadPriority = DEFAULT_OFFLOADED_READ_PRIORITY;
     @Configuration
     @JsonProperty(access = JsonProperty.Access.READ_WRITE)
-    private Map<String, String> managedLedgerExtraConfigurations = null;
+    private Map<String, String> managedLedgerOffloadExtraConfigurations = null;
 
     // s3 config, set by service configuration or cli
     @Configuration
@@ -197,6 +197,8 @@ public class OffloadPoliciesImpl implements Serializable, OffloadPolicies {
     @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     private Integer managedLedgerOffloadReadBufferSizeInBytes;
 
+    // using the builder not the create to initialize the offload policies
+    @Deprecated
     public static OffloadPoliciesImpl create(String driver, String region, String bucket, String endpoint,
                                              String role, String roleSessionName,
                                              String credentialId, String credentialSecret,
@@ -267,7 +269,7 @@ public class OffloadPoliciesImpl implements Serializable, OffloadPolicies {
                 entry -> entry.getKey().toString().replaceFirst("managedLedgerOffloadExtraConfig", ""),
                 entry -> entry.getValue().toString()));
 
-        data.setManagedLedgerExtraConfigurations(extraConfigurations);
+        data.setManagedLedgerOffloadExtraConfigurations(extraConfigurations);
 
         data.compatibleWithBrokerConfigFile(properties);
         return data;
@@ -360,7 +362,7 @@ public class OffloadPoliciesImpl implements Serializable, OffloadPolicies {
         setProperty(properties, "managedLedgerOffloadDeletionLagInMillis",
                 this.getManagedLedgerOffloadDeletionLagInMillis());
         setProperty(properties, "managedLedgerOffloadExtraConfigurations",
-                this.getManagedLedgerExtraConfigurations());
+                this.getManagedLedgerOffloadExtraConfigurations());
 
         if (this.isS3Driver()) {
             setProperty(properties, "s3ManagedLedgerOffloadRegion",
@@ -694,6 +696,12 @@ public class OffloadPoliciesImpl implements Serializable, OffloadPolicies {
         public OffloadPoliciesImplBuilder managedLedgerOffloadReadBufferSizeInBytes(
                 Integer managedLedgerOffloadReadBufferSizeInBytes) {
             impl.managedLedgerOffloadReadBufferSizeInBytes = managedLedgerOffloadReadBufferSizeInBytes;
+            return this;
+        }
+
+        public OffloadPoliciesImplBuilder managedLedgerOffloadExtraConfigurations(
+                Map<String, String> managedLedgerOffloadExtraConfigurations) {
+            impl.managedLedgerOffloadExtraConfigurations = managedLedgerOffloadExtraConfigurations;
             return this;
         }
 
