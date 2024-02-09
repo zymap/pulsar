@@ -4183,6 +4183,7 @@ public class ManagedLedgerTest extends MockedBookKeeperTestCase {
 
     @Test
     public void testNoCleanupOffloadLedgerWhenMetadataExceptionHappens() throws Exception {
+
         ManagedLedgerConfig config = spy(new ManagedLedgerConfig());
         ManagedLedgerImpl ml = spy((ManagedLedgerImpl) factory.open("testNoCleanupOffloadLedger", config));
 
