@@ -42,6 +42,7 @@ import org.apache.pulsar.common.util.collections.ConcurrentOpenLongPairRangeSet;
 @InterfaceStability.Stable
 public class ManagedLedgerConfig {
 
+    private long xxx = 1;
     private boolean createIfMissing = true;
     private int maxUnackedRangesToPersist = 10000;
     private int maxBatchDeletedIndexToPersist = 10000;
