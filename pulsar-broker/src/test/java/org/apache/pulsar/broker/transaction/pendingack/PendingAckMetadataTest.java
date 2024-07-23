@@ -20,6 +20,8 @@ package org.apache.pulsar.broker.transaction.pendingack;
 
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import lombok.Cleanup;
 import org.apache.bookkeeper.mledger.AsyncCallbacks;
@@ -80,9 +82,12 @@ public class PendingAckMetadataTest extends MockedBookKeeperTestCase {
 
         ManagedCursor cursor = completableFuture.get().openCursor("test");
         ManagedCursor subCursor = completableFuture.get().openCursor("test");
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
         MLPendingAckStore pendingAckStore =
                 new MLPendingAckStore(completableFuture.get(), cursor, subCursor, 500,
-                        bufferedWriterConfig, transactionTimer, DISABLED_BUFFERED_WRITER_METRICS);
+                        bufferedWriterConfig, transactionTimer, DISABLED_BUFFERED_WRITER_METRICS, executorService);
 
         Field field = MLPendingAckStore.class.getDeclaredField("managedLedger");
         field.setAccessible(true);
@@ -106,6 +111,7 @@ public class PendingAckMetadataTest extends MockedBookKeeperTestCase {
         cursor.close();
         subCursor.close();
         transactionTimer.stop();
+        executorService.shutdown();
     }
 
 }

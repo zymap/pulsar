@@ -45,7 +45,6 @@ import org.apache.bookkeeper.mledger.ManagedLedgerException;
 import org.apache.bookkeeper.mledger.Position;
 import org.apache.bookkeeper.mledger.PositionFactory;
 import org.apache.bookkeeper.mledger.impl.EntryImpl;
-import org.apache.bookkeeper.mledger.impl.ManagedCursorImpl;
 import org.apache.pulsar.broker.service.Consumer;
 import org.apache.pulsar.broker.service.persistent.PersistentDispatcherSingleActiveConsumer.ReadEntriesCtx;
 import org.apache.pulsar.client.api.MessageId;
@@ -120,8 +119,7 @@ public class CompactedTopicImpl implements CompactedTopic {
                 || currentCompactionHorizon.compareTo(cursorPosition) < 0) {
                 cursor.asyncReadEntriesOrWait(maxEntries, bytesToRead, callback, readEntriesCtx, maxReadPosition);
             } else {
-                ManagedCursorImpl managedCursor = (ManagedCursorImpl) cursor;
-                int numberOfEntriesToRead = managedCursor.applyMaxSizeCap(maxEntries, bytesToRead);
+                int numberOfEntriesToRead = cursor.applyMaxSizeCap(maxEntries, bytesToRead);
 
                 compactedTopicContext.thenCompose(
                     (context) -> findStartPoint(cursorPosition, context.ledger.getLastAddConfirmed(), context.cache)
@@ -141,7 +139,7 @@ public class CompactedTopicImpl implements CompactedTopic {
                                         for (Entry entry : entries) {
                                             entriesSize += entry.getLength();
                                         }
-                                        managedCursor.updateReadStats(entries.size(), entriesSize);
+                                        cursor.updateReadStats(entries.size(), entriesSize);
 
                                         Entry lastEntry = entries.get(entries.size() - 1);
                                         // The compaction task depends on the last snapshot and the incremental
