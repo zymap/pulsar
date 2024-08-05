@@ -24,6 +24,7 @@ on:
       - master
       - branch-*
       - pulsar-*
+      - sn-pulsar-*
   schedule:
     # scheduled job with JDK 17
     - cron: '0 12 * * *'
