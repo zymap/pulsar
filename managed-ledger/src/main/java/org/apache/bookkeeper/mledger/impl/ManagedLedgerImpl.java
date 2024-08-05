@@ -35,6 +35,7 @@ import io.netty.util.Recycler.Handle;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,7 +79,9 @@ import org.apache.bookkeeper.client.BKException;
 import org.apache.bookkeeper.client.BKException.Code;
 import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
+import org.apache.bookkeeper.client.BookKeeperAdmin;
 import org.apache.bookkeeper.client.LedgerHandle;
+import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.api.ReadHandle;
 import org.apache.bookkeeper.common.util.Backoff;
 import org.apache.bookkeeper.common.util.OrderedScheduler;
@@ -1923,13 +1926,12 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
         }
     }
 
-    @Override
-    public CompletableFuture<String> getLedgerMetadata(long ledgerId) {
+    public CompletableFuture<LedgerMetadata> getLedgerMetadata(long ledgerId) {
         LedgerHandle currentLedger = this.currentLedger;
         if (currentLedger != null && ledgerId == currentLedger.getId()) {
-            return CompletableFuture.completedFuture(currentLedger.getLedgerMetadata().toSafeString());
+            return CompletableFuture.completedFuture(currentLedger.getLedgerMetadata());
         } else {
-            return getLedgerHandle(ledgerId).thenApply(rh -> rh.getLedgerMetadata().toSafeString());
+            return getLedgerHandle(ledgerId).thenApply(rh -> rh.getLedgerMetadata());
         }
     }
 
@@ -4424,7 +4426,7 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
         List<LedgerInfo> ledgersInfos = new ArrayList<>(this.getLedgersInfo().values());
 
         // add asynchronous metadata retrieval operations to a hashmap
-        Map<Long, CompletableFuture<String>> ledgerMetadataFutures = new HashMap();
+        Map<Long, CompletableFuture<LedgerMetadata>> ledgerMetadataFutures = new HashMap();
         if (includeLedgerMetadata) {
             ledgersInfos.forEach(li -> {
                 long ledgerId = li.getLedgerId();
@@ -4438,19 +4440,36 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
         // wait until metadata has been retrieved
         FutureUtil.waitForAll(ledgerMetadataFutures.values()).thenAccept(__ -> {
             stats.ledgers = new ArrayList();
-            ledgersInfos.forEach(li -> {
-                ManagedLedgerInternalStats.LedgerInfo info = new ManagedLedgerInternalStats.LedgerInfo();
-                info.ledgerId = li.getLedgerId();
-                info.entries = li.getEntries();
-                info.size = li.getSize();
-                info.offloaded = li.hasOffloadContext() && li.getOffloadContext().getComplete();
-                if (includeLedgerMetadata) {
-                    // lookup metadata from the hashmap which contains completed async operations
-                    info.metadata = ledgerMetadataFutures.get(li.getLedgerId()).getNow(null);
-                }
-                stats.ledgers.add(info);
-            });
-            statFuture.complete(stats);
+            try (BookKeeperAdmin admin = new BookKeeperAdmin(bookKeeper)) {
+                Set<String> bookies = admin.getAvailableBookies().stream().map(BookieId::toString)
+                    .collect(Collectors.toSet());
+                ledgersInfos.forEach(li -> {
+                    ManagedLedgerInternalStats.LedgerInfo info = new ManagedLedgerInternalStats.LedgerInfo();
+                    info.ledgerId = li.getLedgerId();
+                    info.entries = li.getEntries();
+                    info.size = li.getSize();
+                    info.offloaded = li.hasOffloadContext() && li.getOffloadContext().getComplete();
+                    if (includeLedgerMetadata) {
+                        // lookup metadata from the hashmap which contains completed async operations
+                        LedgerMetadata lm = ledgerMetadataFutures.get(li.getLedgerId()).getNow(null);
+                        if (lm == null) {
+                            info.metadata = null;
+                            info.underReplicated = false;
+                        } else {
+                            info.metadata = lm.toSafeString();
+                            Set<String> ensemble = lm.getAllEnsembles().values().stream()
+                                .flatMap(Collection::stream)
+                                .map(BookieId::toString)
+                                .collect(Collectors.toSet());
+                            info.underReplicated = !bookies.contains(ensemble);
+                        }
+                    }
+                    stats.ledgers.add(info);
+                });
+                statFuture.complete(stats);
+            } catch (Exception e) {
+                statFuture.completeExceptionally(e);
+            }
         });
 
         return statFuture;
@@ -4581,32 +4600,6 @@ public class ManagedLedgerImpl implements ManagedLedger, CreateCallback {
             }
         }
         return theSlowestNonDurableReadPosition;
-    }
-
-    @Override
-    public ManagedLedgerInternalStats getInternalStats() {
-        ManagedLedgerInternalStats internalStats = new ManagedLedgerInternalStats();
-        internalStats.entriesAddedCounter = getEntriesAddedCounter();
-        internalStats.numberOfEntries = getNumberOfEntries();
-        internalStats.totalSize = getTotalSize();
-        internalStats.currentLedgerEntries = getCurrentLedgerEntries();
-        internalStats.currentLedgerSize = getCurrentLedgerSize();
-        internalStats.lastLedgerCreatedTimestamp = DateFormatter.format(getLastLedgerCreatedTimestamp());
-        if (getLastLedgerCreationFailureTimestamp() != 0) {
-            internalStats.lastLedgerCreationFailureTimestamp =
-                    DateFormatter.format(getLastLedgerCreationFailureTimestamp());
-        }
-        internalStats.waitingCursorsCount = getWaitingCursorsCount();
-        internalStats.pendingAddEntriesCount = getPendingAddEntriesCount();
-        internalStats.lastConfirmedEntry = getLastConfirmedEntry().toString();
-        internalStats.state = getState().toString();
-        return internalStats;
-    }
-
-    @Override
-    public CompletableFuture<Set<String>> getLedgerLocations(long ledgerId) {
-        return getEnsemblesAsync(ledgerId).thenApply(
-                bookieIds -> bookieIds.stream().map(BookieId::toString).collect(Collectors.toSet()));
     }
 
     @Override

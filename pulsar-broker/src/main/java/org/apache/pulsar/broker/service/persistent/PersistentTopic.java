@@ -161,7 +161,6 @@ import org.apache.pulsar.common.policies.data.BacklogQuota.BacklogQuotaType;
 import org.apache.pulsar.common.policies.data.ClusterData;
 import org.apache.pulsar.common.policies.data.ClusterPolicies.ClusterUrl;
 import org.apache.pulsar.common.policies.data.InactiveTopicDeleteMode;
-import org.apache.pulsar.common.policies.data.ManagedLedgerInternalStats;
 import org.apache.pulsar.common.policies.data.ManagedLedgerInternalStats.CursorStats;
 import org.apache.pulsar.common.policies.data.ManagedLedgerInternalStats.LedgerInfo;
 import org.apache.pulsar.common.policies.data.PersistentTopicInternalStats;
@@ -2714,189 +2713,157 @@ public class PersistentTopic extends AbstractTopic implements Topic, AddEntryCal
     public CompletableFuture<PersistentTopicInternalStats> getInternalStats(boolean includeLedgerMetadata) {
 
         CompletableFuture<PersistentTopicInternalStats> statFuture = new CompletableFuture<>();
-        PersistentTopicInternalStats stats = new PersistentTopicInternalStats();
-        ManagedLedgerInternalStats ledgerInternalStats = ledger.getInternalStats();
-        stats.entriesAddedCounter = ledgerInternalStats.getEntriesAddedCounter();
-        stats.numberOfEntries = ledgerInternalStats.getNumberOfEntries();
-        stats.totalSize = ledgerInternalStats.getTotalSize();
-        stats.currentLedgerEntries = ledgerInternalStats.getCurrentLedgerEntries();
-        stats.currentLedgerSize = ledgerInternalStats.getCurrentLedgerSize();
-        stats.lastLedgerCreatedTimestamp = ledgerInternalStats.getLastLedgerCreatedTimestamp();
-        stats.lastLedgerCreationFailureTimestamp = ledgerInternalStats.getLastLedgerCreationFailureTimestamp();
-        stats.waitingCursorsCount = ledgerInternalStats.getWaitingCursorsCount();
-        stats.pendingAddEntriesCount = ledgerInternalStats.getPendingAddEntriesCount();
-        stats.lastConfirmedEntry = ledgerInternalStats.getLastConfirmedEntry();
-        stats.state = ledgerInternalStats.getState();
-        stats.ledgers = new ArrayList<>();
-        Set<CompletableFuture<?>> futures = Sets.newConcurrentHashSet();
-        CompletableFuture<Set<String>> availableBookiesFuture =
-                brokerService.pulsar().getPulsarResources().getBookieResources().listAvailableBookiesAsync();
-        futures.add(
-            availableBookiesFuture
-                .whenComplete((bookies, e) -> {
-                    if (e != null) {
-                        log.error("[{}] Failed to fetch available bookies.", topic, e);
-                        statFuture.completeExceptionally(e);
-                    } else {
-                        ledger.getLedgersInfo().forEach((id, li) -> {
-                            LedgerInfo info = new LedgerInfo();
-                            info.ledgerId = li.getLedgerId();
-                            info.entries = li.getEntries();
-                            info.size = li.getSize();
-                            info.offloaded = li.hasOffloadContext() && li.getOffloadContext().getComplete();
-                            stats.ledgers.add(info);
-                            if (includeLedgerMetadata) {
-                                futures.add(ledger.getLedgerMetadata(li.getLedgerId()).handle((lMetadata, ex) -> {
-                                    if (ex == null) {
-                                        info.metadata = lMetadata;
-                                    }
-                                    return null;
-                                }));
-                                futures.add(ledger.getLedgerLocations(li.getLedgerId()).handle((locations, ex) -> {
-                                    if (ex == null) {
-                                        info.underReplicated =
-                                            !bookies.containsAll(locations);
-                                    }
-                                    return null;
-                                }));
-                            }
-                        });
-                    }
-                })
-        );
 
-        // Add ledger info for compacted topic ledger if exist.
-        LedgerInfo info = new LedgerInfo();
-        info.ledgerId = -1;
-        info.entries = -1;
-        info.size = -1;
+        ledger.getManagedLedgerInternalStats(includeLedgerMetadata)
+            .thenAccept(ledgerInternalStats -> {
+                PersistentTopicInternalStats stats = new PersistentTopicInternalStats();
+                stats.entriesAddedCounter = ledgerInternalStats.getEntriesAddedCounter();
+                stats.numberOfEntries = ledgerInternalStats.getNumberOfEntries();
+                stats.totalSize = ledgerInternalStats.getTotalSize();
+                stats.currentLedgerEntries = ledgerInternalStats.getCurrentLedgerEntries();
+                stats.currentLedgerSize = ledgerInternalStats.getCurrentLedgerSize();
+                stats.lastLedgerCreatedTimestamp = ledgerInternalStats.getLastLedgerCreatedTimestamp();
+                stats.lastLedgerCreationFailureTimestamp = ledgerInternalStats.getLastLedgerCreationFailureTimestamp();
+                stats.waitingCursorsCount = ledgerInternalStats.getWaitingCursorsCount();
+                stats.pendingAddEntriesCount = ledgerInternalStats.getPendingAddEntriesCount();
+                stats.lastConfirmedEntry = ledgerInternalStats.getLastConfirmedEntry();
+                stats.state = ledgerInternalStats.getState();
+                stats.ledgers = ledgerInternalStats.ledgers;
 
-        Optional<CompactedTopicContext> compactedTopicContext = getCompactedTopicContext();
-        if (compactedTopicContext.isPresent()) {
-            CompactedTopicContext ledgerContext = compactedTopicContext.get();
-            info.ledgerId = ledgerContext.getLedger().getId();
-            info.entries = ledgerContext.getLedger().getLastAddConfirmed() + 1;
-            info.size = ledgerContext.getLedger().getLength();
-        }
 
-        stats.compactedLedger = info;
+                // Add ledger info for compacted topic ledger if exist.
+                LedgerInfo info = new LedgerInfo();
+                info.ledgerId = -1;
+                info.entries = -1;
+                info.size = -1;
 
-        stats.cursors = new HashMap<>();
-        ledger.getCursors().forEach(c -> {
-            CursorStats cs = new CursorStats();
-
-            CursorStats cursorInternalStats = c.getCursorStats();
-            cs.markDeletePosition = cursorInternalStats.getMarkDeletePosition();
-            cs.readPosition = cursorInternalStats.getReadPosition();
-            cs.waitingReadOp = cursorInternalStats.isWaitingReadOp();
-            cs.pendingReadOps = cursorInternalStats.getPendingReadOps();
-            cs.messagesConsumedCounter = cursorInternalStats.getMessagesConsumedCounter();
-            cs.cursorLedger = cursorInternalStats.getCursorLedger();
-            cs.cursorLedgerLastEntry = cursorInternalStats.getCursorLedgerLastEntry();
-            cs.individuallyDeletedMessages = cursorInternalStats.getIndividuallyDeletedMessages();
-            cs.lastLedgerSwitchTimestamp = cursorInternalStats.getLastLedgerSwitchTimestamp();
-            cs.state = cursorInternalStats.getState();
-            cs.active = cursorInternalStats.isActive();
-            cs.numberOfEntriesSinceFirstNotAckedMessage =
-                    cursorInternalStats.getNumberOfEntriesSinceFirstNotAckedMessage();
-            cs.totalNonContiguousDeletedMessagesRange = cursorInternalStats.getTotalNonContiguousDeletedMessagesRange();
-            cs.properties = cursorInternalStats.getProperties();
-            // subscription metrics
-            PersistentSubscription sub = subscriptions.get(Codec.decode(c.getName()));
-            if (sub != null) {
-                if (sub.getDispatcher() instanceof PersistentDispatcherMultipleConsumers) {
-                    PersistentDispatcherMultipleConsumers dispatcher = (PersistentDispatcherMultipleConsumers) sub
-                            .getDispatcher();
-                    cs.subscriptionHavePendingRead = dispatcher.havePendingRead;
-                    cs.subscriptionHavePendingReplayRead = dispatcher.havePendingReplayRead;
-                } else if (sub.getDispatcher() instanceof PersistentDispatcherSingleActiveConsumer) {
-                    PersistentDispatcherSingleActiveConsumer dispatcher = (PersistentDispatcherSingleActiveConsumer) sub
-                            .getDispatcher();
-                    cs.subscriptionHavePendingRead = dispatcher.havePendingRead;
+                Optional<CompactedTopicContext> compactedTopicContext = getCompactedTopicContext();
+                if (compactedTopicContext.isPresent()) {
+                    CompactedTopicContext ledgerContext = compactedTopicContext.get();
+                    info.ledgerId = ledgerContext.getLedger().getId();
+                    info.entries = ledgerContext.getLedger().getLastAddConfirmed() + 1;
+                    info.size = ledgerContext.getLedger().getLength();
                 }
-            }
-            stats.cursors.put(c.getName(), cs);
-        });
 
-        //Schema store ledgers
-        String schemaId;
-        try {
-            schemaId = TopicName.get(topic).getSchemaName();
-        } catch (Throwable t) {
-            statFuture.completeExceptionally(t);
-            return statFuture;
-        }
+                stats.compactedLedger = info;
+
+                stats.cursors = new HashMap<>();
+                ledger.getCursors().forEach(c -> {
+                    CursorStats cs = new CursorStats();
+
+                    CursorStats cursorInternalStats = c.getCursorStats();
+                    cs.markDeletePosition = cursorInternalStats.getMarkDeletePosition();
+                    cs.readPosition = cursorInternalStats.getReadPosition();
+                    cs.waitingReadOp = cursorInternalStats.isWaitingReadOp();
+                    cs.pendingReadOps = cursorInternalStats.getPendingReadOps();
+                    cs.messagesConsumedCounter = cursorInternalStats.getMessagesConsumedCounter();
+                    cs.cursorLedger = cursorInternalStats.getCursorLedger();
+                    cs.cursorLedgerLastEntry = cursorInternalStats.getCursorLedgerLastEntry();
+                    cs.individuallyDeletedMessages = cursorInternalStats.getIndividuallyDeletedMessages();
+                    cs.lastLedgerSwitchTimestamp = cursorInternalStats.getLastLedgerSwitchTimestamp();
+                    cs.state = cursorInternalStats.getState();
+                    cs.active = cursorInternalStats.isActive();
+                    cs.numberOfEntriesSinceFirstNotAckedMessage =
+                        cursorInternalStats.getNumberOfEntriesSinceFirstNotAckedMessage();
+                    cs.totalNonContiguousDeletedMessagesRange =
+                            cursorInternalStats.getTotalNonContiguousDeletedMessagesRange();
+                    cs.properties = cursorInternalStats.getProperties();
+                    // subscription metrics
+                    PersistentSubscription sub = subscriptions.get(Codec.decode(c.getName()));
+                    if (sub != null) {
+                        if (sub.getDispatcher() instanceof PersistentDispatcherMultipleConsumers) {
+                            PersistentDispatcherMultipleConsumers dispatcher =
+                                    (PersistentDispatcherMultipleConsumers) sub.getDispatcher();
+                            cs.subscriptionHavePendingRead = dispatcher.havePendingRead;
+                            cs.subscriptionHavePendingReplayRead = dispatcher.havePendingReplayRead;
+                        } else if (sub.getDispatcher() instanceof PersistentDispatcherSingleActiveConsumer) {
+                            PersistentDispatcherSingleActiveConsumer dispatcher =
+                                    (PersistentDispatcherSingleActiveConsumer) sub.getDispatcher();
+                            cs.subscriptionHavePendingRead = dispatcher.havePendingRead;
+                        }
+                    }
+                    stats.cursors.put(c.getName(), cs);
+                });
+
+                //Schema store ledgers
+                String schemaId;
+                try {
+                    schemaId = TopicName.get(topic).getSchemaName();
+                } catch (Throwable t) {
+                    statFuture.completeExceptionally(t);
+                    return;
+                }
 
 
-        CompletableFuture<Void> schemaStoreLedgersFuture = new CompletableFuture<>();
-        stats.schemaLedgers = Collections.synchronizedList(new ArrayList<>());
-        if (brokerService.getPulsar().getSchemaStorage() != null
-                && brokerService.getPulsar().getSchemaStorage() instanceof BookkeeperSchemaStorage) {
-            ((BookkeeperSchemaStorage) brokerService.getPulsar().getSchemaStorage())
-                    .getStoreLedgerIdsBySchemaId(schemaId)
-                    .thenAccept(ledgers -> {
-                        List<CompletableFuture<Void>> getLedgerMetadataFutures = new ArrayList<>();
-                        ledgers.forEach(ledgerId -> {
-                            CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-                            getLedgerMetadataFutures.add(completableFuture);
-                            CompletableFuture<LedgerMetadata> metadataFuture = null;
-                            try {
-                                metadataFuture = brokerService.getPulsar().getBookKeeperClient()
-                                    .getLedgerMetadata(ledgerId);
-                            } catch (NullPointerException e) {
-                                // related to bookkeeper issue https://github.com/apache/bookkeeper/issues/2741
-                                if (log.isDebugEnabled()) {
-                                    log.debug("{{}} Failed to get ledger metadata for the schema ledger {}",
+                CompletableFuture<Void> schemaStoreLedgersFuture = new CompletableFuture<>();
+                stats.schemaLedgers = Collections.synchronizedList(new ArrayList<>());
+                if (brokerService.getPulsar().getSchemaStorage() != null
+                    && brokerService.getPulsar().getSchemaStorage() instanceof BookkeeperSchemaStorage) {
+                    ((BookkeeperSchemaStorage) brokerService.getPulsar().getSchemaStorage())
+                        .getStoreLedgerIdsBySchemaId(schemaId)
+                        .thenAccept(ledgers -> {
+                            List<CompletableFuture<Void>> getLedgerMetadataFutures = new ArrayList<>();
+                            ledgers.forEach(ledgerId -> {
+                                CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+                                getLedgerMetadataFutures.add(completableFuture);
+                                CompletableFuture<LedgerMetadata> metadataFuture = null;
+                                try {
+                                    metadataFuture = brokerService.getPulsar().getBookKeeperClient()
+                                        .getLedgerMetadata(ledgerId);
+                                } catch (NullPointerException e) {
+                                    // related to bookkeeper issue https://github.com/apache/bookkeeper/issues/2741
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("{{}} Failed to get ledger metadata for the schema ledger {}",
                                             topic, ledgerId, e);
+                                    }
                                 }
-                            }
-                            if (metadataFuture != null) {
-                                metadataFuture.thenAccept(metadata -> {
-                                    LedgerInfo schemaLedgerInfo = new LedgerInfo();
-                                    schemaLedgerInfo.ledgerId = metadata.getLedgerId();
-                                    schemaLedgerInfo.entries = metadata.getLastEntryId() + 1;
-                                    schemaLedgerInfo.size = metadata.getLength();
-                                    if (includeLedgerMetadata) {
-                                        info.metadata = metadata.toSafeString();
-                                    }
-                                    stats.schemaLedgers.add(schemaLedgerInfo);
-                                    completableFuture.complete(null);
-                                }).exceptionally(e -> {
-                                    log.error("[{}] Failed to get ledger metadata for the schema ledger {}",
-                                            topic, ledgerId, e);
-                                    if ((e.getCause() instanceof BKNoSuchLedgerExistsOnMetadataServerException)
-                                            || (e.getCause() instanceof BKNoSuchLedgerExistsException)) {
+                                if (metadataFuture != null) {
+                                    metadataFuture.thenAccept(metadata -> {
+                                        LedgerInfo schemaLedgerInfo = new LedgerInfo();
+                                        schemaLedgerInfo.ledgerId = metadata.getLedgerId();
+                                        schemaLedgerInfo.entries = metadata.getLastEntryId() + 1;
+                                        schemaLedgerInfo.size = metadata.getLength();
+                                        if (includeLedgerMetadata) {
+                                            info.metadata = metadata.toSafeString();
+                                        }
+                                        stats.schemaLedgers.add(schemaLedgerInfo);
                                         completableFuture.complete(null);
+                                    }).exceptionally(e -> {
+                                        log.error("[{}] Failed to get ledger metadata for the schema ledger {}",
+                                            topic, ledgerId, e);
+                                        if ((e.getCause() instanceof BKNoSuchLedgerExistsOnMetadataServerException)
+                                            || (e.getCause() instanceof BKNoSuchLedgerExistsException)) {
+                                            completableFuture.complete(null);
+                                            return null;
+                                        }
+                                        completableFuture.completeExceptionally(e);
                                         return null;
-                                    }
-                                    completableFuture.completeExceptionally(e);
-                                    return null;
-                                });
-                            } else {
-                                completableFuture.complete(null);
-                            }
-                        });
-                        FutureUtil.waitForAll(getLedgerMetadataFutures).thenRun(() -> {
-                            schemaStoreLedgersFuture.complete(null);
+                                    });
+                                } else {
+                                    completableFuture.complete(null);
+                                }
+                            });
+                            FutureUtil.waitForAll(getLedgerMetadataFutures).thenRun(() -> {
+                                schemaStoreLedgersFuture.complete(null);
+                            }).exceptionally(e -> {
+                                schemaStoreLedgersFuture.completeExceptionally(e);
+                                return null;
+                            });
                         }).exceptionally(e -> {
                             schemaStoreLedgersFuture.completeExceptionally(e);
                             return null;
                         });
-                    }).exceptionally(e -> {
-                schemaStoreLedgersFuture.completeExceptionally(e);
-                return null;
+                } else {
+                    schemaStoreLedgersFuture.complete(null);
+                }
+                schemaStoreLedgersFuture.whenComplete((r, ex) -> {
+                    if (ex != null) {
+                        statFuture.completeExceptionally(ex);
+                    } else {
+                        statFuture.complete(stats);
+                    }
+                });
             });
-        } else {
-            schemaStoreLedgersFuture.complete(null);
-        }
-        schemaStoreLedgersFuture.thenRun(() ->
-            FutureUtil.waitForAll(futures).handle((res, ex) -> {
-                statFuture.complete(stats);
-                return null;
-            })).exceptionally(e -> {
-            statFuture.completeExceptionally(e);
-            return null;
-        });
         return statFuture;
     }
 

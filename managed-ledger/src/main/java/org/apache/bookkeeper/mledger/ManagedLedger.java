@@ -20,11 +20,9 @@ package org.apache.bookkeeper.mledger;
 
 import com.google.common.collect.Range;
 import io.netty.buffer.ByteBuf;
-import java.util.Collections;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import org.apache.bookkeeper.common.annotation.InterfaceAudience;
@@ -729,14 +727,6 @@ public interface ManagedLedger {
     int getPendingAddEntriesCount();
 
     long getCacheSize();
-
-    CompletableFuture<String> getLedgerMetadata(long ledgerId);
-
-    ManagedLedgerInternalStats getInternalStats();
-
-    default CompletableFuture<Set<String>> getLedgerLocations(long ledgerId) {
-        return CompletableFuture.completedFuture(Collections.emptySet());
-    }
 
     default CompletableFuture<Position> getLastDispatchablePosition(final Predicate<Entry> predicate,
                                                                     final Position startPosition) {
