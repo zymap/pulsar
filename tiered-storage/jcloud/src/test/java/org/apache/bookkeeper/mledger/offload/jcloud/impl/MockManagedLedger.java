@@ -18,6 +18,7 @@
  */
 package org.apache.bookkeeper.mledger.offload.jcloud.impl;
 
+import com.google.common.collect.Range;
 import io.netty.buffer.ByteBuf;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -177,6 +178,11 @@ public class MockManagedLedger implements ManagedLedger {
 
     @Override
     public long getNumberOfEntries() {
+        return 0;
+    }
+
+    @Override
+    public long getNumberOfEntries(Range<Position> range) {
         return 0;
     }
 
@@ -422,16 +428,6 @@ public class MockManagedLedger implements ManagedLedger {
     @Override
     public long getCacheSize() {
         return 0;
-    }
-
-    @Override
-    public CompletableFuture<String> getLedgerMetadata(long ledgerId) {
-        return null;
-    }
-
-    @Override
-    public ManagedLedgerInternalStats getInternalStats() {
-        return null;
     }
 
     @Override
