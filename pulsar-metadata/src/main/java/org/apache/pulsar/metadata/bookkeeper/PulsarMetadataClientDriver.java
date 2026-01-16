@@ -38,6 +38,7 @@ public class PulsarMetadataClientDriver extends AbstractMetadataDriver implement
     }
 
     public static void init() {
+
         // cause <cinit> to be invoked
     }
 
